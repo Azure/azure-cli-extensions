@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-12-01",
+        "version": "2026-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}/jobdefinitions/{}", "2025-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}/jobdefinitions/{}", "2026-05-01"],
         ]
     }
 
@@ -48,12 +48,18 @@ class Update(AAZCommand):
             help="The name of the Job Definition resource.",
             required=True,
             id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project-name"],
             help="The name of the Project resource.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -90,7 +96,7 @@ class Update(AAZCommand):
             enum={"Additive": "Additive", "Mirror": "Mirror"},
         )
         _args_schema.data_integrity_validation = AAZStrArg(
-            options=["--data-integrity-validation", "--data-validation"],
+            options=["--data-validation", "--data-integrity-validation"],
             arg_group="Properties",
             help="The checksum validation mode for the job definition.",
             nullable=True,
@@ -107,7 +113,16 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="The type of the Job.",
             nullable=True,
-            enum={"CloudToCloud": "CloudToCloud", "OnPremToCloud": "OnPremToCloud"},
+            enum={"CloudToCloud": "CloudToCloud", "OnPremToCloud": "OnPremToCloud", "OnPremToCloudAgentLess": "OnPremToCloudAgentLess"},
+        )
+        _args_schema.mover_synced_until = AAZDateTimeArg(
+            options=["--mover-synced-until"],
+            arg_group="Properties",
+            help="The last time the mover was synchronized.",
+            nullable=True,
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
         _args_schema.preserve_permissions = AAZBoolArg(
             options=["--preserve-permissions"],
@@ -119,6 +134,12 @@ class Update(AAZCommand):
             options=["--schedule"],
             arg_group="Properties",
             help="Schedule information for the Job Definition.",
+            nullable=True,
+        )
+        _args_schema.sync_mode = AAZStrArg(
+            options=["--sync-mode"],
+            arg_group="Properties",
+            help="The synchronization mode for the Job Definition.",
             nullable=True,
         )
 
@@ -160,11 +181,16 @@ class Update(AAZCommand):
             options=["frequency"],
             help="Type of schedule — Monthly, Weekly, or Daily",
             nullable=True,
-            enum={"Daily": "Daily", "Monthly": "Monthly", "None": "None", "Onetime": "Onetime", "Weekly": "Weekly"},
+            enum={"Daily": "Daily", "Hourly": "Hourly", "Monthly": "Monthly", "None": "None", "Onetime": "Onetime", "Weekly": "Weekly"},
         )
         schedule.is_active = AAZBoolArg(
             options=["is-active"],
             help="Whether the schedule is currently active",
+            nullable=True,
+        )
+        schedule.repeat_interval = AAZStrArg(
+            options=["repeat-interval"],
+            help="Repeat interval used for sub-daily schedules.",
             nullable=True,
         )
         schedule.start_date = AAZDateTimeArg(
@@ -196,7 +222,7 @@ class Update(AAZCommand):
                 minimum=0,
             ),
         )
-        execution_time.minute = AAZIntArg(
+        execution_time.minute = AAZFloatArg(
             options=["minute"],
             help="The minute element of the time. Allowed values are 0 and 30. If not specified, its value defaults to 0.",
             nullable=True,
@@ -290,7 +316,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-12-01",
+                    "api-version", "2026-05-01",
                     required=True,
                 ),
             }
@@ -381,7 +407,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-12-01",
+                    "api-version", "2026-05-01",
                     required=True,
                 ),
             }
@@ -449,8 +475,10 @@ class Update(AAZCommand):
                 properties.set_prop("dataIntegrityValidation", AAZStrType, ".data_integrity_validation")
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("jobType", AAZStrType, ".job_type")
+                properties.set_prop("moverSyncedUntil", AAZStrType, ".mover_synced_until")
                 properties.set_prop("preservePermissions", AAZBoolType, ".preserve_permissions")
                 properties.set_prop("schedule", AAZObjectType, ".schedule")
+                properties.set_prop("syncMode", AAZStrType, ".sync_mode")
 
             connections = _builder.get(".properties.connections")
             if connections is not None:
@@ -465,6 +493,7 @@ class Update(AAZCommand):
                 schedule.set_prop("executionTime", AAZObjectType, ".execution_time")
                 schedule.set_prop("frequency", AAZStrType, ".frequency")
                 schedule.set_prop("isActive", AAZBoolType, ".is_active")
+                schedule.set_prop("repeatInterval", AAZStrType, ".repeat_interval")
                 schedule.set_prop("startDate", AAZStrType, ".start_date")
 
             days_of_month = _builder.get(".properties.schedule.daysOfMonth")
@@ -478,7 +507,7 @@ class Update(AAZCommand):
             execution_time = _builder.get(".properties.schedule.executionTime")
             if execution_time is not None:
                 execution_time.set_prop("hour", AAZIntType, ".hour")
-                execution_time.set_prop("minute", AAZIntType, ".minute")
+                execution_time.set_prop("minute", AAZFloatType, ".minute")
 
             return _instance_value
 
@@ -539,10 +568,19 @@ class _UpdateHelper:
             serialized_name="copyMode",
             flags={"required": True},
         )
+        properties.cross_tenant_endpoint_resource_id = AAZStrType(
+            serialized_name="crossTenantEndpointResourceId",
+        )
+        properties.cross_tenant_endpoint_tenant_id = AAZStrType(
+            serialized_name="crossTenantEndpointTenantId",
+        )
         properties.data_integrity_validation = AAZStrType(
             serialized_name="dataIntegrityValidation",
         )
         properties.description = AAZStrType()
+        properties.is_cross_tenant_job = AAZBoolType(
+            serialized_name="isCrossTenantJob",
+        )
         properties.job_type = AAZStrType(
             serialized_name="jobType",
         )
@@ -557,6 +595,9 @@ class _UpdateHelper:
         properties.latest_job_run_status = AAZStrType(
             serialized_name="latestJobRunStatus",
             flags={"read_only": True},
+        )
+        properties.mover_synced_until = AAZStrType(
+            serialized_name="moverSyncedUntil",
         )
         properties.preserve_permissions = AAZBoolType(
             serialized_name="preservePermissions",
@@ -579,6 +620,9 @@ class _UpdateHelper:
         )
         properties.source_target_map = AAZObjectType(
             serialized_name="sourceTargetMap",
+        )
+        properties.sync_mode = AAZStrType(
+            serialized_name="syncMode",
         )
         properties.target_name = AAZStrType(
             serialized_name="targetName",
@@ -615,6 +659,9 @@ class _UpdateHelper:
         schedule.is_active = AAZBoolType(
             serialized_name="isActive",
         )
+        schedule.repeat_interval = AAZStrType(
+            serialized_name="repeatInterval",
+        )
         schedule.start_date = AAZStrType(
             serialized_name="startDate",
         )
@@ -627,7 +674,7 @@ class _UpdateHelper:
 
         execution_time = _schema_job_definition_read.properties.schedule.execution_time
         execution_time.hour = AAZIntType()
-        execution_time.minute = AAZIntType()
+        execution_time.minute = AAZFloatType()
 
         source_target_map = _schema_job_definition_read.properties.source_target_map
         source_target_map.value = AAZListType(

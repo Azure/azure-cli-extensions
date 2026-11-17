@@ -76,7 +76,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
 
     @serial_test()
     @ResourceGroupPreparer(location="southcentralus", random_name_length=15)
-    @ConnectedClusterPreparer(location=TEST_LOCATION)
+    @ConnectedClusterPreparer(location=TEST_LOCATION, skip_pre_onboarding_checks=True)
     def test_containerapp_preview_connected_env_storage(self, resource_group, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         custom_location_name = "my-custom-location"
@@ -100,7 +100,11 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         if format_location(storage_account_location) == format_location(STAGE_LOCATION):
             storage_account_location = "eastus"
 
-        self.cmd('storage account create -g {} -n {} --kind StorageV2 --sku Standard_LRS --enable-large-file-share --location {}'.format(resource_group, storage_name, storage_account_location))
+        self.cmd(
+            'storage account create -g {} -n {} --kind StorageV2 --sku Standard_LRS '
+            '--enable-large-file-share --location {} '
+            '--tags "Az.Sec.DisableLocalAuth.Storage::Skip=true"'
+            .format(resource_group, storage_name, storage_account_location))
         self.cmd('storage share-rm create -g {} -n {} --storage-account {} --access-tier "TransactionOptimized" --quota 1024'.format(resource_group, shares_name, storage_name))
 
         storage_keys = self.cmd('az storage account keys list -g {} -n {}'.format(resource_group, storage_name)).get_output_in_json()[0]

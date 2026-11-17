@@ -618,7 +618,8 @@ def load_arguments(self, _):
 
     with self.argument_context('cosmosdb copy create') as c:
         c.argument('job_name', job_name_type)
-        c.argument('src_account', help='Name of the Azure Cosmos DB source database account.', completer=get_resource_name_completion_list('Microsoft.DocumentDb/databaseAccounts'), id_part='name')
+        c.argument('resource_group_name', help='Name of the resource group containing the hosting account: source by default, or destination with --host-copy-on-src false.')
+        c.argument('src_account', help='Name of the Azure Cosmos DB source database account. Hosts the copy job by default.', completer=get_resource_name_completion_list('Microsoft.DocumentDb/databaseAccounts'), id_part='name')
         c.argument('dest_account', help='Name of the Azure Cosmos DB destination database account.', completer=get_resource_name_completion_list('Microsoft.DocumentDb/databaseAccounts'), id_part='name')
         c.argument('src_cassandra', nargs='+', arg_group='Azure Cosmos DB API for Apache Cassandra table copy', action=AddCassandraTableAction, help='Source Cassandra table details')
         c.argument('src_mongo', nargs='+', arg_group='Azure Cosmos DB API for MongoDB (RU) collection copy', action=AddMongoCollectionAction, help='Source Mongo collection details')
@@ -627,7 +628,7 @@ def load_arguments(self, _):
         c.argument('dest_mongo', nargs='+', arg_group='Azure Cosmos DB API for MongoDB (RU) collection copy', action=AddMongoCollectionAction, help='Destination Mongo collection details')
         c.argument('dest_mongo_vcore', nargs='+', arg_group='Azure Cosmos DB API for MongoDB (vCore) collection copy', action=AddMongoVCoreCollectionAction, help='Destination Mongo vCore collection details')
         c.argument('dest_nosql', nargs='+', arg_group='Azure Cosmos DB API for NoSQL container copy', action=AddSqlContainerAction, help='Destination NoSql container details')
-        c.argument('host_copy_on_src', arg_type=get_three_state_flag(), help=argparse.SUPPRESS)
+        c.argument('host_copy_on_src', arg_type=get_three_state_flag(), help='Host the copy job on the source account. Set false to host on the destination instead. MongoDB RU-to-vCore jobs always use the source.')
         c.argument('worker_count', type=int, help=argparse.SUPPRESS)
         c.argument('mode', help='Copy Mode (Online / Offline)')
 
@@ -639,7 +640,7 @@ def load_arguments(self, _):
             'cosmosdb copy cancel',
             'cosmosdb copy complete']:
         with self.argument_context(scope) as c:
-            c.argument('account_name', options_list=["--account-name", "-a"], id_part=None, required=True, help='Azure Cosmos DB account name where the job is created. Use --dest-account value from create job command.')
+            c.argument('account_name', options_list=["--account-name", "-a"], id_part=None, required=True, help='Azure Cosmos DB account hosting the job. Use the source account by default, or the destination for destination-hosted jobs.')
 
     for scope in [
             'cosmosdb copy show',

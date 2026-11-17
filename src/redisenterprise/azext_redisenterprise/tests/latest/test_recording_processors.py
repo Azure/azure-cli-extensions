@@ -13,11 +13,12 @@ class RedisEnterpriseKeyReplacerTest(unittest.TestCase):
     def test_key_scenarios_register_processor(self):
         from . import test_demo
         from .test_test_connection import RedisEnterpriseTestConnectionScenarioTest
+        from .test_migration import RedisEnterpriseMigrationScenarioTest
 
         scenarios = [
             getattr(test_demo, 'Redisenterprisescenario{}Test'.format(number))
             for number in range(1, 8)
-        ] + [RedisEnterpriseTestConnectionScenarioTest]
+        ] + [RedisEnterpriseTestConnectionScenarioTest, RedisEnterpriseMigrationScenarioTest]
         for scenario in scenarios:
             with self.subTest(scenario=scenario.__name__):
                 test = scenario('runTest')
@@ -48,6 +49,23 @@ class RedisEnterpriseKeyReplacerTest(unittest.TestCase):
                 sanitized = response['body']['string']
                 processor.process_response(response)
                 self.assertEqual(response['body']['string'], sanitized)
+
+    def test_replaces_oss_source_creation_keys(self):
+        response = {
+            'headers': {'content-type': ['application/json']},
+            'body': {'string': json.dumps({
+                'properties': {
+                    'hostName': 'source.redis.cache.windows.net',
+                    'accessKeys': {'primaryKey': 'synthetic-primary', 'secondaryKey': 'synthetic-secondary'},
+                },
+            })},
+        }
+        RedisEnterpriseKeyReplacer().process_response(response)
+        properties = json.loads(response['body']['string'])['properties']
+        self.assertEqual(properties['hostName'], 'source.redis.cache.windows.net')
+        self.assertEqual(properties['accessKeys'], {
+            'primaryKey': 'fake_primary_key', 'secondaryKey': 'fake_secondary_key',
+        })
 
     def test_preserves_non_key_responses(self):
         processor = RedisEnterpriseKeyReplacer()

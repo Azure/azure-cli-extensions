@@ -1,0 +1,545 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - rest
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --method --resource --url
+      User-Agent:
+      - python/3.12.10 (Windows-11-10.0.26300-SP0) AZURECLI/2.91.0
+    method: GET
+    uri: https://graph.microsoft.com/v1.0/me/extensions
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users(''00000000-0000-0000-0000-000000000001'')/extensions","value":[]}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '131'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      odata-version:
+      - '4.0'
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.5
+    method: GET
+    uri: https://graph.microsoft.com/v1.0/me
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users/$entity","businessPhones":[],"displayName":"Test
+        User","givenName":"Test","jobTitle":"Test Role","mail":"user@example.invalid","mobilePhone":null,"officeLocation":"Test
+        Location","preferredLanguage":null,"surname":"User","userPrincipalName":"user@example.invalid","id":"00000000-0000-0000-0000-000000000001"}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - keep-alive
+      content-length:
+      - '376'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      odata-version:
+      - '4.0'
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-ms-resource-unit:
+      - '1'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.5
+    method: GET
+    uri: https://graph.microsoft.com/v1.0/me/extensions
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users(''00000000-0000-0000-0000-000000000001'')/extensions","value":[]}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '131'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      odata-version:
+      - '4.0'
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"@odata.type": "microsoft.graph.openTypeExtension", "extensionName": "com.nexusidentity.keys",
+      "publicKey": "nexusidentity-test-ed25519-sk-public-key\n"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '154'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.5
+    method: POST
+    uri: https://graph.microsoft.com/v1.0/me/extensions
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users(''00000000-0000-0000-0000-000000000001'')/extensions/$entity","@odata.type":"#microsoft.graph.openTypeExtension","extensionName":"com.nexusidentity.keys","publicKey":"nexusidentity-test-ed25519-sk-public-key\n","id":"com.nexusidentity.keys"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '307'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      location:
+      - https://graph.microsoft.com
+      odata-version:
+      - '4.0'
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - rest
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --method --resource --url
+      User-Agent:
+      - python/3.12.10 (Windows-11-10.0.26300-SP0) AZURECLI/2.91.0
+    method: GET
+    uri: https://graph.microsoft.com/v1.0/me/extensions/com.nexusidentity.keys
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users(''00000000-0000-0000-0000-000000000001'')/extensions/$entity","@odata.type":"#microsoft.graph.openTypeExtension","extensionName":"com.nexusidentity.keys","publicKey":"nexusidentity-test-ed25519-sk-public-key\n","id":"com.nexusidentity.keys"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '307'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      odata-version:
+      - '4.0'
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.5
+    method: GET
+    uri: https://graph.microsoft.com/v1.0/me
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users/$entity","businessPhones":[],"displayName":"Test
+        User","givenName":"Test","jobTitle":"Test Role","mail":"user@example.invalid","mobilePhone":null,"officeLocation":"Test
+        Location","preferredLanguage":null,"surname":"User","userPrincipalName":"user@example.invalid","id":"00000000-0000-0000-0000-000000000001"}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - keep-alive
+      content-length:
+      - '376'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      odata-version:
+      - '4.0'
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-ms-resource-unit:
+      - '1'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.5
+    method: GET
+    uri: https://graph.microsoft.com/v1.0/me/extensions
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users(''00000000-0000-0000-0000-000000000001'')/extensions","value":[{"@odata.type":"#microsoft.graph.openTypeExtension","extensionName":"com.nexusidentity.keys","publicKey":"nexusidentity-test-ed25519-sk-public-key\n","id":"com.nexusidentity.keys"}]}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '311'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      odata-version:
+      - '4.0'
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"@odata.type": "microsoft.graph.openTypeExtension", "extensionName": "com.nexusidentity.keys",
+      "publicKey": "nexusidentity-test-ecdsa-sk-public-key\n"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '152'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.5
+    method: PATCH
+    uri: https://graph.microsoft.com/v1.0/me/extensions/com.nexusidentity.keys
+  response:
+    body:
+      string: ''
+    headers:
+      connection:
+      - keep-alive
+      strict-transport-security:
+      - max-age=31536000
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - rest
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --method --resource --url
+      User-Agent:
+      - python/3.12.10 (Windows-11-10.0.26300-SP0) AZURECLI/2.91.0
+    method: GET
+    uri: https://graph.microsoft.com/v1.0/me/extensions/com.nexusidentity.keys
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users(''00000000-0000-0000-0000-000000000001'')/extensions/$entity","@odata.type":"#microsoft.graph.openTypeExtension","extensionName":"com.nexusidentity.keys","publicKey":"nexusidentity-test-ecdsa-sk-public-key\n","id":"com.nexusidentity.keys"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '305'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      odata-version:
+      - '4.0'
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.5
+    method: GET
+    uri: https://graph.microsoft.com/v1.0/me
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users/$entity","businessPhones":[],"displayName":"Test
+        User","givenName":"Test","jobTitle":"Test Role","mail":"user@example.invalid","mobilePhone":null,"officeLocation":"Test
+        Location","preferredLanguage":null,"surname":"User","userPrincipalName":"user@example.invalid","id":"00000000-0000-0000-0000-000000000001"}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - keep-alive
+      content-length:
+      - '376'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      odata-version:
+      - '4.0'
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-ms-resource-unit:
+      - '1'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.5
+    method: GET
+    uri: https://graph.microsoft.com/v1.0/me/extensions
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users(''00000000-0000-0000-0000-000000000001'')/extensions","value":[{"@odata.type":"#microsoft.graph.openTypeExtension","extensionName":"com.nexusidentity.keys","publicKey":"nexusidentity-test-ecdsa-sk-public-key\n","id":"com.nexusidentity.keys"}]}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '309'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      odata-version:
+      - '4.0'
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"@odata.type": "microsoft.graph.openTypeExtension", "extensionName": "com.nexusidentity.keys",
+      "publicKey": "nexusidentity-test-ed25519-sk-public-key\n"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '154'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.5
+    method: PATCH
+    uri: https://graph.microsoft.com/v1.0/me/extensions/com.nexusidentity.keys
+  response:
+    body:
+      string: ''
+    headers:
+      connection:
+      - keep-alive
+      strict-transport-security:
+      - max-age=31536000
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - rest
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --method --resource --url
+      User-Agent:
+      - python/3.12.10 (Windows-11-10.0.26300-SP0) AZURECLI/2.91.0
+    method: GET
+    uri: https://graph.microsoft.com/v1.0/me/extensions/com.nexusidentity.keys
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users(''00000000-0000-0000-0000-000000000001'')/extensions/$entity","@odata.type":"#microsoft.graph.openTypeExtension","extensionName":"com.nexusidentity.keys","publicKey":"nexusidentity-test-ed25519-sk-public-key\n","id":"com.nexusidentity.keys"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '307'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      odata-version:
+      - '4.0'
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - rest
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --method --resource --url
+      User-Agent:
+      - python/3.12.10 (Windows-11-10.0.26300-SP0) AZURECLI/2.91.0
+    method: DELETE
+    uri: https://graph.microsoft.com/v1.0/me/extensions/com.nexusidentity.keys
+  response:
+    body:
+      string: ''
+    headers:
+      connection:
+      - keep-alive
+      strict-transport-security:
+      - max-age=31536000
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 204
+      message: No Content
+version: 1

@@ -27,10 +27,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-10-07-preview",
+        "version": "2026-11-03-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networksecurity/policygroups", "2026-10-07-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/policygroups", "2026-10-07-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networksecurity/policygroups", "2026-11-03-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/policygroups", "2026-11-03-preview"],
         ]
     }
 
@@ -117,7 +117,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-10-07-preview",
+                    "api-version", "2026-11-03-preview",
                     required=True,
                 ),
             }
@@ -345,12 +345,74 @@ class List(AAZCommand):
             rules.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "Mcp").rules.Element
-            _element.action = AAZStrType(
+            _element.action = AAZStrType()
+            _element.matching_conditions = AAZObjectType(
+                serialized_name="matchingConditions",
+            )
+            _element.name = AAZStrType()
+            _element.priority = AAZIntType()
+            _element.tools = AAZListType()
+
+            matching_conditions = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "Mcp").rules.Element.matching_conditions
+            matching_conditions.destinations = AAZObjectType(
                 flags={"required": True},
             )
-            _element.tools = AAZListType(
-                flags={"required": True},
+
+            destinations = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "Mcp").rules.Element.matching_conditions.destinations
+            destinations.prompt_matching = AAZObjectType(
+                serialized_name="promptMatching",
             )
+            destinations.protocol_versions = AAZObjectType(
+                serialized_name="protocolVersions",
+            )
+            _ListHelper._build_schema_mcp_string_matching_read(destinations.protocol_versions)
+            destinations.server_fqdns = AAZListType(
+                serialized_name="serverFqdns",
+            )
+            destinations.tool_matching = AAZObjectType(
+                serialized_name="toolMatching",
+            )
+
+            prompt_matching = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "Mcp").rules.Element.matching_conditions.destinations.prompt_matching
+            prompt_matching.arguments = AAZObjectType()
+            _ListHelper._build_schema_mcp_argument_matching_read(prompt_matching.arguments)
+            prompt_matching.descriptions = AAZObjectType()
+            _ListHelper._build_schema_mcp_string_matching_read(prompt_matching.descriptions)
+            prompt_matching.methods = AAZListType()
+            prompt_matching.names = AAZObjectType()
+            _ListHelper._build_schema_mcp_string_matching_read(prompt_matching.names)
+            prompt_matching.response_contents = AAZObjectType(
+                serialized_name="responseContents",
+            )
+            _ListHelper._build_schema_mcp_string_matching_read(prompt_matching.response_contents)
+            prompt_matching.titles = AAZObjectType()
+            _ListHelper._build_schema_mcp_string_matching_read(prompt_matching.titles)
+
+            methods = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "Mcp").rules.Element.matching_conditions.destinations.prompt_matching.methods
+            methods.Element = AAZStrType()
+
+            server_fqdns = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "Mcp").rules.Element.matching_conditions.destinations.server_fqdns
+            server_fqdns.Element = AAZStrType()
+
+            tool_matching = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "Mcp").rules.Element.matching_conditions.destinations.tool_matching
+            tool_matching.call_arguments = AAZObjectType(
+                serialized_name="callArguments",
+            )
+            _ListHelper._build_schema_mcp_argument_matching_read(tool_matching.call_arguments)
+            tool_matching.descriptions = AAZObjectType()
+            _ListHelper._build_schema_mcp_string_matching_read(tool_matching.descriptions)
+            tool_matching.methods = AAZListType()
+            tool_matching.names = AAZObjectType()
+            _ListHelper._build_schema_mcp_string_matching_read(tool_matching.names)
+            tool_matching.response_contents = AAZObjectType(
+                serialized_name="responseContents",
+            )
+            _ListHelper._build_schema_mcp_string_matching_read(tool_matching.response_contents)
+            tool_matching.titles = AAZObjectType()
+            _ListHelper._build_schema_mcp_string_matching_read(tool_matching.titles)
+
+            methods = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "Mcp").rules.Element.matching_conditions.destinations.tool_matching.methods
+            methods.Element = AAZStrType()
 
             tools = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "Mcp").rules.Element.tools
             tools.Element = AAZStrType()
@@ -380,6 +442,10 @@ class List(AAZCommand):
             disc_tls_inspection.certificate = AAZObjectType(
                 flags={"required": True},
             )
+            disc_tls_inspection.default_action = AAZStrType(
+                serialized_name="defaultAction",
+            )
+            disc_tls_inspection.rules = AAZListType()
             disc_tls_inspection.source = AAZObjectType(
                 flags={"required": True},
             )
@@ -388,6 +454,37 @@ class List(AAZCommand):
             certificate.mode = AAZStrType(
                 flags={"required": True},
             )
+
+            rules = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "TlsInspection").rules
+            rules.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "TlsInspection").rules.Element
+            _element.action = AAZStrType()
+            _element.destinations = AAZListType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.priority = AAZIntType(
+                flags={"required": True},
+            )
+
+            destinations = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "TlsInspection").rules.Element.destinations
+            destinations.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "TlsInspection").rules.Element.destinations.Element
+            _element.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            disc_fqdns = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "TlsInspection").rules.Element.destinations.Element.discriminate_by("type", "Fqdns")
+            disc_fqdns.fqdns = AAZListType(
+                flags={"required": True},
+            )
+
+            fqdns = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "TlsInspection").rules.Element.destinations.Element.discriminate_by("type", "Fqdns").fqdns
+            fqdns.Element = AAZStrType()
 
             source = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "TlsInspection").source
             source.type = AAZStrType(
@@ -448,9 +545,7 @@ class List(AAZCommand):
             rules.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "UrlFiltering").rules.Element
-            _element.action = AAZStrType(
-                flags={"required": True},
-            )
+            _element.action = AAZStrType()
             _element.hostname = AAZStrType()
             _element.method = AAZStrType()
             _element.name = AAZStrType(
@@ -554,7 +649,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-10-07-preview",
+                    "api-version", "2026-11-03-preview",
                     required=True,
                 ),
             }
@@ -782,12 +877,74 @@ class List(AAZCommand):
             rules.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "Mcp").rules.Element
-            _element.action = AAZStrType(
+            _element.action = AAZStrType()
+            _element.matching_conditions = AAZObjectType(
+                serialized_name="matchingConditions",
+            )
+            _element.name = AAZStrType()
+            _element.priority = AAZIntType()
+            _element.tools = AAZListType()
+
+            matching_conditions = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "Mcp").rules.Element.matching_conditions
+            matching_conditions.destinations = AAZObjectType(
                 flags={"required": True},
             )
-            _element.tools = AAZListType(
-                flags={"required": True},
+
+            destinations = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "Mcp").rules.Element.matching_conditions.destinations
+            destinations.prompt_matching = AAZObjectType(
+                serialized_name="promptMatching",
             )
+            destinations.protocol_versions = AAZObjectType(
+                serialized_name="protocolVersions",
+            )
+            _ListHelper._build_schema_mcp_string_matching_read(destinations.protocol_versions)
+            destinations.server_fqdns = AAZListType(
+                serialized_name="serverFqdns",
+            )
+            destinations.tool_matching = AAZObjectType(
+                serialized_name="toolMatching",
+            )
+
+            prompt_matching = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "Mcp").rules.Element.matching_conditions.destinations.prompt_matching
+            prompt_matching.arguments = AAZObjectType()
+            _ListHelper._build_schema_mcp_argument_matching_read(prompt_matching.arguments)
+            prompt_matching.descriptions = AAZObjectType()
+            _ListHelper._build_schema_mcp_string_matching_read(prompt_matching.descriptions)
+            prompt_matching.methods = AAZListType()
+            prompt_matching.names = AAZObjectType()
+            _ListHelper._build_schema_mcp_string_matching_read(prompt_matching.names)
+            prompt_matching.response_contents = AAZObjectType(
+                serialized_name="responseContents",
+            )
+            _ListHelper._build_schema_mcp_string_matching_read(prompt_matching.response_contents)
+            prompt_matching.titles = AAZObjectType()
+            _ListHelper._build_schema_mcp_string_matching_read(prompt_matching.titles)
+
+            methods = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "Mcp").rules.Element.matching_conditions.destinations.prompt_matching.methods
+            methods.Element = AAZStrType()
+
+            server_fqdns = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "Mcp").rules.Element.matching_conditions.destinations.server_fqdns
+            server_fqdns.Element = AAZStrType()
+
+            tool_matching = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "Mcp").rules.Element.matching_conditions.destinations.tool_matching
+            tool_matching.call_arguments = AAZObjectType(
+                serialized_name="callArguments",
+            )
+            _ListHelper._build_schema_mcp_argument_matching_read(tool_matching.call_arguments)
+            tool_matching.descriptions = AAZObjectType()
+            _ListHelper._build_schema_mcp_string_matching_read(tool_matching.descriptions)
+            tool_matching.methods = AAZListType()
+            tool_matching.names = AAZObjectType()
+            _ListHelper._build_schema_mcp_string_matching_read(tool_matching.names)
+            tool_matching.response_contents = AAZObjectType(
+                serialized_name="responseContents",
+            )
+            _ListHelper._build_schema_mcp_string_matching_read(tool_matching.response_contents)
+            tool_matching.titles = AAZObjectType()
+            _ListHelper._build_schema_mcp_string_matching_read(tool_matching.titles)
+
+            methods = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "Mcp").rules.Element.matching_conditions.destinations.tool_matching.methods
+            methods.Element = AAZStrType()
 
             tools = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "Mcp").rules.Element.tools
             tools.Element = AAZStrType()
@@ -817,6 +974,10 @@ class List(AAZCommand):
             disc_tls_inspection.certificate = AAZObjectType(
                 flags={"required": True},
             )
+            disc_tls_inspection.default_action = AAZStrType(
+                serialized_name="defaultAction",
+            )
+            disc_tls_inspection.rules = AAZListType()
             disc_tls_inspection.source = AAZObjectType(
                 flags={"required": True},
             )
@@ -825,6 +986,37 @@ class List(AAZCommand):
             certificate.mode = AAZStrType(
                 flags={"required": True},
             )
+
+            rules = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "TlsInspection").rules
+            rules.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "TlsInspection").rules.Element
+            _element.action = AAZStrType()
+            _element.destinations = AAZListType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.priority = AAZIntType(
+                flags={"required": True},
+            )
+
+            destinations = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "TlsInspection").rules.Element.destinations
+            destinations.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "TlsInspection").rules.Element.destinations.Element
+            _element.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            disc_fqdns = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "TlsInspection").rules.Element.destinations.Element.discriminate_by("type", "Fqdns")
+            disc_fqdns.fqdns = AAZListType(
+                flags={"required": True},
+            )
+
+            fqdns = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "TlsInspection").rules.Element.destinations.Element.discriminate_by("type", "Fqdns").fqdns
+            fqdns.Element = AAZStrType()
 
             source = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "TlsInspection").source
             source.type = AAZStrType(
@@ -885,9 +1077,7 @@ class List(AAZCommand):
             rules.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element.properties.network_security_policies.Element.discriminate_by("type", "UrlFiltering").rules.Element
-            _element.action = AAZStrType(
-                flags={"required": True},
-            )
+            _element.action = AAZStrType()
             _element.hostname = AAZStrType()
             _element.method = AAZStrType()
             _element.name = AAZStrType(
@@ -950,6 +1140,71 @@ class List(AAZCommand):
 
 class _ListHelper:
     """Helper class for List"""
+
+    _schema_mcp_argument_matching_read = None
+
+    @classmethod
+    def _build_schema_mcp_argument_matching_read(cls, _schema):
+        if cls._schema_mcp_argument_matching_read is not None:
+            _schema.match_case = cls._schema_mcp_argument_matching_read.match_case
+            _schema.match_type = cls._schema_mcp_argument_matching_read.match_type
+            _schema.path = cls._schema_mcp_argument_matching_read.path
+            _schema.values = cls._schema_mcp_argument_matching_read.values
+            return
+
+        cls._schema_mcp_argument_matching_read = _schema_mcp_argument_matching_read = AAZObjectType()
+
+        mcp_argument_matching_read = _schema_mcp_argument_matching_read
+        mcp_argument_matching_read.match_case = AAZStrType(
+            serialized_name="matchCase",
+        )
+        mcp_argument_matching_read.match_type = AAZStrType(
+            serialized_name="matchType",
+            flags={"required": True},
+        )
+        mcp_argument_matching_read.path = AAZStrType()
+        mcp_argument_matching_read.values = AAZListType(
+            flags={"required": True},
+        )
+
+        values = _schema_mcp_argument_matching_read.values
+        values.Element = AAZStrType()
+
+        _schema.match_case = cls._schema_mcp_argument_matching_read.match_case
+        _schema.match_type = cls._schema_mcp_argument_matching_read.match_type
+        _schema.path = cls._schema_mcp_argument_matching_read.path
+        _schema.values = cls._schema_mcp_argument_matching_read.values
+
+    _schema_mcp_string_matching_read = None
+
+    @classmethod
+    def _build_schema_mcp_string_matching_read(cls, _schema):
+        if cls._schema_mcp_string_matching_read is not None:
+            _schema.match_case = cls._schema_mcp_string_matching_read.match_case
+            _schema.match_type = cls._schema_mcp_string_matching_read.match_type
+            _schema.values = cls._schema_mcp_string_matching_read.values
+            return
+
+        cls._schema_mcp_string_matching_read = _schema_mcp_string_matching_read = AAZObjectType()
+
+        mcp_string_matching_read = _schema_mcp_string_matching_read
+        mcp_string_matching_read.match_case = AAZStrType(
+            serialized_name="matchCase",
+        )
+        mcp_string_matching_read.match_type = AAZStrType(
+            serialized_name="matchType",
+            flags={"required": True},
+        )
+        mcp_string_matching_read.values = AAZListType(
+            flags={"required": True},
+        )
+
+        values = _schema_mcp_string_matching_read.values
+        values.Element = AAZStrType()
+
+        _schema.match_case = cls._schema_mcp_string_matching_read.match_case
+        _schema.match_type = cls._schema_mcp_string_matching_read.match_type
+        _schema.values = cls._schema_mcp_string_matching_read.values
 
 
 __all__ = ["List"]

@@ -3,6 +3,10 @@
 Release History
 ===============
 
+6.0.0b2
+++++++++
+* Fix for Archive path traversal via symbolic and hard links in CLI output extraction.
+
 6.0.0b1
 ++++++++
 * This preview version supports NetworkCloud 2026-08-01-preview APIs.

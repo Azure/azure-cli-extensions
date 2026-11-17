@@ -184,9 +184,9 @@ def _open_execution_view(cmd, resource_group_name, project_name,
         # Report it as such, with the command to re-check status.
         logger.warning(
             "Stopped showing the live execution view: %s\n"
-            "The execution '%s' is unaffected. Re-check its status with:\n"
-            "  az migrate runbook execution show -g %s --project-name %s "
-            "--runbook-name %s --execution-id %s",
+            "The execution '%s' is unaffected. Reopen the live view with:\n"
+            "  az migrate runbook execution visualize -g %s --project-name %s "
+            "--runbook-name %s --execution-id %s --watch",
             ex, execution_id, resource_group_name, project_name,
             runbook_name, execution_id)
 

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "redisenterprise operation-status show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Get the status of operation.
@@ -22,9 +23,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-01-preview",
+        "version": "2026-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.cache/locations/{}/operationsstatus/{}", "2026-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.cache/locations/{}/operationsstatus/{}", "2026-10-01-preview"],
         ]
     }
 
@@ -124,7 +125,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01-preview",
+                    "api-version", "2026-10-01-preview",
                     required=True,
                 ),
             }

@@ -47,6 +47,7 @@ def _reset_globals():
     precheckutils.prediagnostic_job_execution_status = consts.Job_Status_Not_Started
     precheckutils.prediagnostic_entra_check = consts.Diagnostic_Check_Starting
     precheckutils.prediagnostic_crd_check = consts.Diagnostic_Check_Starting
+    precheckutils._prediagnostic_container_exited_one = False
 
 
 def test_precheck_telemetry_helpers_forward_command_context(monkeypatch):
@@ -749,17 +750,21 @@ def _run_completed_prediagnostic_output(
     *,
     job_status=consts.Job_Status_Completed,
     cmd=None,
+    container_exited_one=False,
+    dns_result=consts.Diagnostic_Check_Passed,
+    outbound_result=consts.Diagnostic_Check_Passed,
 ):
     command = cmd or MagicMock()
 
     def execute_job(*_args, **_kwargs):
         precheckutils.prediagnostic_job_execution_status = job_status
+        precheckutils._prediagnostic_container_exited_one = container_exited_one
         return output
 
     def parse_dns(log, _path, storage_available, _diagnoser_output, **kwargs):
         assert kwargs["cmd"] is command
         result = (
-            consts.Diagnostic_Check_Passed
+            dns_result
             if consts.DNS_Check_Result_String in log
             else consts.Diagnostic_Check_Incomplete
         )
@@ -767,7 +772,7 @@ def _run_completed_prediagnostic_output(
 
     def parse_outbound(log, _path, storage_available, _diagnoser_output, **_kwargs):
         result = (
-            consts.Diagnostic_Check_Passed
+            outbound_result
             if consts.Outbound_Connectivity_Check_Result_String in log
             else consts.Diagnostic_Check_Incomplete
         )
@@ -803,6 +808,230 @@ def _run_completed_prediagnostic_output(
     return result
 
 
+def _crd_ownership_failure_output(*crd_names):
+    output = CONFORMANCE_PREDIAGNOSTIC_OUTPUT.replace(
+        "All PreOnboading Diagnostic Checks passed successfully",
+        "Some PreOnboading Diagnostic Checks failed. Please check the logs for more details.",
+    )
+    for crd_name in crd_names:
+        output = output.replace(
+            f"CRD {crd_name} does not exist - OK (will be created during Arc installation)",
+            f"Check Failed: CRD {crd_name} exists but is not owned by azure-arc-release.\n"
+            "Current ownership - release-name: 'azure-arc', release-namespace: 'azure-arc-release'\n"
+            "Expected ownership - release-name: 'azure-arc-release', release-namespace: 'azure-arc'\n"
+            "This CRD may have been installed by another component (e.g., AKS). Arc onboarding cannot proceed.",
+        )
+    return output
+
+
+@pytest.mark.parametrize(
+    "crd_names",
+    [
+        ("extensionconfigs.clusterconfig.azure.com",),
+        ("configsyncstatuses.clusterconfig.azure.com",),
+        (
+            "extensionconfigs.clusterconfig.azure.com",
+            "configsyncstatuses.clusterconfig.azure.com",
+        ),
+    ],
+)
+def test_known_crd_false_positive_recovers_terminal_job(monkeypatch, crd_names):
+    emit_event = MagicMock()
+    warning = MagicMock()
+    monkeypatch.setattr(precheckutils, "_send_onboarding_telemetry_event", emit_event)
+    monkeypatch.setattr(precheckutils.logger, "warning", warning)
+
+    result = _run_completed_prediagnostic_output(
+        monkeypatch,
+        _crd_ownership_failure_output(*crd_names),
+        job_status=consts.Job_Status_Not_Completed,
+        container_exited_one=True,
+    )
+
+    assert result == consts.Diagnostic_Check_Passed
+    assert precheckutils.prediagnostic_crd_check == consts.Diagnostic_Check_Passed
+    assert (
+        precheckutils.prediagnostic_job_execution_status
+        == consts.Job_Status_Not_Completed
+    )
+    warning.assert_not_called()
+    assert not any(
+        "Continuing onboarding:" in line for line in precheckutils.diagnoser_output
+    )
+    assert not any("Error: CRD" in line for line in precheckutils.diagnoser_output)
+    emit_event.assert_called_once()
+    assert emit_event.call_args.args[0] == "prediagnostics-crd-ownership-compatibility"
+
+
+@pytest.mark.parametrize(
+    ("old", "new"),
+    [
+        (
+            "Current ownership - release-name: 'azure-arc'",
+            "Current ownership - release-name: 'another-release'",
+        ),
+        (
+            "release-namespace: 'azure-arc-release'",
+            "release-namespace: 'another-namespace'",
+        ),
+        (
+            "Current ownership - release-name: 'azure-arc'",
+            "Current ownership - release-name: ''",
+        ),
+        ("Current ownership - release-name: 'azure-arc'", "Missing ownership details"),
+        (
+            "Expected ownership - release-name: 'azure-arc-release'",
+            "Expected ownership - release-name: 'azure-arc'",
+        ),
+        (
+            "CRD configsyncstatuses.clusterconfig.azure.com does not exist - OK (will be created during Arc installation)",
+            "",
+        ),
+        (
+            "CRD configsyncstatuses.clusterconfig.azure.com does not exist - OK (will be created during Arc installation)",
+            "CRD configsyncstatuses.clusterconfig.azure.com exists and is owned by azure-arc-release in azure-arc namespace - OK",
+        ),
+        (
+            "Some PreOnboading Diagnostic Checks failed. Please check the logs for more details.",
+            "",
+        ),
+        (
+            "This CRD may have been installed by another component",
+            "Check Failed: unexpected diagnostic failure\nThis CRD may have been installed by another component",
+        ),
+        (
+            "Check Failed: CRD extensionconfigs.clusterconfig.azure.com",
+            "Check Failed: CRD unknown.example.com",
+        ),
+    ],
+)
+def test_crd_compatibility_rejects_conflicting_or_incomplete_evidence(
+    monkeypatch, old, new
+):
+    output = _crd_ownership_failure_output(
+        "extensionconfigs.clusterconfig.azure.com"
+    ).replace(old, new)
+    emit_event = MagicMock()
+    monkeypatch.setattr(precheckutils, "_send_onboarding_telemetry_event", emit_event)
+
+    result = _run_completed_prediagnostic_output(
+        monkeypatch,
+        output,
+        job_status=consts.Job_Status_Not_Completed,
+        container_exited_one=True,
+    )
+
+    assert result == consts.Diagnostic_Check_Failed
+    assert precheckutils.prediagnostic_crd_check == consts.Diagnostic_Check_Failed
+    assert not any(
+        call.args[0] == "prediagnostics-crd-ownership-compatibility"
+        for call in emit_event.call_args_list
+    )
+
+
+@pytest.mark.parametrize("failed_check", ["dns", "outbound", "entra"])
+def test_crd_compatibility_preserves_other_mandatory_failures(
+    monkeypatch, failed_check
+):
+    output = _crd_ownership_failure_output("extensionconfigs.clusterconfig.azure.com")
+    if failed_check == "entra":
+        output = output.replace(
+            "https://login.microsoftonline.com : 200",
+            "https://login.microsoftonline.com : 000",
+        )
+
+    result = _run_completed_prediagnostic_output(
+        monkeypatch,
+        output,
+        job_status=consts.Job_Status_Not_Completed,
+        container_exited_one=True,
+        dns_result=consts.Diagnostic_Check_Failed
+        if failed_check == "dns"
+        else consts.Diagnostic_Check_Passed,
+        outbound_result=consts.Diagnostic_Check_Failed
+        if failed_check == "outbound"
+        else consts.Diagnostic_Check_Passed,
+    )
+
+    assert result == consts.Diagnostic_Check_Failed
+
+
+def test_crd_compatibility_requires_verified_container_termination(monkeypatch):
+    result = _run_completed_prediagnostic_output(
+        monkeypatch,
+        _crd_ownership_failure_output("extensionconfigs.clusterconfig.azure.com"),
+        job_status=consts.Job_Status_Not_Completed,
+    )
+
+    assert result == consts.Diagnostic_Check_Failed
+
+
+def test_crd_compatibility_preserves_a_real_conflict_on_the_other_crd(monkeypatch):
+    output = _crd_ownership_failure_output(
+        "extensionconfigs.clusterconfig.azure.com",
+        "configsyncstatuses.clusterconfig.azure.com",
+    ).replace(
+        "Current ownership - release-name: 'azure-arc'",
+        "Current ownership - release-name: 'another-release'",
+        1,
+    )
+
+    result = _run_completed_prediagnostic_output(
+        monkeypatch,
+        output,
+        job_status=consts.Job_Status_Not_Completed,
+        container_exited_one=True,
+    )
+
+    assert result == consts.Diagnostic_Check_Failed
+
+
+def test_crd_compatibility_cannot_reuse_previous_termination_evidence(monkeypatch):
+    output = _crd_ownership_failure_output("extensionconfigs.clusterconfig.azure.com")
+    cmd = MagicMock()
+    assert (
+        _run_completed_prediagnostic_output(
+            monkeypatch,
+            output,
+            job_status=consts.Job_Status_Not_Completed,
+            container_exited_one=True,
+            cmd=cmd,
+        )
+        == consts.Diagnostic_Check_Passed
+    )
+    assert precheckutils._prediagnostic_container_exited_one is True
+
+    def execute_job(*_args, **_kwargs):
+        precheckutils.prediagnostic_job_execution_status = (
+            consts.Job_Status_Not_Completed
+        )
+        return output
+
+    monkeypatch.setattr(
+        precheckutils, "executing_cluster_diagnostic_checks_job", execute_job
+    )
+    result, _ = precheckutils.fetch_diagnostic_checks_results(
+        cmd,
+        MagicMock(),
+        MagicMock(),
+        "helm",
+        "kubectl",
+        None,
+        None,
+        "eastus",
+        "",
+        "",
+        "",
+        "",
+        "AZUREPUBLICCLOUD",
+        "/tmp/prediagnostics",
+        False,
+    )
+
+    assert result == consts.Diagnostic_Check_Failed
+    assert precheckutils._prediagnostic_container_exited_one is False
+
+
 def test_cleanup_failure_without_logs_continues_onboarding(monkeypatch):
     send_job_error = MagicMock()
     monkeypatch.setattr(
@@ -831,6 +1060,23 @@ def test_completed_job_parses_healthy_1_36_1_output(monkeypatch):
     assert precheckutils.prediagnostic_outbound_check == consts.Diagnostic_Check_Passed
     assert precheckutils.prediagnostic_entra_check == consts.Diagnostic_Check_Passed
     assert precheckutils.prediagnostic_crd_check == consts.Diagnostic_Check_Passed
+
+
+def test_completed_job_with_corrected_crd_check_still_passes(monkeypatch):
+    output = CONFORMANCE_PREDIAGNOSTIC_OUTPUT
+    for crd_name in (
+        "extensionconfigs.clusterconfig.azure.com",
+        "configsyncstatuses.clusterconfig.azure.com",
+    ):
+        output = output.replace(
+            f"CRD {crd_name} does not exist - OK (will be created during Arc installation)",
+            f"CRD {crd_name} exists and is owned by azure-arc in azure-arc-release namespace - OK",
+        )
+
+    assert (
+        _run_completed_prediagnostic_output(monkeypatch, output)
+        == consts.Diagnostic_Check_Passed
+    )
 
 
 def test_incomplete_job_with_partial_results_forwards_command_context(monkeypatch):
@@ -1005,6 +1251,205 @@ def test_incomplete_job_diagnostic_has_unknown_state_fallback():
     assert diagnostic == (
         "Review the saved pod description and container logs, then retry."
     )
+
+
+@pytest.mark.parametrize(
+    (
+        "job_outcome",
+        "phase",
+        "reason",
+        "exit_code",
+        "container_name",
+        "has_termination",
+        "expected",
+    ),
+    [
+        (
+            "retry-limit",
+            "Failed",
+            "Error",
+            1,
+            "cluster-diagnostic-checks-container",
+            True,
+            consts.Diagnostic_Check_Passed,
+        ),
+        (
+            "timeout",
+            "Failed",
+            "Error",
+            1,
+            "cluster-diagnostic-checks-container",
+            True,
+            consts.Diagnostic_Check_Failed,
+        ),
+        (
+            "BackoffLimitExceeded",
+            "Running",
+            "Error",
+            1,
+            "cluster-diagnostic-checks-container",
+            True,
+            consts.Diagnostic_Check_Failed,
+        ),
+        (
+            "BackoffLimitExceeded",
+            "Failed",
+            "OOMKilled",
+            1,
+            "cluster-diagnostic-checks-container",
+            True,
+            consts.Diagnostic_Check_Failed,
+        ),
+        (
+            "BackoffLimitExceeded",
+            "Failed",
+            "Error",
+            2,
+            "cluster-diagnostic-checks-container",
+            True,
+            consts.Diagnostic_Check_Failed,
+        ),
+        (
+            "BackoffLimitExceeded",
+            "Failed",
+            "Error",
+            1,
+            "sidecar",
+            True,
+            consts.Diagnostic_Check_Failed,
+        ),
+        (
+            "BackoffLimitExceeded",
+            "Failed",
+            "Error",
+            1,
+            "cluster-diagnostic-checks-container",
+            False,
+            consts.Diagnostic_Check_Failed,
+        ),
+        (
+            "DeadlineExceeded",
+            "Failed",
+            "Error",
+            1,
+            "cluster-diagnostic-checks-container",
+            True,
+            consts.Diagnostic_Check_Failed,
+        ),
+        (
+            "BackoffLimitExceeded",
+            "Failed",
+            "Error",
+            1,
+            "cluster-diagnostic-checks-container",
+            True,
+            consts.Diagnostic_Check_Passed,
+        ),
+    ],
+)
+def test_crd_compatibility_uses_current_job_and_container_state(
+    monkeypatch,
+    job_outcome,
+    phase,
+    reason,
+    exit_code,
+    container_name,
+    has_termination,
+    expected,
+):
+    termination = SimpleNamespace(exit_code=exit_code, reason=reason)
+    pod = SimpleNamespace(
+        metadata=SimpleNamespace(
+            name="cluster-diagnostic-checks-job-current",
+            creation_timestamp="2026-10-27T00:00:00Z",
+        ),
+        status=SimpleNamespace(
+            phase=phase,
+            reason=None,
+            conditions=[],
+            container_statuses=[
+                SimpleNamespace(
+                    name=container_name,
+                    state=SimpleNamespace(
+                        terminated=termination if has_termination else None,
+                        waiting=None,
+                    ),
+                ),
+            ],
+        ),
+    )
+    job = SimpleNamespace(
+        metadata=SimpleNamespace(name="cluster-diagnostic-checks-job"),
+        status=SimpleNamespace(
+            failed=3 if job_outcome == "retry-limit" else None, conditions=[]
+        ),
+    )
+    events = [{"object": job}]
+    if job_outcome not in ("retry-limit", "timeout"):
+        events.append(
+            {
+                "object": SimpleNamespace(
+                    metadata=job.metadata,
+                    status=SimpleNamespace(
+                        failed=3,
+                        conditions=[
+                            SimpleNamespace(
+                                type="Failed", status="True", reason=job_outcome
+                            )
+                        ],
+                    ),
+                )
+            }
+        )
+    watcher = MagicMock()
+    watcher.stream.return_value = iter(events)
+    corev1_api = MagicMock()
+    corev1_api.list_namespaced_pod.return_value = SimpleNamespace(items=[pod])
+    corev1_api.read_namespaced_pod_log.return_value = _crd_ownership_failure_output(
+        "extensionconfigs.clusterconfig.azure.com"
+    )
+    monkeypatch.setattr(precheckutils.watch, "Watch", lambda: watcher)
+    monkeypatch.setattr(precheckutils.config, "load_kube_config", MagicMock())
+    monkeypatch.setattr(precheckutils, "Popen", MagicMock())
+    monkeypatch.setattr(
+        precheckutils, "helm_install_release_cluster_diagnostic_checks", MagicMock()
+    )
+    monkeypatch.setattr(
+        precheckutils.azext_utils,
+        "get_release_namespace",
+        lambda *_args, **_kwargs: None,
+    )
+    monkeypatch.setattr(
+        precheckutils.azext_utils, "get_mcr_path", lambda *_args: "mcr.microsoft.com"
+    )
+    monkeypatch.setattr(
+        precheckutils.azext_utils, "get_chart_path", lambda *_args: "/fake/chart"
+    )
+    monkeypatch.setattr(
+        precheckutils.azext_utils,
+        "save_cluster_diagnostic_checks_pod_description",
+        MagicMock(),
+    )
+
+    result, _ = precheckutils.fetch_diagnostic_checks_results(
+        MagicMock(),
+        corev1_api,
+        MagicMock(),
+        "helm",
+        "kubectl",
+        None,
+        None,
+        "eastus",
+        "",
+        "",
+        "",
+        "",
+        "AZUREPUBLICCLOUD",
+        "/tmp/prediagnostics",
+        False,
+    )
+
+    assert result == expected
 
 
 def test_diagnostic_job_watch_uses_180_second_timeout(monkeypatch):

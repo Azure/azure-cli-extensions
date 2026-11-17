@@ -56,8 +56,8 @@ setupAZ(){
 
 # need to be executed in a venv
 installTestPackages(){
-    # install pytest plugins
-    pip install pytest-json-report==1.5.0 pytest-rerunfailures==11.0 pytest-cov==4.0.0 pytest-forked==1.6.0
+    # pytest 9.2 report objects cannot be serialized by pytest-forked 1.6.0.
+    pip install pytest==9.1.1 pytest-json-report==1.5.0 pytest-rerunfailures==11.0 pytest-cov==4.0.0 pytest-forked==1.6.0
 
     # install coverage for measuring code coverage
     pip install coverage

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "redisenterprise database",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Redis Enterprise databases

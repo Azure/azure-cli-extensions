@@ -470,6 +470,18 @@ def _duration(started, ended):
     return ' '.join(parts) or '0s'
 
 
+def _error_html(error, error_details):
+    """Render an error summary with expandable, escaped JSON issue details."""
+    summary = ('<div class="att__err"><strong>Issue:</strong> %s</div>'
+               % _esc(error) if error else '')
+    if not isinstance(error_details, dict) or not error_details:
+        return summary
+    details = error_details.get('errors') or error_details
+    return (summary + '<details class="issue-details">'
+            '<summary>Issue details</summary><pre>%s</pre></details>'
+            % _esc(json.dumps(details, indent=2, ensure_ascii=False)))
+
+
 def _attempt_timeline(attempts):
     """Render an attempts timeline: dots, status pill, times, error box."""
     rows = []
@@ -477,8 +489,8 @@ def _attempt_timeline(attempts):
         when = _time_range(attempt.get('started'), attempt.get('ended'))
         when_html = ('<span class="att__t">%s</span>' % _esc(when)
                      if when else '')
-        err_html = ('<div class="att__err">%s</div>' % _esc(attempt['error'])
-                    if attempt.get('error') else '')
+        err_html = _error_html(
+            attempt.get('error'), attempt.get('error_details'))
         rows.append(
             '<div class="att"><span class="att__dot %s"></span><div>'
             '<div class="att__row"><span class="att__n">Attempt %s</span>'
@@ -521,9 +533,8 @@ def _entity_card(entity):
             else ''
         body += ('<div><div class="field__label">Attempts%s</div>%s</div>'
                  % (badge, _attempt_timeline(entity.attempts)))
-    if entity.error:
-        body += '<div class="att__err">%s</div>' % _esc(entity.error)
-    elif entity.status_reason:
+    body += _error_html(entity.error, entity.error_details)
+    if not entity.error and entity.status_reason:
         body += '<div class="muted-note">%s</div>' % _esc(entity.status_reason)
     body += _entity_output_blocks(entity)
     return (
@@ -560,7 +571,7 @@ def _detail_html(workstream_name, step, kind):
             + _status_field('Step status', step.status, 'NotStarted')
             + (_field('Status reason', step.status_reason)
                if step.status_reason else '')
-            + (_field('Error', step.error) if step.error else '')
+            + _error_html(step.error, step.error_details)
             + (_field('Retries (failed attempts)', step.retry_count)
                if step.retry_count else '')
             + _field('Workload progress', step.workload_progress)

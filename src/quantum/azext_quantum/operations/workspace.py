@@ -140,6 +140,8 @@ def _show_tip(msg):
 
 
 def _get_storage_account_path(workspaceInfo, storage_account_name):
+    if not storage_account_name:
+        return None
     if storage_account_name[0] == "/":
         path = storage_account_name
     else:
@@ -413,16 +415,16 @@ def _validate_target_quota_bounds(cmd, info, workspace, quota, include_usage):
                 )
 
 
-def create(cmd, resource_group_name, workspace_name, location, storage_account, skip_role_assignment=False,
+def create(cmd, resource_group_name, workspace_name, location, storage_account=None, skip_role_assignment=False,
            provider_sku_list=None, auto_accept=False, skip_autoadd=False, workspace_kind=None, quota=None):
     """
     Create a new Azure Quantum workspace.
     """
+    if skip_role_assignment and not storage_account:
+        raise RequiredArgumentMissingError("'--skip-role-assignment' requires '--storage-account'. Role assignments for managed storage are configured automatically.")
     client = cf_workspaces(cmd.cli_ctx)
     if not workspace_name:
         raise RequiredArgumentMissingError("An explicit workspace name is required for this command.")
-    if not storage_account:
-        raise RequiredArgumentMissingError("A quantum workspace requires a valid storage account.")
     if not location:
         raise RequiredArgumentMissingError("A location for the new quantum workspace is required.")
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
@@ -435,19 +437,26 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     if workspace_kind_value == WorkspaceKind.V2.value:
         skip_autoadd = True
 
-    # Until the "--skip-role-assignment" parameter is deprecated, use the old non-ARM code to create a workspace without doing a role assignment
-    if skip_role_assignment:
-        _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
+    _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
+    if workspace_kind_value == WorkspaceKind.V2.value:
         _apply_target_quotas(quantum_workspace.properties.providers, quota)
         _validate_target_quota_bounds(cmd, info, quantum_workspace, quota, include_usage=False)
-        quantum_workspace.properties.api_key_enabled = workspace_kind_value != WorkspaceKind.V2.value
+        quantum_workspace.properties.workspace_kind = WorkspaceKind.V2
+        quantum_workspace.properties.api_key_enabled = False
+    else:
+        quantum_workspace.properties.api_key_enabled = True
         if workspace_kind:
             quantum_workspace.properties.workspace_kind = workspace_kind
-        poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
-        while not poller.done():
-            time.sleep(POLLING_TIME_DURATION)
-        quantum_workspace = poller.result()
-        return quantum_workspace
+
+    if skip_role_assignment or not storage_account:
+        # Skipping role assignment does not skip waiting for workspace provisioning.
+        poller = client.begin_create_or_update(
+            info.resource_group,
+            info.name,
+            quantum_workspace,
+            polling=True,
+        )
+        return poller.result()
 
     # ARM-template-based code to create an Azure Quantum workspace and make it a "Contributor" to the storage account
     template_path = os.path.join(os.path.dirname(
@@ -455,9 +464,6 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     with open(template_path, 'r', encoding='utf8') as template_file_fd:
         template = json.load(template_file_fd)
 
-    _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
-    _apply_target_quotas(quantum_workspace.properties.providers, quota)
-    _validate_target_quota_bounds(cmd, info, quantum_workspace, quota, include_usage=False)
     validated_providers = []
     for provider in quantum_workspace.properties.providers:
         provider_data = {"providerId": provider.provider_id, "providerSku": provider.provider_sku}

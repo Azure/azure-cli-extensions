@@ -1,0 +1,63 @@
+interactions:
+- request:
+    body: '{"model": {"huggingFaceModelId": "meta-llama/Llama-3.1-8B-Instruct"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aiinfraoptimization recommendvmsku
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '69'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --model
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.37.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.AIInfraOptimization/locations/eastus2/recommendVmSku?api-version=2026-06-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"InvalidArgument","target":"model","message":"model.huggingFaceModelId
+        is gated on HuggingFace, and the service reads HuggingFace anonymously, so
+        it cannot read the model''s config.json. KV-cache sizing requires model architecture:
+        supply model.numLayers, model.numKeyValueHeads, and model.headDim."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '317'
+      content-type:
+      - application/json
+      date:
+      - Tue, 03 Nov 2026 04:26:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9e0b0df5-1f15-45f7-8e9f-e1be2997e32e/japaneast/007408c1-98f8-40ba-ab10-13c82b4bee91
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: CA958FD6440E410E8AE773A46910F116 Ref B: TYO201100117023 Ref C: 2026-11-03T04:26:10Z'
+    status:
+      code: 400
+      message: Bad Request
+version: 1

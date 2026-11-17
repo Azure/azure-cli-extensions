@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "relationship dependency-of",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Dependency Of
+    """Manage dependencyOf relationships at an Azure resource scope.
     """
     pass
 

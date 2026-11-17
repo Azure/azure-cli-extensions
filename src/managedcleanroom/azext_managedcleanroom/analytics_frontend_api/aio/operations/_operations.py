@@ -27,6 +27,7 @@ from azure.core.utils import case_insensitive_dict
 from ..._utils.serialization import Deserializer, Serializer
 from ...operations._operations import (
     build_collaboration_analytics_auditevents_get_request,
+    build_collaboration_analytics_contract_skr_policy_get_request,
     build_collaboration_analytics_datasets_document_id_get_request,
     build_collaboration_analytics_datasets_document_id_publish_post_request,
     build_collaboration_analytics_datasets_document_id_queries_get_request,
@@ -452,9 +453,11 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             collaboration_id: str,
             dataset_id: str,
             **kwargs: Any) -> JSON:
-        """Get collaboration analytics skr policy for a dataset.
+        """Get collaboration analytics SKR policy for a dataset.
 
-        Get collaboration analytics skr policy for a dataset.
+        Deprecated. Retained for existing clients. Uses the dataset KEK's attestation
+        authority. For CGS contract-scoped policies, use
+        ``analytics_contract_skr_policy_get``.
 
         :param collaboration_id: Required.
         :type collaboration_id: str
@@ -507,6 +510,98 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _request = build_collaboration_analytics_skr_policy_get_request(
             collaboration_id=collaboration_id,
             dataset_id=dataset_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 422]:
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
+            raise HttpResponseError(response=response)
+
+        if response.content:
+            deserialized = response.json()
+        else:
+            deserialized = None
+
+        if cls:
+            return cls(
+                pipeline_response,
+                cast(
+                    JSON,
+                    deserialized),
+                {})  # type: ignore
+
+        return cast(JSON, deserialized)  # type: ignore
+
+    @distributed_trace_async
+    async def analytics_contract_skr_policy_get(
+            self,
+            collaboration_id: str,
+            **kwargs: Any) -> JSON:
+        """Get collaboration analytics CGS SKR policy.
+
+        Get collaboration analytics CGS SKR policy.
+
+        :param collaboration_id: Required.
+        :type collaboration_id: str
+        :return: JSON object
+        :rtype: JSON
+        :raises ~azure.core.exceptions.HttpResponseError:
+
+        Example:
+            .. code-block:: python
+
+                # response body for status code(s): 200
+                response == {
+                    "anyOf": [
+                        {
+                            "allOf": [
+                                {
+                                    "claim": "str",
+                                    "equals": "str"
+                                }
+                            ],
+                            "authority": "str"
+                        }
+                    ],
+                    "version": "str"
+                }
+                # response body for status code(s): 422
+                response == {
+                    "loc": [
+                        {}
+                    ],
+                    "msg": "str",
+                    "type": "str"
+                }
+        """
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[JSON] = kwargs.pop("cls", None)
+
+        _request = build_collaboration_analytics_contract_skr_policy_get_request(
+            collaboration_id=collaboration_id,
             api_version=self._config.api_version,
             headers=_headers,
             params=_params,
@@ -1393,6 +1488,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
                         "dek": {
                             "keyVaultUrl": "str",
                             "secretId": "str",
+                            "authority": {
+                                "type": "str",
+                                "endpoint": "str"
+                            },
                             "maaUrl": "str"
                         },
                         "identity": {
@@ -1404,6 +1503,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
                         "kek": {
                             "keyVaultUrl": "str",
                             "secretId": "str",
+                            "authority": {
+                                "type": "str",
+                                "endpoint": "str"
+                            },
                             "maaUrl": "str"
                         }
                     },
@@ -1531,6 +1634,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
                     "dek": {
                         "keyVaultUrl": "str",
                         "secretId": "str",
+                        "authority": {
+                            "type": "str",
+                            "endpoint": "str"
+                        },
                         "maaUrl": "str"
                     },
                     "identity": {
@@ -1542,6 +1649,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
                     "kek": {
                         "keyVaultUrl": "str",
                         "secretId": "str",
+                        "authority": {
+                            "type": "str",
+                            "endpoint": "str"
+                        },
                         "maaUrl": "str"
                     }
                 }
@@ -1646,6 +1757,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
                     "dek": {
                         "keyVaultUrl": "str",
                         "secretId": "str",
+                        "authority": {
+                            "type": "str",
+                            "endpoint": "str"
+                        },
                         "maaUrl": "str"
                     },
                     "identity": {
@@ -1657,6 +1772,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
                     "kek": {
                         "keyVaultUrl": "str",
                         "secretId": "str",
+                        "authority": {
+                            "type": "str",
+                            "endpoint": "str"
+                        },
                         "maaUrl": "str"
                     }
                 }

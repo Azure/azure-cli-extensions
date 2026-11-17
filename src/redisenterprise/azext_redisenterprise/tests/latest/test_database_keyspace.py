@@ -25,7 +25,7 @@ def step_create(test, checks=None):
     test.cmd('az redisenterprise create '
              '--cluster-name "{cluster}" '
              '--sku "Balanced_B1" '
-             '--location "centralindia" '
+             '--location "eastus2euap" '
              '--public-network-access "Enabled" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -104,6 +104,16 @@ def call_keyspace_scenario(test, rg):
         test.check("name", "default"),
         test.check("notifyKeyspaceEvents", "AKE"),
     ])
+    test.cmd('redisenterprise database update -g {rg} --cluster-name {cluster} '
+             '--notify-keyspace-events Ex', checks=[
+                 test.check("notifyKeyspaceEvents", "Ex"),
+             ])
+    step_database_show(test, checks=[test.check("notifyKeyspaceEvents", "Ex")])
+    test.cmd('redisenterprise database update -g {rg} --cluster-name {cluster} '
+             '--notify-keyspace-events ""', checks=[
+                 test.check("notifyKeyspaceEvents", ""),
+             ])
+    step_database_show(test, checks=[test.check("notifyKeyspaceEvents", "")])
     step_delete(test, checks=[])
 
 
@@ -117,7 +127,7 @@ class RedisEnterpriseKeyspaceEventsScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-ke-', key='rg', parameter_name='rg',
-                           location='centralindia', random_name_length=34)
+                           location='eastus2euap', random_name_length=34)
     def test_redisenterprise_notify_keyspace_events(self, rg):
         call_keyspace_scenario(self, rg)
         calc_coverage(__file__)

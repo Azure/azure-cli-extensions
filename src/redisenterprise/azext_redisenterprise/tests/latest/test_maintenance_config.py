@@ -25,7 +25,7 @@ def step_create_with_maintenance(test, checks=None):
     test.cmd('az redisenterprise create '
              '--cluster-name "{cluster}" '
              '--sku "Balanced_B1" '
-             '--location "centralindia" '
+             '--location "eastus2euap" '
              '--public-network-access "Enabled" '
              '--maintenance-config \'{maintenance_create}\' '
              '--resource-group "{rg}"',
@@ -119,9 +119,8 @@ class RedisEnterpriseMaintenanceConfigScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-mc-', key='rg', parameter_name='rg',
-                           location='centralindia', random_name_length=34)
+                           location='eastus2euap', random_name_length=34)
     def test_redisenterprise_maintenance_config(self, rg):
         call_maintenance_config_scenario(self, rg)
         calc_coverage(__file__)
         raise_if()
-

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "relationship service-group-member",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Service Group Member
+    """Manage serviceGroupMember relationships.
     """
     pass
 

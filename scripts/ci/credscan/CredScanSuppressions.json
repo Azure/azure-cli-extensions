@@ -347,6 +347,25 @@
         "src\\databox\\testkey.pvk"
       ],
       "_justification": "[Databox] False positive."
+    },
+    {
+      "file": [
+        "src\\logicapp\\azext_logicapp\\tests\\latest\\test_offline_commands.py"
+      ],
+      "_justification": "[LogicApps] Synthetic connection strings used by offline tests for secret handling and deployment package exclusion."
+    },
+    {
+      "file": [
+        "src\\validate\\azext_validate\\tests\\latest\\test_validate_safety.py",
+        "src\\validate\\azext_validate\\tests\\latest\\test_validate_shell.py"
+      ],
+      "_justification": "[Validate] Dummy secrets used by tests that verify command values are not echoed in validation errors."
+    },
+    {
+      "file": [
+        "src\\vm-repair\\azext_vm_repair\\tests\\latest\\test_command_injection.py"
+      ],
+      "_justification": "[VM Repair] Dummy passwords used by mocked command-injection regression tests; not live credentials."
     }
   ]
 }

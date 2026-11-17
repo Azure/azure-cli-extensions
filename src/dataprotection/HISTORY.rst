@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.14.1
+++++++
+* ``--use-secondary-region`` commands (for example ``az dataprotection recovery-point list``): Fixed the Resource Graph lookup of the backup instance and backup vault ignoring ``--subscription`` and searching the default subscription.
+
 1.14.0
 ++++++
 * ``az dataprotection backup-instance initialize-restoreconfig`` and ``az dataprotection backup-instance restore initialize-for-item-recovery``: Added item-level restore support for AzureCosmosDB databases and containers.

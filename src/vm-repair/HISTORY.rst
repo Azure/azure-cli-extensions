@@ -2,6 +2,10 @@
 Release History
 ===============
 
+2.5.0
+++++++
+Prepare MANA migration diagnostics by adding five networking properties to reset-nic telemetry. Unmeasured networking and guest-health values are explicitly reported as unknown. NIC reset behavior and command output are unchanged; this does not add MANA driver recovery or accelerated-networking fallback.
+
 2.4.6
 ++++++
 * Windows legacy commands reject shell-sensitive argument values and use a quoted batch launcher without Python ``-I``. Child processes ignore inherited ``PYTHONPATH`` and run from the installed extension directory. Linux and macOS retain their existing launch path.

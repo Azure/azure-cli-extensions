@@ -209,6 +209,40 @@ def build_collaboration_analytics_skr_policy_get_request(  # pylint: disable=nam
         **kwargs)
 
 
+def build_collaboration_analytics_contract_skr_policy_get_request(  # pylint: disable=name-too-long
+    collaboration_id: str, **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: str = kwargs.pop(
+        "api_version", _params.pop(
+            "api-version", "2026-03-01-preview"))
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = "/collaborations/{collaborationId}/analytics/skrpolicy"
+    path_format_arguments = {
+        "collaborationId": _SERIALIZER.url(
+            "collaboration_id", collaboration_id, "str"), }
+
+    _url: str = _url.format(**path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query(
+        "api_version", api_version, "str")
+
+    # Construct headers
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(
+        method="GET",
+        url=_url,
+        params=_params,
+        headers=_headers,
+        **kwargs)
+
+
 def build_collaboration_oidc_issuer_info_get_request(  # pylint: disable=name-too-long
     collaboration_id: str, **kwargs: Any
 ) -> HttpRequest:
@@ -1446,9 +1480,11 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             collaboration_id: str,
             dataset_id: str,
             **kwargs: Any) -> JSON:
-        """Get collaboration analytics skr policy for a dataset.
+        """Get collaboration analytics SKR policy for a dataset.
 
-        Get collaboration analytics skr policy for a dataset.
+        Deprecated. Retained for existing clients. Uses the dataset KEK's attestation
+        authority. For CGS contract-scoped policies, use
+        ``analytics_contract_skr_policy_get``.
 
         :param collaboration_id: Required.
         :type collaboration_id: str
@@ -1501,6 +1537,98 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _request = build_collaboration_analytics_skr_policy_get_request(
             collaboration_id=collaboration_id,
             dataset_id=dataset_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 422]:
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
+            raise HttpResponseError(response=response)
+
+        if response.content:
+            deserialized = response.json()
+        else:
+            deserialized = None
+
+        if cls:
+            return cls(
+                pipeline_response,
+                cast(
+                    JSON,
+                    deserialized),
+                {})  # type: ignore
+
+        return cast(JSON, deserialized)  # type: ignore
+
+    @distributed_trace
+    def analytics_contract_skr_policy_get(
+            self,
+            collaboration_id: str,
+            **kwargs: Any) -> JSON:
+        """Get collaboration analytics CGS SKR policy.
+
+        Get collaboration analytics CGS SKR policy.
+
+        :param collaboration_id: Required.
+        :type collaboration_id: str
+        :return: JSON object
+        :rtype: JSON
+        :raises ~azure.core.exceptions.HttpResponseError:
+
+        Example:
+            .. code-block:: python
+
+                # response body for status code(s): 200
+                response == {
+                    "anyOf": [
+                        {
+                            "allOf": [
+                                {
+                                    "claim": "str",
+                                    "equals": "str"
+                                }
+                            ],
+                            "authority": "str"
+                        }
+                    ],
+                    "version": "str"
+                }
+                # response body for status code(s): 422
+                response == {
+                    "loc": [
+                        {}
+                    ],
+                    "msg": "str",
+                    "type": "str"
+                }
+        """
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[JSON] = kwargs.pop("cls", None)
+
+        _request = build_collaboration_analytics_contract_skr_policy_get_request(
+            collaboration_id=collaboration_id,
             api_version=self._config.api_version,
             headers=_headers,
             params=_params,
@@ -2388,6 +2516,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
                         "dek": {
                             "keyVaultUrl": "str",
                             "secretId": "str",
+                            "authority": {
+                                "type": "str",
+                                "endpoint": "str"
+                            },
                             "maaUrl": "str"
                         },
                         "identity": {
@@ -2399,6 +2531,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
                         "kek": {
                             "keyVaultUrl": "str",
                             "secretId": "str",
+                            "authority": {
+                                "type": "str",
+                                "endpoint": "str"
+                            },
                             "maaUrl": "str"
                         }
                     },
@@ -2526,6 +2662,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
                     "dek": {
                         "keyVaultUrl": "str",
                         "secretId": "str",
+                        "authority": {
+                            "type": "str",
+                            "endpoint": "str"
+                        },
                         "maaUrl": "str"
                     },
                     "identity": {
@@ -2537,6 +2677,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
                     "kek": {
                         "keyVaultUrl": "str",
                         "secretId": "str",
+                        "authority": {
+                            "type": "str",
+                            "endpoint": "str"
+                        },
                         "maaUrl": "str"
                     }
                 }
@@ -2641,6 +2785,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
                     "dek": {
                         "keyVaultUrl": "str",
                         "secretId": "str",
+                        "authority": {
+                            "type": "str",
+                            "endpoint": "str"
+                        },
                         "maaUrl": "str"
                     },
                     "identity": {
@@ -2652,6 +2800,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
                     "kek": {
                         "keyVaultUrl": "str",
                         "secretId": "str",
+                        "authority": {
+                            "type": "str",
+                            "endpoint": "str"
+                        },
                         "maaUrl": "str"
                     }
                 }

@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.1.0
++++++
+* `az edge-action list`: Add subscription-wide listing when `--resource-group` is omitted, while preserving resource-group-scoped listing and `--subscription` selection.
+
 1.0.0
 +++++
 * GA release of the Edge Action extension.

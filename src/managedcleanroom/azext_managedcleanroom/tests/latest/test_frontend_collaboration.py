@@ -173,6 +173,28 @@ class TestFrontendCollaboration(unittest.TestCase):
         self.assertEqual(len(result["rules"]), 2)
         mock_client.collaboration.analytics_skr_policy_get.assert_called_once_with(
             "test-collab-123", "dataset-456")
+        mock_client.collaboration.analytics_contract_skr_policy_get.assert_not_called()
+
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_show_analytics_contract_skr_policy(self, mock_get_client):
+        """Test that omitting dataset ID returns the collaboration-level CGS SKR policy"""
+        mock_policy = {
+            "version": "1.0.0",
+            "anyOf": [{"authority": "https://cgs.example.com/issuer", "allOf": []}]
+        }
+        mock_client = Mock()
+        mock_client.collaboration.analytics_contract_skr_policy_get.return_value = mock_policy
+        mock_get_client.return_value = mock_client
+
+        result = frontend_collaboration_analytics_skr_policy(
+            cmd=Mock(),
+            collaboration_id="test-collab-123"
+        )
+
+        self.assertEqual(result, mock_policy)
+        mock_client.collaboration.analytics_contract_skr_policy_get.assert_called_once_with(
+            "test-collab-123")
+        mock_client.collaboration.analytics_skr_policy_get.assert_not_called()
 
     # OIDC Tests
 

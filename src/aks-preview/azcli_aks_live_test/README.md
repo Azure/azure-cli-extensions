@@ -11,3 +11,11 @@ By default, for **live test pipeline**, the test will be performed in **record m
 If the newly added commands and test cases use the **features** that are being previewed, that is, some feature under container service needs to be manually registered before using the command, then such cases will not be able to execute/pass the test temporarily, since the subscription used for testing does not (and does not intend to) enable these additional features. In the future, we will use customer header to pass these features in test cases, but for now you can just bypass these cases. For now,  you can follow the instructions in [section Bypass Test Case](#bypass-test-case) to **bypass such test cases**. 
 
 You can also trigger this pipeline **manually** and adjust variables such as test coverage, test filter, test location, etc. as needed. For more details, you may refer to the following sections.
+
+## Test runner dependencies
+
+The shared [environment setup script](scripts/setup_venv.sh) pins `pytest==9.1.1`
+alongside `pytest-forked==1.6.0` after installing the CLI and extension. Keep these
+versions compatible when updating the test environment: pytest 9.2 introduces
+report objects that this forked plugin cannot serialize, causing even passing
+tests to fail with `ValueError: unmarshallable object`.

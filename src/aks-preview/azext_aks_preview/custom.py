@@ -1470,7 +1470,7 @@ def aks_create(
     azure_keyvault_kms_key_id=None,
     azure_keyvault_kms_key_vault_network_access=None,
     azure_keyvault_kms_key_vault_resource_id=None,
-    kms_infrastructure_encryption="Disabled",
+    kms_infrastructure_encryption=None,
     http_proxy_config=None,
     bootstrap_artifact_source=CONST_ARTIFACT_SOURCE_DIRECT,
     bootstrap_container_registry_resource_id=None,
@@ -1610,6 +1610,7 @@ def aks_create(
     enable_cost_analysis=False,
     # AI toolchain operator
     enable_ai_toolchain_operator=False,
+    enable_azure_managed_lustre=False,
     # azure container storage
     enable_azure_container_storage=None,
     container_storage_version=None,
@@ -1892,6 +1893,8 @@ def aks_update(
     # AI toolchain operator
     enable_ai_toolchain_operator=False,
     disable_ai_toolchain_operator=False,
+    enable_azure_managed_lustre=False,
+    disable_azure_managed_lustre=False,
     # azure container storage
     enable_azure_container_storage=None,
     disable_azure_container_storage=None,
@@ -2966,22 +2969,16 @@ def aks_agentpool_get_rollback_versions(cmd,   # pylint: disable=unused-argument
     return upgrade_profile.recently_used_versions
 
 
-def aks_agentpool_get_bootstrap_data(cmd,
+def aks_agentpool_get_bootstrap_data(cmd,  # pylint: disable=unused-argument
                                      client,
                                      resource_group_name,
                                      cluster_name,
                                      nodepool_name):
     """Get bootstrap data for a FlexNodes pool."""
-    ListBootstrapDataRequest = cmd.get_models(
-        "ListBootstrapDataRequest",
-        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
-        operation_group="agent_pools",
-    )
     result = client.list_bootstrap_data(
         resource_group_name,
         cluster_name,
         nodepool_name,
-        ListBootstrapDataRequest(),
         logging_enable=False,
     )
     return result.as_dict()

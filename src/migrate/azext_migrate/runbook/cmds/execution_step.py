@@ -43,8 +43,9 @@ def approve(cmd, resource_group_name, project_name, runbook_name,
     resource_id = _execution_resource_id(
         cmd, resource_group_name, project_name, runbook_name, execution_id)
     body = models.build_approve_step_body(step_id, entity_ids=entities)
+    result = ArmClient(cmd).post_action(resource_id, 'ProvideApproval', body)
     logger.warning("Step approval recorded.")
-    return ArmClient(cmd).post_action(resource_id, 'ProvideApproval', body)
+    return result
 
 
 def complete(cmd, resource_group_name, project_name, runbook_name,

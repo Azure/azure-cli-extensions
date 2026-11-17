@@ -153,6 +153,24 @@ def test_scenario_keeps_defaults_and_registers_both_hooks():
         assert len(processors) > 1
 
 
+def test_polling_delay_patch_is_playback_only_and_restored():
+    from azure.cli.core.aaz._poller import AAZBasePolling
+    from .test_edge_action import EdgeActionScenarioTest, _patch_playback_polling
+
+    scenario = EdgeActionScenarioTest("test_edge_action_crud")
+    assert _patch_playback_polling in scenario.replay_patches
+    assert _patch_playback_polling not in scenario.recording_patches
+    assert len(scenario.replay_patches) > 1
+    original_delay = AAZBasePolling._delay
+    try:
+        _patch_playback_polling(scenario)
+        assert AAZBasePolling._delay() is None
+        AAZBasePolling._delay.assert_called_once_with()
+    finally:
+        scenario.doCleanups()
+    assert AAZBasePolling._delay is original_delay
+
+
 def test_scenario_playback_matches_request_bodies(tmp_path):
     from .test_edge_action import EdgeActionScenarioTest
     scenario = EdgeActionScenarioTest("test_edge_action_crud")

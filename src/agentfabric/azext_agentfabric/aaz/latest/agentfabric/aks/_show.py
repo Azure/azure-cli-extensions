@@ -24,9 +24,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-10-07-preview",
+        "version": "2026-11-03-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/clusterassociations/{}", "2026-10-07-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/clusterassociations/{}", "2026-11-03-preview"],
         ]
     }
 
@@ -52,7 +52,7 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
+                pattern="^[a-zA-Z0-9-]{3,256}$",
             ),
         )
         _args_schema.association_name = AAZStrArg(
@@ -61,7 +61,7 @@ class Show(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
+                pattern="^[a-zA-Z0-9-]{3,256}$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -138,7 +138,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-10-07-preview",
+                    "api-version", "2026-11-03-preview",
                     required=True,
                 ),
             }

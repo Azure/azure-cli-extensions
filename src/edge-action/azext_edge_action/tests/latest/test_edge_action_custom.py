@@ -21,6 +21,7 @@ from azure.cli.core.aaz._command_ctx import AAZCommandCtx
 from azure.cli.core.aaz._client import AAZMgmtClient
 from azure.cli.core.azclierror import FileOperationError, InvalidArgumentValueError, ValidationError
 from azure.cli.core.cloud import AZURE_PUBLIC_CLOUD
+from azure.cli.core.commands import ExtensionCommandSource
 from azure.cli.core.mock import DummyCli
 from azure.cli.core.sdk.policies import SafeNetworkTraceLoggingPolicy
 from azure.core.credentials import AccessToken
@@ -264,12 +265,25 @@ class EdgeActionCustomTests(unittest.TestCase):
             "properties": {"provisioningState": "Succeeded", "deploymentType": "file",
                            "isDefaultVersion": "False", "validationStatus": "Succeeded"},
         }
-        for group, first in (("", root), ("version", version), ("execution-filter", self.filter_resource())):
-            with self.subTest(group=group):
+        cases = (
+            ("", root, None),
+            ("", root, "rg"),
+            ("version", version, "rg"),
+            ("execution-filter", self.filter_resource(), "rg"),
+        )
+        for group, first, resource_group in cases:
+            with self.subTest(group=group, resource_group=resource_group):
                 name = " ".join(part for part in ("edge-action", group, "list") if part)
-                args = ["-g", "rg"]
+                args = ["-g", resource_group] if resource_group else []
                 if group:
                     args.extend(["--edge-action-name", "action"])
+                path = f"/subscriptions/{SUBSCRIPTION}"
+                if resource_group:
+                    path += f"/resourceGroups/{resource_group}"
+                path += "/providers/Microsoft.Cdn/edgeActions"
+                if group:
+                    path += "/action/" + {"version": "versions", "execution-filter": "executionFilters"}[group]
+                url = "https://management.azure.com" + path + "?api-version=2026-10-01"
                 second = deepcopy(first)
                 second.update(id=first["id"] + "2", name=first["name"] + "2")
 
@@ -281,13 +295,30 @@ class EdgeActionCustomTests(unittest.TestCase):
                     parsed = vars(parser.parse_args([*args, *options]))
                     return list(command(command_args={"subscription": SUBSCRIPTION, **parsed}))
 
+                next_link = url + "&$skiptoken=next-page"
                 responses = [
-                    (200, {"value": [first], "nextLink": RESULT_URL}, {}),
+                    (200, {"value": [first], "nextLink": next_link}, {}),
                     (200, {"value": [second]}, {}),
                 ]
                 with self.http_responses(responses) as requests:
-                    self.assertEqual([item["name"] for item in items()], [first["name"], second["name"]])
-                    self.assertEqual(requests[-1].url, RESULT_URL)
+                    result = items()
+                    self.assertEqual([item["name"] for item in result], [first["name"], second["name"]])
+                    self.assertEqual([item["id"] for item in result], [first["id"], second["id"]])
+                    if not group:
+                        for item in result:
+                            self.assertEqual(item["location"], "global")
+                            self.assertEqual(item["sku"], {"name": "Standard", "tier": "Standard"})
+                            self.assertEqual(item["provisioningState"], "Succeeded")
+                            self.assertEqual(item["attachments"], [])
+                    self.assertEqual(requests[0].method, "GET")
+                    self.assertEqual(requests[0].url, url)
+                    self.assertEqual(len(requests), 2)
+                    self.assertEqual(requests[-1].method, "GET")
+                    self.assertEqual(requests[-1].url, next_link)
+                with self.http_responses([(200, {"value": []}, {})]) as requests:
+                    self.assertEqual(items(), [])
+                    self.assertEqual(len(requests), 1)
+                    self.assertEqual(requests[0].url, url)
                 with self.http_responses([]), self.assertRaises(InvalidArgumentValueError):
                     items("--max-items", "0")
                 for limit in (1, 2):
@@ -297,6 +328,69 @@ class EdgeActionCustomTests(unittest.TestCase):
                 with self.http_responses([(200, {"value": [first, second]}, {})]):
                     page = items("--max-items", "1", "--next-token", token)
                     self.assertEqual([item["name"] for item in page], [second["name"]])
+
+    def test_edge_action_list_subscription_override(self):
+        self.assert_list_subscription_override(resource_group=None)
+
+    def test_edge_action_list_resource_group_subscription_override(self):
+        self.assert_list_subscription_override(resource_group="rg1")
+
+    def assert_list_subscription_override(self, resource_group):
+        class TestCommandsLoader(EdgeActionCommandsLoader):
+            def load_command_table(self, args):
+                table = super().load_command_table(args)
+                for command in table.values():
+                    command.command_source = ExtensionCommandSource(extension_name="edge-action")
+                return table
+
+            def load_arguments(self, command):
+                self.command_table[command].load_arguments()
+                super().load_arguments(command)
+
+        subscription = "11111111-1111-1111-1111-111111111111"
+        self.cli = DummyCli(commands_loader_cls=TestCommandsLoader)
+        self.addCleanup(self.cli.logging.end_cmd_metadata_logging, 0)
+        self.cli.data["subscription_id"] = SUBSCRIPTION
+        subscriptions = [
+            {"id": SUBSCRIPTION, "name": "default", "isDefault": True},
+            {"id": subscription, "name": "alternate", "isDefault": False},
+        ]
+        args = ["edge-action", "list", "--subscription", subscription]
+        path = f"/subscriptions/{subscription}"
+        if resource_group:
+            args.extend(["--resource-group", resource_group])
+            path += f"/resourceGroups/{resource_group}"
+        path += "/providers/Microsoft.Cdn/edgeActions"
+        resource_id = (
+            f"/subscriptions/{subscription}/resourceGroups/rg1/providers/Microsoft.Cdn/edgeActions/action"
+        )
+        resource = {
+            "id": resource_id, "name": "action", "location": "global",
+            "sku": {"name": "Standard", "tier": "Standard"},
+            "properties": {"provisioningState": "Succeeded", "attachments": []},
+        }
+
+        # Exercise the CLI's subscription action and override, not direct command_args injection.
+        self.cli.invocation = self.cli.invocation_cls(
+            cli_ctx=self.cli, parser_cls=self.cli.parser_cls,
+            commands_loader_cls=TestCommandsLoader, help_cls=self.cli.help_cls,
+        )
+        with patch("azure.cli.core._profile.Profile.load_cached_subscriptions",
+                   return_value=subscriptions) as cached_subscriptions, \
+                patch("azure.cli.core._profile.Profile.get_subscription_id", return_value=SUBSCRIPTION), \
+                self.http_responses([(200, {"value": [resource]}, {})]) as requests:
+            result = self.cli.invocation.execute(args)
+            self.assertEqual(result.exit_code, 0)
+            self.assertEqual([item["id"] for item in result.result], [resource_id])
+            self.assertEqual(result.result[0]["name"], "action")
+            self.assertEqual(result.result[0]["provisioningState"], "Succeeded")
+            cached_subscriptions.assert_called()
+            self.assertEqual(len(requests), 1)
+            self.assertEqual(requests[0].method, "GET")
+            self.assertEqual(
+                requests[0].url, "https://management.azure.com" + path + "?api-version=2026-10-01")
+            self.assertNotIn(SUBSCRIPTION, requests[0].url)
+        self.assertEqual(self.cli.data["subscription_id"], SUBSCRIPTION)
 
     def test_edge_action_custom_argument_caches_are_isolated_in_both_load_orders(self):
         cases = (

@@ -12,6 +12,20 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+22.0.0b17
++++++++++
+* Bump API version to 2026-09-02-preview.
+* `az aks upgrade-insights create/show/list`: Add cluster upgrade readiness evaluations and stored insights with scope-nested issue reports and structured output support.
+* `az aks nodepool upgrade-insights create/show`: Add single-pool Kubernetes and node-image readiness evaluations.
+* Upgrade Insights reports and tables explicitly show missing agent-pool evaluations instead of reporting an incomplete combined evaluation as passed.
+* Upgrade Insights commands preserve parser-accepted output and query abbreviations, including `--out json`, `--out=json`, and `--que`.
+
+22.0.0b16
++++++++++
+* `az aks create/update`: `--kms-infrastructure-encryption` now only accepts `Enabled`, since infrastructure encryption for Kubernetes resource objects cannot be turned off once it has been turned on.
+* `az aks create/update`: Document that an unversioned `--azure-keyvault-kms-key-id` selects the new KMS experience with automatic key version rotation, while a versioned key identifier selects the legacy KMS experience.
+* `az aks create/update`: Add `--enable-azure-managed-lustre` with node compatibility validation and `az aks update --disable-azure-managed-lustre` to remove the extension resource.
+
 22.0.0b15
 +++++++++
 * `az aks nodepool add/update`: Reject explicit `--gpu-driver None` combined with `--enable-managed-gpu true`, `--gpu-mig-strategy` or `--gpu-mig-profiles` instead of silently overriding the driver setting. Managed GPU and MIG require AKS driver installation.

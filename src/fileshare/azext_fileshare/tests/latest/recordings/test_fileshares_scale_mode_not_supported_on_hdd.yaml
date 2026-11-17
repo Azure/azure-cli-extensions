@@ -1,0 +1,218 @@
+interactions:
+- request:
+    body: '{"properties": {"mediaTier": "HDD", "protocol": "NFS", "scaleMode": "Scale"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fileshare limits-show
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '77'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --protocol --media-tier --scale-mode
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.11.9 (Windows-10-10.0.26300-SP0)
+    method: POST
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.FileShares/locations/eastus2euap/getLimits?api-version=2026-09-01
+  response:
+    body:
+      string: '{"error":{"code":"-2131750882","message":"The requested media tier
+        and scale mode are not a supported combination.","target":"scaleMode","details":null,"additionalInfo":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '173'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 30 Oct 2026 21:05:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=496ae77e-6ca8-4a1f-924c-83b8c9661760/eastus2euap/7ed5dcc0-1ac3-443f-953d-3293e4541769
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '798'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: D6859AB4786B48EFBE047E23DE0796E3 Ref B: SN4AA2022305051 Ref C: 2026-10-30T21:05:18Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"mediaTier": "HDD", "protocol": "NFS", "provisionedStorageGiB":
+      1024, "scaleMode": "Scale"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fileshare get-provisioning-recommendation
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '108'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --provisioned-storage-gib --protocol --media-tier --scale-mode
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.11.9 (Windows-10-10.0.26300-SP0)
+    method: POST
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.FileShares/locations/eastus2euap/getProvisioningRecommendation?api-version=2026-09-01
+  response:
+    body:
+      string: '{"error":{"code":"-2131750882","message":"The requested media tier
+        and scale mode are not a supported combination.","target":"scaleMode","details":null,"additionalInfo":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '173'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 30 Oct 2026 21:05:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=496ae77e-6ca8-4a1f-924c-83b8c9661760/eastus2euap/33f92efa-3508-4401-bc2a-aac77927ea91
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: AC692215DBBF476486EA9B9A466AA66C Ref B: SN4AA2022302021 Ref C: 2026-10-30T21:05:19Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "eastus2euap", "properties": {"mediaTier": "HDD", "protocol":
+      "NFS", "provisionedIOPerSec": 1205, "provisionedStorageGiB": 1024, "provisionedThroughputMiBPerSec":
+      81, "redundancy": "Local", "scaleMode": "Scale"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fileshare create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '225'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --location --protocol --media-tier --scale-mode --redundancy --provisioned-storage-gib
+        --provisioned-iops --provisioned-throughput-mib
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.11.9 (Windows-10-10.0.26300-SP0)
+    method: PUT
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fileshares_scale000001/providers/Microsoft.FileShares/fileShares/share000002?api-version=2026-09-01
+  response:
+    body:
+      string: '{"error":{"code":"-2131750882","message":"The requested media tier
+        and scale mode are not a supported combination.","target":"Validation","details":null,"additionalInfo":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '174'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 30 Oct 2026 21:05:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 1B01D2B2555D454F94A6B52FF8A0C444 Ref B: SN4AA2022305037 Ref C: 2026-10-30T21:05:20Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fileshare show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.11.9 (Windows-10-10.0.26300-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fileshares_scale000001/providers/Microsoft.FileShares/fileShares/share000002?api-version=2026-09-01
+  response:
+    body:
+      string: '{"error":{"code":"-2134347772","message":"Resource ''/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fileshares_scale000001/providers/Microsoft.FileShares/fileShares/share000002''
+        not found.","target":"InvalidResource","details":null,"additionalInfo":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '281'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 30 Oct 2026 21:05:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: F2E8C8AA668B4E518A854CD2D21E6FA8 Ref B: SN4AA2022304023 Ref C: 2026-10-30T21:05:22Z'
+      x-servicefabric:
+      - ResourceNotFound
+    status:
+      code: 404
+      message: Not Found
+version: 1
