@@ -102,7 +102,7 @@ def call_scenario2(test):
             test.exists("name"),
             test.exists("id"),
             test.check("sizeMiB", attr(test, "size")),
-            test.check("storageApplianceId", attr(test, "storageApplianceId")),
+            test.check("storageApplianceId", attr(test, "storageApplianceIdSelected")),
         ],
     )
     step_delete(test, checks=[])
@@ -230,3 +230,4 @@ class VolumeScenarioTest(ScenarioTest):
 
     def test_volume_scenario2(self):
         """test scenario for volume CRUD operations with storage appliance"""
+        call_scenario2(self)
