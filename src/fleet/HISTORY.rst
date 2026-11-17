@@ -201,3 +201,8 @@ Release History
 1.12.0
 ++++++
 * Add 2026-11-02-preview API version and ``az fleet identitybindingprofile`` commands.
+
+1.12.1
+++++++
+* Introduce new ``az fleet network`` command group with ``cross-cluster`` commands.
+* Deprecate ``clustermeshprofile`` commands in favour of the new ``cross-cluster`` terminology.
