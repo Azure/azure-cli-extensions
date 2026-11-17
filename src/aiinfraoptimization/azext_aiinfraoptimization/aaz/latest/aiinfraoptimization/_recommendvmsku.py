@@ -213,7 +213,7 @@ class Recommendvmsku(AAZCommand):
         token_budget = cls._args_schema.workload.token_budget
         token_budget.max_output_tokens = AAZIntArg(
             options=["max-output-tokens"],
-            help="The number of prompt, or input, tokens per inference request. Must be supplied together with `maxOutputTokens`, and the two must total from 1 through 2147483647 without exceeding the model's maximum context length.",
+            help="The maximum number of generated output tokens per inference request. Must be supplied together with `promptTokens`, and the two must total from 1 through 2147483647 without exceeding the model's maximum context length.",
             fmt=AAZIntArgFormat(
                 maximum=2147483647,
                 minimum=0,
@@ -221,7 +221,7 @@ class Recommendvmsku(AAZCommand):
         )
         token_budget.prompt_tokens = AAZIntArg(
             options=["prompt-tokens"],
-            help="The maximum number of generated output tokens per inference request. Must be supplied together with `promptTokens`, and the two must total from 1 through 2147483647 without exceeding the model's maximum context length.",
+            help="The number of prompt, or input, tokens per inference request. Must be supplied together with `maxOutputTokens`, and the two must total from 1 through 2147483647 without exceeding the model's maximum context length.",
             fmt=AAZIntArgFormat(
                 maximum=2147483647,
                 minimum=0,
