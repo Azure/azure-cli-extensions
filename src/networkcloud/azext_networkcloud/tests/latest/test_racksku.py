@@ -13,14 +13,7 @@ from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
-from .utils.assert_messages import (
-    missing_field_message,
-    properties_key_mismatch_message,
-)
-from .utils.output_checks import (
-    get_value,
-    show_properties,
-)
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -36,41 +29,31 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_show(test, checks=None)
+    step_show(
+        test,
+        checks=[
+            test.check("name", attr(test, "rackskuname")),
+            test.exists("id"),
+            test.check("deploymentType", attr(test, "deployType")),
+            test.check("rackType", attr(test, "rackType")),
+        ],
+    )
     step_list_subscription(test, checks=[])
     cleanup_scenario1(test)
 
 
 def step_show(test, checks=None):
     """RackSku show operation"""
-    if checks is not None:
-        test.cmd("az networkcloud racksku show --name {rackskuname}", checks=checks)
-        return
-
-    result = test.cmd(
-        "az networkcloud racksku show --name {rackskuname}"
-    ).get_output_in_json()
-    context = "Racksku show"
-    show_properties(result)
-    assert result.get("name") is not None, missing_field_message(
-        context, "name", result
-    )
-    assert result.get("id"), missing_field_message(context, "id", result)
-
-    assert result.get("deploymentType") == get_value(
-        test, "deployType"
-    ), properties_key_mismatch_message("deployType")
-
-    assert result.get("rackType") == get_value(
-        test, "rackType"
-    ), properties_key_mismatch_message("rackType")
+    if checks is None:
+        checks = []
+    test.cmd("az networkcloud racksku show --name {rackskuname}", checks=checks)
 
 
 def step_list_subscription(test, checks=None):
     """RackSku list by subscription operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud racksku list")
+    test.cmd("az networkcloud racksku list", checks=checks)
 
 
 class RackSkuScenarioTest(ScenarioTest):

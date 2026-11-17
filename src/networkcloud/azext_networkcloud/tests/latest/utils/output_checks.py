@@ -10,6 +10,8 @@ Provides common check patterns for Network Cloud resource operations.
 import json
 import re
 
+from azure.cli.core.aaz._utils import AAZShortHandSyntaxParser
+
 _VALID_PROVISIONING_STATES = ["Succeeded", "Accepted", "Updating", "Failed", "Canceled"]
 
 
@@ -67,6 +69,16 @@ def get_value(test, key):
     if value is None:
         raise AssertionError(f"Test variable '{key}' was not set in test.kwargs.")
     return re.sub(r"^['\"]|['\"]$", "", str(value))
+
+
+def attr(test, key):
+    value = get_value(test, key)
+    if value.startswith(("{", "[")):
+        try:
+            return json.loads(value)
+        except json.JSONDecodeError:
+            return AAZShortHandSyntaxParser()(value)
+    return value
 
 
 def get_json_string(attribute):

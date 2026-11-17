@@ -12,11 +12,7 @@ BaremetalMachineKeyset tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
-from .utils.assert_messages import (
-    missing_field_message,
-    properties_key_mismatch_message,
-)
-from .utils.output_checks import get_value
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -35,18 +31,30 @@ def call_scenario1(test):
     step_create_scenario1(
         test,
         checks=[
-            test.check("name", "{name}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
     step_update_scenario1(
         test,
         checks=[
-            test.check("tags", "{tagsUpdate}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[
+            test.exists("name"),
+            test.exists("id"),
+            test.check("azureGroupId", attr(test, "azureGroupId")),
+            test.check("expiration", attr(test, "expiration")),
+            test.check("jumpHostsAllowed", attr(test, "jumpHostsAllowedUpdate")),
+            test.check("osGroupName", attr(test, "osGroupName")),
+            test.check("privilegeLevel", attr(test, "privilegeLevel")),
+            test.check("userList", attr(test, "userListUpdate")),
+        ],
+    )
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
     cleanup_scenario1(test)
@@ -74,18 +82,31 @@ def call_scenario2(test):
     step_create_scenario2(
         test,
         checks=[
-            test.check("name", "{name}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
     step_update_scenario2(
         test,
         checks=[
-            test.check("tags", "{tagsUpdate}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[
+            test.exists("name"),
+            test.exists("id"),
+            test.check("azureGroupId", attr(test, "azureGroupId")),
+            test.check("expiration", attr(test, "expiration")),
+            test.check("jumpHostsAllowed", attr(test, "jumpHostsAllowedUpdate")),
+            test.check("osGroupName", attr(test, "osGroupName")),
+            test.check("privilegeLevel", attr(test, "privilegeLevelOther")),
+            test.check("userList", attr(test, "userListUpdate")),
+            test.check("privilegeLevelName", attr(test, "privilegeLevelName")),
+        ],
+    )
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
     cleanup_scenario1(test)
@@ -109,56 +130,13 @@ def step_create_scenario2(test, checks=None):
 
 def step_show(test, checks=None):
     """BaremetalMachineKeyset show operation"""
-    if checks is not None:
-        test.cmd(
-            "az networkcloud cluster baremetalmachinekeyset show --name {name} "
-            "--cluster-name {clusterName} --resource-group {rg}",
-            checks=checks,
-        )
-        return
-
-    result = test.cmd(
+    if checks is None:
+        checks = []
+    test.cmd(
         "az networkcloud cluster baremetalmachinekeyset show --name {name} "
-        "--cluster-name {clusterName} --resource-group {rg}"
-    ).get_output_in_json()
-    context = "Baremetalmachinekeyset show"
-    assert result.get("name") is not None, missing_field_message(
-        context, "name", result
+        "--cluster-name {clusterName} --resource-group {rg}",
+        checks=checks,
     )
-    properties = result.get("properties")
-    assert result.get("id"), missing_field_message(context, "id", result)
-    assert properties is not None, missing_field_message(context, "properties", result)
-    assert properties.get("azureGroupId") == get_value(
-        test, "azureGroupId"
-    ), properties_key_mismatch_message("azureGroupId")
-
-    assert properties.get("expiration") == get_value(
-        test, "expiration"
-    ), properties_key_mismatch_message("expiration")
-
-    assert properties.get("jumpHostsAllowed") == get_value(
-        test, "jumpHostsAllowed"
-    ), properties_key_mismatch_message("jumpHostsAllowed")
-
-    assert properties.get("osGroupName") == get_value(
-        test, "osGroupName"
-    ), properties_key_mismatch_message("osGroupName")
-
-    assert properties.get("privilegeLevel") == get_value(
-        test, "privilegeLevel"
-    ), properties_key_mismatch_message("privilegeLevel")
-
-    assert properties.get("privilegeLevelName") == get_value(
-        test, "privilegeLevelName"
-    ), properties_key_mismatch_message("privilegeLevelName")
-
-    assert properties.get("privilegeLevelOther") == get_value(
-        test, "privilegeLevelOther"
-    ), properties_key_mismatch_message("privilegeLevelOther")
-
-    assert properties.get("userList") == get_value(
-        test, "userList"
-    ), properties_key_mismatch_message("userList")
 
 
 def step_delete(test, checks=None):
@@ -167,7 +145,8 @@ def step_delete(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud cluster baremetalmachinekeyset delete --name {name} "
-        "--cluster-name {clusterName} --resource-group {rg} --yes"
+        "--cluster-name {clusterName} --resource-group {rg} --yes",
+        checks=checks,
     )
 
 
@@ -177,7 +156,8 @@ def step_list_resource_group(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud cluster baremetalmachinekeyset list "
-        "--cluster-name {clusterName} --resource-group {rg}"
+        "--cluster-name {clusterName} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -189,7 +169,8 @@ def step_update_scenario1(test, checks=None):
         "az networkcloud cluster baremetalmachinekeyset update "
         "--name {name} --tags {tagsUpdate} --cluster-name {clusterName} "
         "--jump-hosts-allowed {jumpHostsAllowedUpdate} "
-        "--user-list {userListUpdate} --resource-group {rg}"
+        "--user-list {userListUpdate} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -202,7 +183,8 @@ def step_update_scenario2(test, checks=None):
         "--name {name} --tags {tagsUpdate} --cluster-name {clusterName} "
         "--jump-hosts-allowed {jumpHostsAllowedUpdate} "
         "--user-list {userListUpdate} --resource-group {rg} "
-        "--expiration {expiration} "
+        "--expiration {expiration} ",
+        checks=checks,
     )
 
 
@@ -216,13 +198,16 @@ class BaremetalMachineKeysetScenarioTest(ScenarioTest):
                 # Autogenerated resource group is not used in this scenario as it depeneds on the
                 # parent resource cluster to be present in the RG
                 "rg": CONFIG.get("BAREMETALMACHINE_KEYSET", "resource_group"),
-                "name": self.create_random_name(prefix="cli-test-bmmks-", length=24),
+                "name": CONFIG.get("BAREMETALMACHINE_KEYSET", "name"),
                 "location": CONFIG.get("BAREMETALMACHINE_KEYSET", "location"),
                 "extendedLocation": CONFIG.get(
                     "BAREMETALMACHINE_KEYSET", "extended_location"
                 ),
                 "tags": CONFIG.get("BAREMETALMACHINE_KEYSET", "tags"),
                 "tagsUpdate": CONFIG.get("BAREMETALMACHINE_KEYSET", "tags_update"),
+                "provisioningState": CONFIG.get(
+                    "BAREMETALMACHINE_KEYSET", "provisioning_state"
+                ),
                 "azureGroupId": CONFIG.get("BAREMETALMACHINE_KEYSET", "azure_group_id"),
                 "expiration": CONFIG.get("BAREMETALMACHINE_KEYSET", "expiration"),
                 "jumpHostsAllowed": CONFIG.get(

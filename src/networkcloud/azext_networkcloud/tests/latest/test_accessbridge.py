@@ -10,6 +10,7 @@
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def call_scenario1(test):
@@ -17,44 +18,52 @@ def call_scenario1(test):
     step_create(
         test,
         checks=[
-            test.check("name", "{name}"),
-            test.check("provisioningState", "Succeeded"),
-            test.check("detailedStatus", "Running"),
-            test.check("protocol", "TCP"),
-            test.check("length(endpoints)", 2),
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+            test.check("detailedStatus", attr(test, "detailedStatus")),
+            test.check("protocol", attr(test, "protocol")),
+            test.check("length(endpoints)", attr(test, "endpointCount")),
         ],
     )
     step_update(
         test,
         checks=[
-            test.check("tags", "{tagsUpdateExpected}"),
-            test.check("securityRules[0].description", "Updated management access"),
-            test.check("securityRules[0].direction", "Inbound"),
+            test.check("tags", attr(test, "tagsUpdateResponse")),
+            test.check(
+                "securityRules[0].description",
+                attr(test, "securityRuleUpdateDescription"),
+            ),
+            test.check(
+                "securityRules[0].direction", attr(test, "securityRuleUpdateDirection")
+            ),
         ],
     )
     step_wait(test)
     step_show(
         test,
         checks=[
-            test.check("name", "{name}"),
-            test.check("networkId", "{networkId}"),
-            test.check("ipv4ConnectedPrefix", "{ipv4ConnectedPrefix}"),
-            test.check("ipv6ConnectedPrefix", "{ipv6ConnectedPrefix}"),
-            test.check("securityRules[0].description", "Updated management access"),
+            test.check("name", attr(test, "name")),
+            test.check("networkId", attr(test, "networkId")),
+            test.check("ipv4ConnectedPrefix", attr(test, "ipv4ConnectedPrefix")),
+            test.check("ipv6ConnectedPrefix", attr(test, "ipv6ConnectedPrefix")),
+            test.check(
+                "securityRules[0].description",
+                attr(test, "securityRuleUpdateDescription"),
+            ),
         ],
     )
     step_list_resource_group(
         test,
         checks=[
-            test.check("length(@)", 1),
-            test.check("[0].name", "{name}"),
+            test.check("length(@)", attr(test, "resourceGroupCount")),
+            test.check("[0].name", attr(test, "name")),
         ],
     )
     step_list_subscription(
         test,
         checks=[
-            test.check("length(@)", 1),
-            test.check("[0].name", "{name}"),
+            test.check("length(@)", attr(test, "subscriptionCount")),
+            test.check("[0].name", attr(test, "name")),
         ],
     )
     step_delete(test)
@@ -158,7 +167,23 @@ class AccessBridgeScenarioTest(ScenarioTest):
                 ),
                 "tags": CONFIG.get("ACCESS_BRIDGE", "tags"),
                 "tagsUpdate": CONFIG.get("ACCESS_BRIDGE", "tags_update"),
-                "tagsUpdateExpected": {"environment": "mock", "version": "2"},
+                "provisioningState": CONFIG.get("ACCESS_BRIDGE", "provisioning_state"),
+                "detailedStatus": CONFIG.get("ACCESS_BRIDGE", "detailed_status"),
+                "tagsUpdateResponse": CONFIG.get(
+                    "ACCESS_BRIDGE", "tags_update_response"
+                ),
+                "securityRuleUpdateDescription": CONFIG.get(
+                    "ACCESS_BRIDGE", "security_rule_update_description"
+                ),
+                "securityRuleUpdateDirection": CONFIG.get(
+                    "ACCESS_BRIDGE", "security_rule_update_direction"
+                ),
+                "protocol": CONFIG.get("ACCESS_BRIDGE", "protocol"),
+                "endpointCount": CONFIG.get("ACCESS_BRIDGE", "endpoint_count"),
+                "resourceGroupCount": CONFIG.get(
+                    "ACCESS_BRIDGE", "resource_group_count"
+                ),
+                "subscriptionCount": CONFIG.get("ACCESS_BRIDGE", "subscription_count"),
             }
         )
 

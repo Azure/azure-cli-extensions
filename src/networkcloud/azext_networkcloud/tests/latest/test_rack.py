@@ -13,11 +13,7 @@ from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
-from .utils.assert_messages import (
-    missing_field_message,
-    properties_key_mismatch_message,
-)
-from .utils.output_checks import get_value
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -36,11 +32,19 @@ def call_scenario1(test):
     step_update(
         test,
         checks=[
-            test.check("tags", "{tagsUpdate}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[
+            test.exists("name"),
+            test.exists("id"),
+            test.check("rackLocation", attr(test, "rackLocation")),
+            test.check("rackSerialNumber", attr(test, "serialNumber")),
+        ],
+    )
     step_list_subscription(test)
     step_list_resource_group(test, checks=[])
     cleanup_scenario1(test)
@@ -48,37 +52,19 @@ def call_scenario1(test):
 
 def step_show(test, checks=None):
     """Rack show operation"""
-    if checks is not None:
-        test.cmd(
-            "az networkcloud rack show --name {name} " "--resource-group {rg}",
-            checks=checks,
-        )
-        return
-
-    result = test.cmd(
-        "az networkcloud rack show --name {name} " "--resource-group {rg}"
-    ).get_output_in_json()
-    context = "Rack show"
-    assert result.get("name") is not None, missing_field_message(
-        context, "name", result
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud rack show --name {name} " "--resource-group {rg}",
+        checks=checks,
     )
-    properties = result.get("properties")
-    assert result.get("id"), missing_field_message(context, "id", result)
-    assert properties is not None, missing_field_message(context, "properties", result)
-    assert properties.get("rackLocation") == get_value(
-        test, "rackLocation"
-    ), properties_key_mismatch_message("rackLocation")
-
-    assert properties.get("serialNumber") == get_value(
-        test, "serialNumber"
-    ), properties_key_mismatch_message("serialNumber")
 
 
 def step_list_resource_group(test=None, checks=None):
     """Rack list by resource group operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud rack list --resource-group {rg}")
+    test.cmd("az networkcloud rack list --resource-group {rg}", checks=checks)
 
 
 @AllowLargeResponse
@@ -95,7 +81,8 @@ def step_update(test, checks=None):
         "az networkcloud rack update --name {name} "
         "--rack-location {rackLocation} "
         "--rack-serial-number {serialNumber} "
-        "--tags {tagsUpdate} --resource-group {rg}"
+        "--tags {tagsUpdate} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -115,6 +102,7 @@ class RackScenarioTest(ScenarioTest):
                 "serialNumber": CONFIG.get("RACK", "serial_number"),
                 "tags": CONFIG.get("RACK", "tags"),
                 "tagsUpdate": CONFIG.get("RACK", "tags_update"),
+                "provisioningState": CONFIG.get("RACK", "provisioning_state"),
             }
         )
 
