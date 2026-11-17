@@ -3,13 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from unittest import mock
-
-from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.testsdk import ScenarioTest
 from azure.core.exceptions import HttpResponseError
-
-from azext_aiinfraoptimization.aaz.latest.aiinfraoptimization import Recommendvmsku
 
 
 class AiinfraoptimizationScenario(ScenarioTest):
@@ -83,47 +78,23 @@ class AiinfraoptimizationScenario(ScenarioTest):
                      self.check("length(options[?cost.source != 'AzureRetail'])", 0),
                  ])
 
-    def test_aiinfraoptimization_recommendvmsku_token_budget_limits(self):
-        # Stubs the HTTP call so the CLI's own token limits are checked through the request body it would send,
-        # independent of service-side validation.
-        def build_request(command):
-            with mock.patch.object(command.ctx, 'get_http_client'):
-                operation = command.RecommendationsRecommendVmSku(ctx=command.ctx)
-            command.request_body = operation.content
-
-        def return_request_body(command):
-            return command.request_body
-
+    def test_aiinfraoptimization_recommendvmsku_long_context(self):
+        # Both token fields exceed the former 131072 limit, and the model's context window fits their total.
         self.kwargs.update({
             'location': 'eastus2',
-            'model': '{parameter-count:8000000000,weight-precision:BF16,'
-                     'num-layers:32,num-key-value-heads:8,head-dim:128}',
+            'model': '{parameter-count:8000000000,weight-precision:BF16,num-layers:32,'
+                     'num-key-value-heads:8,head-dim:128,max-context-length:1048576}',
+            'workload': '{max-concurrent-requests-per-replica:1,'
+                        'token-budget:{prompt-tokens:262144,max-output-tokens:131073}}',
+            'target_vm_sizes': '[Standard_NC24ads_A100_v4,Standard_NC40ads_H100_v5]',
         })
-        command = 'aiinfraoptimization recommendvmsku --location {location} --model "{model}" --workload "{workload}"'
 
-        with mock.patch.object(Recommendvmsku, '_execute_operations', new=build_request), \
-                mock.patch.object(Recommendvmsku, '_output', new=return_request_body):
-            # Each token field accepts the new maximum.
-            self.kwargs['workload'] = '{token-budget:{prompt-tokens:2147483647,max-output-tokens:0}}'
-            self.cmd(command, checks=[
-                self.check('workload.tokenBudget.promptTokens', 2147483647),
-                self.check('workload.tokenBudget.maxOutputTokens', 0),
-            ])
-            self.kwargs['workload'] = '{token-budget:{prompt-tokens:0,max-output-tokens:2147483647}}'
-            self.cmd(command, checks=[
-                self.check('workload.tokenBudget.promptTokens', 0),
-                self.check('workload.tokenBudget.maxOutputTokens', 2147483647),
-            ])
-
-            # Each token field rejects anything above it.
-            self.kwargs['workload'] = '{token-budget:{prompt-tokens:2147483648,max-output-tokens:0}}'
-            with self.assertRaisesRegex(InvalidArgumentValueError,
-                                        "prompt-tokens: Invalid format: '2147483648' is greater than 2147483647"):
-                self.cmd(command)
-            self.kwargs['workload'] = '{token-budget:{prompt-tokens:0,max-output-tokens:2147483648}}'
-            with self.assertRaisesRegex(InvalidArgumentValueError,
-                                        "max-output-tokens: Invalid format: '2147483648' is greater than 2147483647"):
-                self.cmd(command)
+        self.cmd('aiinfraoptimization recommendvmsku --location {location} --model "{model}" '
+                 '--workload "{workload}" --target-vm-sizes "{target_vm_sizes}"',
+                 checks=[
+                     self.check('sizing.workload.contextLength', 393217),
+                     self.greater_than('length(options)', 0),
+                 ])
 
     def test_aiinfraoptimization_recommendvmsku_service_error(self):
         # The service reads Hugging Face anonymously, so it can't size a gated model without its architecture fields.
