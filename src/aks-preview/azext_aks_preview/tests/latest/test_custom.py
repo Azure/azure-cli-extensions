@@ -410,9 +410,7 @@ class TestAksAgentPoolGetBootstrapData(unittest.TestCase):
         )
         self.client.get.assert_not_called()
         action_args = self.client.list_bootstrap_data.call_args.args
-        self.assertEqual(action_args[:3], ("rg", "cluster", "flexpool"))
-        self.assertIsInstance(action_args[3], self.models.ListBootstrapDataRequest)
-        self.assertEqual(action_args[3].as_dict(), {})
+        self.assertEqual(action_args, ("rg", "cluster", "flexpool"))
         self.assertEqual(
             self.client.list_bootstrap_data.call_args.kwargs,
             {"logging_enable": False},
