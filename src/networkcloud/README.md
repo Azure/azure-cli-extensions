@@ -57,19 +57,6 @@ For more details, please refer to [Azure Operator Nexus - NetworkCloud][networkc
 | az networkcloud virtualmachine console      | Provides commands to manage virtual machine's consoles.      |
 | az networkcloud volume                      | Provides commands to manage volumes.                         |
 
-## Test recording redaction ##
-
-Before committing recordings, run the existing redaction target from the repository root:
-
-```bash
-make aaz-recording-redact
-```
-
-Review recordings and shared test inputs for credentials or identifying data before
-committing; pattern-based redaction is not a guarantee that every sensitive value
-is removed. Keep fixture identifiers consistent across requests, responses, and
-configuration. Do not use mock configuration against a live environment.
-
 <!-- LINKS - External -->
 [networkcloud-microsoft-learn]: https://learn.microsoft.com/en-us/azure/operator-nexus/
 
