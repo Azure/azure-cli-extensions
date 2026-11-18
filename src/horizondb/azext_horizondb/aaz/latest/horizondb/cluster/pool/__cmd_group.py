@@ -13,9 +13,10 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "horizondb cluster pool",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Pool
+    """Manage HorizonDB Pool
     """
     pass
 

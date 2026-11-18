@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "horizondb cluster pool maintenance-event show",
+    is_preview=True,
     hide=True,
 )
 class Show(AAZCommand):

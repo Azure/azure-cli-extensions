@@ -13,9 +13,10 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "horizondb",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Horizon Db
+    """Manage HorizonDB
 
     An enterprise-ready Postgres-compatible database service designed to meet the needs of modern AI applications.
     """

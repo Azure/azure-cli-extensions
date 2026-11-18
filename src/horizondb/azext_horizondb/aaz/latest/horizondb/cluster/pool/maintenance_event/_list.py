@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "horizondb cluster pool maintenance-event list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List maintenance events for a HorizonDB pool. Use the OData $filter query parameter to filter by properties/status with the eq and or operators. For example, properties/status eq 'Planned' or properties/status eq 'InProgress' returns upcoming events.
