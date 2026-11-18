@@ -7,8 +7,6 @@ Release History
 ++++++++
 * Add ``az horizondb cluster pool maintenance-event list`` to display the
   system-managed maintenance policy without querying maintenance events.
-* Keep ``az horizondb cluster pool maintenance-event show`` hidden while
-  maintenance event retrieval is unavailable.
 
 1.0.0b9
 +++++++
