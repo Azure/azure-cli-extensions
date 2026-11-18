@@ -3924,18 +3924,17 @@ class ExecutionEndpointTransportTests(unittest.TestCase):
         for endpoint in (ENDPOINT, 'http://[::1]:7075/'):
             self.assertEqual(ExecutionEndpointClient(endpoint).endpoint, endpoint.rstrip('/'))
 
-    def test_endpoint_warning_is_generic_and_url_is_debug_only(self):
-        with self.assertLogs(execution_endpoint_client_mod.logger, level='DEBUG') as captured, \
-                mock.patch.object(ExecutionEndpointClient, 'request', return_value=EXECUTION_STATUS):
-            client = ExecutionEndpointClient(ENDPOINT + '/')
-            client.status(EXECUTION_ID)
-            client.status(EXECUTION_ID)
-        self.assertEqual(
-            [(record.levelname, record.getMessage()) for record in captured.records],
-            [
-                ('WARNING', 'Using the configured development execution endpoint.'),
-                ('DEBUG', 'Development execution endpoint: ' + ENDPOINT),
-            ])
+    def test_endpoint_url_is_visible_at_default_warning_level_once_per_client(self):
+        for endpoint in (ENDPOINT + '/', 'http://[::1]:7075/'):
+            with self.subTest(endpoint=endpoint):
+                with self.assertLogs(execution_endpoint_client_mod.logger, level='WARNING') as captured, \
+                        mock.patch.object(ExecutionEndpointClient, 'request', return_value=EXECUTION_STATUS):
+                    client = ExecutionEndpointClient(endpoint)
+                    client.status(EXECUTION_ID)
+                    client.status(EXECUTION_ID)
+                self.assertEqual(
+                    [(record.levelname, record.getMessage()) for record in captured.records],
+                    [('WARNING', 'Using development execution endpoint: ' + endpoint.rstrip('/'))])
 
     def test_rejects_non_loopback_or_ambiguous_endpoints(self):
         for endpoint in ('https://127.0.0.1:7075', 'http://example.com:7075',
@@ -3943,7 +3942,9 @@ class ExecutionEndpointTransportTests(unittest.TestCase):
                          ENDPOINT + '?q=1', ENDPOINT + '#part',
                          'http://user@127.0.0.1:7075',
                          'http://127.0.0.1:invalid', 'http://127.0.0.1', 'http://[::1'):
-            with self.subTest(endpoint=endpoint), self.assertRaises(InvalidArgumentValueError):
+            with self.subTest(endpoint=endpoint), \
+                    self.assertNoLogs(execution_endpoint_client_mod.logger, level='WARNING'), \
+                    self.assertRaises(InvalidArgumentValueError):
                 ExecutionEndpointClient(endpoint)
 
     def test_requests_need_no_token_and_disable_arm_auth_redirects_and_environment_proxy(self):

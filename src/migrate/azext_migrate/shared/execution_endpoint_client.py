@@ -31,8 +31,7 @@ class ExecutionEndpointClient:
             raise InvalidArgumentValueError(
                 'The execution endpoint must be an HTTP loopback IP and port without a path.')
         self.endpoint = endpoint.rstrip('/')
-        logger.warning('Using the configured development execution endpoint.')
-        logger.debug('Development execution endpoint: %s', self.endpoint)
+        logger.warning('Using development execution endpoint: %s', self.endpoint)
 
     def request(self, method, path, body=None):
         try:
