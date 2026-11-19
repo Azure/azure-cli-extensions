@@ -171,3 +171,47 @@ def _get_domain_service_property_value(old_property, sub_property_name, default_
     if old_property is not None:
         return getattr(old_property, sub_property_name, default_value)
     return default_value
+
+
+def _get_role_custom_module():
+    # pylint: disable=import-outside-toplevel
+    from azure.cli.command_modules.role import custom as role_custom
+    return role_custom
+
+
+def create_service_principal_for_rbac_safe(
+        cmd, display_name=None,
+        service_management_reference=None,
+        create_password=True,
+        years=None, create_cert=False, cert=None, scopes=None, role=None,
+        show_auth_in_json=None, skip_assignment=False, keyvault=None):
+    role_custom = _get_role_custom_module()
+
+    # Never pass user-provided display_name into core create-for-rbac implementation.
+    # It currently reuses existing applications by display name and can modify unrelated identities.
+    result = role_custom.create_service_principal_for_rbac(
+        cmd=cmd,
+        display_name=None,
+        service_management_reference=service_management_reference,
+        create_password=create_password,
+        years=years,
+        create_cert=create_cert,
+        cert=cert,
+        scopes=scopes,
+        role=role,
+        show_auth_in_json=show_auth_in_json,
+        skip_assignment=skip_assignment,
+        keyvault=keyvault)
+
+    if display_name and result.get('appId'):
+        graph_client = role_custom._graph_client_factory(cmd.cli_ctx)  # pylint: disable=protected-access
+        application = next(graph_client.application_list(filter="appId eq '{}'".format(result['appId'])), None)
+        if application:
+            graph_client.application_update(application['id'], {'displayName': display_name})
+
+        service_principal = next(graph_client.service_principal_list(filter="appId eq '{}'".format(result['appId'])),
+                                 None)
+        if service_principal:
+            graph_client.service_principal_update(service_principal['id'], {'displayName': display_name})
+
+    return result
