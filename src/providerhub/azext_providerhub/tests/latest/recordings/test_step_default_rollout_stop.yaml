@@ -5,7 +5,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - providerhub default-rollout stop
       Connection:
@@ -15,9 +15,9 @@ interactions:
       ParameterSetName:
       - --provider-namespace --rollout-name
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26100-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/defaultRollouts/cliDefaultRollout/stop?api-version=2024-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/defaultRollouts/cliDefaultRollout/stop?api-version=2026-02-01-preview
   response:
     body:
       string: 'null'
@@ -29,7 +29,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 20:39:45 GMT
+      - Thu, 17 Sep 2026 05:27:15 GMT
       expires:
       - '-1'
       pragma:
@@ -41,11 +41,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/5662c2d1-b6a0-4a4c-839d-1d909d62236e
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a8b084de-bd0c-4bcd-a642-71b9016ddd0a/southcentralus/96625086-3039-48c7-b581-c1731893cb31
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 4E57B6120073420B8576E28E45DF6892 Ref B: CH1AA2020615039 Ref C: 2024-06-04T20:39:45Z'
+      - 'Ref A: 5E53B129BB7B43E1B46F6BC83E2AA615 Ref B: SN4AA2022304045 Ref C: 2026-09-17T05:27:16Z'
     status:
       code: 200
       message: OK

@@ -130,8 +130,7 @@ def load_arguments(self, _):
             "prerelease_policy_api",
             options_list=("--prerelease-policy-api",),
             action="store_true",
-            help="Generate a Linux policy using the latest bundled prerelease policy API and framework. "
-                 "Windows policies always use the latest bundled policy versions.",
+            help="Generate a policy using the latest bundled prerelease policy API, framework version, and fragments.",
         )
         c.argument(
             "tar_mapping_location",
@@ -226,6 +225,13 @@ def load_arguments(self, _):
             required=False,
             help="Use buffered image reader for dmverity hashing. This will speed up the hashing process but use much more memory.",
             validator=validate_faster_hashing,
+        )
+        c.argument(
+            "skip_win_ver_check",
+            options_list=("--skip-win-ver-check"),
+            required=False,
+            action="store_true",
+            help="Skip the host Windows version check in dmverity-vhd when hashing Windows images. Only affects windows/amd64 and is intended for debugging on hosts that do not produce deterministic layer hashes.",
         )
         c.argument(
             "omit_id",
@@ -430,6 +436,30 @@ def load_arguments(self, _):
             default=False,
             required=False,
             help="Emit only the signed fragment bytes",
+        )
+        c.argument(
+            "skip_win_ver_check",
+            options_list=("--skip-win-ver-check"),
+            required=False,
+            action="store_true",
+            help="Skip the host Windows version check in dmverity-vhd when hashing Windows images. Only affects windows/amd64 and is intended for debugging on hosts that do not produce deterministic layer hashes.",
+        )
+        c.argument(
+            "platform",
+            options_list=("--platform",),
+            required=False,
+            default="linux/amd64",
+            help="Target platform for policy generation. Defaults to linux/amd64. "
+                 "Note: Docker Desktop must be running in the matching container mode "
+                 "(Linux containers for linux/amd64, Windows containers for windows/amd64) "
+                 "to produce correct layer hashes.",
+            choices=["linux/amd64", "windows/amd64"],
+        )
+        c.argument(
+            "prerelease_policy_api",
+            options_list=("--prerelease-policy-api",),
+            action="store_true",
+            help="Generate a policy using the latest bundled prerelease policy API, framework version, and fragments.",
         )
 
     with self.argument_context("confcom katapolicygen") as c:

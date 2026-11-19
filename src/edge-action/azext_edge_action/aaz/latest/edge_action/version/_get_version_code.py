@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "edge-action version get-version-code",
 )
 class GetVersionCode(AAZCommand):
-    """A long-running operation to get versioncode deployed to EdgeActionVersion resource.
+    """Get the code for the edge action version.
 
     :example: GetEdgeActionVersionCode
         az edge-action version get-version-code --resource-group testrg --edge-action-name edgeAction1 --version version1
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/edgeactions/{}/versions/{}/getversioncode", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/edgeactions/{}/versions/{}/getversioncode", "2026-10-01"],
         ]
     }
 
@@ -68,11 +68,6 @@ class GetVersionCode(AAZCommand):
                 max_length=50,
             ),
         )
-        _args_schema.output_directory = AAZStrArg(
-            options=["--output-directory", "-d"],
-            help="Output directory to save the decoded version code as a zip file. If not specified, returns the base64-encoded content.",
-            required=False,
-        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -90,45 +85,6 @@ class GetVersionCode(AAZCommand):
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        
-        # If output directory is specified, decode and save the file
-        output_dir = self.ctx.args.output_directory.to_serialized_data() if self.ctx.args.output_directory else None
-        if output_dir:
-            import base64
-            import os
-            from knack.log import get_logger
-            
-            logger = get_logger(__name__)
-            
-            # Get the base64 encoded content
-            content = result.get('content')
-            name = result.get('name', 'version_code')
-            
-            if not content:
-                from azure.cli.core.azclierror import ValidationError
-                raise ValidationError("No content returned from the API")
-            
-            # Decode base64 content
-            try:
-                decoded_content = base64.b64decode(content)
-            except Exception as e:
-                from azure.cli.core.azclierror import ValidationError
-                raise ValidationError(f"Failed to decode base64 content: {str(e)}")
-            
-            # Create output directory if it doesn't exist
-            os.makedirs(output_dir, exist_ok=True)
-            
-            # Save as zip file
-            output_file = os.path.join(output_dir, f"{name}.zip")
-            try:
-                with open(output_file, 'wb') as f:
-                    f.write(decoded_content)
-                logger.warning(f"Version code saved to: {output_file}")
-                return {"message": f"Version code saved to: {output_file}", "file": output_file}
-            except Exception as e:
-                from azure.cli.core.azclierror import FileOperationError
-                raise FileOperationError(f"Failed to save file: {str(e)}")
-        
         return result
 
     class EdgeActionVersionsGetVersionCode(AAZHttpOperation):
@@ -147,7 +103,6 @@ class GetVersionCode(AAZCommand):
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
-                # Operation completed synchronously with data
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
@@ -200,7 +155,7 @@ class GetVersionCode(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }
@@ -210,18 +165,10 @@ class GetVersionCode(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
-                    "Accept", "application/json, text/plain, */*",
+                    "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            # Return empty JSON object as bytes (required by the API)
-            return b'{}'
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)

@@ -1054,6 +1054,29 @@ def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, exc
             "resource_selectors": resource_selectors
         }
 
+    if datasource_type == "AzureCosmosDB":
+        if any(value is not None for value in (
+                excluded_resource_types, included_resource_types, excluded_namespaces, included_namespaces,
+                label_selectors, persistent_volume_restore_mode, include_cluster_scope_resources, namespace_mappings,
+                conflict_policy, restore_hook_references, staging_resource_group_id, staging_storage_account_id,
+                resource_modifier_reference, resource_name_overrides)):
+            raise InvalidArgumentValueError('For AzureCosmosDB, only --resource-identifiers is applicable for the restore configuration.')
+        if not resource_identifiers:
+            raise RequiredArgumentMissingError('--resource-identifiers is required for AzureCosmosDB restore configuration. '
+                                               'Provide the list of database or database/container names to restore.')
+        for resource_identifier in resource_identifiers:
+            if not isinstance(resource_identifier, str) or \
+                    any(not segment.strip() for segment in resource_identifier.strip().split('/')):
+                raise InvalidArgumentValueError('Each value in --resource-identifiers must be a non-empty database or '
+                                                'database/container name, for example db1 or db1/container1.')
+        return {
+            "object_type": "GenericRestoreDatasourceCriteria",
+            "resource_selectors": {
+                "object_type": "ResourceListSelectionCriteria",
+                "resource_identifiers": [resource_identifier.strip() for resource_identifier in resource_identifiers]
+            }
+        }
+
     if datasource_type != "AzureKubernetesService":
         raise InvalidArgumentValueError("This command is currently not supported for datasource types other than AzureKubernetesService")
 

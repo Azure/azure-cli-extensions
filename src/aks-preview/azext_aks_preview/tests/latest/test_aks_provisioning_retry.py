@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import inspect
 import json
 import os
 import tempfile
@@ -48,6 +49,102 @@ class AKSRetryTestCase(unittest.TestCase):
     @staticmethod
     def _result(data):
         return MockExecutionResult(data)
+
+
+class TestAppRoutingSettledState(AKSRetryTestCase):
+    def _run_scenario(self, final_state="Succeeded", wait_error=None, returned_state="Updating"):
+        from azext_aks_preview.tests.latest.test_aks_commands import AzureKubernetesServiceScenarioTest
+
+        instance = self._make_instance()
+        instance.create_random_name = MagicMock(side_effect=["cluster", "vault"])
+        instance.generate_ssh_keys = MagicMock(return_value="test-key.pub")
+        cluster = {
+            "provisioningState": returned_state,
+            "ingressProfile": {"webAppRouting": {"enabled": True}},
+            "addonProfiles": {"azureKeyvaultSecretsProvider": {"enabled": True}},
+        }
+
+        def execute(command, checks=None):
+            if command.startswith("keyvault create"):
+                data = {
+                    "id": "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.KeyVault/vaults/vault",
+                    "name": "vault",
+                    "properties": {"provisioningState": "Succeeded", "enableRbacAuthorization": True},
+                }
+            elif command.startswith("aks create"):
+                data = {"provisioningState": "Succeeded"}
+            elif command.startswith("aks approuting enable"):
+                data = cluster
+            elif command.startswith("aks wait"):
+                if wait_error is not None:
+                    raise wait_error
+                data = None
+            elif command.startswith("aks show"):
+                data = {**cluster, "provisioningState": final_state}
+            elif command.startswith("aks delete"):
+                data = None
+            else:
+                self.fail(f"Unexpected scenario command: {command}")
+            result = self._result(data)
+            if data is None:
+                result.output = ""
+            return result.assert_with_checks(checks)
+
+        instance.cmd = MagicMock(side_effect=execute)
+        scenario = inspect.unwrap(
+            AzureKubernetesServiceScenarioTest.test_aks_approuting_enable_with_keyvault_secrets_provider_addon_and_keyvault_id
+        )
+        return instance, lambda: scenario(instance, "rg", "eastus2euap")
+
+    def test_background_addon_update_is_waited_before_final_state_assertion(self):
+        instance, run = self._run_scenario()
+
+        run()
+
+        commands = [call.args[0] for call in instance.cmd.call_args_list]
+        self.assertEqual(len(commands), 6)
+        self.assertTrue(commands[2].startswith("aks approuting enable"))
+        self.assertTrue(commands[3].startswith("aks wait"))
+        self.assertIn("--updated", commands[3])
+        self.assertIn("--timeout 1800", commands[3])
+        self.assertTrue(commands[4].startswith("aks show"))
+        self.assertTrue(commands[5].startswith("aks delete"))
+
+    def test_wait_timeout_is_not_ignored(self):
+        error = CLIError("Timed out waiting for cluster update")
+        instance, run = self._run_scenario(wait_error=error)
+
+        with self.assertRaisesRegex(CLIError, "Timed out"):
+            run()
+
+        self.assertEqual(instance.cmd.call_count, 4)
+
+    def test_completed_result_does_not_add_wait_or_refetch(self):
+        instance, run = self._run_scenario(returned_state="Succeeded")
+
+        run()
+
+        commands = [call.args[0] for call in instance.cmd.call_args_list]
+        self.assertEqual(len(commands), 4)
+        self.assertFalse(any(command.startswith(("aks wait", "aks show")) for command in commands))
+
+    def test_failed_returned_state_is_not_retried(self):
+        from azure.cli.testsdk.exceptions import JMESPathCheckAssertionError
+
+        instance, run = self._run_scenario(returned_state="Failed")
+        with self.assertRaises(JMESPathCheckAssertionError):
+            run()
+        self.assertEqual(instance.cmd.call_count, 3)
+
+    def test_unsuccessful_final_state_is_not_accepted(self):
+        from azure.cli.testsdk.exceptions import JMESPathCheckAssertionError
+
+        for state in ("Updating", "Failed", "Canceled"):
+            with self.subTest(state=state):
+                instance, run = self._run_scenario(final_state=state)
+                with self.assertRaises(JMESPathCheckAssertionError):
+                    run()
+                self.assertEqual(instance.cmd.call_count, 5)
 
 
 class TestCmdRetryDispatch(AKSRetryTestCase):

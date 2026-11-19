@@ -34,6 +34,7 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
 )
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.util import sdk_no_wait
 from azure.core.exceptions import HttpResponseError
 from .vendored_sdks.models import Identity, Scope
@@ -408,7 +409,9 @@ def delete_k8s_extension(
         extension = client.get(
             resource_group_name, cluster_rp, cluster_type, cluster_name, name
         )
-    except HttpResponseError:
+    except HttpResponseError as error:
+        if error.status_code != 404:
+            raise
         logger.warning(
             "No extension with name '%s' found on cluster '%s', so nothing to delete",
             name,
@@ -422,7 +425,7 @@ def delete_k8s_extension(
         cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp, yes
     )
 
-    return sdk_no_wait(
+    result = sdk_no_wait(
         no_wait,
         client.begin_delete,
         resource_group_name,
@@ -432,6 +435,21 @@ def delete_k8s_extension(
         name,
         force_delete=force,
     )
+    if isinstance(extension_class, ChaosStudio):
+        if no_wait or force:
+            logger.warning(
+                "The CLI retains release namespaces and their remaining Kubernetes resources. "
+                "--no-wait/--force does not run namespace cleanup."
+            )
+        else:
+            LongRunningOperation(cmd.cli_ctx)(result)
+            # The progress helper can suppress 404 failures for delete commands.
+            result.result()
+            extension_class.PostDelete(
+                cmd, resource_group_name, cluster_name, extension.name or name, extension
+            )
+            return None
+    return result
 
 
 # list by location

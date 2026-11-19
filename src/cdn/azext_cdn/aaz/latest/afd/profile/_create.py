@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-04-01-preview",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}", "2026-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -118,6 +118,12 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.environment_type = AAZStrArg(
+            options=["--environment-type"],
+            arg_group="Properties",
+            help={"short-summary": "Environment type, set only when creating the profile.", "long-summary": "Requires the NonProduction environment preview to be enabled for the subscription. The environment type cannot be changed after creation."},
+            enum={"NonProduction": "NonProduction"},
+        )
         _args_schema.log_scrubbing = AAZObjectArg(
             options=["--log-scrubbing"],
             arg_group="Properties",
@@ -261,7 +267,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -309,8 +315,13 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("extendedProperties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
                 properties.set_prop("logScrubbing", AAZObjectType, ".log_scrubbing")
                 properties.set_prop("originResponseTimeoutSeconds", AAZIntType, ".origin_response_timeout_seconds")
+
+            extended_properties = _builder.get(".properties.extendedProperties")
+            if extended_properties is not None:
+                extended_properties.set_prop("environmentType", AAZStrType, ".environment_type")
 
             log_scrubbing = _builder.get(".properties.logScrubbing")
             if log_scrubbing is not None:

@@ -19,9 +19,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/dbsystemdbversions", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/dbsystemdbversions", "2026-06-01"],
         ]
     }
 
@@ -45,14 +45,14 @@ class List(AAZCommand):
         _args_schema.location = AAZResourceLocationArg(
             required=True,
         )
-        _args_schema.db_system_id = AAZStrArg(
+        _args_schema.db_system_id = AAZResourceIdArg(
             options=["--db-system-id"],
             help="The DB system AzureId. If provided, filters the results to the set of database versions which are supported for the DB system.",
         )
         _args_schema.db_system_shape = AAZStrArg(
             options=["--db-system-shape"],
             help="If provided, filters the results to the set of database versions which are supported for the given shape. e.g., VM.Standard.E5.Flex",
-            enum={"VM.Standard.x86": "VM.Standard.x86"},
+            enum={"VM.BaseDB.x86": "VM.BaseDB.x86", "VM.Standard.x86": "VM.Standard.x86"},
             fmt=AAZStrArgFormat(
                 max_length=255,
                 min_length=1,
@@ -158,7 +158,7 @@ class List(AAZCommand):
                     "storageManagement", self.ctx.args.storage_management,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -208,7 +208,9 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},

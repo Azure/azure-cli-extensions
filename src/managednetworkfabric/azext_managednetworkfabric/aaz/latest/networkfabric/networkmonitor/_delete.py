@@ -18,7 +18,7 @@ class Delete(AAZCommand):
     """Delete layer 2 connectivity between compute nodes by managed by named NetworkMonitor name.
 
     :example: Delete the Network Monitor
-        az networkfabric networkmonitor delete --resource-group rgmanagednetworkfabric --network-monitor-name example-monitor
+        az networkfabric networkmonitor delete --resource-group "rgmanagednetworkfabric" --network-monitor-name "example-monitor"
     """
 
     _aaz_info = {

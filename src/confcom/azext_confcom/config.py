@@ -39,6 +39,8 @@ ACI_FIELD_CONTAINERS_SECURITY_CONTEXT = "securityContext"
 ACI_FIELD_CONTAINERS_ALLOW_PRIVILEGE_ESCALATION = "allowPrivilegeEscalation"
 ACI_FIELD_CONTAINERS_RUN_AS_USER = "runAsUser"
 ACI_FIELD_CONTAINERS_RUN_AS_GROUP = "runAsGroup"
+ACI_FIELD_CONTAINERS_WINDOWS_OPTIONS = "windowsOptions"
+ACI_FIELD_CONTAINERS_RUN_AS_USERNAME = "runAsUserName"
 ACI_FIELD_CONTAINERS_SECCOMP_PROFILE = "seccompProfile"
 ACI_FIELD_CONTAINERS_REGO_FRAGMENTS = "fragments"
 ACI_FIELD_CONTAINERS_REGO_FRAGMENTS_FEED = "feed"
@@ -235,8 +237,13 @@ DEFAULT_MOUNTS_WORKLOAD_IDENTITY_VIRTUAL_NODE_WINDOWS = (
 DEFAULT_MOUNT_POLICY = _config["mount"]["default_policy"]
 # default rego policy to be added to all user containers
 DEFAULT_REGO_FRAGMENTS = _config["default_rego_fragments"]
+# Windows (CWCOW) infrastructure fragment and its VN2 variant
+DEFAULT_REGO_FRAGMENTS_WINDOWS = _config["default_rego_fragments_windows"]
+DEFAULT_REGO_FRAGMENTS_WINDOWS_VIRTUAL_NODE = _config["default_rego_fragments_windows_virtual_node"]
 # kube-proxy image-attached fragment to add to VN2 policies when requested
 KUBE_PROXY_REGO_FRAGMENT = _config["kube_proxy_rego_fragment"]
+# Windows (CWCOW) VN2 mount-host image-attached fragment, emitted by default
+DEFAULT_REGO_FRAGMENTS_WINDOWS_MOUNT_HOST = _config["default_rego_fragments_windows_mount_host"]
 # things that need to be set for debug mode
 DEBUG_MODE_SETTINGS = _config["debugMode"]
 DEBUG_MODE_SETTINGS_WINDOWS = _config["debugModeWindows"]
@@ -358,3 +365,27 @@ def get_default_mounts_workload_identity_virtual_node(platform=None):
     if _is_windows_platform(platform):
         return DEFAULT_MOUNTS_WORKLOAD_IDENTITY_VIRTUAL_NODE_WINDOWS
     return DEFAULT_MOUNTS_WORKLOAD_IDENTITY_VIRTUAL_NODE
+
+
+def get_default_rego_fragments(platform=None, is_vn2=False, prerelease_policy_api=False):
+    if _is_windows_platform(platform):
+        # The infrastructure fragment is only emitted with --prerelease-policy-api.
+        if prerelease_policy_api:
+            if is_vn2:
+                return DEFAULT_REGO_FRAGMENTS_WINDOWS_VIRTUAL_NODE
+            return DEFAULT_REGO_FRAGMENTS_WINDOWS
+        # By default the VN2 mount host relies on its image-attached fragment;
+        # non-VN2 Windows has no default fragment.
+        if is_vn2:
+            return DEFAULT_REGO_FRAGMENTS_WINDOWS_MOUNT_HOST
+        return []
+    return DEFAULT_REGO_FRAGMENTS
+
+
+def get_all_default_rego_fragments():
+    return (
+        DEFAULT_REGO_FRAGMENTS
+        + DEFAULT_REGO_FRAGMENTS_WINDOWS
+        + DEFAULT_REGO_FRAGMENTS_WINDOWS_VIRTUAL_NODE
+        + DEFAULT_REGO_FRAGMENTS_WINDOWS_MOUNT_HOST
+    )

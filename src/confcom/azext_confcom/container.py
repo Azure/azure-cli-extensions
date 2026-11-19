@@ -6,6 +6,7 @@
 import copy
 import json
 import os
+import subprocess
 from typing import Any, List, Dict
 from azext_confcom.template_util import (
     case_insensitive_dict_get,
@@ -299,7 +300,7 @@ def extract_allow_stdio_access(container_json: Any) -> bool:
     return allow_stdio_access
 
 
-def extract_user(container_json: Any) -> Dict:
+def extract_user(container_json: Any, from_input: bool = False) -> Dict:
     security_context = case_insensitive_dict_get(
         container_json, config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT
     )
@@ -313,10 +314,28 @@ def extract_user(container_json: Any) -> Dict:
             security_context, config.ACI_FIELD_CONTAINERS_RUN_AS_USER
         )
 
+        # For windows containers, specifying the user is not supported in a normal ACI
+        # ARM template or VN2 YAML. We honor it only for --input, so that we can generate
+        # a fragment for infra sidecars that are started through their own special path
+        # which specifies runAsUserName.
+        run_as_username_value = None
+        if from_input and container_json.get("platform", "linux/amd64").startswith("windows"):
+            windows_options = case_insensitive_dict_get(
+                security_context, config.ACI_FIELD_CONTAINERS_WINDOWS_OPTIONS
+            ) or {}
+            run_as_username_value = case_insensitive_dict_get(
+                windows_options, config.ACI_FIELD_CONTAINERS_RUN_AS_USERNAME
+            )
+
         if isinstance(run_as_user_value, int) and run_as_user_value >= 0:
             user[config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_USER_IDNAME] = {
                 config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_PATTERN: str(run_as_user_value),
                 config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_STRATEGY: "id"
+            }
+        elif run_as_username_value:
+            user[config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_USER_IDNAME] = {
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_PATTERN: run_as_username_value,
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_STRATEGY: "name"
             }
         elif run_as_user_value is not None:
             eprint(
@@ -555,7 +574,7 @@ class ContainerImage:
 
     @classmethod
     def from_json(
-        cls, container_json: Any
+        cls, container_json: Any, from_input: bool = False
     ) -> "ContainerImage":
 
         container_image = extract_container_image(container_json)
@@ -574,7 +593,7 @@ class ContainerImage:
             container_json
         )
         signals = extract_get_signals(container_json)
-        user = extract_user(container_json)
+        user = extract_user(container_json, from_input=from_input)
         capabilities = extract_capabilities(container_json, allow_elevated)
         seccomp_profile_sha256 = extract_seccomp_profile_sha256(container_json)
         allow_stdio_access = extract_allow_stdio_access(container_json)
@@ -770,6 +789,7 @@ class ContainerImage:
         if not self._mounts:
             return []
 
+        is_windows = self._platform.startswith("windows")
         mounts = []
         for m in self._mounts:
             mount = copy.deepcopy(config.DEFAULT_MOUNT_POLICY)
@@ -781,9 +801,17 @@ class ContainerImage:
             mount[
                 config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_DESTINATION
             ] = case_insensitive_dict_get(m, config.ACI_FIELD_TEMPLATE_MOUNTS_PATH)
-            if case_insensitive_dict_get(
-                m, "readonly"
-            ) is not None and case_insensitive_dict_get(m, "readonly"):
+            readonly = case_insensitive_dict_get(m, "readonly")
+            if is_windows:
+                # Windows (WCOW) bind mounts use bare ro/rw options and an empty
+                # mount type: the Linux rbind/rshared propagation flags and the
+                # "bind" type do not apply on Windows, and the enforcer matches
+                # the option set exactly, so emitting the Linux form would be
+                # rejected as an invalid mount list.
+                mount[config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_OPTIONS] = (
+                    ["ro"] if readonly else ["rw"]
+                )
+            elif readonly is not None and readonly:
                 mount[config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_OPTIONS][2] = "ro"
             # specified options will overwrite default options in default mount policy
             if case_insensitive_dict_get(m, "options"):
@@ -793,7 +821,7 @@ class ContainerImage:
             # TODO: figure out what type of mount it is for secretsSource. For now, assume it is a bind mount
             mount[
                 config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_TYPE
-            ] = config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_TYPE_BIND
+            ] = "" if is_windows else config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_TYPE_BIND
             mounts.append(mount)
 
         return mounts
@@ -805,6 +833,15 @@ class ContainerImage:
         for exec_process in self._exec_processes:
             if exec_process not in exec_processes:
                 exec_processes.append(exec_process)
+            if self._platform.startswith("windows"):
+                # Work around hcsshim passing CommandLine as one argument on Windows.
+                # Retain argv above so corrected hcsshim needs no confcom change.
+                exec_process = exec_process.copy()
+                exec_process[config.POLICY_FIELD_CONTAINERS_ELEMENTS_COMMANDS] = [
+                    subprocess.list2cmdline(exec_process[config.POLICY_FIELD_CONTAINERS_ELEMENTS_COMMANDS])
+                ]
+                if exec_process not in exec_processes:
+                    exec_processes.append(exec_process)
 
         elements = {
             config.POLICY_FIELD_CONTAINERS_NAME: self.get_name(),
@@ -850,9 +887,9 @@ class UserContainerImage(ContainerImage):
     # pylint: disable=arguments-differ
     @classmethod
     def from_json(
-        cls, container_json: Any, is_vn2=False
+        cls, container_json: Any, is_vn2=False, from_input=False
     ) -> "UserContainerImage":
-        image = super().from_json(container_json)
+        image = super().from_json(container_json, from_input=from_input)
         image.__class__ = UserContainerImage
         platform = container_json.get("platform", "linux/amd64")
         is_linux = platform.startswith("linux")

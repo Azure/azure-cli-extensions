@@ -364,7 +364,7 @@
             {
                 "name": "kube-termination-log",
                 "mountType": "emptyDir",
-                "mountPath": "C:\\dev\\termination-log",
+                "mountPath": "c:\\dev\\termination-log",
                 "readonly": false
             }
         ],
@@ -400,6 +400,28 @@
             ]
         }
     ],
+    "default_rego_fragments_windows": [
+        {
+            "issuer": "did:x509:0:sha256:I__iuL25oXEVFdTP_aBLx_eT1RPHbCQ_ECBQfYZpt9s::eku:1.3.6.1.4.1.311.76.59.1.3",
+            "feed": "mcr.microsoft.com/aci/aci-cwcow-infra-fragment",
+            "minimum_svn": "1",
+            "includes": [
+                "containers",
+                "fragments"
+            ]
+        }
+    ],
+    "default_rego_fragments_windows_virtual_node": [
+        {
+            "issuer": "did:x509:0:sha256:I__iuL25oXEVFdTP_aBLx_eT1RPHbCQ_ECBQfYZpt9s::eku:1.3.6.1.4.1.311.76.59.1.3",
+            "feed": "mcr.microsoft.com/aci/aci-cwcow-vn2-infra-fragment",
+            "minimum_svn": "1",
+            "includes": [
+                "containers",
+                "fragments"
+            ]
+        }
+    ],
     "kube_proxy_rego_fragment": {
         "issuer": "did:x509:0:sha256:I__iuL25oXEVFdTP_aBLx_eT1RPHbCQ_ECBQfYZpt9s::eku:1.3.6.1.4.1.311.76.59.1.3",
         "feed": "mcr.microsoft.com/aci/sc-proxy",
@@ -408,6 +430,16 @@
             "containers"
         ]
     },
+    "default_rego_fragments_windows_mount_host": [
+        {
+            "issuer": "did:x509:0:sha256:I__iuL25oXEVFdTP_aBLx_eT1RPHbCQ_ECBQfYZpt9s::eku:1.3.6.1.4.1.311.76.59.1.3",
+            "feed": "mcr.microsoft.com/aci/virtual-node-2-mount-host-windows-2025",
+            "minimum_svn": "1",
+            "includes": [
+                "containers"
+            ]
+        }
+    ],
     "reserved_fragment_namespaces": [
         "microsoftcontainerinstance",
         "data",

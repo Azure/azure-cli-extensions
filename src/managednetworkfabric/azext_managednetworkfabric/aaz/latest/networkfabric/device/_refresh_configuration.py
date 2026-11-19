@@ -18,7 +18,7 @@ class RefreshConfiguration(AAZCommand):
     """Refreshes the configuration the Network Device.
 
     :example: Run refresh configuration on the Network Device
-        az networkfabric device refresh-configuration --resource-group example-rg --resource-name example-device
+        az networkfabric device refresh-configuration --resource-group "example-rg" --resource-name "example-device"
     """
 
     _aaz_info = {

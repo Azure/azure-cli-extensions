@@ -133,8 +133,13 @@ class ClusterCreate(_ClusterCreate):
                 "name": "Create a cluster",
                 "text": "az aro hcp cluster create --resource-group MyResourceGroup --name MyCluster "
                         "--location eastus --version 4.19 --channel-group stable --network-type OVNKubernetes "
-                        "--subnet-id <subnet-id> --kms-vault-name MyKeyVault "
+                        "--subnet-id <subnet-id> "
+                        "--vnet-integration-subnet-id <vnet-integration-subnet-id> "
+                        "--nsg <nsg-id> "
+                        "--key-management-mode CustomerManaged "
+                        "--kms-vault-name MyKeyVault "
                         "--kms-active-key \"{name:MyKey,version:<key-version>}\" "
+                        "--vault-visibility Public "
                         "--assign-service-managed-identity <service-identity-id> "
                         "--assign-control-plane-operator-identity cluster-api-azure "
                         "<cluster-api-azure-identity-id> "
@@ -165,13 +170,17 @@ class ClusterCreate(_ClusterCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.etcd_encryption_type._registered = False
-        args_schema.key_management_mode._registered = False
         if hasattr(args_schema, "assign_control_plane_operator_identity"):
             return args_schema
 
-        args_schema.user_assigned_identities._registered = False
-        args_schema.operators_authentication._registered = False
+        # Remove once platform managed etcd encryption has been implemented and
+        # key management mode can safely default to PlatformManaged
+        args_schema.key_management_mode._default = None  # pylint: disable=protected-access
+        args_schema.key_management_mode._required = True  # pylint: disable=protected-access
+
+        args_schema.user_assigned_identities._registered = False  # pylint: disable=protected-access
+        args_schema.operators_authentication._registered = False  # pylint: disable=protected-access
+        args_schema.container_registry_managed_identity._registered = False  # pylint: disable=protected-access
 
         args_schema.assign_control_plane_operator_identity = _build_operator_identity_arg(
             ["--control-plane-identity", "--assign-control-plane-operator-identity"],
@@ -194,12 +203,19 @@ class ClusterCreate(_ClusterCreate):
                  "or by name when it is in the cluster subnet's resource group.",
             required=True,
         )
+        args_schema.assign_container_registry_managed_identity = AAZStrArg(
+            options=[
+                "--registry-identity",
+                "--assign-container-registry-managed-identity",
+            ],
+            arg_group="Identity",
+            help="Assign the user-assigned identity used for container registry image pulls "
+                 "by resource ID or by name when it is in the cluster subnet's resource group.",
+        )
         return args_schema
 
     def pre_operations(self):
         args = self.ctx.args
-        args.etcd_encryption_type = "KMS"
-        args.key_management_mode = "CustomerManaged"
         subnet_id = args.subnet_id.to_serialized_data()
         control_plane = _operator_identities(
             args.assign_control_plane_operator_identity,
@@ -215,6 +231,11 @@ class ClusterCreate(_ClusterCreate):
             args.assign_service_managed_identity.to_serialized_data(),
             subnet_id,
         )
+        if has_value(args.assign_container_registry_managed_identity):
+            args.container_registry_managed_identity = _resolve_identity_resource_id(
+                args.assign_container_registry_managed_identity.to_serialized_data(),
+                subnet_id,
+            )
 
         args.user_assigned_identities = {
             resource_id: {}
@@ -268,8 +289,9 @@ class ClusterUpdate(_ClusterUpdate):
         if hasattr(args_schema, "assign_control_plane_operator_identity"):
             return args_schema
 
-        args_schema.user_assigned_identities._registered = False
-        args_schema.platform._registered = False
+        args_schema.user_assigned_identities._registered = False  # pylint: disable=protected-access
+        args_schema.operators_authentication._registered = False  # pylint: disable=protected-access
+        args_schema.container_registry_managed_identity._registered = False  # pylint: disable=protected-access
 
         args_schema.assign_control_plane_operator_identity = _build_operator_identity_arg(
             ["--control-plane-identity", "--assign-control-plane-operator-identity"],
@@ -293,6 +315,15 @@ class ClusterUpdate(_ClusterUpdate):
             help="Assign the user-assigned identity used for service-level actions by resource ID "
                  "or by name when it is in the cluster subnet's resource group.",
         )
+        args_schema.assign_container_registry_managed_identity = AAZStrArg(
+            options=[
+                "--registry-identity",
+                "--assign-container-registry-managed-identity",
+            ],
+            arg_group="Identity",
+            help="Assign the user-assigned identity used for container registry image pulls "
+                 "by resource ID or by name when it is in the cluster subnet's resource group.",
+        )
         return args_schema
 
     def pre_instance_update(self, instance):
@@ -300,11 +331,26 @@ class ClusterUpdate(_ClusterUpdate):
         control_plane_arg = args.assign_control_plane_operator_identity
         data_plane_arg = args.assign_data_plane_operator_identity
         service_arg = args.assign_service_managed_identity
-        if not any(has_value(arg) for arg in (control_plane_arg, data_plane_arg, service_arg)):
+        container_registry_arg = args.assign_container_registry_managed_identity
+        has_operator_identity_arg = any(has_value(arg) for arg in (
+            control_plane_arg,
+            data_plane_arg,
+            service_arg,
+        ))
+        if not has_operator_identity_arg and not has_value(container_registry_arg):
             return
 
         platform = instance.properties.platform
-        subnet_id = platform.subnet_id
+        subnet_id = platform.subnet_id.to_serialized_data()
+        if has_value(container_registry_arg):
+            args.container_registry_managed_identity = _resolve_identity_resource_id(
+                container_registry_arg.to_serialized_data(),
+                subnet_id,
+            )
+
+        if not has_operator_identity_arg:
+            return
+
         operator_identities = platform.operators_authentication.user_assigned_identities
 
         if has_value(control_plane_arg):
@@ -330,9 +376,9 @@ class ClusterUpdate(_ClusterUpdate):
             )
             operator_identities.service_managed_identity = service
 
-        assigned_resource_ids = set(operator_identities.control_plane_operators.values())
-        assigned_resource_ids.update(operator_identities.data_plane_operators.values())
-        assigned_resource_ids.add(operator_identities.service_managed_identity)
+        assigned_resource_ids = set(operator_identities.control_plane_operators.to_serialized_data().values())
+        assigned_resource_ids.update(operator_identities.data_plane_operators.to_serialized_data().values())
+        assigned_resource_ids.add(operator_identities.service_managed_identity.to_serialized_data())
         instance.identity.user_assigned_identities = {
             resource_id: {} for resource_id in assigned_resource_ids
         }
@@ -402,6 +448,8 @@ class GetVersions(_GetVersions):
 
 class RequestCredential(_RequestCredential):
 
+    AZ_SUPPORT_NO_WAIT = False
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._private_key_pem = None
@@ -409,10 +457,11 @@ class RequestCredential(_RequestCredential):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.no_wait = AAZBoolArg(default=False, registered=False)
         args_schema.certificate_signing_request = AAZStrArg(
             options=["--certificate-signing-request"],
         )
-        args_schema.certificate_signing_request._registered = False
+        args_schema.certificate_signing_request._registered = False  # pylint: disable=protected-access
         args_schema.admin = AAZBoolArg(
             options=["-a", "--admin"],
             help="Get cluster administrator credentials. Default: cluster user credentials.",
@@ -440,7 +489,7 @@ class RequestCredential(_RequestCredential):
 
         if not command_args.get("admin"):
             raise InvalidArgumentValueError(
-                "Requesting a non-admin credential is not supported yet. Specify --admin/-a to request an admin credential."
+                "Requesting a non-admin credential is not supported yet. Specify --admin/-a to request an admin credential."  # pylint: disable=line-too-long
             )
         private_key_pem, command_args["certificate_signing_request"] = _generate_admin_credential_request()
         self._private_key_pem = private_key_pem
@@ -463,7 +512,11 @@ class RequestCredential(_RequestCredential):
             return result
 
         kubeconfig = result["kubeconfig"].replace("\\n", "\n")
-        kubeconfig = _embed_private_key(kubeconfig, private_key_pem)
+        user_name = "{}-{}-admin".format(
+            self.ctx.args.resource_group.to_serialized_data(),
+            self.ctx.args.name.to_serialized_data(),
+        )
+        kubeconfig = _embed_private_key(kubeconfig, private_key_pem, user_name)
         path = self.ctx.args.file.to_serialized_data()
         if has_value(self.ctx.args.context_name):
             context_name = self.ctx.args.context_name.to_serialized_data()
@@ -472,7 +525,7 @@ class RequestCredential(_RequestCredential):
             # generic "admin" context, so without this every cluster would merge into the
             # same context name and collide in the kubeconfig.
             context_name = "{}-admin".format(self.ctx.args.name.to_serialized_data())
-        overwrite_existing = bool(self.ctx.args.overwrite_existing.to_serialized_data()) if has_value(self.ctx.args.overwrite_existing) else False
+        overwrite_existing = bool(self.ctx.args.overwrite_existing.to_serialized_data()) if has_value(self.ctx.args.overwrite_existing) else False  # pylint: disable=line-too-long
 
         # honor $KUBECONFIG when the caller kept the default path
         if path == _default_kubeconfig_path() and os.environ.get("KUBECONFIG"):

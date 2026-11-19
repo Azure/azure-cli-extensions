@@ -133,6 +133,8 @@ class AFDProfileCreate(_AFDProfileCreate):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.location._registered = False
         args_schema.location._required = False
+        # AFD is global; do not resolve its hidden location from the resource group.
+        args_schema.location._fmt = None
         return args_schema
 
     def pre_operations(self):

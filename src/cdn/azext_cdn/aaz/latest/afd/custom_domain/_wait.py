@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/customdomains/{}", "2026-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/customdomains/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -131,7 +131,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -284,6 +284,12 @@ class Wait(AAZWaitCommand):
             )
             tls_settings.secret = AAZObjectType()
             _WaitHelper._build_schema_resource_reference_read(tls_settings.secret)
+            tls_settings.server_tls_group_policy = AAZStrType(
+                serialized_name="serverTlsGroupPolicy",
+            )
+            tls_settings.server_tls_groups = AAZListType(
+                serialized_name="serverTlsGroups",
+            )
 
             customized_cipher_suite_set = cls._schema_on_200.properties.tls_settings.customized_cipher_suite_set
             customized_cipher_suite_set.cipher_suite_set_for_tls12 = AAZListType(
@@ -298,6 +304,9 @@ class Wait(AAZWaitCommand):
 
             cipher_suite_set_for_tls13 = cls._schema_on_200.properties.tls_settings.customized_cipher_suite_set.cipher_suite_set_for_tls13
             cipher_suite_set_for_tls13.Element = AAZStrType()
+
+            server_tls_groups = cls._schema_on_200.properties.tls_settings.server_tls_groups
+            server_tls_groups.Element = AAZStrType()
 
             validation_properties = cls._schema_on_200.properties.validation_properties
             validation_properties.expiration_date = AAZStrType(

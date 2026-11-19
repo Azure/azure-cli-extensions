@@ -226,6 +226,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.serial_number = AAZStrType(
+                serialized_name="serialNumber",
+            )
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

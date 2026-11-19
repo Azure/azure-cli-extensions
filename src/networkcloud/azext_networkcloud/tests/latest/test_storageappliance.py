@@ -10,14 +10,11 @@ StorageAppliance tests scenarios
 """
 
 from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk.checkers import NoneCheck
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
-from .utils.assert_messages import (
-    missing_field_message,
-    properties_key_mismatch_message,
-)
-from .utils.output_checks import get_value
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -35,26 +32,31 @@ def call_scenario1(test):
     setup_scenario1(test)
     step_enable_remote_vendor_management(
         test,
-        checks=[test.check("status", "Succeeded")],
+        checks=[test.check("status", attr(test, "status"))],
     )
     step_disable_remote_vendor_management(
         test,
-        checks=[test.check("status", "Succeeded")],
+        checks=[test.check("status", attr(test, "status"))],
     )
     step_run_read_command(
         test,
+        checks=[NoneCheck()],
+    )
+    step_show(
+        test,
         checks=[
-            test.check("status", "Succeeded"),
+            test.exists("name"),
+            test.exists("id"),
+            test.check("serialNumber", attr(test, "serialNumberInitial")),
         ],
     )
-    step_show(test, checks=[])
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_update(
         test,
         checks=[
-            test.check("tags", "{tagsUpdate}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("tags", attr(test, "tagsUpdateResponse")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
     cleanup_scenario1(test)
@@ -86,45 +88,35 @@ def step_run_read_command(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud storageappliance run-read-command --name {name} --resource-group {resourceGroup} --limit-time-seconds {limitTimeSeconds} --commands {runReadCommands}",
+        checks=checks,
     )
 
 
 def step_show(test, checks=None):
     """StorageAppliance show operation"""
-    if checks is not None:
-        test.cmd(
-            "az networkcloud storageappliance show --resource-group {resourceGroup} --storage-appliance-name {name}",
-            checks=checks,
-        )
-        return
-
-    result = test.cmd(
-        "az networkcloud storageappliance show --resource-group {resourceGroup} --storage-appliance-name {name}"
-    ).get_output_in_json()
-    context = "Storageappliance show"
-    assert result.get("name") is not None, missing_field_message(
-        context, "name", result
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud storageappliance show --resource-group {resourceGroup} --storage-appliance-name {name}",
+        checks=checks,
     )
-    properties = result.get("properties")
-    assert result.get("id"), missing_field_message(context, "id", result)
-    assert properties is not None, missing_field_message(context, "properties", result)
-    assert properties.get("serialNumber") == get_value(
-        test, "serialNumber"
-    ), properties_key_mismatch_message("serialNumber")
 
 
 def step_list_resource_group(test, checks=None):
     """StorageAppliance list by resource group operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud storageappliance list --resource-group {resourceGroup}")
+    test.cmd(
+        "az networkcloud storageappliance list --resource-group {resourceGroup}",
+        checks=checks,
+    )
 
 
 def step_list_subscription(test, checks=None):
     """StorageAppliance list by subscription operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud storageappliance list")
+    test.cmd("az networkcloud storageappliance list", checks=checks)
 
 
 def step_update(test, checks=None):
@@ -132,7 +124,8 @@ def step_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud storageappliance update --resource-group {resourceGroup} --storage-appliance-name {name} --serial-number {serialNumber} --tags {tagsUpdate}"
+        "az networkcloud storageappliance update --resource-group {resourceGroup} --storage-appliance-name {name} --serial-number {serialNumber} --tags {tagsUpdate}",
+        checks=checks,
     )
 
 
@@ -148,7 +141,17 @@ class StorageApplianceScenarioTest(ScenarioTest):
                 "name": CONFIG.get("STORAGE_APPLIANCE", "name"),
                 "resourceGroup": CONFIG.get("STORAGE_APPLIANCE", "resource_group"),
                 "tagsUpdate": CONFIG.get("STORAGE_APPLIANCE", "tags_update"),
+                "tagsUpdateResponse": CONFIG.get(
+                    "STORAGE_APPLIANCE", "tags_update_response"
+                ),
+                "provisioningState": CONFIG.get(
+                    "STORAGE_APPLIANCE", "provisioning_state"
+                ),
+                "status": CONFIG.get("STORAGE_APPLIANCE", "status"),
                 "serialNumber": CONFIG.get("STORAGE_APPLIANCE", "serial_number"),
+                "serialNumberInitial": CONFIG.get(
+                    "STORAGE_APPLIANCE", "serial_number_initial"
+                ),
                 "runReadCommands": CONFIG.get("STORAGE_APPLIANCE", "run_read_commands"),
                 "limitTimeSeconds": CONFIG.get(
                     "STORAGE_APPLIANCE", "limit_time_seconds"

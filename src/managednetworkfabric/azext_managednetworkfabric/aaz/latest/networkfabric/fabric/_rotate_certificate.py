@@ -18,7 +18,7 @@ class RotateCertificate(AAZCommand):
     """Creates new certificates, then updates the Network Devices to use the new certificates. Note that disabled devices cannot be updated and must be resynchronized with the new certificates once they are enabled.
 
     :example: Create new certificates, then updates the Network Devices to use the new certificates
-        az networkfabric fabric rotate-certificate --resource-group example-rg --resource-name example-fabric
+        az networkfabric fabric rotate-certificate --resource-group "example-rg" --resource-name "example-fabric"
     """
 
     _aaz_info = {

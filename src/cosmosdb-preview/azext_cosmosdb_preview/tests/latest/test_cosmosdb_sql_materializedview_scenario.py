@@ -23,7 +23,7 @@ class Cosmosdb_previewMaterialiedviewScenarioTest(ScenarioTest):
         db_name = self.create_random_name(prefix='cli', length=15)
         
         self.kwargs.update({
-            'acc': 'mv-test-38129749813',
+            'acc': self.create_random_name(prefix='cli', length=15),
             'db_name': db_name,
             'col': src,
             'mvCol1': mvName1,

@@ -1,0 +1,151 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric member wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription -g --fabric-name -n --created --timeout
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafmember000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/members/cliafmember000003?api-version=2026-11-03-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafmember000001/providers/microsoft.networksecurity/agentfabrics/cliaf000002/members/cliafmember000003","name":"cliafmember000003","type":"microsoft.networksecurity/agentfabrics/members","location":"westcentralus","tags":{},"systemData":{"createdBy":"b8ee9faa-1952-4efc-9fcb-bd43165cbd1b","createdByType":"Application","createdAt":"2026-11-01T01:41:28.3404485Z","lastModifiedBy":"b8ee9faa-1952-4efc-9fcb-bd43165cbd1b","lastModifiedByType":"Application","lastModifiedAt":"2026-11-01T01:41:28.3404485Z"},"properties":{"fqdn":null,"workload":{"type":"AKS","clusterAssociationId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestafmember000001/providers/microsoft.networksecurity/agentfabrics/cliaf000002/clusterassociations/kmprodaks2","workload":{"apiVersion":"apps/v1","kind":"Deployment","namespace":"cliaf000002","name":"kmprodworkload2"},"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestafmember000001/providers/microsoft.containerservice/managedclusters/kmprodaks2","workloadId":null,"memberGuid":"f7e7a034-c450-4b2a-b483-f008f3c2d19b"},"spiffeId":"spiffe://microsoft.agentfabric/ns/4ce98952-413d-4207-bf67-ea810ba101e9/sa/cliafmember000003","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1330'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:23:52 GMT
+      etag:
+      - '"ef02442e-0000-0700-0000-6ae698cf0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: B9891C2263C042D19E41BE69B2C93282 Ref B: SN4AA2022304011 Ref C: 2026-11-02T20:23:53Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric member show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription -g --fabric-name -n
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafmember000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/members/cliafmember000003?api-version=2026-11-03-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafmember000001/providers/microsoft.networksecurity/agentfabrics/cliaf000002/members/cliafmember000003","name":"cliafmember000003","type":"microsoft.networksecurity/agentfabrics/members","location":"westcentralus","tags":{},"systemData":{"createdBy":"b8ee9faa-1952-4efc-9fcb-bd43165cbd1b","createdByType":"Application","createdAt":"2026-11-01T01:41:28.3404485Z","lastModifiedBy":"b8ee9faa-1952-4efc-9fcb-bd43165cbd1b","lastModifiedByType":"Application","lastModifiedAt":"2026-11-01T01:41:28.3404485Z"},"properties":{"fqdn":null,"workload":{"type":"AKS","clusterAssociationId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestafmember000001/providers/microsoft.networksecurity/agentfabrics/cliaf000002/clusterassociations/kmprodaks2","workload":{"apiVersion":"apps/v1","kind":"Deployment","namespace":"cliaf000002","name":"kmprodworkload2"},"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestafmember000001/providers/microsoft.containerservice/managedclusters/kmprodaks2","workloadId":null,"memberGuid":"f7e7a034-c450-4b2a-b483-f008f3c2d19b"},"spiffeId":"spiffe://microsoft.agentfabric/ns/4ce98952-413d-4207-bf67-ea810ba101e9/sa/cliafmember000003","provisioningState":"Succeeded"}}'
+    headers:
+      content-length:
+      - '1330'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:23:53 GMT
+      etag:
+      - '"ef02442e-0000-0700-0000-6ae698cf0000"'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: 53784F5E459947CEB61295F022C61F2E Ref B: SN4AA2022304031 Ref C: 2026-11-02T20:23:53Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric member list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription -g --fabric-name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafmember000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/members?api-version=2026-11-03-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafmember000001/providers/microsoft.networksecurity/agentfabrics/cliaf000002/members/cliafmember000003","name":"cliafmember000003","type":"microsoft.networksecurity/agentfabrics/members","location":"westcentralus","tags":{},"systemData":{"createdBy":"b8ee9faa-1952-4efc-9fcb-bd43165cbd1b","createdByType":"Application","createdAt":"2026-11-01T01:41:28.3404485Z","lastModifiedBy":"b8ee9faa-1952-4efc-9fcb-bd43165cbd1b","lastModifiedByType":"Application","lastModifiedAt":"2026-11-01T01:41:28.3404485Z"},"properties":{"workload":{"type":"AKS","clusterAssociationId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestafmember000001/providers/microsoft.networksecurity/agentfabrics/cliaf000002/clusterassociations/kmprodaks2","workload":{"apiVersion":"apps/v1","kind":"Deployment","namespace":"cliaf000002","name":"kmprodworkload2"},"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestafmember000001/providers/microsoft.containerservice/managedclusters/kmprodaks2","memberGuid":"f7e7a034-c450-4b2a-b483-f008f3c2d19b"},"spiffeId":"spiffe://microsoft.agentfabric/ns/4ce98952-413d-4207-bf67-ea810ba101e9/sa/cliafmember000003","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1312'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:23:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 0393364d-0f09-4ef3-8d24-bc9b9128e5d1
+      - 1cdf736a-9d25-465a-8772-cdb4840e3278
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: D6DB03AC72B1430E913C0EDE18C8B88D Ref B: SN4AA2022305019 Ref C: 2026-11-02T20:23:55Z'
+    status:
+      code: 200
+      message: OK
+version: 1

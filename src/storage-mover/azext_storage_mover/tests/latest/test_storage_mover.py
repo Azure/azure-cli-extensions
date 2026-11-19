@@ -6,13 +6,95 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import *
+from azure.cli.core._profile import Profile
+from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.testsdk.patches import patch_load_cached_subscriptions
+from azure.cli.testsdk.scenario_tests.const import MOCKED_SUBSCRIPTION_ID, MOCKED_TENANT_ID
+from azure.core.pipeline.policies import ContentDecodePolicy
+import copy
+import json
+import os
+import re
 import time
 import unittest
 from datetime import datetime, timedelta, timezone
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+from types import SimpleNamespace
+from unittest.mock import Mock, patch
+from urllib.parse import parse_qs, urlparse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse, GeneralNameReplacer
+from azure.cli.testsdk.scenario_tests.recording_processors import SubscriptionRecordingProcessor
+
+
+PARTNER_STORAGE_ACCOUNT_ID = (
+    '/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/partner'
+    '/providers/Microsoft.Storage/storageAccounts/partneraccount'
+)
+PARTNER_ENDPOINT_ID = (
+    '/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/partner'
+    '/providers/Microsoft.StorageMover/storageMovers/partner/endpoints/test-target'
+)
+
+
+class StorageMoverTenantIdReplacer(GeneralNameReplacer):
+    def process_response(self, response):
+        response = super().process_response(response)
+        for old, new in self.names_name:
+            self.replace_header(response, 'x-ms-operation-identifier', old, new)
+        return response
+
+
+class StorageMoverSubscriptionIdReplacer(SubscriptionRecordingProcessor):
+    def __init__(self, subscription_id):
+        super().__init__(MOCKED_SUBSCRIPTION_ID)
+        self.subscription_id = subscription_id
+
+    def _replace_subscription_id(self, value):
+        # Keep the partner's distinct placeholder instead of collapsing both tenants to one subscription.
+        return re.sub(re.escape(self.subscription_id), MOCKED_SUBSCRIPTION_ID, value, flags=re.IGNORECASE)
 
 
 class StorageMoverScenario(ScenarioTest):
+    def setUp(self):
+        super().setUp()
+        if self.in_recording:
+            subscription = Profile(cli_ctx=self.cli_ctx).get_subscription()
+            replacer = StorageMoverTenantIdReplacer()
+            replacer.register_name_pair(subscription['tenantId'], MOCKED_TENANT_ID)
+            self.recording_processors.append(replacer)
+            if self._testMethodName in (
+                    'test_storage_mover_endpoint_cross_tenant_scenarios',
+                    'test_storage_mover_job_definition_cross_tenant_scenarios'):
+                self.recording_processors = [
+                    StorageMoverSubscriptionIdReplacer(subscription['id'])
+                    if isinstance(processor, SubscriptionRecordingProcessor) else processor
+                    for processor in self.recording_processors
+                ]
+        if self._testMethodName == 'test_storage_mover_job_definition_cross_tenant_scenarios':
+            settings = {
+                'source_account_id': (
+                    'SM_XT_SOURCE_STORAGE_ACCOUNT_ID',
+                    '/subscriptions/{}/resourceGroups/source/providers/Microsoft.Storage/'
+                    'storageAccounts/sourceaccount'.format(MOCKED_SUBSCRIPTION_ID)),
+                'source_container': ('SM_XT_SOURCE_CONTAINER_NAME', 'sourcecontainer'),
+                'partner_tenant': ('SM_XT_PARTNER_TENANT', '22222222-2222-2222-2222-222222222222'),
+                'partner_account_id': ('SM_XT_PARTNER_STORAGE_ACCOUNT_ID', PARTNER_STORAGE_ACCOUNT_ID),
+                'partner_endpoint_id': ('SM_XT_PARTNER_ENDPOINT_ID', PARTNER_ENDPOINT_ID),
+            }
+            if self.in_recording:
+                missing = [variable for variable, _ in settings.values() if not os.environ.get(variable)]
+                if missing:
+                    self.skipTest('Cross-tenant recording requires ' + ', '.join(missing))
+            replacer = StorageMoverTenantIdReplacer()
+            for key, (variable, placeholder) in settings.items():
+                value = os.environ[variable] if self.in_recording else placeholder
+                self.kwargs[key] = value
+                if self.in_recording:
+                    replacer.register_name_pair(value, placeholder)
+            self.kwargs['partner_endpoint_name'] = self.kwargs['partner_endpoint_id'].rsplit('/', 1)[-1]
+            if self.in_recording:
+                replacer.register_name_pair(self.kwargs['partner_endpoint_name'], 'test-target')
+                self.recording_processors.insert(0, replacer)
+
     @ResourceGroupPreparer(location='westcentralus')
     def test_storage_mover_scenarios(self, resource_group):
         self.kwargs.update({
@@ -41,6 +123,7 @@ class StorageMoverScenario(ScenarioTest):
     # az storage-mover create -n teststoragemover2 -g test-storagemover-rg2
     # https://www.microsoft.com/en-us/download/details.aspx?id=104590
     # https://learn.microsoft.com/en-us/azure/storage-mover/agent-deploy?tabs=xdmshell
+    @unittest.skip("requires a disposable registered Storage Mover agent; unregistering a shared agent is unsafe")
     def test_storage_mover_agent_scenarios(self):
         self.kwargs.update({
             "rg": "test-storagemover-rg2",
@@ -85,17 +168,17 @@ class StorageMoverScenario(ScenarioTest):
                  checks=[JMESPathCheck('uploadLimitSchedule', None)])
 
     @ResourceGroupPreparer(location='westcentralus')
-    @StorageAccountPreparer()
+    @StorageAccountPreparer(kind='StorageV2', allow_shared_key_access=False)
     @AllowLargeResponse()
     def test_storage_mover_endpoint_scenarios(self, resource_group, storage_account):
         self.kwargs.update({
             "mover_name": self.create_random_name('storage-mover', 24),
             "container_name": self.create_random_name('container', 24),
             "account_name": storage_account,
-            "account_key": self.cmd('az storage account keys list -n {} -g {} --query "[0].value" '
-                                    '-otsv'.format(storage_account, resource_group)).output,
-            "account_id": self.cmd('az storage account show -n {} -g {} --query id '
-                                   '-otsv'.format(storage_account, resource_group)).output.strip(),
+            "account_id": self.cmd(
+                'az rest --method get --url "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Storage/'
+                'storageAccounts/{}?api-version=2024-01-01" --query id -otsv'.format(
+                    get_subscription_id(self.cli_ctx), resource_group, storage_account)).output.strip(),
             "endpoint_container": self.create_random_name('test-ep-container', 32),
             "endpoint_file_share": self.create_random_name('test-ep-fileshare', 32),
             "endpoint_nfs": self.create_random_name('test-ep-nfs', 32),
@@ -109,9 +192,9 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover create -g {rg} -n {mover_name} -l westcentralus '
                  '--tags {{key1:value1}} --description MoverDesc')
 
-        # create for storage container
-        self.cmd('az storage container create -n {container_name} --account-name {account_name} '
-                 '--account-key {account_key}')
+        # Keep prerequisite Storage requests independent of the CLI's Storage SDK version.
+        self.cmd('az rest --method put --url "{account_id}/blobServices/default/containers/{container_name}'
+                 '?api-version=2024-01-01" --body "{{}}"')
         self.cmd('az storage-mover endpoint create-for-storage-container -g {rg} --storage-mover-name {mover_name} '
                  '-n {endpoint_container} --container-name {container_name} --storage-account-id {account_id} '
                  '--endpoint-kind Target --description endpointDesc')
@@ -133,8 +216,8 @@ class StorageMoverScenario(ScenarioTest):
                          JMESPathCheck('properties.description', "endpointDescUpdate")])
 
         # create for storage smb file share
-        self.cmd('az storage share create -n {file_share_name} --account-name {account_name} '
-                 '--account-key {account_key}')
+        self.cmd('az rest --method put --url "{account_id}/fileServices/default/shares/{file_share_name}'
+                 '?api-version=2024-01-01" --body "{{}}"')
         self.cmd('az storage-mover endpoint create-for-storage-smb-file-share -g {rg} '
                  '--storage-mover-name {mover_name} '
                  '-n {endpoint_file_share} --file-share-name {file_share_name} --storage-account-id {account_id} '
@@ -312,13 +395,14 @@ class StorageMoverScenario(ScenarioTest):
                  '--password-uri "https://smb-demo-kv.vault.azure.net/secrets/password" '
                  '--endpoint-kind Target --description smbTargetShouldFail',
                  expect_failure=True)
-        # #28 SmbFileShareEndpointKindSource_Fails — SmbFileShare is Target-only.
-        self.kwargs.update({"endpoint_smbfs_src_fail": self.create_random_name('smbfs-src', 24)})
+        # The May API supports Azure Storage SMB file shares as sources.
+        self.kwargs.update({"endpoint_smbfs_source": self.create_random_name('test-smbfs-src', 24)})
         self.cmd('az storage-mover endpoint create-for-storage-smb-file-share -g {rg} '
-                 '--storage-mover-name {mover_name} -n {endpoint_smbfs_src_fail} '
+                 '--storage-mover-name {mover_name} -n {endpoint_smbfs_source} '
                  '--file-share-name {file_share_name} --storage-account-id {account_id} '
-                 '--endpoint-kind Source --description smbFileShareSourceShouldFail',
-                 expect_failure=True)
+                 '--endpoint-kind Source --description smbFileShareSource',
+                 checks=[JMESPathCheck('properties.endpointType', 'AzureStorageSmbFileShare'),
+                         JMESPathCheck('properties.endpointKind', 'Source')])
         # #29 NfsFileShareEndpointKindSource_Fails — NfsFileShare is Target-only.
         self.kwargs.update({"endpoint_nfsfs_src_fail": self.create_random_name('nfsfs-src', 24)})
         self.cmd('az storage-mover endpoint create-for-storage-nfs-file-share -g {rg} '
@@ -326,6 +410,90 @@ class StorageMoverScenario(ScenarioTest):
                  '--file-share-name {file_share_name} --storage-account-id {account_id} '
                  '--endpoint-kind Source --description nfsFileShareSourceShouldFail',
                  expect_failure=True)
+
+    @ResourceGroupPreparer(location='eastus2euap')
+    @StorageAccountPreparer(location='eastus2euap', kind='StorageV2', allow_shared_key_access=False)
+    def test_storage_mover_endpoint_cross_tenant_scenarios(self, resource_group, storage_account):
+        self.kwargs.update({
+            'mover_name': self.create_random_name('storage-mover', 24),
+            'endpoint_name': self.create_random_name('test-blob-xt', 24),
+            'container_name': self.create_random_name('container', 24),
+            'account_id': '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Storage/'
+                          'storageAccounts/{}'.format(
+                              get_subscription_id(self.cli_ctx), resource_group, storage_account),
+            'partner_account_id': PARTNER_STORAGE_ACCOUNT_ID,
+            'other_partner_account_id': PARTNER_STORAGE_ACCOUNT_ID.replace('partneraccount', 'otheraccount'),
+        })
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2euap')
+        self.cmd('az rest --method put --url "{account_id}/blobServices/default/containers/{container_name}'
+                 '?api-version=2024-01-01" --body "{{}}"')
+        self.cmd('az storage-mover endpoint create-for-storage-container -g {rg} '
+                 '--storage-mover-name {mover_name} -n {endpoint_name} --container-name {container_name} '
+                 '--storage-account-id {account_id} --endpoint-kind Target '
+                 '--enable-cross-tenant-transfer true --allowed-storage-accounts {partner_account_id}',
+                 checks=[JMESPathCheck('properties.endpointKind', 'Target'),
+                         JMESPathCheck('identity.type', 'SystemAssigned'),
+                         JMESPathCheck('properties.enableCrossTenantTransfer', True),
+                         JMESPathCheck('properties.allowedStorageAccounts', [self.kwargs['partner_account_id']])])
+        self.cmd('az storage-mover endpoint update-for-storage-container -g {rg} '
+                 '--storage-mover-name {mover_name} -n {endpoint_name} --description preserved',
+                 checks=[JMESPathCheck('properties.enableCrossTenantTransfer', True),
+                         JMESPathCheck('properties.allowedStorageAccounts', [self.kwargs['partner_account_id']])])
+        self.cmd('az storage-mover endpoint update-for-storage-container -g {rg} '
+                 '--storage-mover-name {mover_name} -n {endpoint_name} '
+                 '--allowed-storage-accounts {partner_account_id} {other_partner_account_id}',
+                 checks=[JMESPathCheck('properties.enableCrossTenantTransfer', True),
+                         JMESPathCheck('properties.allowedStorageAccounts',
+                                       [self.kwargs['partner_account_id'], self.kwargs['other_partner_account_id']])])
+        self.cmd('az storage-mover endpoint update-for-storage-container -g {rg} '
+                 '--storage-mover-name {mover_name} -n {endpoint_name} '
+                 '--allowed-storage-accounts {other_partner_account_id}',
+                 checks=[JMESPathCheck('properties.allowedStorageAccounts',
+                                       [self.kwargs['other_partner_account_id']])])
+        self.cmd('az storage-mover endpoint update-for-storage-container -g {rg} '
+                 '--storage-mover-name {mover_name} -n {endpoint_name} '
+                 '--enable-cross-tenant-transfer false --allowed-storage-accounts',
+                 checks=[JMESPathCheck('properties.enableCrossTenantTransfer', False),
+                         JMESPathCheck('properties.allowedStorageAccounts', [])])
+        self.cmd('az storage-mover endpoint show -g {rg} --storage-mover-name {mover_name} -n {endpoint_name}',
+                 checks=[JMESPathCheck('properties.endpointKind', 'Target'),
+                         JMESPathCheck('identity.type', 'SystemAssigned'),
+                         JMESPathCheck('properties.enableCrossTenantTransfer', False),
+                         JMESPathCheck('properties.allowedStorageAccounts', [])])
+
+    @ResourceGroupPreparer(location='eastus2euap')
+    def test_storage_mover_endpoint_fsx_scenarios(self, resource_group):
+        self.kwargs.update({
+            'mover_name': self.create_random_name('storage-mover', 24),
+            'nfs_endpoint': self.create_random_name('test-fsx-nfs', 24),
+            'smb_endpoint': self.create_random_name('test-fsx-smb', 24),
+        })
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2euap')
+        # The service accepts sourceType but does not return it; request contracts verify its wire value.
+        self.cmd('az storage-mover endpoint create-for-nfs -g {rg} --storage-mover-name {mover_name} '
+                 '-n {nfs_endpoint} --host 10.0.0.5 --export /export --source-type FSX-EFS --endpoint-kind Source',
+                 checks=[JMESPathCheck('properties.endpointType', 'NfsMount'),
+                         JMESPathCheck('properties.endpointKind', 'Source')])
+        self.cmd('az storage-mover endpoint update-for-nfs -g {rg} --storage-mover-name {mover_name} '
+                 '-n {nfs_endpoint} --source-type FSX-EFS --description updated-nfs',
+                 checks=[JMESPathCheck('properties.description', 'updated-nfs')])
+        self.cmd('az storage-mover endpoint show -g {rg} --storage-mover-name {mover_name} -n {nfs_endpoint}',
+                 checks=[JMESPathCheck('properties.host', '10.0.0.5'),
+                         JMESPathCheck('properties.export', '/export'),
+                         JMESPathCheck('properties.endpointKind', 'Source'),
+                         JMESPathCheck('properties.provisioningState', 'Succeeded')])
+        self.cmd('az storage-mover endpoint create-for-smb -g {rg} --storage-mover-name {mover_name} '
+                 '-n {smb_endpoint} --host 10.0.0.6 --share-name share --source-type FSX-SMB --endpoint-kind Source',
+                 checks=[JMESPathCheck('properties.endpointType', 'SmbMount'),
+                         JMESPathCheck('properties.endpointKind', 'Source')])
+        self.cmd('az storage-mover endpoint update-for-smb -g {rg} --storage-mover-name {mover_name} '
+                 '-n {smb_endpoint} --source-type FSX-SMB --description updated-smb',
+                 checks=[JMESPathCheck('properties.description', 'updated-smb')])
+        self.cmd('az storage-mover endpoint show -g {rg} --storage-mover-name {mover_name} -n {smb_endpoint}',
+                 checks=[JMESPathCheck('properties.host', '10.0.0.6'),
+                         JMESPathCheck('properties.shareName', 'share'),
+                         JMESPathCheck('properties.endpointKind', 'Source'),
+                         JMESPathCheck('properties.provisioningState', 'Succeeded')])
         
     # Multi-cloud connector requires cross-subscription resources.
     # @record_only: AAZResourceIdArg adds the cross-sub MCC/S3 IDs to aux_subscriptions,
@@ -385,7 +553,7 @@ class StorageMoverScenario(ScenarioTest):
 
 
     @ResourceGroupPreparer(location='westcentralus')
-    @StorageAccountPreparer()
+    @StorageAccountPreparer(kind='StorageV2', allow_shared_key_access=False)
     @AllowLargeResponse()
     def test_storage_mover_job_definition_scenarios(self, resource_group, storage_account):
         self.kwargs.update({
@@ -393,10 +561,10 @@ class StorageMoverScenario(ScenarioTest):
             "project_name": self.create_random_name('project', 24),
             "job_definition": self.create_random_name('jobdef', 24),
             "account_name": storage_account,
-            "account_key": self.cmd('az storage account keys list -n {} -g {} --query "[0].value" '
-                                    '-otsv'.format(storage_account, resource_group)).output,
-            "account_id": self.cmd('az storage account show -n {} -g {} --query id '
-                                   '-otsv'.format(storage_account, resource_group)).output.strip(),
+            "account_id": self.cmd(
+                'az rest --method get --url "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Storage/'
+                'storageAccounts/{}?api-version=2024-01-01" --query id -otsv'.format(
+                    get_subscription_id(self.cli_ctx), resource_group, storage_account)).output.strip(),
             "source_container": self.create_random_name('srccontainer', 24),
             "target_container": self.create_random_name('tgtcontainer', 24),
             "source_endpoint": self.create_random_name('test-srcep', 24),
@@ -407,10 +575,10 @@ class StorageMoverScenario(ScenarioTest):
                  '--description ProjectDesc')
 
         # create source and target containers
-        self.cmd('az storage container create -n {source_container} --account-name {account_name} '
-                 '--account-key {account_key}')
-        self.cmd('az storage container create -n {target_container} --account-name {account_name} '
-                 '--account-key {account_key}')
+        self.cmd('az rest --method put --url "{account_id}/blobServices/default/containers/{source_container}'
+                 '?api-version=2024-01-01" --body "{{}}"')
+        self.cmd('az rest --method put --url "{account_id}/blobServices/default/containers/{target_container}'
+                 '?api-version=2024-01-01" --body "{{}}"')
 
         # create source and target endpoints (both blob containers for cloud-to-cloud)
         self.cmd('az storage-mover endpoint create-for-storage-container -g {rg} --storage-mover-name {mover_name} '
@@ -446,6 +614,41 @@ class StorageMoverScenario(ScenarioTest):
                  '--storage-mover-name {mover_name} -y')
         self.cmd('az storage-mover job-definition list -g {rg} --project-name {project_name} '
                  '--storage-mover-name {mover_name}', checks=[JMESPathCheck('length(@)', 0)])
+
+    @ResourceGroupPreparer(location='eastus')
+    def test_storage_mover_job_definition_cross_tenant_scenarios(self, resource_group):
+        self.kwargs.update({
+            'mover_name': self.create_random_name('storage-mover', 24),
+            'project_name': 'xtproject',
+            'source_endpoint': self.create_random_name('test-xt-source', 24),
+            'job_definition': self.create_random_name('jobdef-xt', 24),
+        })
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus')
+        self.cmd('az storage-mover project create -g {rg} --storage-mover-name {mover_name} -n {project_name}')
+        self.cmd('az storage-mover endpoint create-for-storage-container -g {rg} '
+                 '--storage-mover-name {mover_name} -n {source_endpoint} --container-name {source_container} '
+                 '--storage-account-id {source_account_id} --endpoint-kind Source '
+                 '--enable-cross-tenant-transfer true --allowed-storage-accounts {partner_account_id}',
+                 checks=[JMESPathCheck('properties.enableCrossTenantTransfer', True),
+                         JMESPathCheck('properties.allowedStorageAccounts', [self.kwargs['partner_account_id']])])
+        checks = [JMESPathCheck('isCrossTenantJob', True),
+                  JMESPathCheck('crossTenantEndpointTenantId', self.kwargs['partner_tenant']),
+                  JMESPathCheck('crossTenantEndpointResourceId', self.kwargs['partner_endpoint_id']),
+                  JMESPathCheck('sourceName', self.kwargs['source_endpoint']),
+                  JMESPathCheck('targetName', self.kwargs['partner_endpoint_name']),
+                  JMESPathCheck('targetResourceId', self.kwargs['partner_endpoint_id'])]
+        self.cmd('az storage-mover job-definition create -g {rg} --storage-mover-name {mover_name} '
+                 '--project-name {project_name} -n {job_definition} --job-type CloudToCloud --copy-mode Additive '
+                 '--source-name {source_endpoint} --target-name {partner_endpoint_name} '
+                 '--is-cross-tenant-job true --cross-tenant-endpoint-tenant-id {partner_tenant} '
+                 '--cross-tenant-endpoint-resource-id {partner_endpoint_id}', checks=checks)
+        self.cmd('az storage-mover job-definition show -g {rg} --storage-mover-name {mover_name} '
+                 '--project-name {project_name} -n {job_definition}', checks=checks)
+        self.cmd('az storage-mover job-definition update -g {rg} --storage-mover-name {mover_name} '
+                 '--project-name {project_name} -n {job_definition} --description updated-cross-tenant-job',
+                 checks=checks + [JMESPathCheck('description', 'updated-cross-tenant-job')])
+        self.cmd('az storage-mover job-definition delete -g {rg} --storage-mover-name {mover_name} '
+                 '--project-name {project_name} -n {job_definition} -y')
 
     @ResourceGroupPreparer(location='westcentralus')
     def test_storage_mover_project_scenarios(self, resource_group):
@@ -500,7 +703,6 @@ class StorageMoverScenario(ScenarioTest):
         # delete
         self.cmd('az storage-mover connection delete -g {rg} --storage-mover-name {mover_name} '
                  '-n {connection_name} -y')
-
     # Mirrors .NET EndpointTests.S3WithHmacEndpointCreateGetDeleteTest.
     # S3WithHMAC accepts placeholder URIs at metadata level (RP doesn't validate the
     # source URI or Key Vault secret URIs at create time), so the test self-provisions
@@ -1049,3 +1251,151 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover connection delete -g {rg} --storage-mover-name {mover_name} '
                  '-n {connection_name} -y')
 
+
+class StorageMoverRequestScenario(ScenarioTest):
+    """CLI parsing and request checks for features the service cannot yet verify live."""
+
+    def setUp(self):
+        super().setUp()
+        patch_load_cached_subscriptions(self)
+        self.kwargs.update({
+            'rg': 'resource-group', 'mover_name': 'mover', 'endpoint_name': 'test-endpoint',
+            'project_name': 'project', 'job_definition': 'job',
+            'account_id': '/subscriptions/{}/resourceGroups/resource-group/providers/Microsoft.Storage/'
+                          'storageAccounts/account'.format(get_subscription_id(self.cli_ctx)),
+            'partner_account_id': PARTNER_STORAGE_ACCOUNT_ID,
+            'partner_endpoint_id': PARTNER_ENDPOINT_ID,
+        })
+
+    def _cmd_with_responses(self, command, responses, checks=None):
+        sessions = [
+            SimpleNamespace(http_response=Mock(status_code=200),
+                            context={ContentDecodePolicy.CONTEXT_NAME: copy.deepcopy(response)})
+            for response in responses
+        ]
+        with patch('azure.cli.core.aaz._command_ctx.AAZCommandCtx.get_login_credential', return_value=Mock()), \
+                patch('azure.cli.core.aaz._client.AAZMgmtClient.send_request', side_effect=sessions) as send:
+            self.cmd(command, checks=checks)
+        self.assertEqual(send.call_count, len(responses))
+        requests = [call.kwargs['request'] for call in send.call_args_list]
+        for request in requests:
+            self.assertEqual(parse_qs(urlparse(request.url).query)['api-version'], ['2026-05-01'])
+        return requests
+
+    def test_storage_mover_endpoint_fsx_and_nfs4_1_request_scenarios(self):
+        for protocol, endpoint_type, source_type, options, properties in [
+                ('nfs', 'NfsMount', 'FSX-EFS', '--host 10.0.0.5 --export /export --nfs-version NFSv4_1',
+                 {'host': '10.0.0.5', 'export': '/export', 'nfsVersion': 'NFSv4_1'}),
+                ('smb', 'SmbMount', 'FSX-SMB',
+                 '--host 10.0.0.6 --share-name share '
+                 '--username-uri https://vault.vault.azure.net/secrets/username '
+                 '--password-uri https://vault.vault.azure.net/secrets/password',
+                 {'host': '10.0.0.6', 'shareName': 'share'})]:
+            with self.subTest(protocol=protocol):
+                existing = {'properties': dict(properties, endpointType=endpoint_type, endpointKind='Source')}
+                requests = self._cmd_with_responses(
+                    'az storage-mover endpoint create-for-' + protocol +
+                    ' -g {rg} --storage-mover-name {mover_name} -n {endpoint_name} '
+                    '--source-type ' + source_type + ' --endpoint-kind Source ' + options, [existing])
+                body = json.loads(requests[0].body)['properties']
+                self.assertEqual(body['sourceType'], source_type)
+                self.assertEqual(body['endpointKind'], 'Source')
+                for key, value in properties.items():
+                    self.assertEqual(body[key], value)
+                if protocol == 'smb':
+                    self.assertEqual(body['credentials'], {
+                        'type': 'AzureKeyVaultSmb',
+                        'usernameUri': 'https://vault.vault.azure.net/secrets/username',
+                        'passwordUri': 'https://vault.vault.azure.net/secrets/password',
+                    })
+                requests = self._cmd_with_responses(
+                    'az storage-mover endpoint update-for-' + protocol +
+                    ' -g {rg} --storage-mover-name {mover_name} -n {endpoint_name} --source-type ' +
+                    source_type + ' --description updated', [existing, existing])
+                self.assertEqual([request.method for request in requests], ['GET', 'PUT'])
+                self.assertEqual(json.loads(requests[-1].body)['properties']['sourceType'], source_type)
+
+    def test_storage_mover_endpoint_smb_cross_tenant_request_scenarios(self):
+        existing = {
+            'properties': {
+                'endpointType': 'AzureStorageSmbFileShare', 'endpointKind': 'Target',
+                'storageAccountResourceId': self.kwargs['account_id'], 'fileShareName': 'share',
+                'enableCrossTenantTransfer': True, 'allowedStorageAccounts': [PARTNER_STORAGE_ACCOUNT_ID],
+            },
+        }
+        requests = self._cmd_with_responses(
+            'az storage-mover endpoint create-for-storage-smb-file-share -g {rg} '
+            '--storage-mover-name {mover_name} -n {endpoint_name} --storage-account-id {account_id} '
+            '--file-share-name share --endpoint-kind Target '
+            '--enable-cross-tenant-transfer true --allowed-storage-accounts {partner_account_id}', [existing])
+        body = json.loads(requests[0].body)['properties']
+        self.assertIs(body['enableCrossTenantTransfer'], True)
+        self.assertEqual(body['allowedStorageAccounts'], [PARTNER_STORAGE_ACCOUNT_ID])
+        requests = self._cmd_with_responses(
+            'az storage-mover endpoint update-for-storage-smb-file-share -g {rg} '
+            '--storage-mover-name {mover_name} -n {endpoint_name} --description preserved', [existing, existing])
+        body = json.loads(requests[-1].body)['properties']
+        self.assertIs(body['enableCrossTenantTransfer'], True)
+        self.assertEqual(body['allowedStorageAccounts'], [PARTNER_STORAGE_ACCOUNT_ID])
+        requests = self._cmd_with_responses(
+            'az storage-mover endpoint update-for-storage-smb-file-share -g {rg} '
+            '--storage-mover-name {mover_name} -n {endpoint_name} '
+            '--enable-cross-tenant-transfer false --allowed-storage-accounts', [existing, existing])
+        body = json.loads(requests[-1].body)['properties']
+        self.assertIs(body['enableCrossTenantTransfer'], False)
+        self.assertEqual(body['allowedStorageAccounts'], [])
+
+    def test_storage_mover_job_definition_sync_hourly_agentless_request_scenarios(self):
+        connection_id = (
+            '/subscriptions/{}/resourceGroups/resource-group/providers/Microsoft.StorageMover/'
+            'storageMovers/mover/connections/connection'.format(get_subscription_id(self.cli_ctx)))
+        self.kwargs['connection_id'] = connection_id
+        existing = {'properties': {
+            'copyMode': 'Additive', 'sourceName': 'source', 'targetName': 'target',
+            'jobType': 'OnPremToCloudAgentLess', 'connections': [connection_id],
+        }}
+        requests = self._cmd_with_responses(
+            'az storage-mover job-definition create -g {rg} --storage-mover-name {mover_name} '
+            '--project-name {project_name} -n {job_definition} --copy-mode Additive '
+            '--source-name source --target-name target --job-type OnPremToCloudAgentLess '
+            '--connections "{connection_id}" --sync-mode SnapshotBased --mover-synced-until 2026-05-01T00:00:00Z '
+            '--schedule "{{frequency:Hourly,repeat-interval:PT1H,is-active:true}}"', [existing])
+        properties = json.loads(requests[0].body)['properties']
+        self.assertEqual(properties['jobType'], 'OnPremToCloudAgentLess')
+        self.assertEqual(properties['connections'], [connection_id])
+        self.assertEqual(properties['syncMode'], 'SnapshotBased')
+        self.assertEqual(properties['moverSyncedUntil'], '2026-05-01T00:00:00.000Z')
+        self.assertEqual(properties['schedule'], {'frequency': 'Hourly', 'repeatInterval': 'PT1H', 'isActive': True})
+        requests = self._cmd_with_responses(
+            'az storage-mover job-definition update -g {rg} --storage-mover-name {mover_name} '
+            '--project-name {project_name} -n {job_definition} --sync-mode FullScan '
+            '--mover-synced-until 2026-05-02T00:00:00Z '
+            '--schedule "{{frequency:Hourly,repeat-interval:PT2H,is-active:false}}"', [existing, existing])
+        properties = json.loads(requests[-1].body)['properties']
+        self.assertEqual(properties['jobType'], 'OnPremToCloudAgentLess')
+        self.assertEqual(properties['connections'], [connection_id])
+        self.assertEqual(properties['syncMode'], 'FullScan')
+        self.assertEqual(properties['moverSyncedUntil'], '2026-05-02T00:00:00.000Z')
+        self.assertEqual(properties['schedule'], {'frequency': 'Hourly', 'repeatInterval': 'PT2H', 'isActive': False})
+
+    def test_storage_mover_job_definition_cross_tenant_request_scenarios(self):
+        requests = self._cmd_with_responses(
+            'az storage-mover job-definition create -g {rg} --storage-mover-name {mover_name} '
+            '--project-name {project_name} -n {job_definition} --job-type CloudToCloud --copy-mode Additive '
+            '--source-name source --target-name test-target --is-cross-tenant-job true '
+            '--cross-tenant-endpoint-tenant-id 22222222-2222-2222-2222-222222222222 '
+            '--cross-tenant-endpoint-resource-id {partner_endpoint_id}', [{'properties': {}}])
+        properties = json.loads(requests[0].body)['properties']
+        self.assertIs(properties['isCrossTenantJob'], True)
+        self.assertEqual(properties['crossTenantEndpointTenantId'], '22222222-2222-2222-2222-222222222222')
+        self.assertEqual(properties['crossTenantEndpointResourceId'], PARTNER_ENDPOINT_ID)
+
+    def test_storage_mover_job_definition_reconcile_request_scenarios(self):
+        requests = self._cmd_with_responses(
+            'az storage-mover job-definition reconcile-job -g {rg} --storage-mover-name {mover_name} '
+            '--project-name {project_name} --job-definition-name {job_definition}',
+            [{'jobRunResourceId': 'job-run-resource-id'}],
+            checks=[JMESPathCheck('jobRunResourceId', 'job-run-resource-id')])
+        self.assertEqual(requests[0].method, 'POST')
+        self.assertTrue(urlparse(requests[0].url).path.endswith('/jobDefinitions/job/reconcileJob'))
+        self.assertIsNone(requests[0].body)

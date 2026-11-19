@@ -42,6 +42,14 @@ def _track_command_telemetry(logger, command_name, parameters, status, message, 
         properties.update(_resource_context_properties(
             os_family, vm_size, disk_controller_type,
             repair_vm_disk_controller_type, hyperv_generation))
+        if command_name == 'vm repair reset-nic':
+            properties.update({
+                'sourceAN': 'unknown',
+                'sourceVfVendor': 'unknown',
+                'guestManaPresent': 'unknown',
+                'resetNicMode': 'legacy',
+                'postResetHealthy': 'unknown'
+            })
         measurements = {'command_duration': duration}
         tc.track_event(command_name, properties, measurements)
         tc.flush()

@@ -3,7 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
 import os
+import shlex
 import unittest
 from unittest import mock
 
@@ -62,10 +64,15 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         assert not self.cmd('az cosmosdb sql database exists -g {rg} -a {acc} -n {db_name}').get_output_in_json()
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_container', location='westcentralus')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_container', location='westus2')
     def test_cosmosdb_sql_container(self, resource_group):
+        from azext_cosmosdb_preview._client_factory import cf_sql_resources
+        from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
+            ComputedProperty, SqlContainerResource, SqlContainerCreateUpdateParameters,
+        )
+
         col = self.create_random_name(prefix='cli', length=15)
-        location = "westcentralus"
+        location = "westus2"
         partition = "/pk"
 
         self.kwargs.update({
@@ -81,11 +88,61 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
 
         self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name}')
 
-        collection = self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {col} -p {part}').get_output_in_json()
+        collection = self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {col} -p {part} --ttl 3600').get_output_in_json()
         assert collection["name"] == col
+
+        computed_properties = [
+            {'name': 'normalizedName', 'query': 'SELECT VALUE UPPER(c.name) FROM c'},
+            {'name': 'nameLength', 'query': 'SELECT VALUE LENGTH(c.name) FROM c'},
+        ]
+        # Container create has no computed-properties option; seed through the preview SDK.
+        client = cf_sql_resources(self.cli_ctx, None)
+        existing = client.get_sql_container(
+            resource_group, self.kwargs['acc'], self.kwargs['db_name'], col).resource
+        resource = SqlContainerResource(
+            id=col,
+            partition_key=existing.partition_key,
+            indexing_policy=existing.indexing_policy,
+            default_ttl=existing.default_ttl,
+            unique_key_policy=existing.unique_key_policy,
+            conflict_resolution_policy=existing.conflict_resolution_policy,
+            computed_properties=[ComputedProperty(**prop) for prop in computed_properties],
+        )
+        client.begin_create_update_sql_container(
+            resource_group, self.kwargs['acc'], self.kwargs['db_name'], col,
+            SqlContainerCreateUpdateParameters(resource=resource, options={}),
+        ).result()
 
         collection_show = self.cmd('az cosmosdb sql container show -g {rg} -a {acc} -d {db_name} -n {col}').get_output_in_json()
         assert collection_show["name"] == col
+        self.assertCountEqual(collection_show['resource']['computedProperties'], computed_properties)
+
+        updated_indexing = {
+            'indexingMode': 'consistent',
+            'automatic': True,
+            'includedPaths': [
+                {'path': '/*'}, {'path': '/normalizedName/?'}, {'path': '/nameLength/?'},
+            ],
+            'excludedPaths': [{'path': '/headquarters/employees/?'}, {'path': '/"_etag"/?'}],
+        }
+        self.kwargs['updated_indexing'] = shlex.quote(json.dumps(updated_indexing))
+        for operation, expected_ttl in [
+                ('update --idx {updated_indexing}', 3600),
+                ('show', 3600),
+                ('update --ttl 7200', 7200),
+                ('show', 7200)]:
+            container = self.cmd('az cosmosdb sql container ' + operation +
+                                 ' -g {rg} -a {acc} -d {db_name} -n {col}').get_output_in_json()
+            self.assertEqual(container['name'], col)
+            self.assertCountEqual(container['resource']['computedProperties'], computed_properties)
+            self.assertEqual(container['resource']['defaultTtl'], expected_ttl)
+            self.assertEqual(container['resource']['indexingPolicy']['indexingMode'], 'consistent')
+            self.assertEqual(container['resource']['indexingPolicy']['automatic'], True)
+            self.assertCountEqual(
+                [path['path'] for path in container['resource']['indexingPolicy']['includedPaths']],
+                [path['path'] for path in updated_indexing['includedPaths']])
+            self.assertCountEqual(
+                container['resource']['indexingPolicy']['excludedPaths'], updated_indexing['excludedPaths'])
 
         assert self.cmd('az cosmosdb sql container exists -g {rg} -a {acc} -d {db_name} -n {col}').get_output_in_json()
         assert not self.cmd('az cosmosdb sql container exists -g {rg} -a {acc} -d {db_name} -n invalid').get_output_in_json()

@@ -14,7 +14,7 @@ class OracleDatabaseAdbsUpdateScenario(ScenarioTest):
     def _get_adbs(self):
         return (
             os.environ.get('AZURE_ORACLE_DATABASE_ADBS_UPDATE_RESOURCE_GROUP', 'PowerShellTestRgMihr'),
-            os.environ.get('AZURE_ORACLE_DATABASE_ADBS_UPDATE_NAME', 'testReg0628')
+            os.environ.get('AZURE_ORACLE_DATABASE_ADBS_UPDATE_NAME', 'testRegression0914')
         )
 
     @live_only()

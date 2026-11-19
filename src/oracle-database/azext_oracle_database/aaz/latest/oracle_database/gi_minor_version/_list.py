@@ -19,9 +19,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/giversions/{}/giminorversions", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/giversions/{}/giminorversions", "2026-06-01"],
         ]
     }
 
@@ -53,10 +53,27 @@ class List(AAZCommand):
         _args_schema.location = AAZResourceLocationArg(
             required=True,
         )
+        _args_schema.is_gi_version_for_provisioning = AAZBoolArg(
+            options=["--is-gi-version-for-provisioning"],
+            help="If true, filters the results to GI minor versions supported during VM cluster provisioning.",
+        )
+        _args_schema.shape = AAZStrArg(
+            options=["--shape"],
+            help="If provided, filters the results to the set of GI minor versions supported for the given shape.",
+            fmt=AAZStrArgFormat(
+                max_length=255,
+                min_length=1,
+            ),
+        )
         _args_schema.shape_family = AAZStrArg(
             options=["--shape-family"],
             help="If provided, filters the results to the set of database versions which are supported for the given shape family.",
             enum={"EXADATA": "EXADATA", "EXADB_XS": "EXADB_XS"},
+        )
+        _args_schema.sort_order = AAZStrArg(
+            options=["--sort-order"],
+            help="Sort order for the returned GI minor versions.",
+            enum={"ASC": "ASC", "DESC": "DESC"},
         )
         _args_schema.zone = AAZStrArg(
             options=["--zone"],
@@ -130,13 +147,22 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
+                    "isGiVersionForProvisioning", self.ctx.args.is_gi_version_for_provisioning,
+                ),
+                **self.serialize_query_param(
+                    "shape", self.ctx.args.shape,
+                ),
+                **self.serialize_query_param(
                     "shapeFamily", self.ctx.args.shape_family,
+                ),
+                **self.serialize_query_param(
+                    "sortOrder", self.ctx.args.sort_order,
                 ),
                 **self.serialize_query_param(
                     "zone", self.ctx.args.zone,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -186,7 +212,9 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},

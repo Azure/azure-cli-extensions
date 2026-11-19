@@ -19,9 +19,9 @@ class DeleteResource(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-04-01-preview",
+        "version": "2026-02-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.providerhub/providerregistrations/{}/resourceactions/{}/deleteresources", "2024-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.providerhub/providerregistrations/{}/resourceactions/{}/deleteresources", "2026-02-01-preview"],
         ]
     }
 
@@ -81,7 +81,7 @@ class DeleteResource(AAZCommand):
             options=["location"],
             help="The location.",
         )
-        _element.resource_id = AAZStrArg(
+        _element.resource_id = AAZResourceIdArg(
             options=["resource-id"],
             help="The resource id.",
             required=True,
@@ -165,7 +165,7 @@ class DeleteResource(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-01-preview",
+                    "api-version", "2026-02-01-preview",
                     required=True,
                 ),
             }

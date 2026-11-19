@@ -17,7 +17,7 @@ helps['service-group'] = """
         subscriptions and other service groups into an organizational hierarchy and centrally
         manage access control, policies, alerting and reporting for those resources.
 
-        NOTE: This command group is in preview and under development.
+        NOTE: This extension remains in preview and uses stable API version 2026-08-01.
 """
 
 helps['service-group create'] = """
@@ -33,6 +33,11 @@ helps['service-group create'] = """
         text: >
             az service-group create --name ChildGroup --display-name "Child Group"
             --parent resource-id="/providers/Microsoft.Management/serviceGroups/ParentGroup"
+      - name: Create a service group with a criticality attribute
+        text: >
+            az service-group create --name CriticalGroup --display-name "Critical Group"
+            --attributes criticality=1
+            --parent resource-id="/providers/Microsoft.Management/serviceGroups/<tenantId>"
 """
 
 helps['service-group show'] = """
@@ -47,11 +52,18 @@ helps['service-group show'] = """
 helps['service-group update'] = """
     type: command
     short-summary: Update a service group.
-    long-summary: Update a service group. This is a long-running operation.
+    long-summary: >
+        Update a service group. This is a long-running operation. Service group kind is
+        create-time only and cannot be changed with this command. This command does not
+        support clearing display name, parent, or tags by passing an explicit null. Omit an
+        argument to retain its current value, or provide a replacement value.
     examples:
       - name: Update the display name of a service group
         text: >
             az service-group update --name MyServiceGroup --display-name "Updated Name"
+      - name: Update the criticality of a service group
+        text: >
+            az service-group update --name MyServiceGroup --attributes criticality=2
 """
 
 helps['service-group delete'] = """
@@ -62,16 +74,6 @@ helps['service-group delete'] = """
       - name: Delete a service group
         text: >
             az service-group delete --name MyServiceGroup --yes
-"""
-
-helps['service-group list-ancestors'] = """
-    type: command
-    short-summary: List the ancestors of a service group.
-    long-summary: Get the details of the service group's ancestors in the hierarchy.
-    examples:
-      - name: List ancestors of a service group
-        text: >
-            az service-group list-ancestors --name MyServiceGroup
 """
 
 helps['service-group wait'] = """

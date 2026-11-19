@@ -12,9 +12,9 @@ from azext_fleet.custom import _convert_kubeconfig_to_azurecli
 
 # Test constants
 KUBELOGIN_BINARY = 'kubelogin'
-MOCK_KUBELOGIN_PATH = '/usr/bin/kubelogin'
+MOCK_KUBELOGIN_PATH = '/usr/local/bin with spaces/kubelogin'
 KUBELOGIN_TIMEOUT = 60
-KUBELOGIN_CMD_PREFIX = [KUBELOGIN_BINARY, "convert-kubeconfig", "-l", "azurecli", "--kubeconfig"]
+KUBELOGIN_CMD_PREFIX = [MOCK_KUBELOGIN_PATH, "convert-kubeconfig", "-l", "azurecli", "--kubeconfig"]
 KUBELOGIN_GITHUB_URL = "https://github.com/Azure/kubelogin"
 KUBECONFIG_SUFFIX = '.kubeconfig'
 STDOUT_PATH = '-'
@@ -40,6 +40,7 @@ class TestKubeloginConversion(unittest.TestCase):
 
             # Verify kubelogin was called with correct arguments
             mock_subprocess.assert_called_once()
+            mock_which.assert_called_once_with(KUBELOGIN_BINARY)
             call_args = mock_subprocess.call_args
             self.assertEqual(call_args[0][0], KUBELOGIN_CMD_PREFIX + [test_path])
             self.assertTrue(call_args[1]['check'])
@@ -150,6 +151,7 @@ class TestKubeloginConversion(unittest.TestCase):
 
         # Verify subprocess was not called
         mock_subprocess.assert_not_called()
+        mock_which.assert_not_called()
 
     @patch('azext_fleet.custom.shutil.which')
     @patch('azext_fleet.custom.subprocess.run')

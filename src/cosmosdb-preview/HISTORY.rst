@@ -2,6 +2,21 @@
 Release History
 ===============
 
+2.0.0
+++++++
+* [BREAKING CHANGE] ``az cosmosdb copy create`` now defaults to hosting jobs on the source account. Use the source account's subscription and resource group, and grant its default managed identity read-write access to the destination for cross-account copies. Use ``--host-copy-on-src false`` to retain destination hosting, with the destination account's subscription, resource group, and default identity configured to access the source.
+* Expose ``--host-copy-on-src`` in command help and document managing jobs through their hosting account. MongoDB RU-to-vCore jobs remain source-hosted.
+
+1.7.2
+++++++
+* Fix ``az cosmosdb sql container update`` to preserve existing computed properties when updating indexing policies or other container settings.
+
+1.7.1
+++++++
+* Fix SQL container, MongoDB collection, and Gremlin graph restore without a timestamp to pass the database resource ID by keyword, supporting the core CLI Cosmos DB SDK.
+* Fix non-pooled fleetspace creation to accept omitted, null, or empty throughput pool configuration; pooled creation and updates still require both throughput bounds.
+* Tighten fleet throughput and account attachment validation, rejecting boolean throughput values, reversed bounds, malformed account IDs, blank locations, and attachment names that differ from the database account name. Clarify fleet command help.
+
 1.7.0
 ++++++
 * Add ``--skip-safe-rotation`` to ``az cosmosdb keys regenerate`` to optionally bypass the account keys last usage check during key regeneration.

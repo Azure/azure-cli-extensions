@@ -11,6 +11,8 @@ steps:
       python -m venv env
       chmod +x env/bin/activate
       source ./env/bin/activate
+      export PIP_CONSTRAINT="$(realpath "$CLI_EXT_REPO_PATH/.azure-pipelines/constraints.txt")"
+      echo "##vso[task.setvariable variable=PIP_CONSTRAINT]$PIP_CONSTRAINT"
       git clone -q --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
       python -m pip install -U pip
       pip install --upgrade azdev==0.2.13

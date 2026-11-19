@@ -3,6 +3,18 @@
 Release History
 ===============
 
+Pending
+++++++
+* Switch to the 2026-10-01 API version for `az aro hcp`.
+* Add the `az aro hcp identity-role-sets list` command.
+* Add support for HCP cluster etcd encryption using Azure Key Vault Managed HSM.
+* Add the ability to specify a managed identity for an HCP cluster's container image registry.
+* Fix bug in identity argument handling for `az aro hcp cluster update`.
+* Fix kubeconfig merging functionality for `az aro hcp cluster request-credential` to use per-cluster user names.
+* Remove `--no-wait` from `az aro hcp cluster request-credential`.
+* Fix etcd encryption arguments for both `az aro hcp cluster create` and `az aro hcp cluster update`
+* Update `az aro hcp cluster create` example command in help text.
+
 1.0.14
 ++++++
 * Migrate Disk Encryption Set validation from the Compute SDK to AAZ.

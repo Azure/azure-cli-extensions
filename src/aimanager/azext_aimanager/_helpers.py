@@ -7,6 +7,7 @@ import errno
 import os
 import platform
 import stat
+import subprocess
 import tempfile
 
 import yaml
@@ -42,6 +43,82 @@ def get_custom_headers(custom_headers=None):
                     raise CLIError('custom headers format is incorrect')
                 headers[parts[0]] = parts[1]
     return headers
+
+
+def which(binary):
+    """Resolve an explicit executable path or search absolute directories in PATH."""
+    is_windows = platform.system() == 'Windows'
+    binaries = [binary]
+    if is_windows and not os.path.splitext(binary)[1]:
+        extensions = os.getenv('PATHEXT') or '.COM;.EXE;.BAT;.CMD'
+        binaries = [binary + extension for extension in extensions.split(';') if extension]
+
+    explicit_path = bool(os.path.dirname(binary))
+    if explicit_path:
+        parts = ['']
+    else:
+        parts = os.getenv('PATH', '').split(';' if is_windows else ':')
+
+    for part in parts:
+        if is_windows:
+            part = part.strip('"')
+        # Empty, relative and drive-relative entries depend on the working directory.
+        if not explicit_path and (
+            not os.path.isabs(part) or (is_windows and not os.path.splitdrive(part)[0])
+        ):
+            continue
+        for executable in binaries:
+            bin_path = os.path.abspath(os.path.join(part, executable))
+            if os.path.isfile(bin_path) and os.access(bin_path, os.X_OK):
+                return bin_path
+
+    return None
+
+
+def uses_kubelogin_devicecode(kubeconfig):
+    """Return True if the first user in the kubeconfig authenticates with kubelogin device code."""
+    try:
+        config = yaml.safe_load(kubeconfig)
+        if not config or not config.get('users'):
+            return False
+
+        exec_info = config['users'][0].get('user', {}).get('exec', {})
+        if 'kubelogin' not in exec_info.get('command', ''):
+            return False
+
+        args_str = ' '.join(exec_info.get('args', []))
+        return '--login devicecode' in args_str or '-l devicecode' in args_str
+    except (yaml.YAMLError, KeyError, TypeError, AttributeError) as ex:
+        logger.debug("Error parsing kubeconfig: %s", str(ex))
+        return False
+
+
+def convert_kubelogin_devicecode(path, kubeconfig):
+    """Convert a merged kubeconfig that uses kubelogin device code to Azure CLI authentication."""
+    if path == "-" or not uses_kubelogin_devicecode(kubeconfig):
+        return
+
+    kubelogin_path = which("kubelogin")
+    if not kubelogin_path:
+        logger.warning(
+            "The kubeconfig uses devicecode authentication which requires kubelogin. "
+            "Please install kubelogin from https://github.com/Azure/kubelogin or run "
+            "'az aks install-cli' to install both kubectl and kubelogin. "
+            "If devicecode login fails, try running "
+            "'kubelogin convert-kubeconfig -l azurecli' to unblock yourself."
+        )
+        return
+
+    try:
+        subprocess.run(
+            [kubelogin_path, "convert-kubeconfig", "-l", "azurecli", "--kubeconfig", path],
+            check=True,
+        )
+        logger.warning("Converted kubeconfig to use Azure CLI authentication.")
+    except subprocess.CalledProcessError as ex:
+        logger.warning("Failed to convert kubeconfig with kubelogin: %s", str(ex))
+    except Exception as ex:  # pylint: disable=broad-except
+        logger.warning("Error running kubelogin: %s", str(ex))
 
 
 def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name):

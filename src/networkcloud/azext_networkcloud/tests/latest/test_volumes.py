@@ -13,11 +13,7 @@ from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
-from .utils.assert_messages import (
-    missing_field_message,
-    properties_key_mismatch_message,
-)
-from .utils.output_checks import get_value
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -33,9 +29,32 @@ def cleanup_scenario1(test):
 def call_scenario1a(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_create_scenario1(test, checks=[])
-    step_update(test, checks=[])
-    step_show(test, checks=[])
+    step_create_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+            test.check("sizeMiB", attr(test, "size")),
+        ],
+    )
+    step_update(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("sizeMiB", attr(test, "size")),
+        ],
+    )
+    step_show(
+        test,
+        checks=[
+            test.exists("name"),
+            test.exists("id"),
+            test.check("sizeMiB", attr(test, "size")),
+            test.check("storageApplianceId", attr(test, "storageApplianceIdSelected")),
+        ],
+    )
     step_list_by_resource_group(test)
     step_list_by_subscription(test)
     step_delete(test, checks=[])
@@ -45,7 +64,14 @@ def call_scenario1a(test):
 def call_scenario1b(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_create_scenario2(test, checks=[])
+    step_create_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+            test.check("sizeMiB", attr(test, "size")),
+        ],
+    )
     cleanup_scenario1(test)
 
 
@@ -62,8 +88,23 @@ def cleanup_scenario2(test):
 def call_scenario2(test):
     """# Testcase: scenario2 - Volume with storage appliance"""
     setup_scenario2(test)
-    step_create_with_storage_appliance(test, checks=[])
-    step_show(test, checks=[])
+    step_create_with_storage_appliance(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+            test.check("sizeMiB", attr(test, "size")),
+        ],
+    )
+    step_show(
+        test,
+        checks=[
+            test.exists("name"),
+            test.exists("id"),
+            test.check("sizeMiB", attr(test, "size")),
+            test.check("storageApplianceId", attr(test, "storageApplianceIdSelected")),
+        ],
+    )
     step_delete(test, checks=[])
     cleanup_scenario2(test)
 
@@ -76,7 +117,8 @@ def step_create_scenario1(test, checks=None):
         "az networkcloud volume create --resource-group {resourceGroup} "
         "--name {name} --location {location} "
         '--extended-location name={extendedLocation} type="CustomLocation" '
-        "--size {size} --tags {tags}"
+        "--size {size} --tags {tags}",
+        checks=checks,
     )
 
 
@@ -88,7 +130,8 @@ def step_create_scenario2(test, checks=None):
         "az networkcloud volume create --resource-group {resourceGroup} "
         "--volume-name {name} --location {location} "
         '--extended-location name={extendedLocation} type="CustomLocation" '
-        "--size-mib {size} --tags {tags}"
+        "--size-mib {size} --tags {tags}",
+        checks=checks,
     )
 
 
@@ -101,7 +144,8 @@ def step_create_with_storage_appliance(test, checks=None):
         "--name {name} --location {location} "
         '--extended-location name={extendedLocation} type="CustomLocation" '
         "--size {size} --tags {tags} "
-        "--storage-appliance-id {storageApplianceId}"
+        "--storage-appliance-id {storageApplianceId}",
+        checks=checks,
     )
 
 
@@ -111,37 +155,19 @@ def step_update(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud volume update --resource-group {resourceGroup} "
-        "--name {name} --tags {tagsUpdate}"
+        "--name {name} --tags {tagsUpdate}",
+        checks=checks,
     )
 
 
 def step_show(test, checks=None):
     """Volume show operation"""
-    if checks is not None:
-        test.cmd(
-            "az networkcloud volume show --resource-group {resourceGroup} "
-            "--name {name}",
-            checks=checks,
-        )
-        return
-
-    result = test.cmd(
-        "az networkcloud volume show --resource-group {resourceGroup} " "--name {name}"
-    ).get_output_in_json()
-    context = "Volumes show"
-    assert result.get("name") is not None, missing_field_message(
-        context, "name", result
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud volume show --resource-group {resourceGroup} " "--name {name}",
+        checks=checks,
     )
-    properties = result.get("properties")
-    assert result.get("id"), missing_field_message(context, "id", result)
-    assert properties is not None, missing_field_message(context, "properties", result)
-    assert properties.get("size") == get_value(
-        test, "size"
-    ), properties_key_mismatch_message("size")
-
-    assert properties.get("storageApplianceId") == get_value(
-        test, "storageApplianceId"
-    ), properties_key_mismatch_message("storageApplianceId")
 
 
 @AllowLargeResponse
@@ -167,7 +193,8 @@ def step_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud volume delete --resource-group {resourceGroup} --name {name} --yes"
+        "az networkcloud volume delete --resource-group {resourceGroup} --name {name} --yes",
+        checks=checks,
     )
 
 
@@ -186,6 +213,10 @@ class VolumeScenarioTest(ScenarioTest):
                 "tagsUpdate": CONFIG.get("VOLUME", "tags_update"),
                 "size": CONFIG.get("VOLUME", "size"),
                 "storageApplianceId": CONFIG.get("VOLUME", "storage_appliance_id"),
+                "storageApplianceIdSelected": CONFIG.get(
+                    "VOLUME", "storage_appliance_id_selected"
+                ),
+                "provisioningState": CONFIG.get("VOLUME", "provisioning_state"),
             }
         )
 
@@ -199,3 +230,4 @@ class VolumeScenarioTest(ScenarioTest):
 
     def test_volume_scenario2(self):
         """test scenario for volume CRUD operations with storage appliance"""
+        call_scenario2(self)

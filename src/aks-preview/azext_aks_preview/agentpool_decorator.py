@@ -620,6 +620,30 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need validation
         return max_blocked_nodes
 
+    def get_upgrade_gate_enabled(self) -> Union[bool, None]:
+        """Obtain the agent pool upgrade gate setting from --enable-upgrade-gate / --disable-upgrade-gate.
+
+        Only applies to standalone agent pool commands; in managed cluster mode (e.g. `az aks create`), the flags
+        target the cluster-level setting and the server defaults new pools accordingly.
+
+        :return: True if enabling, False if disabling, None if neither flag is specified
+        """
+        if self.agentpool_decorator_mode != AgentPoolDecoratorMode.STANDALONE:
+            return None
+
+        enable_upgrade_gate = self.raw_param.get("enable_upgrade_gate")
+        disable_upgrade_gate = self.raw_param.get("disable_upgrade_gate")
+
+        if enable_upgrade_gate and disable_upgrade_gate:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-upgrade-gate and --disable-upgrade-gate at the same time."
+            )
+        if enable_upgrade_gate:
+            return True
+        if disable_upgrade_gate:
+            return False
+        return None
+
     def get_enable_artifact_streaming(self) -> bool:
         """Obtain the value of enable_artifact_streaming.
         :return: bool
@@ -799,6 +823,17 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """
         # read the original value passed by the command
         gpu_driver = self.raw_param.get("gpu_driver")
+        if gpu_driver is not None and gpu_driver.lower() == CONST_GPU_DRIVER_NONE.lower():
+            if (
+                self.raw_param.get("enable_managed_gpu") is True or
+                self.raw_param.get("gpu_mig_strategy") is not None or
+                self.raw_param.get("gpu_mig_profiles") is not None
+            ):
+                raise MutuallyExclusiveArgumentError(
+                    "--gpu-driver None cannot be used with --enable-managed-gpu true, "
+                    "--gpu-mig-strategy or --gpu-mig-profiles. Managed GPU and MIG require "
+                    "AKS driver installation. Omit --gpu-driver or use --gpu-driver Install."
+                )
 
         # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
         if self.decorator_mode == DecoratorMode.CREATE:
@@ -811,7 +846,6 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 gpu_driver = self.agentpool.gpu_profile.driver
 
         # this parameter does not need dynamic completion
-        # this parameter does not need validation
         return gpu_driver
 
     def get_gpu_driver(self) -> Union[str, None]:
@@ -1847,6 +1881,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_upgrade_strategy(agentpool)
         # set up blue green upgrade settings
         agentpool = self.set_up_blue_green_upgrade_settings(agentpool)
+        # set up upgrade gate settings
+        agentpool = self.set_up_upgrade_gate_settings(agentpool)
         # set up prepared image specification
         agentpool = self.set_up_prepared_image_specification(agentpool)
         # DO NOT MOVE: keep this at the bottom, restore defaults
@@ -1903,6 +1939,22 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             upgrade_settings.max_blocked_nodes = max_blocked_nodes
 
         agentpool.upgrade_settings = upgrade_settings
+        return agentpool
+
+    def set_up_upgrade_gate_settings(self, agentpool: AgentPool) -> AgentPool:
+        """Set up upgrade gate settings for the AgentPool object.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        upgrade_gate_enabled = self.context.get_upgrade_gate_enabled()
+        if upgrade_gate_enabled is not None:
+            if agentpool.upgrade_settings is None:
+                agentpool.upgrade_settings = self.models.AgentPoolUpgradeSettings()  # pylint: disable=no-member
+            agentpool.upgrade_settings.upgrade_gate_settings = (
+                self.models.UpgradeGateSettings(enabled=upgrade_gate_enabled)  # pylint: disable=no-member
+            )
         return agentpool
 
     def set_up_blue_green_upgrade_settings(self, agentpool: AgentPool) -> AgentPool:
@@ -2337,6 +2389,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         # update blue-green upgrade settings
         agentpool = self.update_blue_green_upgrade_settings(agentpool)
 
+        # update upgrade gate settings
+        agentpool = self.update_upgrade_gate_settings(agentpool)
+
         # update gpu profile
         agentpool = self.update_gpu_profile(agentpool)
 
@@ -2513,6 +2568,24 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         if max_unavailable:
             upgrade_settings.max_unavailable = max_unavailable
 
+        return agentpool
+
+    def update_upgrade_gate_settings(self, agentpool: AgentPool) -> AgentPool:
+        """Update upgrade gate settings for the AgentPool object.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        upgrade_gate_enabled = self.context.get_upgrade_gate_enabled()
+        if upgrade_gate_enabled is not None:
+            if agentpool.upgrade_settings is None:
+                agentpool.upgrade_settings = self.models.AgentPoolUpgradeSettings()  # pylint: disable=no-member
+            if agentpool.upgrade_settings.upgrade_gate_settings is None:
+                agentpool.upgrade_settings.upgrade_gate_settings = (
+                    self.models.UpgradeGateSettings()  # pylint: disable=no-member
+                )
+            agentpool.upgrade_settings.upgrade_gate_settings.enabled = upgrade_gate_enabled
         return agentpool
 
     def update_blue_green_upgrade_settings(self, agentpool: AgentPool) -> AgentPool:

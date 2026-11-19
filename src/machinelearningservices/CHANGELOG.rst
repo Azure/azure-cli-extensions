@@ -1,3 +1,9 @@
+## 2026-11-14
+
+### Azure Machine Learning CLI (v2) v 2.45.2
+
+- Update the Azure Machine Learning SDK dependency version for alignment.
+ 
 ## 2026-11-01
 
 ### Azure Machine Learning CLI (v2) v 2.45.1

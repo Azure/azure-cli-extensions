@@ -2367,7 +2367,7 @@ class ContainerappUpRegistryIdentityTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
-    @SubnetPreparer(location="eastus", delegations='Microsoft.App/environments', service_endpoints="Microsoft.Storage.Global")
+    @SubnetPreparer(location=TEST_LOCATION, location_replace_stage="brazilsouth", delegations='Microsoft.App/environments', service_endpoints="Microsoft.Storage.Global")
     def test_containerapp_up_identity_registry(self, resource_group, subnet_id, vnet_name, subnet_name):
         # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use brazilsouth as location
         location = TEST_LOCATION

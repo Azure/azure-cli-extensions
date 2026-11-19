@@ -22,9 +22,9 @@ class LimitsShow(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-01",
+        "version": "2026-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.fileshares/locations/{}/getlimits", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.fileshares/locations/{}/getlimits", "2026-09-01"],
         ]
     }
 
@@ -47,6 +47,28 @@ class LimitsShow(AAZCommand):
         _args_schema.location = AAZResourceLocationArg(
             required=True,
             id_part="name",
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.media_tier = AAZStrArg(
+            options=["--media-tier"],
+            arg_group="Properties",
+            help="The storage media tier. Defaults to SSD.",
+            enum={"HDD": "HDD", "SSD": "SSD"},
+        )
+        _args_schema.protocol = AAZStrArg(
+            options=["--protocol"],
+            arg_group="Properties",
+            help="The file sharing protocol. Defaults to NFS.",
+            enum={"NFS": "NFS"},
+        )
+        _args_schema.scale_mode = AAZStrArg(
+            options=["--scale-mode"],
+            arg_group="Properties",
+            help="The scale mode. Defaults to Compatibility.",
+            enum={"Compatibility": "Compatibility", "Scale": "Scale"},
         )
         return cls._args_schema
 
@@ -111,7 +133,7 @@ class LimitsShow(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }
@@ -121,10 +143,30 @@ class LimitsShow(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"client_flatten": True}}
+            )
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("mediaTier", AAZStrType, ".media_tier")
+                properties.set_prop("protocol", AAZStrType, ".protocol")
+                properties.set_prop("scaleMode", AAZStrType, ".scale_mode")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)

@@ -23,10 +23,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-07-15",
+        "version": "2026-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridcompute/privatelinkscopes", "2026-07-15"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes", "2026-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridcompute/privatelinkscopes", "2026-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes", "2026-09-01"],
         ]
     }
 
@@ -55,9 +55,9 @@ class List(AAZCommand):
         condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
         condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.PrivateLinkScopesList(ctx=self.ctx)()
+            self.HybridComputePrivateLinkScopesList(ctx=self.ctx)()
         if condition_1:
-            self.PrivateLinkScopesListByResourceGroup(ctx=self.ctx)()
+            self.HybridComputePrivateLinkScopesListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -73,7 +73,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class PrivateLinkScopesList(AAZHttpOperation):
+    class HybridComputePrivateLinkScopesList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -113,7 +113,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-15",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }
@@ -281,7 +281,7 @@ class List(AAZCommand):
 
             return cls._schema_on_200
 
-    class PrivateLinkScopesListByResourceGroup(AAZHttpOperation):
+    class HybridComputePrivateLinkScopesListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -325,7 +325,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-15",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }

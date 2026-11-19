@@ -11,3 +11,11 @@ fleet update:
     enable_managed_identity:
       rule_exclusions:
         - option_length_too_long
+fleet identitybindingprofile create:
+  parameters:
+    managed_identity_resource_id:
+      rule_exclusions:
+        - option_length_too_long
+    allowed_subjects_from_file:
+      rule_exclusions:
+        - option_length_too_long

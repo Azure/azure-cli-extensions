@@ -318,8 +318,9 @@ def load_arguments(self, _):
                    options_list=['--resource-modifier-reference', '--resource-modifier'],
                    help='Key value mapping for resource modifier reference')
         c.argument('resource_identifiers', type=str, nargs='+',
-                   help='List of source volume identifiers (volume names or ARM IDs) to restore. '
-                        'Use this parameter for DatasourceType AzureElasticSAN.')
+                   help='List of resource identifiers to restore. For DatasourceType AzureElasticSAN, provide source '
+                        'volume identifiers (volume names or ARM IDs). For DatasourceType AzureCosmosDB, provide '
+                        'database or database/container names.')
         c.argument('resource_name_overrides', type=validate_file_or_dict,
                    options_list=['--resource-name-overrides', '--name-overrides'],
                    help='Map of source volume names to target volume names to restore into. Keys must match selected '
@@ -368,7 +369,7 @@ def load_arguments(self, _):
         c.argument('container_list', type=str, nargs='+', help="specify the list of containers to restore.")
         c.argument('from_prefix_pattern', type=str, nargs='+', help="specify the prefix pattern for start range.")
         c.argument('to_prefix_pattern', type=str, nargs='+', help="specify the prefix pattern for end range.")
-        c.argument('restore_configuration', type=validate_file_or_dict, help="Restore configuration for restore. Use this parameter to restore with AzureKubernetesService or AzureElasticSAN.")
+        c.argument('restore_configuration', type=validate_file_or_dict, help="Restore configuration for restore. Use this parameter to restore with AzureKubernetesService, AzureElasticSAN or AzureCosmosDB.")
         c.argument('vaulted_blob_prefix_pattern', options_list=['--vaulted-blob-prefix-pattern', '--vaulted-blob-prefix'],
                    type=validate_file_or_dict, help="Specify the prefix pattern for vaulted blobs.")
         c.argument('use_system_assigned_identity', options_list=['--mi-system-assigned', '--use-system-identity', '--use-system-assigned-identity'], arg_type=get_three_state_flag(), help="Use system assigned identity")

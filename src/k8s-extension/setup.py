@@ -31,12 +31,12 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    "kubernetes==24.2.0",
-    "oras==0.2.25",
+    "kubernetes>=24.2.0,<36",
+    "oras>=0.2.25,<0.3",
     "azure-mgmt-network>=18.0.0",
 ]
 
-VERSION = "1.9.3"
+VERSION = "1.9.5"
 
 with open("README.rst", "r", encoding="utf-8") as f:
     README = f.read()

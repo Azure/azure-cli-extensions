@@ -3,6 +3,19 @@
 Release History
 ===============
 
+2.0.1b4
++++++++
+* ``az aimanager namespace modeldeployment update``: Stop automatically sending an
+  ``If-Match`` header, matching the unconditional updates used by AI Manager and namespace
+  update commands.
+
+2.0.1b3
++++++++
+* ``az aimanager get-credentials`` and ``az aimanager namespace get-credentials``: If the
+  kubeconfig uses kubelogin device code authentication, convert it to Azure CLI authentication
+  with ``kubelogin convert-kubeconfig -l azurecli`` when kubelogin is installed, matching
+  ``az aks get-credentials``.
+  
 2.0.1b2
 +++++++
 * ``az aimanager create/update``, ``az aimanager namespace create/update`` and ``az aimanager

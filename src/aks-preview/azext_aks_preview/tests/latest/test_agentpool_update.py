@@ -9,9 +9,10 @@ from unittest.mock import Mock, patch
 from azext_aks_preview import ContainerServiceCommandsLoader, register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from azext_aks_preview.agentpool_decorator import AKSPreviewAgentPoolModels
-from azext_aks_preview.custom import aks_agentpool_update
+from azext_aks_preview.custom import aks_agentpool_add, aks_agentpool_update
 from azext_aks_preview.tests.latest.mocks import MockCLI, MockCmd, MockClient
 from azure.cli.command_modules.acs._consts import AgentPoolDecoratorMode
+from azure.cli.core.azclierror import MutuallyExclusiveArgumentError
 from azure.cli.core.parser import AzCliCommandParser
 
 
@@ -116,6 +117,34 @@ class TestAgentPoolUpdateGPUProfile(unittest.TestCase):
                 )
                 submitted = self._update(self._pool(profile), enable_managed_gpu=enabled)
                 self.assertEqual(submitted.gpu_profile.nvidia.management_mode, mode)
+
+    def test_conflicting_gpu_driver_is_rejected_before_submission(self):
+        for handler in (aks_agentpool_add, aks_agentpool_update):
+            for options in (
+                {"enable_managed_gpu": True},
+                {"gpu_mig_strategy": "Single"},
+                {"gpu_mig_strategy": "Mixed"},
+                {"gpu_mig_profiles": ["MIG3g"]},
+                {
+                    "enable_managed_gpu": True,
+                    "gpu_mig_strategy": "Mixed",
+                    "gpu_mig_profiles": ["MIG1g", "MIG2g", "MIG2g", "MIG2g"],
+                },
+            ):
+                with self.subTest(command=handler.__name__, options=options):
+                    self.client.get = Mock(return_value=self._pool(None))
+                    self.client.begin_create_or_update = Mock()
+                    with patch(
+                        "azext_aks_preview.agentpool_decorator.cf_agent_pools",
+                        return_value=Mock(list=Mock(return_value=[])),
+                    ), self.assertRaisesRegex(
+                        MutuallyExclusiveArgumentError, "--gpu-driver None cannot be used with"
+                    ):
+                        handler(
+                            self.cmd, self.client, "test-rg", "test-cluster", "gpunp",
+                            gpu_driver="None", no_wait=True, **options
+                        )
+                    self.client.begin_create_or_update.assert_not_called()
 
     def test_managed_gpu_command_argument_preserves_three_states(self):
         cli_ctx = self.cmd.cli_ctx

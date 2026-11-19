@@ -790,7 +790,14 @@ helps['cosmosdb copy'] = """
 
 helps['cosmosdb copy create'] = """
     type: command
-    short-summary: "Creates a container copy job."
+    short-summary: "Creates a container copy job on the source account by default."
+    long-summary: |
+        Use the hosting account's subscription and resource group. Jobs are hosted on the source by
+        default; set --host-copy-on-src false to host on the destination instead. For cross-account
+        source-hosted copies, configure the source account's default managed identity with read-write
+        access to the destination. For destination-hosted copies, configure the destination account's
+        default managed identity with read access to the source. Manage jobs using the hosting account.
+        MongoDB RU-to-vCore jobs are always hosted on the source account.
     parameters:
       - name: --src-cassandra
         short-summary: "Source table"
@@ -840,9 +847,12 @@ helps['cosmosdb copy create'] = """
       - name: Copy Azure Cosmos DB API for NoSQL container in same account
         text: |-
           az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "acc1" --dest-account "acc1" --src-nosql database=db1 container=c1 --dest-nosql database=db2 container=c2
-      - name: Copy Azure Cosmos DB API for NoSQL container in different account
+      - name: Copy Azure Cosmos DB API for NoSQL container to a different account, hosting the job on acc1 in rg1
         text: |-
           az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "acc1" --dest-account "acc2" --src-nosql database=db1 container=c1 --dest-nosql database=db2 container=c2
+      - name: Copy Azure Cosmos DB API for NoSQL container, hosting the job on destination acc2 in rg2
+        text: |-
+          az cosmosdb copy create -g "rg2" --job-name "j1" --src-account "acc1" --dest-account "acc2" --host-copy-on-src false --src-nosql database=db1 container=c1 --dest-nosql database=db2 container=c2
       - name: Copy Azure Cosmos DB API for Apache Cassandra table
         text: |-
           az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "acc1" --dest-account "acc1" --src-cassandra keyspace=k1 table=t1 --dest-cassandra keyspace=k2 table=t2
@@ -1717,7 +1727,7 @@ examples:
     text: |
       az cosmosdb fleet create \\
         --resource-group MyResourceGroup \\
-        --fleet-name MyFleet \\
+        --fleet-name myfleet \\
         --location westus
 """
 
@@ -1744,27 +1754,46 @@ short-summary: Manage Cosmos DB Fleetspace resources.
 helps['cosmosdb fleetspace create'] = """
 type: command
 short-summary: Create a new Fleetspace under a Cosmos DB Fleet.
+long-summary: |
+  Creates a NoSQL fleetspace. serviceTier and nonempty dataRegions are required creation settings.
+  Omit throughputPoolConfiguration, or set it to null or {}, for non-pooled creation.
+  Pooling requires both positive integer throughput bounds with maxThroughput >= minThroughput.
+  Additional throughput constraints and supported tiers and regions are service-configured.
 examples:
   - name: Create a fleetspace
     text: |
       az cosmosdb fleetspace create \\
         --resource-group MyResourceGroup \\
-        --fleet-name MyFleet \\
-        --fleetspace-name MyFleetspace \\
+        --fleet-name myfleet \\
+        --fleetspace-name myspace \\
         --body @fleetspace.json
+  - name: Create a non-pooled fleetspace
+    text: |
+      az cosmosdb fleetspace create \\
+        --resource-group MyResourceGroup \\
+        --fleet-name myfleet \\
+        --fleetspace-name myspace \\
+        --body '{"properties":{"serviceTier":"GeneralPurpose","dataRegions":["West US 2"]}}'
 """
 
 helps['cosmosdb fleetspace update'] = """
 type: command
 short-summary: Update an existing Cosmos DB Fleetspace.
+long-summary: |
+  Both positive integer minThroughput and maxThroughput are required in throughputPoolConfiguration,
+  with maxThroughput >= minThroughput. Additional constraints are service-configured.
+  Partial updates and omitted, null or empty configurations are not supported by this CLI.
+  serviceTier and dataRegions are creation settings; supplied update values cannot change them.
+  Do not omit configuration in a raw service request to preserve pooling: omission can disable pooling.
+  Fleetspaces use the NoSQL API; this command does not change the API kind.
 examples:
   - name: Update fleetspace throughput settings
     text: |
       az cosmosdb fleetspace update \\
         --resource-group MyResourceGroup \\
-        --fleet-name MyFleet \\
-        --fleetspace-name MyFleetspace \\
-        --body @fleetspace.json
+        --fleet-name myfleet \\
+        --fleetspace-name myspace \\
+        --body '{"properties":{"throughputPoolConfiguration":{"minThroughput":100000,"maxThroughput":300000}}}'
 """
 
 helps['cosmosdb fleetspace list'] = """
@@ -1790,14 +1819,18 @@ short-summary: Manage database accounts within a Cosmos DB Fleetspace.
 helps['cosmosdb fleetspace account create'] = """
 type: command
 short-summary: Register an existing Cosmos DB database account to a Fleetspace.
+long-summary: |
+  The attachment name must match the database account name in resourceId, ignoring case; aliases are not supported.
+  resourceId must identify a Microsoft.DocumentDB/databaseAccounts resource, not a child resource.
+  armLocation is mandatory and nonblank; the service derives the authoritative location from the account.
 examples:
   - name: Register a database account to a fleetspace
     text: |
       az cosmosdb fleetspace account create \\
         --resource-group MyResourceGroup \\
-        --fleet-name MyFleet \\
-        --fleetspace-name MyFleetspace \\
-        --fleetspace-account-name MyAccount \\
+        --fleet-name myfleet \\
+        --fleetspace-name myspace \\
+        --fleetspace-account-name myaccount \\
         --body @fleetspaceAccount.json
 """
 

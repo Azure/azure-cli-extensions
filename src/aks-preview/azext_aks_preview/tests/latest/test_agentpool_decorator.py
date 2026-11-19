@@ -517,6 +517,58 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         ctx_1.attach_agentpool(agentpool)
         self.assertEqual(ctx_1.get_gpu_driver(), CONST_GPU_DRIVER_INSTALL)
 
+        managed_gpu_options = (
+            {"enable_managed_gpu": True},
+            {"gpu_mig_strategy": "Single"},
+            {"gpu_mig_strategy": "Mixed"},
+            {"gpu_mig_profiles": ["MIG3g"]},
+            {
+                "enable_managed_gpu": True,
+                "gpu_mig_strategy": "Mixed",
+                "gpu_mig_profiles": ["MIG1g", "MIG2g", "MIG2g", "MIG2g"],
+            },
+        )
+        for mode in (DecoratorMode.CREATE, DecoratorMode.UPDATE):
+            for options in managed_gpu_options:
+                for driver in ("None", "none", "NONE"):
+                    with self.subTest(mode=mode, options=options, driver=driver):
+                        ctx = AKSPreviewAgentPoolContext(
+                            self.cmd,
+                            AKSAgentPoolParamDict({"gpu_driver": driver, **options}),
+                            self.models,
+                            mode,
+                            self.agentpool_decorator_mode,
+                        )
+                        # Earlier decorators may already have selected Install.
+                        ctx.attach_agentpool(agentpool)
+                        with self.assertRaisesRegex(
+                            MutuallyExclusiveArgumentError,
+                            "Managed GPU and MIG require AKS driver installation",
+                        ):
+                            ctx.get_gpu_driver()
+
+                for driver in (None, CONST_GPU_DRIVER_INSTALL):
+                    with self.subTest(mode=mode, options=options, driver=driver):
+                        ctx = AKSPreviewAgentPoolContext(
+                            self.cmd,
+                            AKSAgentPoolParamDict({"gpu_driver": driver, **options}),
+                            self.models,
+                            mode,
+                            self.agentpool_decorator_mode,
+                        )
+                        self.assertEqual(ctx.get_gpu_driver(), driver)
+
+            for options in ({}, {"enable_managed_gpu": False}):
+                with self.subTest(mode=mode, options=options):
+                    ctx = AKSPreviewAgentPoolContext(
+                        self.cmd,
+                        AKSAgentPoolParamDict({"gpu_driver": CONST_GPU_DRIVER_NONE, **options}),
+                        self.models,
+                        mode,
+                        self.agentpool_decorator_mode,
+                    )
+                    self.assertEqual(ctx.get_gpu_driver(), CONST_GPU_DRIVER_NONE)
+
     def common_get_driver_type(self):
         # default
         ctx_1 = AKSPreviewAgentPoolContext(
@@ -1467,6 +1519,44 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
     def test_get_enable_managed_dranet(self):
         self.common_get_enable_managed_dranet()
 
+    def test_get_upgrade_gate_enabled(self):
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"enable_upgrade_gate": False, "disable_upgrade_gate": False}),
+            self.models,
+            DecoratorMode.UPDATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertIsNone(ctx_1.get_upgrade_gate_enabled())
+
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"enable_upgrade_gate": True}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertTrue(ctx_2.get_upgrade_gate_enabled())
+
+        ctx_3 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"disable_upgrade_gate": True}),
+            self.models,
+            DecoratorMode.UPDATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertFalse(ctx_3.get_upgrade_gate_enabled())
+
+        ctx_4 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"enable_upgrade_gate": True, "disable_upgrade_gate": True}),
+            self.models,
+            DecoratorMode.UPDATE,
+            self.agentpool_decorator_mode,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_4.get_upgrade_gate_enabled()
+
     def test_get_enable_os_disk_full_caching(self):
         self.common_get_enable_os_disk_full_caching()
 
@@ -1590,6 +1680,17 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
 
     def test_get_enable_managed_dranet(self):
         self.common_get_enable_managed_dranet()
+
+    def test_get_upgrade_gate_enabled(self):
+        # in managed cluster mode the flag targets the cluster-level setting, not the agent pool
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"enable_upgrade_gate": True}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertIsNone(ctx_1.get_upgrade_gate_enabled())
 
     def test_get_enable_os_disk_full_caching(self):
         self.common_get_enable_os_disk_full_caching()
@@ -2903,6 +3004,58 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
     def test_set_up_blue_green_upgrade_settings(self):
         self.common_set_up_blue_green_upgrade_settings()
 
+    def test_set_up_upgrade_gate_settings(self):
+        # no flag - no change
+        dec_1 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"enable_upgrade_gate": False, "disable_upgrade_gate": False},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_1 = self.create_initialized_agentpool_instance()
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.set_up_upgrade_gate_settings(agentpool_1)
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance()
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+
+        # enable, preserving existing upgrade settings
+        dec_2 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"enable_upgrade_gate": True},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_2 = self.create_initialized_agentpool_instance(
+            upgrade_settings=self.models.AgentPoolUpgradeSettings(max_surge="33%")
+        )
+        dec_2.context.attach_agentpool(agentpool_2)
+        dec_agentpool_2 = dec_2.set_up_upgrade_gate_settings(agentpool_2)
+        ground_truth_agentpool_2 = self.create_initialized_agentpool_instance(
+            upgrade_settings=self.models.AgentPoolUpgradeSettings(
+                max_surge="33%",
+                upgrade_gate_settings=self.models.UpgradeGateSettings(enabled=True),
+            )
+        )
+        self.assertEqual(dec_agentpool_2, ground_truth_agentpool_2)
+
+        # disable on a pool without upgrade settings
+        dec_3 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"disable_upgrade_gate": True},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_3 = self.create_initialized_agentpool_instance(upgrade_settings=None)
+        dec_3.context.attach_agentpool(agentpool_3)
+        dec_agentpool_3 = dec_3.set_up_upgrade_gate_settings(agentpool_3)
+        self.assertEqual(
+            dec_agentpool_3.upgrade_settings.upgrade_gate_settings,
+            self.models.UpgradeGateSettings(enabled=False),
+        )
+
     def test_construct_agentpool_profile_preview_with_managed_system_mode(self):
         self.common_construct_agentpool_profile_preview_with_managed_system_mode()
 
@@ -3054,6 +3207,21 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(
 
     def test_set_up_blue_green_upgrade_settings(self):
         self.common_set_up_blue_green_upgrade_settings()
+
+    def test_set_up_upgrade_gate_settings(self):
+        # the cluster-level flag must not be stamped onto the default agent pool
+        dec_1 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"enable_upgrade_gate": True},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_1 = self.create_initialized_agentpool_instance()
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.set_up_upgrade_gate_settings(agentpool_1)
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance()
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
 
 class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
@@ -4023,6 +4191,71 @@ class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(
     def test_update_blue_green_upgrade_settings(self):
         self.common_update_blue_green_upgrade_settings()
 
+    def test_update_upgrade_gate_settings(self):
+        # no flag - existing gate setting is left unchanged
+        dec_1 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_upgrade_gate": False, "disable_upgrade_gate": False},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_1 = self.create_initialized_agentpool_instance(
+            upgrade_settings=self.models.AgentPoolUpgradeSettings(
+                upgrade_gate_settings=self.models.UpgradeGateSettings(enabled=True),
+            )
+        )
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.update_upgrade_gate_settings(agentpool_1)
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
+            upgrade_settings=self.models.AgentPoolUpgradeSettings(
+                upgrade_gate_settings=self.models.UpgradeGateSettings(enabled=True),
+            )
+        )
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+
+        # enable on a pool without upgrade settings
+        dec_2 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_upgrade_gate": True},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_2 = self.create_initialized_agentpool_instance()
+        dec_2.context.attach_agentpool(agentpool_2)
+        dec_agentpool_2 = dec_2.update_upgrade_gate_settings(agentpool_2)
+        ground_truth_agentpool_2 = self.create_initialized_agentpool_instance(
+            upgrade_settings=self.models.AgentPoolUpgradeSettings(
+                upgrade_gate_settings=self.models.UpgradeGateSettings(enabled=True),
+            )
+        )
+        self.assertEqual(dec_agentpool_2, ground_truth_agentpool_2)
+
+        # disable, preserving other upgrade settings
+        dec_3 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_upgrade_gate": True},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_3 = self.create_initialized_agentpool_instance(
+            upgrade_settings=self.models.AgentPoolUpgradeSettings(
+                max_surge="10%",
+                upgrade_gate_settings=self.models.UpgradeGateSettings(enabled=True),
+            )
+        )
+        dec_3.context.attach_agentpool(agentpool_3)
+        dec_agentpool_3 = dec_3.update_upgrade_gate_settings(agentpool_3)
+        ground_truth_agentpool_3 = self.create_initialized_agentpool_instance(
+            upgrade_settings=self.models.AgentPoolUpgradeSettings(
+                max_surge="10%",
+                upgrade_gate_settings=self.models.UpgradeGateSettings(enabled=False),
+            )
+        )
+        self.assertEqual(dec_agentpool_3, ground_truth_agentpool_3)
+
     def test_update_localdns_profile(self):
         self.common_update_localdns_profile()
 
@@ -4132,6 +4365,29 @@ class AKSPreviewAgentPoolUpdateDecoratorManagedClusterModeTestCase(
 
     def test_update_blue_green_upgrade_settings(self):
         self.common_update_blue_green_upgrade_settings()
+
+    def test_update_upgrade_gate_settings(self):
+        # the cluster-level flag must not be applied to agent pools in managed cluster mode
+        dec_1 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_upgrade_gate": True},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_1 = self.create_initialized_agentpool_instance(
+            upgrade_settings=self.models.AgentPoolUpgradeSettings(
+                upgrade_gate_settings=self.models.UpgradeGateSettings(enabled=True),
+            )
+        )
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.update_upgrade_gate_settings(agentpool_1)
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
+            upgrade_settings=self.models.AgentPoolUpgradeSettings(
+                upgrade_gate_settings=self.models.UpgradeGateSettings(enabled=True),
+            )
+        )
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
     def test_update_localdns_profile(self):
         self.common_update_localdns_profile()

@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/dbsystemshapes/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/dbsystemshapes/{}", "2026-06-01"],
         ]
     }
 
@@ -124,7 +124,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -175,86 +175,86 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.are_server_types_supported = AAZBoolType(
+                serialized_name="areServerTypesSupported",
+            )
             properties.available_core_count = AAZIntType(
                 serialized_name="availableCoreCount",
-                flags={"required": True, "read_only": True},
+                flags={"required": True},
             )
             properties.available_core_count_per_node = AAZIntType(
                 serialized_name="availableCoreCountPerNode",
-                flags={"read_only": True},
             )
             properties.available_data_storage_in_tbs = AAZIntType(
                 serialized_name="availableDataStorageInTbs",
-                flags={"read_only": True},
             )
             properties.available_data_storage_per_server_in_tbs = AAZFloatType(
                 serialized_name="availableDataStoragePerServerInTbs",
-                flags={"read_only": True},
             )
             properties.available_db_node_per_node_in_gbs = AAZIntType(
                 serialized_name="availableDbNodePerNodeInGbs",
-                flags={"read_only": True},
             )
             properties.available_db_node_storage_in_gbs = AAZIntType(
                 serialized_name="availableDbNodeStorageInGbs",
-                flags={"read_only": True},
             )
             properties.available_memory_in_gbs = AAZIntType(
                 serialized_name="availableMemoryInGbs",
-                flags={"read_only": True},
             )
             properties.available_memory_per_node_in_gbs = AAZIntType(
                 serialized_name="availableMemoryPerNodeInGbs",
-                flags={"read_only": True},
+            )
+            properties.compute_model = AAZStrType(
+                serialized_name="computeModel",
             )
             properties.core_count_increment = AAZIntType(
                 serialized_name="coreCountIncrement",
-                flags={"read_only": True},
+            )
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
             )
             properties.max_storage_count = AAZIntType(
                 serialized_name="maxStorageCount",
-                flags={"read_only": True},
             )
             properties.maximum_node_count = AAZIntType(
                 serialized_name="maximumNodeCount",
-                flags={"read_only": True},
             )
             properties.min_core_count_per_node = AAZIntType(
                 serialized_name="minCoreCountPerNode",
-                flags={"read_only": True},
             )
             properties.min_data_storage_in_tbs = AAZIntType(
                 serialized_name="minDataStorageInTbs",
-                flags={"read_only": True},
             )
             properties.min_db_node_storage_per_node_in_gbs = AAZIntType(
                 serialized_name="minDbNodeStoragePerNodeInGbs",
-                flags={"read_only": True},
             )
             properties.min_memory_per_node_in_gbs = AAZIntType(
                 serialized_name="minMemoryPerNodeInGbs",
-                flags={"read_only": True},
             )
             properties.min_storage_count = AAZIntType(
                 serialized_name="minStorageCount",
-                flags={"read_only": True},
             )
             properties.minimum_core_count = AAZIntType(
                 serialized_name="minimumCoreCount",
-                flags={"read_only": True},
             )
             properties.minimum_node_count = AAZIntType(
                 serialized_name="minimumNodeCount",
-                flags={"read_only": True},
             )
             properties.runtime_minimum_core_count = AAZIntType(
                 serialized_name="runtimeMinimumCoreCount",
-                flags={"read_only": True},
+            )
+            properties.shape_attributes = AAZListType(
+                serialized_name="shapeAttributes",
             )
             properties.shape_family = AAZStrType(
                 serialized_name="shapeFamily",
-                flags={"read_only": True},
             )
+            properties.shape_name = AAZStrType(
+                serialized_name="shapeName",
+                flags={"required": True},
+            )
+
+            shape_attributes = cls._schema_on_200.properties.shape_attributes
+            shape_attributes.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

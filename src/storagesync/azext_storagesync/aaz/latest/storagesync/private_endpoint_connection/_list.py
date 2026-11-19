@@ -19,9 +19,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-06-01",
+        "version": "2025-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagesync/storagesyncservices/{}/privateendpointconnections", "2022-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagesync/storagesyncservices/{}/privateendpointconnections", "2025-12-01"],
         ]
     }
 
@@ -48,6 +48,9 @@ class List(AAZCommand):
             options=["--storage-sync-service", "--storage-sync-service-name"],
             help="Name of Storage Sync Service resource.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="",
+            ),
         )
         return cls._args_schema
 
@@ -116,7 +119,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-06-01",
+                    "api-version", "2025-12-01",
                     required=True,
                 ),
             }
@@ -149,6 +152,9 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
             _schema_on_200.value = AAZListType()
 
             value = cls._schema_on_200.value
@@ -173,6 +179,10 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.group_ids = AAZListType(
+                serialized_name="groupIds",
+                flags={"read_only": True},
+            )
             properties.private_endpoint = AAZObjectType(
                 serialized_name="privateEndpoint",
             )
@@ -184,6 +194,9 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+
+            group_ids = cls._schema_on_200.value.Element.properties.group_ids
+            group_ids.Element = AAZStrType()
 
             private_endpoint = cls._schema_on_200.value.Element.properties.private_endpoint
             private_endpoint.id = AAZStrType(

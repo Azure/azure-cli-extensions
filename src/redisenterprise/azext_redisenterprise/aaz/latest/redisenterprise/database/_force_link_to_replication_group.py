@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "redisenterprise database force-link-to-replication-group",
+    is_preview=True,
 )
 class ForceLinkToReplicationGroup(AAZCommand):
     """Forcibly recreates an existing database on the specified cluster, and rejoins it to an existing replication group. **IMPORTANT NOTE:** All data in this database will be discarded, and the database will temporarily be unavailable while rejoining the replication group.
@@ -22,9 +23,9 @@ class ForceLinkToReplicationGroup(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-01-preview",
+        "version": "2026-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/forcelinktoreplicationgroup", "2026-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/forcelinktoreplicationgroup", "2026-10-01-preview"],
         ]
     }
 
@@ -163,7 +164,7 @@ class ForceLinkToReplicationGroup(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01-preview",
+                    "api-version", "2026-10-01-preview",
                     required=True,
                 ),
             }

@@ -47,6 +47,6 @@ runs:
         pip install --upgrade azdev==0.2.13
         azdev --version
         cd ../
-        azdev setup -c azure-cli -r azure-cli-extensions --debug
+        azdev setup -c azure-cli -r "$GITHUB_WORKSPACE" --debug
         az --version
         pip list -v

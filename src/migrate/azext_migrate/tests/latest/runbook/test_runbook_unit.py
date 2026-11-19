@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 import io
+import html
+import inspect
 import json
 import os
 import copy
@@ -14,19 +16,23 @@ import zipfile
 from types import SimpleNamespace
 from unittest import mock
 
+import requests
 from azure.cli.core.azclierror import (
     AzureResponseError,
     CLIInternalError,
     ForbiddenError,
     InvalidArgumentValueError,
+    ManualInterrupt,
     RequiredArgumentMissingError,
 )
 from knack.util import CLIError
 
 from azext_migrate.shared import arm_ids
 from azext_migrate.shared import arm_client as arm_client_mod
+from azext_migrate.shared import execution_endpoint_client as execution_endpoint_client_mod
 from azext_migrate.shared import files
 from azext_migrate.shared.arm_client import ArmClient
+from azext_migrate.shared.execution_endpoint_client import ExecutionEndpointClient
 from azext_migrate.shared.constants import WAVE_OPERATIONS_API_VERSION
 from azext_migrate.runbook import models, transformers
 from azext_migrate.runbook import deps as deps_mod
@@ -52,6 +58,7 @@ from azext_migrate.runbook.constants import (
     RUNBOOK_STATUS_VALUES,
 )
 from azext_migrate.runbook.models import ExecutionAction
+from azext_migrate.runbook.params import load_runbook_arguments
 from azext_migrate.runbook.validators import (
     validate_generate,
     validate_step_complete,
@@ -63,6 +70,9 @@ PROJECT = "myProject"
 RUNBOOK = "myRunbook"
 ARTIFACT = "rb-art-1"
 WAVE = "myWave"
+ENDPOINT = 'http://127.0.0.1:7075'
+EXECUTION_ID = '11111111-1111-1111-1111-111111111111'
+EXECUTION_STATUS = {'executionStatus': {'status': 'AwaitingUserAction', 'workstreams': []}}
 
 
 class RunbookArmIdTests(unittest.TestCase):
@@ -598,6 +608,67 @@ def _make_zip(members):
 
 
 class FilesTests(unittest.TestCase):
+
+    def test_write_text_replaces_existing_file_atomically(self):
+        with tempfile.TemporaryDirectory() as root:
+            path = os.path.join(root, 'nested', 'view.html')
+            self.assertEqual(files.write_text(path, 'old'), path)
+            self.assertEqual(files.write_text(path, 'new \u2713'), path)
+            with open(path, encoding='utf-8') as handle:
+                self.assertEqual(handle.read(), 'new \u2713')
+            self.assertEqual(os.listdir(os.path.dirname(path)), ['view.html'])
+
+    def test_write_text_retries_windows_file_locks(self):
+        for code in (5, 32, 33):
+            with self.subTest(winerror=code), tempfile.TemporaryDirectory() as root:
+                path = os.path.join(root, 'view.html')
+                files.write_text(path, 'old')
+                error = PermissionError('file locked')
+                error.winerror = code
+                with mock.patch.object(
+                        files.os, 'replace', wraps=os.replace,
+                        side_effect=[error, error, mock.DEFAULT]) as replace, \
+                        mock.patch.object(files.time, 'sleep') as sleep:
+                    self.assertEqual(files.write_text(path, 'new'), path)
+                self.assertEqual(replace.call_count, 3)
+                self.assertEqual(replace.call_args_list, [replace.call_args] * 3)
+                self.assertEqual(sleep.call_args_list, [mock.call(0.1), mock.call(0.2)])
+                with open(path, encoding='utf-8') as handle:
+                    self.assertEqual(handle.read(), 'new')
+                self.assertEqual(os.listdir(root), ['view.html'])
+
+    def test_write_text_persistent_lock_preserves_file_and_cleans_temp(self):
+        with tempfile.TemporaryDirectory() as root:
+            path = os.path.join(root, 'view.html')
+            files.write_text(path, 'old')
+            error = PermissionError('file locked')
+            error.winerror = 5
+            with mock.patch.object(files.os, 'replace', side_effect=error) as replace, \
+                    mock.patch.object(files.time, 'sleep') as sleep:
+                with self.assertRaisesRegex(CLIInternalError, 'another --file path'):
+                    files.write_text(path, 'new')
+            self.assertEqual(replace.call_count, 5)
+            self.assertEqual(sleep.call_args_list, [
+                mock.call(0.1), mock.call(0.2), mock.call(0.4), mock.call(0.8)])
+            with open(path, encoding='utf-8') as handle:
+                self.assertEqual(handle.read(), 'old')
+            self.assertEqual(os.listdir(root), ['view.html'])
+
+    def test_write_text_other_errors_fail_without_retry(self):
+        for error in (PermissionError('permissions'), OSError('disk error')):
+            with self.subTest(error=type(error).__name__), \
+                    tempfile.TemporaryDirectory() as root:
+                path = os.path.join(root, 'view.html')
+                files.write_text(path, 'old')
+                with mock.patch.object(files.os, 'replace', side_effect=error) as replace, \
+                        mock.patch.object(files.time, 'sleep') as sleep:
+                    with self.assertRaises(type(error)):
+                        files.write_text(path, 'new')
+                replace.assert_called_once()
+                sleep.assert_not_called()
+                with open(path, encoding='utf-8') as handle:
+                    self.assertEqual(handle.read(), 'old')
+                self.assertEqual(os.listdir(root), ['view.html'])
 
     def test_extract_sas_url_top_level(self):
         self.assertEqual(
@@ -1442,18 +1513,24 @@ class ExecutionAutoViewTests(unittest.TestCase):
         self.assertTrue(vis.call_args.kwargs.get('watch'))
 
     def test_open_execution_view_watch_failure_is_actionable(self):
-        # A mid-watch failure (e.g. a denied status-download poll) must not
-        # be reported as an "open" failure: the execution already started,
-        # so surface the re-check command instead.
+        # A mid-watch failure (e.g. a transient ARM outage or denied
+        # status-download poll) must not be reported as an "open" failure:
+        # the execution already started, so point back to the live view.
         with mock.patch.object(
                 execution_cmds, 'visualize',
                 side_effect=Exception('Forbidden')), \
-                mock.patch.object(execution_cmds, 'logger') as log:
+                mock.patch.object(execution_cmds, 'logger') as log, \
+                mock.patch.dict(os.environ, {'AZURE_MIGRATE_EXECUTION_ENDPOINT': ''}):
             execution_cmds._open_execution_view(
                 mock.Mock(), RG, PROJECT, RUNBOOK, "e9")
         msg = ' '.join(str(c.args) for c in log.warning.call_args_list)
-        self.assertIn('execution show', msg)
+        self.assertIn('execution visualize', msg)
+        self.assertIn('--watch', msg)
         self.assertNotIn('Could not open the execution view', msg)
+        message = log.warning.call_args.args[0] % log.warning.call_args.args[1:]
+        self.assertIn(
+            'az migrate runbook execution visualize -g %s --project-name %s '
+            '--runbook-name %s --execution-id e9 --watch' % (RG, PROJECT, RUNBOOK), message)
 
 
 class ExecutionStepModelTests(unittest.TestCase):
@@ -1521,13 +1598,26 @@ class ExecutionStepCommandTests(unittest.TestCase):
 
     def test_approve_posts_provide_approval(self):
         self.client.post_action.return_value = {"ok": True}
-        execution_step_cmds.approve(
-            mock.Mock(), RG, PROJECT, RUNBOOK, "e1", "step1",
-            entities=["ent1"])
+        with mock.patch.object(execution_step_cmds.logger, 'warning') as warning:
+            self.client.post_action.side_effect = lambda *args: (
+                warning.assert_not_called() or {"ok": True})
+            result = execution_step_cmds.approve(
+                mock.Mock(), RG, PROJECT, RUNBOOK, "e1", "step1",
+                entities=["ent1"])
+            warning.assert_called_once_with("Step approval recorded.")
+        self.assertEqual(result, {"ok": True})
         self.client.post_action.assert_called_once_with(
             self._execution_id(), 'ProvideApproval',
             {"action": "Approve", "targetId": "step1",
              "entities": ["ent1"]})
+
+    def test_approve_failure_does_not_log_success(self):
+        self.client.post_action.side_effect = RuntimeError("Approval failed")
+        with mock.patch.object(execution_step_cmds.logger, 'warning') as warning:
+            with self.assertRaisesRegex(RuntimeError, "Approval failed"):
+                execution_step_cmds.approve(
+                    mock.Mock(), RG, PROJECT, RUNBOOK, "e1", "step1")
+            warning.assert_not_called()
 
     def test_complete_posts_update_step_status(self):
         self.client.post_action.return_value = {"ok": True}
@@ -1803,6 +1893,29 @@ class ExecutionParameterCommandTests(unittest.TestCase):
 
 class ConfigureRendererTests(unittest.TestCase):
 
+    def test_render_bulk_clear_preserves_non_editable_overrides(self):
+        html_text = configure_renderer.render(_CFG_INPUTS, None, {"runbook": "r"})
+        self.assertIn(
+            'entityFields(sid).filter(f => rulesFor(sid)[f].isEditable !== false)'
+            '.forEach(f => delete ov[f]);', html_text)
+        self.assertNotIn('entityFields(sid).forEach(f => delete ov[f]);', html_text)
+
+    def test_client_schema_validation(self):
+        import shutil
+        import subprocess
+
+        node = shutil.which('node')
+        if not node:
+            self.skipTest('Node.js is required for client-side runtime tests')
+        html_text = configure_renderer.render(
+            _CFG_INPUTS, _CFG_SPEC, {"runbook": "r"})
+        result = subprocess.run(
+            [node, os.path.join(os.path.dirname(__file__),
+                               'test_configure_schema.js')],
+            input=html_text, text=True, capture_output=True, check=False,
+            timeout=60)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
     def test_build_meta_parses_ids_when_args_absent(self):
         meta = configure_renderer.build_meta(
             None, None, None, _CFG_INPUTS)
@@ -1823,6 +1936,8 @@ class ConfigureRendererTests(unittest.TestCase):
                 "stepInputs": {"s-1": {"note": "</script><b>x"}}}}
         html_text = configure_renderer.render(root, None, {"runbook": "r"})
         self.assertNotIn('__RUNBOOK_DATA__', html_text)
+        self.assertNotIn('__SCHEMA_VALIDATOR__', html_text)
+        self.assertNotIn('RunbookSchema', html_text)
         self.assertNotIn('</script><b>x', html_text)
         self.assertIn('\\u003c', html_text)
         self.assertIn('s-1', html_text)
@@ -2132,6 +2247,69 @@ class ExecutionStatusParsingTests(unittest.TestCase):
         self.assertIn('Attempt 1', html_text)
         self.assertIn('class="retry"', html_text)
         self.assertIn('Dependency', html_text)
+
+    def test_execution_render_preserves_nested_errors_per_context(self):
+        doc = copy.deepcopy(_STATUS_DETAIL_DOC)
+        step = doc['workstreams'][0]['steps'][0]
+        entity = step['entityExecutions'][0]
+        attempt = entity['attempts'][0]
+        expected = []
+        for node, context in ((step, 'step'), (attempt, 'attempt'),
+                              (entity, 'workload')):
+            details = {
+                'code': 'ValidationFailed',
+                'message': 'Review the error for details.',
+                'errors': [
+                    {'code': context + '.TargetDatabaseAlreadyExists',
+                     'message': 'Database <db> already exists & is Online.'},
+                    {'code': context + '.InvalidInput',
+                     'message': '</pre><script>alert("error")</script>',
+                     'errors': [{'code': 'Nested', 'message': 'More detail'}]},
+                ],
+            }
+            node['errorDetails'] = details
+            expected.append(details['errors'])
+        before = copy.deepcopy(doc)
+        view = visualize_viewmodel.build_execution_view(doc, title='X')
+        row = view.workstreams[0].steps[0]
+        self.assertEqual(row.error_details, step['errorDetails'])
+        self.assertEqual(row.entities[0].error_details, entity['errorDetails'])
+        self.assertEqual(row.entities[0].attempts[0]['error_details'],
+                         attempt['errorDetails'])
+        rendered = visualize_renderer.render(
+            visualize_graph.build_execution_graph(doc, title='X'), view=view)
+        blocks = re.findall(
+            r'<details class="issue-details"><summary>Issue details</summary>'
+            r'<pre>(.*?)</pre></details>', rendered, re.DOTALL)
+        self.assertEqual(
+            [json.loads(html.unescape(block)) for block in blocks], expected)
+        self.assertIn('ValidationFailed: Review the error for details.',
+                      rendered)
+        self.assertNotIn('<script>alert("error")</script>', rendered)
+        self.assertEqual(doc, before)
+
+    def test_execution_render_error_details_without_nested_errors(self):
+        for error in (None, {}, 'invalid',
+                      {'code': 'Failed', 'message': 'Original message'},
+                      {'errors': [{'code': 'Nested', 'message': 'Details'}]}):
+            with self.subTest(error=error):
+                doc = {'workstreams': [{'steps': [{
+                    'stepId': 's1', 'status': 'Failed',
+                    'entityExecutions': [{
+                        'entity': 'vm', 'status': 'Failed',
+                        'errorDetails': error}],
+                }]}]}
+                view = visualize_viewmodel.build_execution_view(doc, 'X')
+                rendered = visualize_renderer.render(
+                    visualize_graph.build_execution_graph(doc), view=view)
+                blocks = re.findall(
+                    r'<details class="issue-details">.*?<pre>(.*?)</pre>',
+                    rendered, re.DOTALL)
+                expected = ([error.get('errors') or error]
+                            if isinstance(error, dict) and error else [])
+                self.assertEqual(
+                    [json.loads(html.unescape(block)) for block in blocks],
+                    expected)
 
     def test_execution_overview_uses_service_counts(self):
         overview = transformers.execution_overview(_STATUS_TOOL_DOC)
@@ -3739,6 +3917,499 @@ class ViewmodelBranchTests(unittest.TestCase):
             title='X')
         self.assertEqual(
             view.workstreams[0].steps[0].entities[0].status, 'Completed')
+
+
+class ExecutionEndpointTransportTests(unittest.TestCase):
+    def test_valid_loopback_addresses(self):
+        for endpoint in (ENDPOINT, 'http://[::1]:7075/'):
+            self.assertEqual(ExecutionEndpointClient(endpoint).endpoint, endpoint.rstrip('/'))
+
+    def test_endpoint_url_is_visible_at_default_warning_level_once_per_client(self):
+        for endpoint in (ENDPOINT + '/', 'http://[::1]:7075/'):
+            with self.subTest(endpoint=endpoint):
+                with self.assertLogs(execution_endpoint_client_mod.logger, level='WARNING') as captured, \
+                        mock.patch.object(ExecutionEndpointClient, 'request', return_value=EXECUTION_STATUS):
+                    client = ExecutionEndpointClient(endpoint)
+                    client.status(EXECUTION_ID)
+                    client.status(EXECUTION_ID)
+                self.assertEqual(
+                    [(record.levelname, record.getMessage()) for record in captured.records],
+                    [('WARNING', 'Using development execution endpoint: ' + endpoint.rstrip('/'))])
+
+    def test_rejects_non_loopback_or_ambiguous_endpoints(self):
+        for endpoint in ('https://127.0.0.1:7075', 'http://example.com:7075',
+                         'http://localhost:7075', ENDPOINT + '/path',
+                         ENDPOINT + '?q=1', ENDPOINT + '#part',
+                         'http://user@127.0.0.1:7075',
+                         'http://127.0.0.1:invalid', 'http://127.0.0.1', 'http://[::1'):
+            with self.subTest(endpoint=endpoint), \
+                    self.assertNoLogs(execution_endpoint_client_mod.logger, level='WARNING'), \
+                    self.assertRaises(InvalidArgumentValueError):
+                ExecutionEndpointClient(endpoint)
+
+    def test_requests_need_no_token_and_disable_arm_auth_redirects_and_environment_proxy(self):
+        with mock.patch.object(execution_endpoint_client_mod.requests, 'Session') as factory, \
+                mock.patch.object(arm_client_mod, 'send_raw_request') as arm_request, \
+                mock.patch('builtins.open') as open_file:
+            session = factory.return_value.__enter__.return_value
+            session.request.return_value = SimpleNamespace(status_code=200, json=lambda: EXECUTION_STATUS)
+            self.assertEqual(ExecutionEndpointClient(ENDPOINT).status(EXECUTION_ID), EXECUTION_STATUS)
+            self.assertFalse(session.trust_env)
+            arm_request.assert_not_called()
+            open_file.assert_not_called()
+            session.request.assert_called_once_with(
+                'GET', ENDPOINT + '/local/executions/' + EXECUTION_ID, json=None,
+                timeout=120, allow_redirects=False)
+
+    def test_transport_failure_and_invalid_responses(self):
+        with mock.patch.object(execution_endpoint_client_mod.requests, 'Session') as factory:
+            send = factory.return_value.__enter__.return_value.request
+            send.side_effect = requests.ConnectionError('unreachable')
+            with self.assertRaises(CLIInternalError):
+                ExecutionEndpointClient(ENDPOINT).status(EXECUTION_ID)
+            send.side_effect = None
+            for code, json_result in ((409, {'error': 'not ready'}), (302, {}), (500, []), (500, None), (200, None)):
+                response = mock.Mock(status_code=code, reason='failure')
+                if json_result is None:
+                    response.json.side_effect = ValueError('not json')
+                else:
+                    response.json.return_value = json_result
+                send.return_value = response
+                with self.assertRaises(CLIInternalError):
+                    ExecutionEndpointClient(ENDPOINT).status(EXECUTION_ID)
+
+    def test_execution_identifiers_are_validated_and_normalized(self):
+        for invalid in (None, '', '../outside', 123):
+            with self.subTest(value=invalid), self.assertRaisesRegex(
+                    InvalidArgumentValueError, 'Execution IDs must be GUIDs'):
+                ExecutionEndpointClient.identifier(invalid)
+        canonical = 'abcdefab-cdef-abcd-efab-cdefabcdefab'
+        self.assertEqual(ExecutionEndpointClient.identifier('{' + canonical.upper() + '}'), canonical)
+        client = ExecutionEndpointClient(ENDPOINT)
+        with mock.patch.object(client, 'request') as send:
+            for operation in (lambda: client.status('../outside'),
+                              lambda: client.action('../outside', 'Pause')):
+                with self.assertRaises(InvalidArgumentValueError):
+                    operation()
+            send.assert_not_called()
+
+    def test_actions_send_no_client_idempotency_key_or_warning(self):
+        client = ExecutionEndpointClient(ENDPOINT)
+        with mock.patch.object(client, 'request', return_value={}) as send, \
+                mock.patch.object(execution_endpoint_client_mod.logger, 'warning') as logged:
+            client.action(EXECUTION_ID, 'Approve', 'gate/a', ['e1'])
+            send.assert_called_with('POST', '/local/executions/' + EXECUTION_ID + '/steps/gate%2Fa/actions', {
+                'action': 'Approve', 'entities': ['e1'], 'comment': None,
+            })
+            for action, step, comment in (
+                    ('Pause', None, None), ('Resume', None, None), ('Cancel', None, None),
+                    ('Retry', 'failed', None), ('Complete', 'manual', 'Verified')):
+                with self.subTest(action=action):
+                    receipt = {'commandId': 'server-generated-command-id', 'dispatched': True}
+                    send.return_value = receipt
+                    self.assertEqual(client.action(EXECUTION_ID, action, step, comment=comment), receipt)
+                    path = '/local/executions/' + EXECUTION_ID
+                    if step:
+                        path += '/steps/' + step
+                    send.assert_called_with('POST', path + '/actions', {
+                        'action': action, 'entities': None, 'comment': comment,
+                    })
+            logged.assert_not_called()
+
+
+class ExecutionEndpointCommandTests(unittest.TestCase):
+    def setUp(self):
+        environment = mock.patch.dict(os.environ, {
+            'AZURE_MIGRATE_EXECUTION_ENDPOINT': ENDPOINT,
+            'AZURE_MIGRATE_EXECUTION_SPEC_FILE': 'spec.json',
+            'AZURE_MIGRATE_EXECUTION_PARAMETERS_FILE': 'edited.json',
+        })
+        environment.start()
+        self.addCleanup(environment.stop)
+        patcher = mock.patch.object(ExecutionEndpointClient, 'request')
+        self.request = patcher.start()
+        self.addCleanup(patcher.stop)
+        self.request.return_value = EXECUTION_STATUS
+
+    def test_development_inputs_are_not_public_arguments(self):
+        from azext_migrate.runbook._help import helps
+
+        declarations = {}
+        loader = mock.Mock()
+
+        def context(scope):
+            arguments = declarations.setdefault(scope, {})
+            manager = mock.MagicMock()
+
+            manager.__enter__.return_value.argument.side_effect = (
+                lambda name, *args, **kwargs: arguments.update({name: kwargs}))
+            return manager
+
+        loader.argument_context.side_effect = context
+        load_runbook_arguments(loader, None)
+        handlers = (
+            ('start', execution_cmds.start), ('show', execution_cmds.show),
+            ('list', execution_cmds.list_), ('pause', execution_cmds.pause),
+            ('resume', execution_cmds.resume), ('cancel', execution_cmds.cancel),
+            ('visualize', execution_cmds.visualize), ('step approve', execution_step_cmds.approve),
+            ('step complete', execution_step_cmds.complete), ('step retry', execution_step_cmds.retry),
+        )
+        for command, handler in handlers:
+            with self.subTest(command=command):
+                scope = 'migrate runbook execution ' + command
+                arguments = declarations.get(scope, {})
+                self.assertNotIn('endpoint', arguments)
+                self.assertNotIn('endpoint', inspect.signature(handler).parameters)
+                self.assertNotIn('local_endpoint', inspect.signature(handler).parameters)
+                self.assertNotIn('local_endpoint', arguments)
+                self.assertNotIn('--endpoint', helps[scope])
+                self.assertNotIn('AZURE_MIGRATE_EXECUTION_ENDPOINT', helps[scope])
+                for removed in ('idempotency_key', 'all_ready',
+                                'target_subscription_id', 'target_tenant_id'):
+                    self.assertNotIn(removed, arguments)
+                    self.assertNotIn(removed, inspect.signature(handler).parameters)
+                if command.startswith('step ') and command != 'step approve':
+                    self.assertNotIn('entities', arguments)
+                    self.assertNotIn('entities', inspect.signature(handler).parameters)
+        approval = declarations['migrate runbook execution step approve']
+        self.assertIn('entities', approval)
+        self.assertNotIn('comment', approval)
+        self.assertNotIn('comment', inspect.signature(execution_step_cmds.approve).parameters)
+        self.assertTrue(declarations['migrate runbook execution step complete']['comment']['required'])
+        start_arguments = declarations['migrate runbook execution start']
+        start_help = helps['migrate runbook execution start']
+        for argument in ('spec_file', 'parameters_file'):
+            self.assertNotIn(argument, start_arguments)
+            self.assertNotIn(argument, inspect.signature(execution_cmds.start).parameters)
+            self.assertNotIn('--' + argument.replace('_', '-'), start_help)
+        self.assertNotIn('AZURE_MIGRATE_EXECUTION_SPEC_FILE', start_help)
+        self.assertNotIn('AZURE_MIGRATE_EXECUTION_PARAMETERS_FILE', start_help)
+
+    def test_start_delegates_to_development_helper(self):
+        with mock.patch.object(execution_cmds, '_start_development_execution', return_value={}) as start:
+            self.assertEqual(execution_cmds.start(None, no_wait=True), {})
+            start.assert_called_once_with(None, ENDPOINT, True, False)
+        self.request.assert_not_called()
+
+    def test_start_sends_only_documents_and_returns_server_execution_id(self):
+        self.request.return_value = {'executionId': EXECUTION_ID}
+        with mock.patch.object(execution_cmds.files, 'read_json_file',
+                               side_effect=[{'spec': {}}, {'inputs': {}}]) as read_file, \
+                mock.patch.object(execution_cmds, 'get_subscription_id') as subscription:
+            result = execution_cmds.start(None, no_wait=True)
+            self.assertEqual(result['executionId'], EXECUTION_ID)
+            self.assertEqual(read_file.call_args_list, [mock.call('spec.json'), mock.call('edited.json')])
+            subscription.assert_not_called()
+            body = self.request.call_args.args[2]
+            self.assertEqual(body, {
+                'spec': {'spec': {}}, 'parameters': {'inputs': {}},
+            })
+            self.request.assert_called_once()
+
+    def test_start_no_wait_takes_precedence_over_no_visualize(self):
+        receipt = {'executionId': EXECUTION_ID, 'startDispatched': True}
+        self.request.return_value = receipt
+        with mock.patch.object(execution_cmds.files, 'read_json_file', return_value={}), \
+                mock.patch.object(execution_cmds, '_emit_execution') as emit, \
+                mock.patch.object(execution_cmds, '_open_execution_view') as view:
+            self.assertEqual(execution_cmds.start(None, no_wait=True, no_visualize=True), receipt)
+        self.request.assert_called_once_with(
+            'POST', '/local/executions', {'spec': {}, 'parameters': {}})
+        emit.assert_not_called()
+        view.assert_not_called()
+
+    def test_start_no_visualize_returns_execution_status_instead_of_receipt(self):
+        resource_id = '/runbooks/runbook/executions/' + EXECUTION_ID
+        status = {'executionId': resource_id, 'executionStatus': {
+            'status': 'Running', 'workstreams': [],
+        }}
+        self.request.side_effect = [{'executionId': EXECUTION_ID, 'startDispatched': True}, status]
+        with mock.patch.object(execution_cmds.files, 'read_json_file', return_value={}), \
+                mock.patch.object(execution_cmds, '_emit_execution') as emit, \
+                mock.patch.object(execution_cmds, '_open_execution_view') as view:
+            result = execution_cmds.start(None, no_visualize=True)
+        self.assertEqual(result, {
+            'executionId': resource_id, 'status': 'Running', 'workstreams': [],
+        })
+        self.assertEqual(self.request.call_args_list, [
+            mock.call('POST', '/local/executions', {'spec': {}, 'parameters': {}}),
+            mock.call('GET', '/local/executions/' + EXECUTION_ID),
+        ])
+        emit.assert_not_called()
+        view.assert_not_called()
+
+    def test_start_status_failure_is_not_hidden_or_restarted(self):
+        self.request.side_effect = [
+            {'executionId': EXECUTION_ID}, CLIInternalError('Status unavailable'),
+        ]
+        with mock.patch.object(execution_cmds.files, 'read_json_file', return_value={}), \
+                mock.patch.object(execution_cmds, '_emit_execution') as emit, \
+                mock.patch.object(execution_cmds, '_open_execution_view') as view:
+            with self.assertRaisesRegex(CLIInternalError, 'Status unavailable'):
+                execution_cmds.start(None, no_visualize=True)
+        self.assertEqual(self.request.call_args_list, [
+            mock.call('POST', '/local/executions', {'spec': {}, 'parameters': {}}),
+            mock.call('GET', '/local/executions/' + EXECUTION_ID),
+        ])
+        emit.assert_not_called()
+        view.assert_not_called()
+
+    def test_start_requires_both_file_environment_variables(self):
+        for spec, parameters in ((None, None), (None, 'edited.json'), ('spec.json', None),
+                                 ('', 'edited.json'), ('spec.json', '')):
+            with self.subTest(spec=spec, parameters=parameters), mock.patch.dict(os.environ), \
+                    mock.patch.object(execution_cmds.files, 'read_json_file') as read_file:
+                for name, value in (('AZURE_MIGRATE_EXECUTION_SPEC_FILE', spec),
+                                    ('AZURE_MIGRATE_EXECUTION_PARAMETERS_FILE', parameters)):
+                    if value is None:
+                        os.environ.pop(name)
+                    else:
+                        os.environ[name] = value
+                with self.assertRaises(InvalidArgumentValueError) as error:
+                    execution_cmds.start(None, no_wait=True)
+                self.assertIn('AZURE_MIGRATE_EXECUTION_SPEC_FILE', str(error.exception))
+                self.assertIn('AZURE_MIGRATE_EXECUTION_PARAMETERS_FILE', str(error.exception))
+                read_file.assert_not_called()
+        self.request.assert_not_called()
+
+    def test_start_opens_existing_visualizer(self):
+        self.request.side_effect = [{'executionId': EXECUTION_ID}, EXECUTION_STATUS]
+        with mock.patch.object(execution_cmds.files, 'read_json_file', return_value={}), \
+                mock.patch.object(execution_cmds, '_emit_execution') as emit, \
+                mock.patch.object(execution_cmds, 'visualize') as visualize:
+            self.assertIsNone(execution_cmds.start(None))
+            emit.assert_called_once_with(None, EXECUTION_STATUS['executionStatus'])
+            visualize.assert_called_once_with(None, None, None, None, EXECUTION_ID, watch=True)
+        self.assertEqual(self.request.call_args_list, [
+            mock.call('POST', '/local/executions', {'spec': {}, 'parameters': {}}),
+            mock.call('GET', '/local/executions/' + EXECUTION_ID),
+        ])
+
+    def test_start_visualization_failure_preserves_success_and_reports_development_command(self):
+        result = {'executionId': EXECUTION_ID}
+        self.request.side_effect = [result, EXECUTION_STATUS]
+        with mock.patch.object(execution_cmds.files, 'read_json_file', return_value={}), \
+                mock.patch.object(execution_cmds, '_emit_execution') as emit, \
+                mock.patch.object(execution_cmds, 'visualize', side_effect=RuntimeError('Status unavailable')), \
+                mock.patch.object(execution_cmds, 'logger') as log:
+            self.assertIsNone(execution_cmds.start(None))
+        emit.assert_called_once_with(None, EXECUTION_STATUS['executionStatus'])
+        self.assertEqual(self.request.call_count, 2)
+        message = log.warning.call_args.args[0] % log.warning.call_args.args[1:]
+        self.assertIn('Status unavailable', message)
+        self.assertIn("The execution '%s' is unaffected." % EXECUTION_ID, message)
+        self.assertIn(
+            'az migrate runbook execution visualize --execution-id %s --watch' % EXECUTION_ID, message)
+        for argument in (' -g ', '--project-name', '--runbook-name'):
+            self.assertNotIn(argument, message)
+
+    def test_start_watch_interruption_preserves_success(self):
+        result = {'executionId': EXECUTION_ID}
+        self.request.side_effect = [result, EXECUTION_STATUS]
+        with mock.patch.object(execution_cmds.files, 'read_json_file', return_value={}), \
+                mock.patch.object(execution_cmds, '_emit_execution') as emit, \
+                mock.patch.object(execution_cmds, 'visualize',
+                                  side_effect=ManualInterrupt('Watch cancelled by user.')), \
+                mock.patch.object(execution_cmds, 'logger') as log:
+            self.assertIsNone(execution_cmds.start(None))
+        emit.assert_called_once_with(None, EXECUTION_STATUS['executionStatus'])
+        self.assertEqual(self.request.call_count, 2)
+        self.assertEqual(log.warning.call_count, 1)
+        self.assertIn('Automatically opening', log.warning.call_args.args[0])
+
+    def test_status_list_and_controls(self):
+        self.assertEqual(
+            execution_cmds.show(None, execution_id=EXECUTION_ID)['status'], 'AwaitingUserAction')
+        execution_cmds.list_(None)
+        self.assertEqual(self.request.call_args.args, ('GET', '/local/executions'))
+        for command, action in ((execution_cmds.pause, 'Pause'),
+                                (execution_cmds.resume, 'Resume'), (execution_cmds.cancel, 'Cancel')):
+            command(None, execution_id=EXECUTION_ID)
+            self.assertEqual(self.request.call_args.args[2]['action'], action)
+        with mock.patch.object(execution_cmds, '_watch', return_value={}) as watch:
+            execution_cmds.show(None, execution_id=EXECUTION_ID, watch=True)
+            self.assertEqual(watch.call_args.kwargs['fetch_status']()['status'], 'AwaitingUserAction')
+
+    def test_step_controls_preserve_existing_scope_and_comment_contracts(self):
+        for entities in (None, [], ['e1']):
+            execution_step_cmds.approve(None, execution_id=EXECUTION_ID, step_id='gate', entities=entities)
+            body = self.request.call_args.args[2]
+            self.assertEqual(body['action'], 'Approve')
+            self.assertEqual(body['entities'], entities)
+            self.assertIsNone(body['comment'])
+        execution_step_cmds.complete(None, execution_id=EXECUTION_ID, step_id='manual', comment='Verified migration')
+        body = self.request.call_args.args[2]
+        self.assertEqual(body['action'], 'Complete')
+        self.assertEqual(body['comment'], 'Verified migration')
+        self.assertIsNone(body['entities'])
+        execution_step_cmds.retry(None, execution_id=EXECUTION_ID, step_id='failed')
+        body = self.request.call_args.args[2]
+        self.assertEqual(body['action'], 'Retry')
+        self.assertIsNone(body['entities'])
+        self.assertNotIn('allReady', body)
+
+    def test_start_does_not_send_approval_actions(self):
+        self.request.side_effect = [{'executionId': EXECUTION_ID}, EXECUTION_STATUS]
+        with mock.patch.object(execution_cmds.files, 'read_json_file', return_value={}):
+            execution_cmds.start(None, no_visualize=True)
+        self.assertEqual(self.request.call_args_list, [
+            mock.call('POST', '/local/executions', {'spec': {}, 'parameters': {}}),
+            mock.call('GET', '/local/executions/' + EXECUTION_ID),
+        ])
+
+    def test_visualize_delegates_to_development_helper(self):
+        with mock.patch.object(execution_cmds.files, 'resolve_output_path', return_value='graph.html'), \
+                mock.patch.object(execution_cmds, '_visualize_development_execution',
+                                  return_value={'path': 'graph.html'}) as visualize:
+            result = execution_cmds.visualize(
+                None, runbook_name='example', execution_id=EXECUTION_ID,
+                file='graph.html', watch=True, interval=0, no_open=True)
+            self.assertEqual(result, {'path': 'graph.html'})
+            visualize.assert_called_once_with(
+                None, ENDPOINT, 'example', EXECUTION_ID, 'graph.html', True, 0, True)
+        self.request.assert_not_called()
+
+    def test_visualization_reuses_renderer_and_watch(self):
+        context = {'execution': EXECUTION_ID, 'local_execution': True}
+        with mock.patch.object(execution_cmds, '_write_visualization', return_value='graph.html') as write, \
+                mock.patch.object(execution_cmds.files, 'open_in_browser') as browser:
+            self.assertEqual(
+                execution_cmds.visualize(None, execution_id=EXECUTION_ID, interval=0),
+                {'path': 'graph.html'})
+            self.assertEqual(write.call_args.kwargs['context'], context)
+            browser.assert_called_once()
+        with mock.patch.object(execution_cmds, '_watch_visualize', return_value={}) as watch:
+            execution_cmds.visualize(None, execution_id=EXECUTION_ID, watch=True, no_open=True)
+            self.assertEqual(watch.call_args.kwargs['context'], context)
+            self.assertEqual(watch.call_args.kwargs['fetch_status']()['status'], 'AwaitingUserAction')
+
+    def test_development_visualization_renders_runnable_commands(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target = os.path.join(directory, 'execution.html')
+            execution_cmds.visualize(
+                None, RG, PROJECT, RUNBOOK, EXECUTION_ID, file=target, no_open=True)
+            with open(target, encoding='utf-8') as stream:
+                document = html.unescape(stream.read())
+        for action in ('pause', 'resume', 'cancel', 'visualize'):
+            self.assertIn(
+                'data-cmd="az migrate runbook execution %s --execution-id %s"'
+                % (action, EXECUTION_ID), document)
+        for argument in ('--resource-group', '--project-name', '--runbook-name', '<execution>'):
+            self.assertNotIn(argument, document)
+
+    def test_cloud_commands_require_runbook_identity_before_resolving_subscription(self):
+        commands = (
+            (execution_cmds.start, {'no_wait': True}),
+            (execution_cmds.list_, {}),
+            (execution_cmds.show, {'execution_id': EXECUTION_ID}),
+            (execution_cmds.pause, {'execution_id': EXECUTION_ID}),
+            (execution_cmds.resume, {'execution_id': EXECUTION_ID}),
+            (execution_cmds.cancel, {'execution_id': EXECUTION_ID}),
+            (execution_cmds.visualize, {'execution_id': EXECUTION_ID, 'no_open': True}),
+            (execution_step_cmds.approve, {'execution_id': EXECUTION_ID, 'step_id': 'gate'}),
+            (execution_step_cmds.complete, {'execution_id': EXECUTION_ID, 'step_id': 'manual', 'comment': 'Done'}),
+            (execution_step_cmds.retry, {'execution_id': EXECUTION_ID, 'step_id': 'failed'}),
+        )
+        identity = {'resource_group_name': RG, 'project_name': PROJECT, 'runbook_name': RUNBOOK}
+        with mock.patch.dict(os.environ, {'AZURE_MIGRATE_EXECUTION_ENDPOINT': ''}), \
+                mock.patch.object(execution_cmds, 'get_subscription_id') as subscription, \
+                mock.patch.object(execution_cmds, 'ArmClient') as arm, \
+                mock.patch.object(execution_step_cmds, 'ArmClient') as step_arm:
+            for command, kwargs in commands:
+                for field, option in (('resource_group_name', '--resource-group'),
+                                      ('project_name', '--project-name'), ('runbook_name', '--runbook-name')):
+                    for value in (None, ''):
+                        arguments = dict(identity, **kwargs)
+                        if value is None:
+                            arguments.pop(field)
+                        else:
+                            arguments[field] = value
+                        with self.subTest(command=command.__name__, field=field, value=value), \
+                                self.assertRaises(RequiredArgumentMissingError) as error:
+                            command(None, **arguments)
+                        self.assertIn(option, str(error.exception))
+            subscription.assert_not_called()
+            arm.assert_not_called()
+            step_arm.assert_not_called()
+        self.request.assert_not_called()
+
+    def test_unset_environment_preserves_arm_commands(self):
+        with mock.patch.dict(os.environ), \
+                mock.patch.object(execution_cmds, '_runbook_id', return_value='/runbook'), \
+                mock.patch.object(execution_cmds, 'ArmClient') as arm, \
+                mock.patch.object(execution_step_cmds, 'ArmClient') as step_arm:
+            os.environ.pop('AZURE_MIGRATE_EXECUTION_ENDPOINT')
+            execution_cmds.list_(None, 'rg', 'project', 'runbook')
+            arm.return_value.list.assert_called_once_with('/runbook/executions')
+            execution_step_cmds.approve(None, 'rg', 'project', 'runbook', EXECUTION_ID, 'gate')
+            step_arm.return_value.post_action.assert_called_once_with(
+                '/runbook/executions/' + EXECUTION_ID, 'ProvideApproval',
+                models.build_approve_step_body('gate'))
+            self.request.assert_not_called()
+            with mock.patch.object(execution_cmds.files, 'read_json_file') as read_file:
+                execution_cmds.start(None, 'rg', 'project', 'runbook', no_wait=True)
+                arm.return_value.post_action.assert_called_once_with(
+                    '/runbook', 'execute', no_wait=True, message='Starting the runbook execution...')
+                read_file.assert_not_called()
+
+    def test_invalid_environment_never_falls_back_to_arm(self):
+        with mock.patch.dict(os.environ, {'AZURE_MIGRATE_EXECUTION_ENDPOINT': 'http://example.com:7075'}), \
+                mock.patch.object(execution_cmds, 'ArmClient') as arm, \
+                mock.patch.object(execution_step_cmds, 'ArmClient') as step_arm:
+            commands = (
+                (execution_cmds.start, {}),
+                (execution_cmds.list_, {}),
+                (execution_cmds.show, {'execution_id': EXECUTION_ID}),
+                (execution_cmds.pause, {'execution_id': EXECUTION_ID}),
+                (execution_cmds.resume, {'execution_id': EXECUTION_ID}),
+                (execution_cmds.cancel, {'execution_id': EXECUTION_ID}),
+                (execution_cmds.visualize, {'execution_id': EXECUTION_ID}),
+                (execution_step_cmds.approve, {'execution_id': EXECUTION_ID, 'step_id': 'gate'}),
+                (execution_step_cmds.complete, {'execution_id': EXECUTION_ID, 'step_id': 'manual', 'comment': 'Done'}),
+                (execution_step_cmds.retry, {'execution_id': EXECUTION_ID, 'step_id': 'failed'}),
+            )
+            for command, kwargs in commands:
+                with self.subTest(command=command.__name__), self.assertRaises(InvalidArgumentValueError):
+                    command(None, **kwargs)
+            self.request.assert_not_called()
+            arm.assert_not_called()
+            step_arm.assert_not_called()
+
+    def test_development_endpoint_takes_precedence_over_cloud_identity(self):
+        with mock.patch.object(execution_cmds, 'ArmClient') as arm, \
+                mock.patch.object(execution_step_cmds, 'ArmClient') as step_arm, \
+                mock.patch.object(execution_cmds.files, 'read_json_file', return_value={}), \
+                mock.patch.object(execution_cmds, '_write_visualization', return_value='graph.html'):
+            commands = (
+                (execution_cmds.start, {'no_wait': True}),
+                (execution_cmds.list_, {}),
+                (execution_cmds.show, {'execution_id': EXECUTION_ID}),
+                (execution_cmds.pause, {'execution_id': EXECUTION_ID}),
+                (execution_cmds.resume, {'execution_id': EXECUTION_ID}),
+                (execution_cmds.cancel, {'execution_id': EXECUTION_ID}),
+                (execution_cmds.visualize, {'execution_id': EXECUTION_ID, 'no_open': True}),
+                (execution_step_cmds.approve, {'execution_id': EXECUTION_ID, 'step_id': 'gate'}),
+                (execution_step_cmds.complete, {'execution_id': EXECUTION_ID, 'step_id': 'manual', 'comment': 'Done'}),
+                (execution_step_cmds.retry, {'execution_id': EXECUTION_ID, 'step_id': 'failed'}),
+            )
+            for command, kwargs in commands:
+                with self.subTest(command=command.__name__):
+                    self.request.reset_mock()
+                    command(None, 'rg', 'project', 'runbook', **kwargs)
+                    self.request.assert_called_once()
+            arm.assert_not_called()
+            step_arm.assert_not_called()
+
+    def test_from_file_takes_precedence_over_development_endpoint(self):
+        with mock.patch.dict(os.environ, {'AZURE_MIGRATE_EXECUTION_ENDPOINT': 'invalid'}), \
+                mock.patch.object(execution_cmds, 'ExecutionEndpointClient') as client, \
+                mock.patch.object(execution_cmds.files, 'read_json_file', return_value=EXECUTION_STATUS) as read_file, \
+                mock.patch.object(execution_cmds, '_write_visualization', return_value='graph.html'):
+            result = execution_cmds.visualize(None, from_file='status.json', no_open=True)
+            self.assertEqual(result, {'path': 'graph.html'})
+            read_file.assert_called_once_with('status.json')
+            client.assert_not_called()
+        self.request.assert_not_called()
 
 
 if __name__ == '__main__':

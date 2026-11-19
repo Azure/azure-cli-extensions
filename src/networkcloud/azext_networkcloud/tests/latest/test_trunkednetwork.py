@@ -12,11 +12,7 @@ TrunkedNetwork tests scenarios
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 
 from .config import CONFIG
-from .utils.assert_messages import (
-    missing_field_message,
-    properties_key_mismatch_message,
-)
-from .utils.output_checks import get_value
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -35,18 +31,27 @@ def call_scenario1(test):
     step_create(
         test,
         checks=[
-            test.check("name", "{name}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
     step_update(
         test,
         checks=[
-            test.check("tags", "{tagsUpdate}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[
+            test.exists("name"),
+            test.exists("id"),
+            test.check("interfaceName", attr(test, "interfaceName")),
+            test.check("vlans", attr(test, "vlans")),
+            test.check("isolationDomainIds", attr(test, "isolationDomainIdsResponse")),
+        ],
+    )
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
@@ -69,34 +74,12 @@ def step_create(test, checks=None):
 
 def step_show(test, checks=None):
     """TrunkedNetwork show operation"""
-    if checks is not None:
-        test.cmd(
-            "az networkcloud trunkednetwork show --name {name} --resource-group {rg}",
-            checks=checks,
-        )
-        return
-
-    result = test.cmd(
-        "az networkcloud trunkednetwork show --name {name} --resource-group {rg}"
-    ).get_output_in_json()
-    context = "Trunkednetwork show"
-    assert result.get("name") is not None, missing_field_message(
-        context, "name", result
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud trunkednetwork show --name {name} --resource-group {rg}",
+        checks=checks,
     )
-    properties = result.get("properties")
-    assert result.get("id"), missing_field_message(context, "id", result)
-    assert properties is not None, missing_field_message(context, "properties", result)
-    assert properties.get("interfaceName") == get_value(
-        test, "interfaceName"
-    ), properties_key_mismatch_message("interfaceName")
-
-    assert properties.get("isolationDomainIds") == get_value(
-        test, "isolationDomainIds"
-    ), properties_key_mismatch_message("isolationDomainIds")
-
-    assert properties.get("vlans") == get_value(
-        test, "vlans"
-    ), properties_key_mismatch_message("vlans")
 
 
 def step_delete(test, checks=None):
@@ -104,7 +87,8 @@ def step_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud trunkednetwork delete --name {name} --resource-group {rg} --yes"
+        "az networkcloud trunkednetwork delete --name {name} --resource-group {rg} --yes",
+        checks=checks,
     )
 
 
@@ -112,14 +96,14 @@ def step_list_resource_group(test, checks=None):
     """TrunkedNetwork list by resource group operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud trunkednetwork list --resource-group {rg}")
+    test.cmd("az networkcloud trunkednetwork list --resource-group {rg}", checks=checks)
 
 
 def step_list_subscription(test, checks=None):
     """TrunkedNetwork list by subscription operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud trunkednetwork list")
+    test.cmd("az networkcloud trunkednetwork list", checks=checks)
 
 
 def step_update(test, checks=None):
@@ -127,7 +111,8 @@ def step_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud trunkednetwork update --name {name} --tags {tagsUpdate} --resource-group {rg}"
+        "az networkcloud trunkednetwork update --name {name} --tags {tagsUpdate} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -138,18 +123,22 @@ class TrunkedNetworkScenarioTest(ScenarioTest):
         super().__init__(*args, **kwargs)
         self.kwargs.update(
             {
-                "name": self.create_random_name(
-                    prefix="cli-test-trunkednw-", length=24
-                ),
+                "name": CONFIG.get("TRUNKED_NETWORK", "name"),
                 "location": CONFIG.get("TRUNKED_NETWORK", "location"),
                 "extendedLocation": CONFIG.get("TRUNKED_NETWORK", "extended_location"),
                 "tags": CONFIG.get("TRUNKED_NETWORK", "tags"),
                 "tagsUpdate": CONFIG.get("TRUNKED_NETWORK", "tags_update"),
+                "provisioningState": CONFIG.get(
+                    "TRUNKED_NETWORK", "provisioning_state"
+                ),
                 "type": CONFIG.get("TRUNKED_NETWORK", "type"),
                 "vlans": CONFIG.get("TRUNKED_NETWORK", "vlans"),
                 "interfaceName": CONFIG.get("TRUNKED_NETWORK", "interface_name"),
                 "isolationDomainIds": CONFIG.get(
                     "TRUNKED_NETWORK", "isolation_domain_ids"
+                ),
+                "isolationDomainIdsResponse": CONFIG.get(
+                    "TRUNKED_NETWORK", "isolation_domain_ids_response"
                 ),
             }
         )

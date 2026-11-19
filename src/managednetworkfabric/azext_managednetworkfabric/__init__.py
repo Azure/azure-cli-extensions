@@ -19,7 +19,7 @@ class ManagednetworkfabricCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         custom_command_type = CliCommandType(
-            operations_tmpl='azext_managednetworkfabric.custom#{}')
+            operations_tmpl='azext_managednetworkfabric.operations#{}')
         super().__init__(cli_ctx=cli_ctx,
                          custom_command_type=custom_command_type)
 

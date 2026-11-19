@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/resourceanchors/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/resourceanchors/{}", "2026-06-01"],
         ]
     }
 
@@ -154,7 +154,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -185,59 +185,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.linked_compartment_id = AAZStrType(
-                serialized_name="linkedCompartmentId",
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
+            _UpdateHelper._build_schema_resource_anchor_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -305,7 +253,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -348,59 +296,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200_201.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.properties = AAZObjectType()
-            _schema_on_200_201.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.tags = AAZDictType()
-            _schema_on_200_201.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200_201.properties
-            properties.linked_compartment_id = AAZStrType(
-                serialized_name="linkedCompartmentId",
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            system_data = cls._schema_on_200_201.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200_201.tags
-            tags.Element = AAZStrType()
+            _UpdateHelper._build_schema_resource_anchor_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -434,6 +330,85 @@ class Update(AAZCommand):
 
 class _UpdateHelper:
     """Helper class for Update"""
+
+    _schema_resource_anchor_read = None
+
+    @classmethod
+    def _build_schema_resource_anchor_read(cls, _schema):
+        if cls._schema_resource_anchor_read is not None:
+            _schema.id = cls._schema_resource_anchor_read.id
+            _schema.location = cls._schema_resource_anchor_read.location
+            _schema.name = cls._schema_resource_anchor_read.name
+            _schema.properties = cls._schema_resource_anchor_read.properties
+            _schema.system_data = cls._schema_resource_anchor_read.system_data
+            _schema.tags = cls._schema_resource_anchor_read.tags
+            _schema.type = cls._schema_resource_anchor_read.type
+            return
+
+        cls._schema_resource_anchor_read = _schema_resource_anchor_read = AAZObjectType()
+
+        resource_anchor_read = _schema_resource_anchor_read
+        resource_anchor_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        resource_anchor_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        resource_anchor_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        resource_anchor_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        resource_anchor_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        resource_anchor_read.tags = AAZDictType()
+        resource_anchor_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_resource_anchor_read.properties
+        properties.linked_compartment_id = AAZStrType(
+            serialized_name="linkedCompartmentId",
+            flags={"read_only": True},
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+
+        system_data = _schema_resource_anchor_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        tags = _schema_resource_anchor_read.tags
+        tags.Element = AAZStrType()
+
+        _schema.id = cls._schema_resource_anchor_read.id
+        _schema.location = cls._schema_resource_anchor_read.location
+        _schema.name = cls._schema_resource_anchor_read.name
+        _schema.properties = cls._schema_resource_anchor_read.properties
+        _schema.system_data = cls._schema_resource_anchor_read.system_data
+        _schema.tags = cls._schema_resource_anchor_read.tags
+        _schema.type = cls._schema_resource_anchor_read.type
 
 
 __all__ = ["Update"]

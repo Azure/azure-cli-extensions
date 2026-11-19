@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}", "2026-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}", "2026-10-01-preview"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01-preview",
+                    "api-version", "2026-10-01-preview",
                     required=True,
                 ),
             }
@@ -213,6 +213,9 @@ class Wait(AAZWaitCommand):
 
             properties = cls._schema_on_200.properties
             properties.encryption = AAZObjectType()
+            properties.firewall_rules = AAZListType(
+                serialized_name="firewallRules",
+            )
             properties.high_availability = AAZStrType(
                 serialized_name="highAvailability",
             )
@@ -275,6 +278,18 @@ class Wait(AAZWaitCommand):
             )
             key_encryption_key_identity.user_assigned_identity_resource_id = AAZStrType(
                 serialized_name="userAssignedIdentityResourceId",
+            )
+
+            firewall_rules = cls._schema_on_200.properties.firewall_rules
+            firewall_rules.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.firewall_rules.Element
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.source_address_prefix = AAZStrType(
+                serialized_name="sourceAddressPrefix",
+                flags={"required": True},
             )
 
             maintenance_configuration = cls._schema_on_200.properties.maintenance_configuration

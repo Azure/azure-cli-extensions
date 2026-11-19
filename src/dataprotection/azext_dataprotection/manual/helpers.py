@@ -585,6 +585,24 @@ def get_resource_criteria_list(datasource_type, restore_configuration, container
         restore_criteria_list.append(restore_criteria)
         return restore_criteria_list
 
+    if datasource_type == "AzureCosmosDB":
+        if any(value is not None for value in (container_list, from_prefix_pattern, to_prefix_pattern,
+                                               vaulted_blob_prefix_pattern)):
+            raise InvalidArgumentValueError(
+                "For AzureCosmosDB, --container-list, --from-prefix-pattern, --to-prefix-pattern and "
+                "--vaulted-blob-prefix-pattern are not applicable. Use --restore-configuration.")
+        if restore_configuration is None:
+            raise RequiredArgumentMissingError(
+                "Please input parameter restore_configuration for AzureCosmosDB restore.\n"
+                "Use command initialize-restoreconfig for creating the RestoreConfiguration")
+        if not isinstance(restore_configuration, dict) or \
+                restore_configuration.get("object_type") != "GenericRestoreDatasourceCriteria":
+            raise InvalidArgumentValueError(
+                "For AzureCosmosDB, --restore-configuration must be a GenericRestoreDatasourceCriteria object.\n"
+                "Use command initialize-restoreconfig for creating the RestoreConfiguration")
+        restore_criteria_list.append(restore_configuration)
+        return restore_criteria_list
+
     # implicit else:
     # For non-AKS workloads (blobs (non-vaulted)), we need either a prefix-pattern or a container-list. Accordingly, the restore
     # criteria's min_matching_value and max_matching_value are set. We need to provide one, but can't provide both
@@ -729,11 +747,13 @@ def validate_prefix_patterns(from_prefix_pattern, to_prefix_pattern):
             )
 
         for compareindex in range(index + 1, len(from_prefix_pattern)):
+            # pylint: disable=chained-comparison
             if (from_prefix_pattern[index] <= from_prefix_pattern[compareindex] and to_prefix_pattern[index] >= from_prefix_pattern[compareindex]) or \
                     (from_prefix_pattern[index] >= from_prefix_pattern[compareindex] and from_prefix_pattern[index] <= to_prefix_pattern[compareindex]):
                 raise InvalidArgumentValueError(
                     "overlapping ranges are not allowed."
                 )
+            # pylint: enable=chained-comparison
 
 
 def get_policy_parameters(datasource_id, snapshot_resource_group_name):
@@ -1159,7 +1179,7 @@ def validate_recovery_point_datetime_format(aaz_str):
 
 def get_backup_instance_from_resourcegraph(cmd, resource_group_name, vault_name, backup_instance_name):
     from azext_dataprotection.manual._client_factory import cf_resource_graph_client as client
-    subscription_id = backupcenter_helper.get_selected_subscription()
+    subscription_id = backupcenter_helper.get_selected_subscription(cmd.cli_ctx)
     arg_client = client(cmd.cli_ctx, None)
     backup_instance_list = dataprotection_backup_instance_list_from_resourcegraph(arg_client, None, resource_group_name,
                                                                                   vault_name, [subscription_id, ], None,
@@ -1176,7 +1196,7 @@ def get_backup_instance_from_resourcegraph(cmd, resource_group_name, vault_name,
 
 def get_backup_vault_from_resourcegraph(cmd, resource_group_name, vault_name):
     from azext_dataprotection.manual._client_factory import cf_resource_graph_client as client
-    subscription_id = backupcenter_helper.get_selected_subscription()
+    subscription_id = backupcenter_helper.get_selected_subscription(cmd.cli_ctx)
     arg_client = client(cmd.cli_ctx, None)
 
     backup_vault_list = dataprotection_backup_vault_list_from_resourcegraph(arg_client, resource_group_name,

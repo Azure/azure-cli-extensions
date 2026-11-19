@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b24
+++++++++
+* Use the resolved kubelogin executable path when converting kubeconfig credentials.
+
 1.0.0b23
 ++++++++
 * Fix: client mode when Microsoft Entra ID (keyless) provider is selected

@@ -1,0 +1,1629 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-43284-nsisolated11158469-2-block-new-udp-encapsulation","name":"CVE-2026-43284-nsisolated11158469-2-block-new-udp-encapsulation","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-43284-nsisolated11158469-2","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":1,"commandsSummary":"Prevent
+        sockets from enabling User Datagram Protocol encapsulation (UDP_ENCAP), blocking
+        new setup of the documented encrypted-packet attack path while preserving
+        ordinary datagram traffic. Legitimate applications that newly enable this
+        encapsulation will fail, and sockets configured before enforcement remain
+        exposed.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-43284-nsisolated11158469-2-disable-modular-esp","name":"CVE-2026-43284-nsisolated11158469-2-disable-modular-esp","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-43284-nsisolated11158469-2","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":2,"commandsSummary":"Disable
+        encrypted-packet processing through Encapsulating Security Payload (ESP) for
+        both IP versions, removing the vulnerable decryption path. Legitimate encrypted
+        tunnels using this capability will be unavailable; active consumers may prevent
+        removal.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-43284-nsisolated11158469-2-prevent-new-user-namespaces","name":"CVE-2026-43284-nsisolated11158469-2-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-43284-nsisolated11158469-2","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":3,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-76642-nsisolated11158469-2-block-filesystem-cloning","name":"CVE-2026-76642-nsisolated11158469-2-block-filesystem-cloning","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-76642-nsisolated11158469-2","cveId":"CVE-2026-76642","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":3,"commandsSummary":"Block
+        filesystem cloning through the open_tree system call, preventing the documented
+        identity-mapped clone from being created. This affects legitimate clone-based
+        mount operations across the host and does not stop the separate ownership
+        and permission attack.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-76642-nsisolated11158469-2-remove-vulnerable-fstab-hooks","name":"CVE-2026-76642-nsisolated11158469-2-remove-vulnerable-fstab-hooks","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-76642-nsisolated11158469-2","cveId":"CVE-2026-76642","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":1,"commandsSummary":"Remove
+        mount-time identity mapping (X-mount.idmap) and ownership or permission adjustment
+        (X-mount.owner, X-mount.group, X-mount.mode) from the filesystem table. Ordinary
+        mounting remains available, but workloads relying on these adjustments may
+        lose access or fail.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-76642-nsisolated11158469-2-restrict-mount-execution-to-root","name":"CVE-2026-76642-nsisolated11158469-2-restrict-mount-execution-to-root","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-76642-nsisolated11158469-2","cveId":"CVE-2026-76642","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":2,"commandsSummary":"Restrict
+        the installed mount utility to root so unprivileged users cannot invoke its
+        privileged mount operations. This also prevents non-root users from using
+        that utility for ordinary mount listings or legitimate user-authorized mounts;
+        root-operated mounting remains available.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-78410-nsisolated11158469-2","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":4,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-make-fstab-bind-mounts-root-only","name":"CVE-2026-78410-nsisolated11158469-2-make-fstab-bind-mounts-root-only","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-78410-nsisolated11158469-2","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":1,"commandsSummary":"Require
+        administrator privileges for all bind mounts authorized through fstab, preventing
+        local unprivileged users from reaching the vulnerable operation. Existing
+        mounts remain available, but users lose the ability to initiate these bind
+        mounts themselves.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-remove-bind-ownership-hooks","name":"CVE-2026-78410-nsisolated11158469-2-remove-bind-ownership-hooks","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-78410-nsisolated11158469-2","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":2,"commandsSummary":"Remove
+        automatic ownership and permission changes from bind mounts while keeping
+        the mounts available. Applications that depend on those changes must receive
+        administrator-managed permissions instead; unauthorized source redirection
+        is not prevented by this control alone.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-remove-mount-setuid-privilege","name":"CVE-2026-78410-nsisolated11158469-2-remove-mount-setuid-privilege","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-78410-nsisolated11158469-2","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":3,"commandsSummary":"Remove
+        set-user-ID (SUID) privilege from the deployed mount utility so an unprivileged
+        invocation cannot perform the vulnerable root-level operation. This also disables
+        other legitimate user mounts that rely on this utility acquiring root privileges;
+        administrator mounting remains available.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","name":"CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":1,"commandsSummary":"Prevent
+        hard-link and symbolic-link creation in running services whose main executable
+        has a conventional Python name. The services are briefly restarted, and legitimate
+        operations requiring links will fail; ordinary file extraction can continue.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":2,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"AwaitingApproval"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '14986'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:35:58 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 93f4750f-37bb-4903-9982-769a5d969b6c
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '13'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/2067026d-3713-42e5-81c0-a60c90c064f6
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 9798BBD7FC2A4A7CBB6582E2103753EE Ref B: SG2AA1070305042 Ref C: 2026-11-16T06:35:58Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource finding mitigate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource --finding-id
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2/mitigate?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":1,"commandsSummary":"Prevent
+        hard-link and symbolic-link creation in running services whose main executable
+        has a conventional Python name. The services are briefly restarted, and legitimate
+        operations requiring links will fail; ordinary file extraction can continue.","isRollbackable":true,"status":"Queued"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","name":"CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"createdByType":null,"createdAt":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:36:01.2301445+00:00"}},{"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":2,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"Queued"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"createdByType":null,"createdAt":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:36:01.2301445+00:00"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2728'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:36:01 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 95de7585-bc9c-4d3d-a28d-96016fcade8e
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '41'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/30e13326-3eb5-4b1f-9e39-08fb07c165b0
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: D20EFCC1E3C54022951153E5DD757454 Ref B: SG2AA1040519029 Ref C: 2026-11-16T06:36:01Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","name":"CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:36:01.2301445Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":1,"commandsSummary":"Prevent
+        hard-link and symbolic-link creation in running services whose main executable
+        has a conventional Python name. The services are briefly restarted, and legitimate
+        operations requiring links will fail; ordinary file extraction can continue.","isRollbackable":true,"status":"Queued"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1314'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:36:04 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - b8c8c316-d364-4a2a-8470-117cb3eaa039
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '8'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/898f42fa-336d-4913-87fc-ffcd5d4a0b74
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 0B6BEE735E5C4F6FA5AB680613668168 Ref B: SG2AA1070306023 Ref C: 2026-11-16T06:36:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:36:01.2301445Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":2,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"Queued"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1315'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:36:07 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - c7140e91-98a7-4cf8-91d3-3bbc0a9d0472
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '15'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/f5802413-c799-4070-9e07-7ec2164bd764
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 2E500DAF7CA0436E8FCF71CC7C07C81C Ref B: SG2AA1040518029 Ref C: 2026-11-16T06:36:07Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","name":"CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:36:01.2301445Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":1,"commandsSummary":"Prevent
+        hard-link and symbolic-link creation in running services whose main executable
+        has a conventional Python name. The services are briefly restarted, and legitimate
+        operations requiring links will fail; ordinary file extraction can continue.","isRollbackable":true,"status":"Queued"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1314'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:36:40 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 817c55e1-b611-4909-bdc9-1df109e6b78a
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '14'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/b6bbaaa1-121b-4a7d-ae7a-b6796564c2ce
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: AACC08277E1D407EBF678E1575559125 Ref B: SG2AA1070305034 Ref C: 2026-11-16T06:36:39Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:36:01.2301445Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":2,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"Queued"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1315'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:36:42 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 613f6e02-4a98-448a-991e-b857efe65095
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '8'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/de449f8d-32fc-4574-823a-9fe2e2a2aaad
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 0EF342DDEEB34EDC82D457E5E0FC86E9 Ref B: SG2AA1040512052 Ref C: 2026-11-16T06:36:42Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","name":"CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:36:01.2301445Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":1,"commandsSummary":"Prevent
+        hard-link and symbolic-link creation in running services whose main executable
+        has a conventional Python name. The services are briefly restarted, and legitimate
+        operations requiring links will fail; ordinary file extraction can continue.","isRollbackable":true,"status":"Failed","statusDetails":"Neuron
+        reported Failed: CommandFailed."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1371'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:37:15 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - a554e9f3-6824-47dd-b180-5aedf39480d8
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '12'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/144422ff-c047-45b8-a85d-64f34b6b6ed8
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 4770B71476634E3C8F244CCE91383DD1 Ref B: SG2AA1040512062 Ref C: 2026-11-16T06:37:15Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:36:01.2301445Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":2,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"Queued"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1315'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:37:18 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 71e0d4bd-b203-4248-a805-620508fb8855
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '24'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/3d0f5a66-2e1f-4c06-bd38-b49e8100f0c1
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 0AE3EB05BD904C5981774483E1B221DF Ref B: SG2AA1040516054 Ref C: 2026-11-16T06:37:18Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","name":"CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:36:01.2301445Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":1,"commandsSummary":"Prevent
+        hard-link and symbolic-link creation in running services whose main executable
+        has a conventional Python name. The services are briefly restarted, and legitimate
+        operations requiring links will fail; ordinary file extraction can continue.","isRollbackable":true,"status":"Failed","statusDetails":"Neuron
+        reported Failed: CommandFailed."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1371'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:37:50 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - cfd8c1e3-b78a-404e-baa4-4b3dcab6a70a
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '11'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/22adb48b-da21-4a19-8886-d8da02db5572
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: BF3BF01E6BFC49F7860040475A26C4B8 Ref B: SG2AA1070306042 Ref C: 2026-11-16T06:37:51Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:36:01.2301445Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":2,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"Queued"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1315'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:37:53 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - b39e42c6-5d51-4505-8568-8045eb7e1d0a
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '23'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/2b24a830-e96d-47f8-bc5f-703cb2dced3d
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: B120ADD562DE44858041C5E2A2C0FEAB Ref B: SG2AA1040512042 Ref C: 2026-11-16T06:37:53Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","name":"CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:36:01.2301445Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":1,"commandsSummary":"Prevent
+        hard-link and symbolic-link creation in running services whose main executable
+        has a conventional Python name. The services are briefly restarted, and legitimate
+        operations requiring links will fail; ordinary file extraction can continue.","isRollbackable":true,"status":"Failed","statusDetails":"Neuron
+        reported Failed: CommandFailed."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1371'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:38:27 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - dff167d0-226d-42e4-9cf9-fbbd4c5b208f
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '20'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/26d80ee3-fa6d-453e-86af-e3695653956b
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 6E264960615D4B7F910BEF20B8874B73 Ref B: SG2AA1040515062 Ref C: 2026-11-16T06:38:26Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:36:01.2301445Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":2,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"Queued"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1315'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:38:30 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 181951af-9a6d-485f-b287-a59ccb734941
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '19'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/5c23a884-f102-44c9-af93-35a92bd4ff2c
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 124F965FC745404B851200F490436C3B Ref B: SG2AA1040517054 Ref C: 2026-11-16T06:38:29Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","name":"CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:36:01.2301445Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":1,"commandsSummary":"Prevent
+        hard-link and symbolic-link creation in running services whose main executable
+        has a conventional Python name. The services are briefly restarted, and legitimate
+        operations requiring links will fail; ordinary file extraction can continue.","isRollbackable":true,"status":"Failed","statusDetails":"Neuron
+        reported Failed: CommandFailed."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1371'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:39:02 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 23cc5544-46b0-4416-8c7b-58d96fe5ec52
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '12'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/ff903c4f-614d-49c3-a706-df0adcb6085e
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F9FBE0267DBE44C1806D03232EFD638B Ref B: SG2AA1070301054 Ref C: 2026-11-16T06:39:02Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:36:01.2301445Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":2,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"Queued"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1315'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:39:06 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 529221f0-ecfa-4fe8-a20c-17f0b74d4f5d
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '21'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/508c2fe5-2f3f-44d2-b5a1-3fd33e6e460a
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: D5E5B01E775E453594C3C5F4AD16F85E Ref B: SG2AA1040520054 Ref C: 2026-11-16T06:39:05Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","name":"CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:36:01.2301445Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":1,"commandsSummary":"Prevent
+        hard-link and symbolic-link creation in running services whose main executable
+        has a conventional Python name. The services are briefly restarted, and legitimate
+        operations requiring links will fail; ordinary file extraction can continue.","isRollbackable":true,"status":"Failed","statusDetails":"Neuron
+        reported Failed: CommandFailed."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1371'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:39:38 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - c552dae8-f4f4-4867-9dc6-9dce05a94ce2
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '25'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/acec5a99-198b-474d-9340-53b31ff30550
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: C70F99679A0E4997B6F8919647AD4051 Ref B: SG2AA1070306034 Ref C: 2026-11-16T06:39:38Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:36:01.2301445Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":2,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"Queued"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1315'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:39:42 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - af5d4486-5923-4ac9-a3d1-d38634633394
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '11'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/b8ff9c6a-0fac-42f2-ad5a-7f19ebc8442a
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: DBD0F0F7B2124ECBB7FE352EDC1EEA2A Ref B: SG2AA1040518011 Ref C: 2026-11-16T06:39:41Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","name":"CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:36:01.2301445Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":1,"commandsSummary":"Prevent
+        hard-link and symbolic-link creation in running services whose main executable
+        has a conventional Python name. The services are briefly restarted, and legitimate
+        operations requiring links will fail; ordinary file extraction can continue.","isRollbackable":true,"status":"Failed","statusDetails":"Neuron
+        reported Failed: CommandFailed."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1371'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:40:15 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 3230015c-c434-40d0-8a85-90d9a2a1727e
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '16'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/9a37ee70-b7ad-4377-a5a1-34b11f5c250b
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: D7EF3BE21E0C46E6B119F75C350F0CC4 Ref B: SG2AA1070306060 Ref C: 2026-11-16T06:40:14Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:36:01.2301445Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":2,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"Succeeded","appliedTime":"2026-11-16T06:39:50.8802053+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1422'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:40:18 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - e8d50ec7-0182-43b9-abdf-135f17fac60b
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '10'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/09e099a7-c15f-4d08-864c-8e9aed5e02f7
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: C2DC17730F344159A763D2F9D0EE0B0D Ref B: SG2AA1070303029 Ref C: 2026-11-16T06:40:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource finding rollback
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource --finding-id
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2/rollback?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":2,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-16T06:39:50.8802053+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"createdByType":null,"createdAt":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:40:20.8370674+00:00"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1486'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:40:20 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 7802d1bb-d7e6-432e-a9a6-b397af94234a
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '52'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/3453a59f-5bc6-4518-896e-373727d5e860
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: D13C39C477904FDE9783F235F9716A7A Ref B: SG2AA1070301025 Ref C: 2026-11-16T06:40:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:40:20.8370674Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":2,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-16T06:39:50.8802053+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1431'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:40:24 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - d3168bd5-6552-4e13-9526-a98d39e52022
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '19'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/ed1f73a8-360b-46c1-a655-bfc672373de4
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 1257CCD802BB477FAFD445EBC4E1B8E7 Ref B: SG2AA1070306025 Ref C: 2026-11-16T06:40:23Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:40:20.8370674Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":2,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-16T06:39:50.8802053+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1431'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:40:57 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - fd28390f-be02-4d25-99e3-10cd21ff5c61
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '11'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/9b8a3967-f11f-4a48-a78c-3747400b7b81
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 7FA88A670F2242D98F75F3FDB8952E87 Ref B: SG2AA1070302025 Ref C: 2026-11-16T06:40:56Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:40:20.8370674Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":2,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-16T06:39:50.8802053+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1431'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:41:30 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 359a89ae-7855-457b-a8b1-71201afa3cb6
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '18'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/156f5e36-cd3f-44e8-932d-e412505e8f8b
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 116FEA715F784613BC2295650A119206 Ref B: SG2AA1070304042 Ref C: 2026-11-16T06:41:29Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:40:20.8370674Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":2,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-16T06:39:50.8802053+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1431'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:42:02 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 2ec3004b-fc51-4de2-a125-06456b206f43
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '10'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/8f7be24b-3150-4cc5-adb0-0038bd75fea4
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A49C880566C54D668955B69500FB6DCC Ref B: SG2AA1070302036 Ref C: 2026-11-16T06:42:02Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:40:20.8370674Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":2,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-16T06:39:50.8802053+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1431'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:42:36 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 91d34129-4d7e-41fd-9fb6-190b9ab1869f
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '18'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/da365f22-e677-4daa-b17d-666981fb9e1e
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A3F55460BD1F40DC9244AED106FF710D Ref B: SG2AA1040520025 Ref C: 2026-11-16T06:42:35Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:40:20.8370674Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":2,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"RolledBack","appliedTime":"2026-11-16T06:39:50.8802053+00:00","statusDetails":"Neuron
+        reported RolledBack."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1415'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:43:09 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - a2c2db84-8122-4e65-9cbb-d8256aa5626c
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '15'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/a931b4e0-16af-428d-b300-06e12a704ee7
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 94D41D20FEF34A97B3E3182CF2A99914 Ref B: SG2AA1070304036 Ref C: 2026-11-16T06:43:08Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","name":"CVE-2026-82049-nsisolated11158469-2-runtime-systemd-deny-link-creation","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:36:01.2301445Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":1,"commandsSummary":"Prevent
+        hard-link and symbolic-link creation in running services whose main executable
+        has a conventional Python name. The services are briefly restarted, and legitimate
+        operations requiring links will fail; ordinary file extraction can continue.","isRollbackable":true,"status":"Failed","statusDetails":"Neuron
+        reported Failed: CommandFailed."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1371'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:43:11 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 4dfa4a21-459e-4e59-ab26-0e13cdcc5a0b
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '29'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/74b3f51c-8550-4e33-88fd-cd28514c5128
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: C2332200D1DD43F7B244E8E04EC3B5B9 Ref B: SG2AA1040513031 Ref C: 2026-11-16T06:43:11Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-nsisolated11158469-2-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:40:20.8370674Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-82049-nsisolated11158469-2","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":2,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"RolledBack","appliedTime":"2026-11-16T06:39:50.8802053+00:00","statusDetails":"Neuron
+        reported RolledBack."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1415'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:43:15 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 381bc07f-24a3-443f-9097-302cefe3b92a
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '13'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/636524d3-2611-4c8a-ad7c-565a80e77a32
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: CF7C102CFF924B919CFA4CAB51C4E31D Ref B: SG2AA1040520034 Ref C: 2026-11-16T06:43:15Z'
+    status:
+      code: 200
+      message: OK
+version: 1

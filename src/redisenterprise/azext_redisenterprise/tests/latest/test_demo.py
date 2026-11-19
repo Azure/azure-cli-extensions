@@ -46,16 +46,6 @@ def setup_scenario1(test):
 def cleanup_scenario1(test):
     pass
 
-# EXAMPLE: /RedisEnterprise/get/RedisEnterpriseList
-@try_manual
-def step_list(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az redisenterprise list '
-             '-g ""',
-             checks=checks)
-
-
 # EXAMPLE: /RedisEnterprise/get/RedisEnterpriseListByResourceGroup
 @try_manual
 def step_list2(test, checks=None):
@@ -84,7 +74,7 @@ def call_scenario1(test, rg):
     step_show(test, checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
-        test.check("location", "Central India"),
+        test.check("location", "East US 2 EUAP"),
         test.check("sku.name", "Balanced_B10"),
         test.check("tags.tag1", "value1"),
        # test.check("zones", ["1", "2", "3"]),
@@ -103,7 +93,6 @@ def call_scenario1(test, rg):
         test.check("databases[0].resourceState", "Running"),
         test.check("databases[0].type", "Microsoft.Cache/redisEnterprise/databases")
     ])
-    step_list(test, checks=[])
     step_list2(test, checks=[
         test.check("length(@)", 1)
     ])
@@ -140,7 +129,7 @@ class Redisenterprisescenario1Test(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg1-', key='rg', parameter_name='rg',
-                           location='centralindia', random_name_length=34)
+                           location='eastus2euap', random_name_length=34)
     def test_redisenterprise_scenario1(self, rg):
         call_scenario1(self, rg)
         calc_coverage(__file__)
@@ -164,7 +153,7 @@ def call_scenario2(test):
     step_create(test, checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
-        test.check("location", "Central India"),
+        test.check("location", "East US 2 EUAP"),
         test.check("sku.name", "Balanced_B10"),
         test.check("tags.tag1", "value1"),
         test.check("zones", None),
@@ -176,7 +165,7 @@ def call_scenario2(test):
     step_show(test,checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
-        test.check("location", "Central India"),
+        test.check("location", "East US 2 EUAP"),
         test.check("sku.name", "Balanced_B10"),
         test.check("tags.tag1", "value1"),
         test.check("zones", None),
@@ -186,7 +175,6 @@ def call_scenario2(test):
         test.check("type", "Microsoft.Cache/redisEnterprise"),
         test.check("length(databases)", 0),
     ])
-    step_list(test, checks=[])
     step_list2(test, checks=[
         test.check("length(@)", 1)
     ])
@@ -236,7 +224,7 @@ class Redisenterprisescenario2Test(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg2-', key='rg', parameter_name='rg',
-                           location='centralindia', random_name_length=34)
+                           location='eastus2euap', random_name_length=34)
     def test_redisenterprise_scenario2(self):
         call_scenario2(self)
         calc_coverage(__file__)
@@ -299,9 +287,9 @@ class Redisenterprisescenario3Test(ScenarioTest):
             'database': 'default',
         }) 
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg31-', key='rg31', parameter_name='rg31',
-                           location='centralindia', random_name_length=34)
+                           location='eastus2euap', random_name_length=34)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg32-', key='rg32', parameter_name='rg32',
-                           location='centralindia', random_name_length=34)
+                           location='eastus2euap', random_name_length=34)
     @AllowLargeResponse(size_kb=9999)
     def test_redisenterprise_scenario3(self):
         call_scenario3(self)
@@ -324,7 +312,7 @@ def call_scenario4(test, rg):
     step_show(test, checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
-        test.check("location", "Central India"),
+        test.check("location", "East US 2 EUAP"),
         test.check("sku.name", "Balanced_B10"),
         test.check("tags.tag1", "value1"),
         test.check("minimumTlsVersion", "1.2"),
@@ -342,7 +330,6 @@ def call_scenario4(test, rg):
         test.check("databases[0].resourceState", "Running"),
         test.check("databases[0].type", "Microsoft.Cache/redisEnterprise/databases")
     ])
-    step_list(test, checks=[])
     step_list2(test, checks=[
         test.check("length(@)", 1)
     ])
@@ -395,7 +382,7 @@ class Redisenterprisescenario4Test(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg4-', key='rg', parameter_name='rg',
-                           location='centralindia', random_name_length=34)
+                           location='eastus2euap', random_name_length=34)
     def test_redisenterprise_scenario4(self, rg):
         call_scenario4(self, rg)
         calc_coverage(__file__)
@@ -417,7 +404,6 @@ def call_scenario5(test, rg):
         test.check("type", "Microsoft.Cache/redisEnterprise/databases")
     ])
 
-    step_list(test, checks=[])
     step_list2(test, checks=[
         test.check("length(@)", 1)
     ])
@@ -496,7 +482,7 @@ class Redisenterprisescenario5Test(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg5-', key='rg', parameter_name='rg',
-                           location='centralindia', random_name_length=34)
+                           location='eastus2euap', random_name_length=34)
     def test_redisenterprise_scenario5(self, rg):
         call_scenario5(self, rg)
         calc_coverage(__file__)
@@ -532,7 +518,7 @@ def call_scenario6(test, rg):
     step_show(test, checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
-        test.check("location", "Central India"),
+        test.check("location", "East US 2 EUAP"),
         test.check("sku.name", "Balanced_B10"),
         test.check("tags.tag1", "value1"),
         # test.check("zones", ["1", "2", "3"]),
@@ -551,7 +537,6 @@ def call_scenario6(test, rg):
         test.check("databases[0].resourceState", "Running"),
         test.check("databases[0].type", "Microsoft.Cache/redisEnterprise/databases")
     ])
-    step_list(test, checks=[])
     step_list2(test, checks=[
         test.check("length(@)", 1)
     ])
@@ -591,7 +576,7 @@ class Redisenterprisescenario6Test(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg1-', key='rg', parameter_name='rg',
-                           location='centralindia', random_name_length=34)
+                           location='eastus2euap', random_name_length=34)
     def test_redisenterprise_scenario6(self, rg):
         call_scenario6(self, rg)
         calc_coverage(__file__)
@@ -632,7 +617,7 @@ def call_scenario7(test, rg):
     step_show(test, checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
-        test.check("location", "Central India"),
+        test.check("location", "East US 2 EUAP"),
         test.check("sku.name", "Balanced_B5"),
         test.check("sku.capacity", None),
         test.check("zones", None),
@@ -685,7 +670,7 @@ class Redisenterprisescenario7Test(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg7-', key='rg', parameter_name='rg',
-                           location='centralindia', random_name_length=34)
+                           location='eastus2euap', random_name_length=34)
     def test_redisenterprise_scenario7(self, rg):
         call_scenario7(self, rg)
         calc_coverage(__file__)

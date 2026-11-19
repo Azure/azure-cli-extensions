@@ -19,10 +19,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/dbsystems", "2025-09-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/dbsystems", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/dbsystems", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/dbsystems", "2026-06-01"],
         ]
     }
 
@@ -109,7 +109,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -162,7 +162,9 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -174,6 +176,9 @@ class List(AAZCommand):
             _element.zones = AAZListType()
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.character_set = AAZStrType(
+                serialized_name="characterSet",
+            )
             properties.cluster_name = AAZStrType(
                 serialized_name="clusterName",
             )
@@ -182,6 +187,9 @@ class List(AAZCommand):
             )
             properties.compute_model = AAZStrType(
                 serialized_name="computeModel",
+            )
+            properties.data_collection_options = AAZObjectType(
+                serialized_name="dataCollectionOptions",
             )
             properties.data_storage_size_in_gbs = AAZIntType(
                 serialized_name="dataStorageSizeInGbs",
@@ -207,7 +215,6 @@ class List(AAZCommand):
             properties.domain = AAZStrType()
             properties.grid_image_ocid = AAZStrType(
                 serialized_name="gridImageOcid",
-                flags={"read_only": True},
             )
             properties.hostname = AAZStrType(
                 flags={"required": True},
@@ -230,6 +237,9 @@ class List(AAZCommand):
             properties.memory_size_in_gbs = AAZIntType(
                 serialized_name="memorySizeInGbs",
                 flags={"read_only": True},
+            )
+            properties.ncharacter_set = AAZStrType(
+                serialized_name="ncharacterSet",
             )
             properties.network_anchor_id = AAZStrType(
                 serialized_name="networkAnchorId",
@@ -279,6 +289,17 @@ class List(AAZCommand):
             )
             properties.version = AAZStrType(
                 flags={"read_only": True},
+            )
+
+            data_collection_options = cls._schema_on_200.value.Element.properties.data_collection_options
+            data_collection_options.is_diagnostics_events_enabled = AAZBoolType(
+                serialized_name="isDiagnosticsEventsEnabled",
+            )
+            data_collection_options.is_health_monitoring_enabled = AAZBoolType(
+                serialized_name="isHealthMonitoringEnabled",
+            )
+            data_collection_options.is_incident_logs_enabled = AAZBoolType(
+                serialized_name="isIncidentLogsEnabled",
             )
 
             db_system_options = cls._schema_on_200.value.Element.properties.db_system_options
@@ -364,7 +385,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -417,7 +438,9 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -429,6 +452,9 @@ class List(AAZCommand):
             _element.zones = AAZListType()
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.character_set = AAZStrType(
+                serialized_name="characterSet",
+            )
             properties.cluster_name = AAZStrType(
                 serialized_name="clusterName",
             )
@@ -437,6 +463,9 @@ class List(AAZCommand):
             )
             properties.compute_model = AAZStrType(
                 serialized_name="computeModel",
+            )
+            properties.data_collection_options = AAZObjectType(
+                serialized_name="dataCollectionOptions",
             )
             properties.data_storage_size_in_gbs = AAZIntType(
                 serialized_name="dataStorageSizeInGbs",
@@ -462,7 +491,6 @@ class List(AAZCommand):
             properties.domain = AAZStrType()
             properties.grid_image_ocid = AAZStrType(
                 serialized_name="gridImageOcid",
-                flags={"read_only": True},
             )
             properties.hostname = AAZStrType(
                 flags={"required": True},
@@ -485,6 +513,9 @@ class List(AAZCommand):
             properties.memory_size_in_gbs = AAZIntType(
                 serialized_name="memorySizeInGbs",
                 flags={"read_only": True},
+            )
+            properties.ncharacter_set = AAZStrType(
+                serialized_name="ncharacterSet",
             )
             properties.network_anchor_id = AAZStrType(
                 serialized_name="networkAnchorId",
@@ -534,6 +565,17 @@ class List(AAZCommand):
             )
             properties.version = AAZStrType(
                 flags={"read_only": True},
+            )
+
+            data_collection_options = cls._schema_on_200.value.Element.properties.data_collection_options
+            data_collection_options.is_diagnostics_events_enabled = AAZBoolType(
+                serialized_name="isDiagnosticsEventsEnabled",
+            )
+            data_collection_options.is_health_monitoring_enabled = AAZBoolType(
+                serialized_name="isHealthMonitoringEnabled",
+            )
+            data_collection_options.is_incident_logs_enabled = AAZBoolType(
+                serialized_name="isIncidentLogsEnabled",
             )
 
             db_system_options = cls._schema_on_200.value.Element.properties.db_system_options

@@ -59,8 +59,7 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run,
     if 'general' in folders_to_include_set or 'general' not in folders_to_exclude_set:
         valid_folder_uids.add('')
 
-    # needs to be meta since in Grafana 8, the folderUid is in the meta.
-    all_lib_panels_filtered = [p for p in all_source_lib_panels if p['meta']['folderUid'] in valid_folder_uids]
+    all_lib_panels_filtered = [p for p in all_source_lib_panels if dashboard_folder_uid(p) in valid_folder_uids]
     (library_panels_created_summary,
      library_panels_overwrote_summary,
      dashboards_created_summary,

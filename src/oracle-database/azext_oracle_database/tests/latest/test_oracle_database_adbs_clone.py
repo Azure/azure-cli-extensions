@@ -21,7 +21,7 @@ class OracleDatabaseAdbsCloneScenario(ScenarioTest):
         resource_group_name = 'PowerShellTestRg'
         source_database_name = 'DNDAdbsTets'
         clone_name = self.create_random_name(prefix='ADBSclone', length=20)
-        admin_password = os.environ.get('AZURE_ORACLE_DATABASE_ADBS_ADMIN_PASSWORD', 'TestPass#2024#')
+        admin_password = os.environ['AZURE_ORACLE_DATABASE_ADBS_ADMIN_PASSWORD']
         subnet_id = os.environ.get(
             'AZURE_ORACLE_DATABASE_ADBS_SUBNET_ID',
             '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Network/virtualNetworks/PSTestVnet/subnets/delegated'.format(
@@ -73,7 +73,7 @@ class OracleDatabaseAdbsCloneScenario(ScenarioTest):
         resource_group_name = 'PowerShellTestRg'
         source_database_name = 'DNDAdbsTets'
         backup_clone_name = self.create_random_name(prefix='ADBSbkpclone', length=20)
-        admin_password = os.environ.get('AZURE_ORACLE_DATABASE_ADBS_ADMIN_PASSWORD', 'TestPass#2024#')
+        admin_password = os.environ['AZURE_ORACLE_DATABASE_ADBS_ADMIN_PASSWORD']
         subnet_id = os.environ.get(
             'AZURE_ORACLE_DATABASE_ADBS_SUBNET_ID',
             '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Network/virtualNetworks/PSTestVnet/subnets/delegated'.format(
@@ -128,7 +128,7 @@ class OracleDatabaseAdbsCloneScenario(ScenarioTest):
             'AZURE_ORACLE_DATABASE_ADBS_CLONE_BACKUP_TIMESTAMP',
             '2026-07-02T05:57:26.000Z'
         )
-        admin_password = os.environ.get('AZURE_ORACLE_DATABASE_ADBS_ADMIN_PASSWORD', 'TestPass#2024#')
+        admin_password = os.environ['AZURE_ORACLE_DATABASE_ADBS_ADMIN_PASSWORD']
         subnet_id = os.environ.get(
             'AZURE_ORACLE_DATABASE_ADBS_SUBNET_ID',
             '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Network/virtualNetworks/PSTestVnet/subnets/delegated'.format(

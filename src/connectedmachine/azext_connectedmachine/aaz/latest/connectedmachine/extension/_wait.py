@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2026-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2026-09-01"],
         ]
     }
 
@@ -131,7 +131,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-15",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }
@@ -199,12 +199,14 @@ class Wait(AAZWaitCommand):
             properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
+            _WaitHelper._build_schema_record_unknown__read(properties.protected_settings)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType()
             properties.settings = AAZDictType()
+            _WaitHelper._build_schema_record_unknown__read(properties.settings)
             properties.type = AAZStrType()
             properties.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
@@ -226,12 +228,6 @@ class Wait(AAZWaitCommand):
             status.level = AAZStrType()
             status.message = AAZStrType()
             status.time = AAZStrType()
-
-            protected_settings = cls._schema_on_200.properties.protected_settings
-            protected_settings.Element = AAZAnyType()
-
-            settings = cls._schema_on_200.properties.settings
-            settings.Element = AAZAnyType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -261,6 +257,21 @@ class Wait(AAZWaitCommand):
 
 class _WaitHelper:
     """Helper class for Wait"""
+
+    _schema_record_unknown__read = None
+
+    @classmethod
+    def _build_schema_record_unknown__read(cls, _schema):
+        if cls._schema_record_unknown__read is not None:
+            _schema.Element = cls._schema_record_unknown__read.Element
+            return
+
+        cls._schema_record_unknown__read = _schema_record_unknown__read = AAZDictType()
+
+        record_unknown__read = _schema_record_unknown__read
+        record_unknown__read.Element = AAZAnyType()
+
+        _schema.Element = cls._schema_record_unknown__read.Element
 
 
 __all__ = ["Wait"]
