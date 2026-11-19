@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.0.0b10
+++++++++
+* Add ``az horizondb parameter-group default list`` and ``show`` to discover
+  regional default parameter groups and inspect their engine-defined parameters.
+
 1.0.0b9
 +++++++
 * Update the management API to ``2026-10-01-preview`` with PostgreSQL 17 and 18 support.

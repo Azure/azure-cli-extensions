@@ -56,6 +56,14 @@ az horizondb cluster pool update --resource-group example-resource-group --clust
 
 ## Manage parameter groups
 
+List the default parameter groups available in a region, then use a returned
+name to inspect the engine-defined parameters for that PostgreSQL version:
+
+```powershell
+az horizondb parameter-group default list --location eastus2
+az horizondb parameter-group default show --location eastus2 --name default-postgresql-17-provisioned
+```
+
 Create a parameter group for the cluster's PostgreSQL version, then associate
 it with an existing pool. Pools use the default parameter group when created;
 custom parameter groups are assigned through pool update.
@@ -225,6 +233,8 @@ az horizondb cluster pool firewall-rule create --resource-group example-resource
 - `az horizondb parameter-group update`: Update a parameter group.
 - `az horizondb parameter-group wait`: Wait for a parameter group to satisfy a condition.
 - `az horizondb parameter-group connection list`: List connections associated with a parameter group.
+- `az horizondb parameter-group default list`: List default parameter groups in a region.
+- `az horizondb parameter-group default show`: Show a default parameter group and its engine-defined parameters.
 
 ## Local development
 
