@@ -478,6 +478,10 @@ helps['aks create'] = f"""
         - name: --disable-disk-driver
           type: bool
           short-summary: Disable AzureDisk CSI Driver.
+        - name: --enable-quick-attach-detach
+          type: bool
+          short-summary: Enable Quick Attach Detach for the AzureDisk CSI Driver.
+          long-summary: Quick Attach Detach enables faster, higher-scale Azure Disk attach and detach operations by bypassing ARM/CRP control-plane bottlenecks. It requires Kubernetes 1.37.0 or later, the AzureDisk CSI Driver and the OIDC issuer, and is not supported on clusters with Windows node pools. For more information, see https://aka.ms/aks/qad.
         - name: --disable-file-driver
           type: bool
           short-summary: Disable AzureFile CSI Driver.
