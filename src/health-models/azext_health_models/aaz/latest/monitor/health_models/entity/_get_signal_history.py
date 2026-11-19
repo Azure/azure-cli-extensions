@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models entity get-signal-history",
-    is_preview=True,
 )
 class GetSignalHistory(AAZCommand):
     """Retrieve the time series history for a signal on an entity
@@ -23,9 +22,9 @@ class GetSignalHistory(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-05-01-preview",
+        "version": "2026-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/entities/{}/getsignalhistory", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/entities/{}/getsignalhistory", "2026-11-01"],
         ]
     }
 
@@ -184,7 +183,7 @@ class GetSignalHistory(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-05-01-preview",
+                    "api-version", "2026-11-01",
                     required=True,
                 ),
             }
