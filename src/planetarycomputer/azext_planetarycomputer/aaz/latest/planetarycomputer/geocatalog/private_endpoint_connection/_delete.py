@@ -12,17 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "planetarycomputer geocatalog delete",
+    "planetarycomputer geocatalog private-endpoint-connection delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a GeoCatalog
+    """Delete a private endpoint connection
+
+    :example: PrivateEndpointConnections_Delete
+        az planetarycomputer geocatalog private-endpoint-connection delete --resource-group MyResourceGroup --catalog-name MyCatalog --private-endpoint-connection-name MyCatalog.5c97c7ae-fede-4478-8651-8e8bc3f3d442
     """
 
     _aaz_info = {
-        "version": "2026-04-15",
+        "version": "2026-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.orbital/geocatalogs/{}", "2026-04-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.orbital/geocatalogs/{}/privateendpointconnections/{}", "2026-10-01"],
         ]
     }
 
@@ -44,13 +47,19 @@ class Delete(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.catalog_name = AAZStrArg(
-            options=["-n", "--name", "--catalog-name"],
+            options=["--catalog-name"],
             help="The name of the catalog",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
+        )
+        _args_schema.private_endpoint_connection_name = AAZStrArg(
+            options=["-n", "--name", "--private-endpoint-connection-name"],
+            help="The name of the private endpoint connection associated with the Azure resource.",
+            required=True,
+            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -59,7 +68,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.GeoCatalogsDelete(ctx=self.ctx)()
+        yield self.PrivateEndpointConnectionsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -70,7 +79,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class GeoCatalogsDelete(AAZHttpOperation):
+    class PrivateEndpointConnectionsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -109,7 +118,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Orbital/geoCatalogs/{catalogName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Orbital/geoCatalogs/{catalogName}/privateEndpointConnections/{privateEndpointConnectionName}",
                 **self.url_parameters
             )
 
@@ -129,6 +138,10 @@ class Delete(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
+                    "privateEndpointConnectionName", self.ctx.args.private_endpoint_connection_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
@@ -143,7 +156,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-15",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }
