@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "oracle-database autonomous-database update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a AutonomousDatabase
@@ -22,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-01",
+        "version": "2026-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}", "2026-07-01-preview"],
         ]
     }
 
@@ -289,6 +290,17 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        _args_schema.local_data_guard_zone = AAZStrArg(
+            options=["--local-data-guard-zone"],
+            arg_group="Properties",
+            help="The logical zone where the local Autonomous Data Guard standby should be created. Specify only when enabling local Data Guard; this cannot move an existing standby to another zone.",
+            nullable=True,
+            fmt=AAZStrArgFormat(
+                max_length=255,
+                min_length=1,
+            ),
+        )
+
         clone = cls._args_schema.clone
         clone.time_until_reconnect_clone_enabled = AAZStrArg(
             options=["time-until-reconnect-clone-enabled"],
@@ -480,7 +492,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01",
+                    "api-version", "2026-07-01-preview",
                     required=True,
                 ),
             }
@@ -579,7 +591,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01",
+                    "api-version", "2026-07-01-preview",
                     required=True,
                 ),
             }
@@ -669,6 +681,7 @@ class Update(AAZCommand):
                 properties.set_prop("timeScheduledAzUpdate", AAZStrType, ".time_scheduled_az_update")
                 properties.set_prop("whitelistedIps", AAZListType, ".whitelisted_ips")
                 properties.set_prop("zone", AAZStrType, ".zone")
+                properties.set_prop("localDataGuardZone", AAZStrType, ".local_data_guard_zone")
                 properties.discriminate_by("dataBaseType", "Clone")
                 properties.discriminate_by("dataBaseType", "CloneFromBackupTimestamp")
                 properties.discriminate_by("dataBaseType", "CrossRegionDisasterRecovery")
@@ -1034,6 +1047,9 @@ class _UpdateHelper:
             serialized_name="whitelistedIps",
         )
         properties.zone = AAZStrType()
+        properties.local_data_guard_zone = AAZStrType(
+            serialized_name="localDataGuardZone",
+        )
 
         apex_details = _schema_autonomous_database_read.properties.apex_details
         apex_details.apex_version = AAZStrType(
@@ -1144,6 +1160,7 @@ class _UpdateHelper:
         local_standby_db.time_disaster_recovery_role_changed = AAZStrType(
             serialized_name="timeDisasterRecoveryRoleChanged",
         )
+        local_standby_db.zone = AAZStrType()
 
         long_term_backup_schedule = _schema_autonomous_database_read.properties.long_term_backup_schedule
         long_term_backup_schedule.is_disabled = AAZBoolType(

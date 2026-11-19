@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "oracle-database autonomous-database change-disaster-recovery-configuration",
+    is_preview=True,
 )
 class ChangeDisasterRecoveryConfiguration(AAZCommand):
     """Change the disaster recovery configuration of a cross-region disaster recovery peer Autonomous Database.
@@ -22,9 +23,9 @@ class ChangeDisasterRecoveryConfiguration(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-01",
+        "version": "2026-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}/changedisasterrecoveryconfiguration", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}/changedisasterrecoveryconfiguration", "2026-07-01-preview"],
         ]
     }
 
@@ -170,7 +171,7 @@ class ChangeDisasterRecoveryConfiguration(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01",
+                    "api-version", "2026-07-01-preview",
                     required=True,
                 ),
             }
@@ -508,6 +509,9 @@ class ChangeDisasterRecoveryConfiguration(AAZCommand):
                 serialized_name="whitelistedIps",
             )
             properties.zone = AAZStrType()
+            properties.local_data_guard_zone = AAZStrType(
+                serialized_name="localDataGuardZone",
+            )
 
             apex_details = cls._schema_on_200.properties.apex_details
             apex_details.apex_version = AAZStrType(
@@ -618,6 +622,7 @@ class ChangeDisasterRecoveryConfiguration(AAZCommand):
             local_standby_db.time_disaster_recovery_role_changed = AAZStrType(
                 serialized_name="timeDisasterRecoveryRoleChanged",
             )
+            local_standby_db.zone = AAZStrType()
 
             long_term_backup_schedule = cls._schema_on_200.properties.long_term_backup_schedule
             long_term_backup_schedule.is_disabled = AAZBoolType(
