@@ -1,0 +1,26 @@
+name: Verify PR Title
+
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize]
+    branches:
+      - main
+
+permissions: {}
+
+jobs:
+  verify-pr-title:
+    runs-on: ubuntu-latest
+    name: Verify PR title format
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Verify PR title
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: python -m verify_pr_title "$PR_TITLE"
+        working-directory: scripts/ci
