@@ -10,6 +10,8 @@ import shutil
 from azure.cli.core.azclierror import AzCLIError, InvalidArgumentValueError, ResourceNotFoundError
 from azure.mgmt.core.tools import parse_resource_id
 from ._constants import (
+    CONTINUOUSPATCH_IMAGE_LIMIT,
+    CONTINUOUSPATCH_IMAGE_LIMIT_TEMPLATE_TOKEN,
     CONTINUOUSPATCH_SCHEDULE_MIN_DAYS,
     CONTINUOUSPATCH_SCHEDULE_MAX_DAYS,
     ERROR_MESSAGE_INVALID_TIMESPAN_VALUE,
@@ -66,6 +68,12 @@ def convert_cron_to_schedule(cron_expression, just_days=False):
         return None
 
 
+def render_task_template(content):
+    """Replace extension tokens in a task template (bytes) so the tasks and the CLI share one image limit."""
+    return content.replace(CONTINUOUSPATCH_IMAGE_LIMIT_TEMPLATE_TOKEN.encode("utf-8"),
+                           str(CONTINUOUSPATCH_IMAGE_LIMIT).encode("utf-8"))
+
+
 def create_temporary_dry_run_file(file_location, tmp_folder):
     templates_path = os.path.abspath(os.path.join(
         os.path.dirname(__file__),
@@ -79,7 +87,10 @@ def create_temporary_dry_run_file(file_location, tmp_folder):
         if not os.path.exists(file_template_copy):
             raise AzCLIError(f"Template file {file_template_copy} does not exist")
 
-        shutil.copy2(file_template_copy, tmp_folder)
+        with open(file_template_copy, "rb") as template_file:
+            rendered_template = render_task_template(template_file.read())
+        with open(os.path.join(tmp_folder, TMP_DRY_RUN_FILE_NAME), "wb") as rendered_file:
+            rendered_file.write(rendered_template)
         shutil.copy2(file_location, tmp_folder)
         folder_contents = os.listdir(tmp_folder)
         logger.debug(f"Copied dry run file {folder_contents}")

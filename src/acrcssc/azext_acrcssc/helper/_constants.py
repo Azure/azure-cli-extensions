@@ -37,12 +37,16 @@ TMP_DRY_RUN_FILE_NAME = "tmp_dry_run_template.yaml"
 
 
 # Continuous Patch Constants
-CONTINUOUSPATCH_IMAGE_LIMIT = 100
+CONTINUOUSPATCH_IMAGE_LIMIT = 1000
+# Task templates reference the image limit through this token; it is replaced when the templates are encoded
+CONTINUOUSPATCH_IMAGE_LIMIT_TEMPLATE_TOKEN = "__CSSC_IMAGE_LIMIT__"
 CONTINUOUSPATCH_OCI_ARTIFACT_TYPE = "oci-artifact"
 CSSC_WORKFLOW_POLICY_REPOSITORY = "csscpolicies"
 CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG = "patchpolicy"
 CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1 = "v1"
 CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN = "dryrun"
+# Registry copy of the Trivy vulnerability database, refreshed by the trigger task
+CONTINUOUSPATCH_TRIVY_DB_REPOSITORY = "trivy-db"
 CONTINUOUSPATCH_DEPLOYMENT_NAME = "continuouspatchingdeployment"
 CONTINUOUSPATCH_DEPLOYMENT_TEMPLATE = "CSSC-AutoImagePatching-encodedtasks.json"
 # listing all individual tasks that are required for Continuous Patching to work
@@ -56,6 +60,7 @@ CONTINUOUS_PATCHING_WORKFLOW_NAME = CSSCTaskTypes.ContinuousPatchV1.value
 DESCRIPTION = "Description"
 CONTINUOUSPATCH_SCHEDULE_MIN_DAYS = 1
 CONTINUOUSPATCH_SCHEDULE_MAX_DAYS = 30
+TASK_LOG_DOWNLOAD_WORKERS = 16
 
 
 CONTINUOUSPATCH_ALL_TASK_NAMES = [

@@ -134,6 +134,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         mock_eval_trigger_run.assert_called_once()
         mock_update_task_schedule.assert_called_once()
 
+    @mock.patch("azext_acrcssc.helper._taskoperations.delete_trivy_db_copy")
     @mock.patch("azext_acrcssc.helper._taskoperations._cancel_task_runs")
     @mock.patch("azext_acrcssc.helper._taskoperations.WorkflowTaskStatus.get_taskruns_with_filter")
     @mock.patch("azext_acrcssc.helper._taskoperations.check_continuous_task_config_exists")
@@ -142,7 +143,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
     @mock.patch("azext_acrcssc.helper._taskoperations.cf_acr_runs")
     @mock.patch('azext_acrcssc.helper._taskoperations.cf_acr_tasks')
     @mock.patch('azext_acrcssc.helper._taskoperations.cf_authorization')
-    def test_delete_continuous_patch_v1(self, mock_cf_authorization, mock_cf_acr_tasks, mock_cf_acr_runs, mock_check_continuoustask_exists, mock_delete_oci_artifact_continuous_patch, mock_check_continuous_task_config_exists, mock_get_taskruns_with_filter, mock_cancel_task_runs):
+    def test_delete_continuous_patch_v1(self, mock_cf_authorization, mock_cf_acr_tasks, mock_cf_acr_runs, mock_check_continuoustask_exists, mock_delete_oci_artifact_continuous_patch, mock_check_continuous_task_config_exists, mock_get_taskruns_with_filter, mock_cancel_task_runs, mock_delete_trivy_db_copy):
         # Mock the necessary dependencies
         mock_check_continuoustask_exists.return_value = True, []
         mock_check_continuous_task_config_exists.return_value = True
@@ -163,6 +164,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         ## Assert here
         mock_delete_oci_artifact_continuous_patch.assert_called_once()
         mock_cancel_task_runs.assert_called_once()
+        mock_delete_trivy_db_copy.assert_called_once_with(self.cmd, self.registry)
 
     @mock.patch("azext_acrcssc.helper._taskoperations.check_continuous_task_exists")
     @mock.patch("azext_acrcssc.helper._taskoperations.convert_timespan_to_cron")

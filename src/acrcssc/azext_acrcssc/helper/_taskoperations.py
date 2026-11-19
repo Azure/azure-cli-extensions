@@ -47,8 +47,8 @@ from azext_acrcssc._client_factory import (
 from azext_acrcssc.helper._deployment import validate_and_deploy_template
 from azext_acrcssc._validators import check_continuous_task_exists, check_continuous_task_config_exists
 from datetime import datetime, timezone, timedelta
-from ._utility import convert_timespan_to_cron, convert_cron_to_schedule, create_temporary_dry_run_file, delete_temporary_dry_run_file
-from azext_acrcssc.helper._ociartifactoperations import create_oci_artifact_continuous_patch, get_oci_artifact_continuous_patch, delete_oci_artifact_continuous_patch
+from ._utility import convert_timespan_to_cron, convert_cron_to_schedule, create_temporary_dry_run_file, delete_temporary_dry_run_file, render_task_template
+from azext_acrcssc.helper._ociartifactoperations import create_oci_artifact_continuous_patch, get_oci_artifact_continuous_patch, delete_oci_artifact_continuous_patch, delete_trivy_db_copy
 from ._workflow_status import WorkflowTaskStatus
 
 logger = get_logger(__name__)
@@ -223,6 +223,8 @@ def delete_continuous_patch_v1(cmd, registry, yes):
     if cssc_config_exists:
         logger.warning(f"Deleting {CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}")
         delete_oci_artifact_continuous_patch(cmd, registry)
+
+    delete_trivy_db_copy(cmd, registry)
 
 
 def list_continuous_patch_v1(cmd, registry):
@@ -460,7 +462,7 @@ def _create_encoded_task(task_file):
             "../templates/"))
 
     with open(os.path.join(templates_path, task_file), "rb") as f:
-        base64_content = base64.b64encode(f.read())
+        base64_content = base64.b64encode(render_task_template(f.read()))
         return base64_content.decode('utf-8')
 
 

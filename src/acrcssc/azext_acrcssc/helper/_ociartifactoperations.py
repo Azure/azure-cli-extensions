@@ -26,6 +26,7 @@ from ._constants import (
     CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1,
     CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN,
     CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME,
+    CONTINUOUSPATCH_TRIVY_DB_REPOSITORY,
     CSSC_WORKFLOW_POLICY_REPOSITORY,
     ERROR_MESSAGE_INVALID_JSON_PARSE,
     ERROR_MESSAGE_INVALID_JSON_SCHEMA,
@@ -126,6 +127,25 @@ def delete_oci_artifact_continuous_patch(cmd, registry):
         raise
 
 
+def delete_trivy_db_copy(cmd, registry):
+    """Delete the registry copy of the Trivy DB kept by the trigger task. Best effort: it may not exist."""
+    resourceid = parse_resource_id(registry.id)
+    subscription = resourceid[SUBSCRIPTION]
+    oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_TRIVY_DB_REPOSITORY}"
+    try:
+        token = _get_acr_token(registry.name, subscription)
+        acr_repository_delete(
+            cmd=cmd,
+            registry_name=registry.name,
+            repository=oci_target_name,
+            username=BEARER_TOKEN_USERNAME,
+            password=token,
+            yes=True)
+        logger.warning(f"Deleted {oci_target_name}")
+    except Exception as exception:
+        logger.debug(f"{oci_target_name} was not deleted, it might not exist: {exception}")
+
+
 def _oras_client(registry):
     resourceid = parse_resource_id(registry.id)
     subscription = resourceid[SUBSCRIPTION]
@@ -134,6 +154,10 @@ def _oras_client(registry):
         token = _get_acr_token(registry.name, subscription)
         client = OrasClient(hostname=str.lower(registry.login_server), auth_backend="token")
         client.login(BEARER_TOKEN_USERNAME, token)
+        # oras-py reads ~/.docker/config.json on every push/pull and replaces the credentials set by login() with the
+        # registry's `auth` entry. `az acr login` stores that entry with an empty password (the token is kept in
+        # `identitytoken`, which oras-py ignores), so pushes fail. Use only the token obtained above.
+        client.auth.load_configs = lambda *args, **kwargs: None
         logger.debug(f"Login to ACR {registry.name} completed successfully.")
     except Exception as exception:
         raise AzCLIError(f"Failed to login to Artifact Store ACR {registry.name}: {exception}")
