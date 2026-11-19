@@ -78,6 +78,24 @@ class AiinfraoptimizationScenario(ScenarioTest):
                      self.check("length(options[?cost.source != 'AzureRetail'])", 0),
                  ])
 
+    def test_aiinfraoptimization_recommendvmsku_long_context(self):
+        # Both token fields exceed the former 131072 limit, and the model's context window fits their total.
+        self.kwargs.update({
+            'location': 'eastus2',
+            'model': '{parameter-count:8000000000,weight-precision:BF16,num-layers:32,'
+                     'num-key-value-heads:8,head-dim:128,max-context-length:1048576}',
+            'workload': '{max-concurrent-requests-per-replica:1,'
+                        'token-budget:{prompt-tokens:262144,max-output-tokens:131073}}',
+            'target_vm_sizes': '[Standard_NC24ads_A100_v4,Standard_NC40ads_H100_v5]',
+        })
+
+        self.cmd('aiinfraoptimization recommendvmsku --location {location} --model "{model}" '
+                 '--workload "{workload}" --target-vm-sizes "{target_vm_sizes}"',
+                 checks=[
+                     self.check('sizing.workload.contextLength', 393217),
+                     self.greater_than('length(options)', 0),
+                 ])
+
     def test_aiinfraoptimization_recommendvmsku_service_error(self):
         # The service reads Hugging Face anonymously, so it can't size a gated model without its architecture fields.
         self.kwargs.update({
