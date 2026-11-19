@@ -174,7 +174,7 @@ def _convert_numeric_params(job_params):
 
 
 def submit(cmd, resource_group_name, workspace_name, target_id, job_input_file, job_input_format,
-           job_name=None, shots=None, storage=None, job_params=None, target_capability=None,
+           job_name=None, shots=None, job_params=None, target_capability=None,
            job_output_format=None, entry_point=None):
     """
     Submit QIR or a pass-through job to run on Azure Quantum.
@@ -489,14 +489,14 @@ def job_show(cmd, job_id, resource_group_name, workspace_name):
 
 
 def run(cmd, resource_group_name, workspace_name, target_id, job_input_file, job_input_format,
-        job_name=None, shots=None, storage=None, job_params=None, target_capability=None,
+        job_name=None, shots=None, job_params=None, target_capability=None,
         job_output_format=None, entry_point=None):
     """
     Submit a job to run on Azure Quantum, and wait for the result.
     """
     job = submit(cmd, resource_group_name, workspace_name, target_id, job_input_file, job_input_format,
-                 job_name, shots, storage, job_params, target_capability,
-                 job_output_format, entry_point)
+                 job_name=job_name, shots=shots, job_params=job_params, target_capability=target_capability,
+                 job_output_format=job_output_format, entry_point=entry_point)
     logger.warning("Job id: %s", job["id"])
     logger.debug(job)
 
