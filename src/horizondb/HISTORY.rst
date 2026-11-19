@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.0.0b10
+++++++++
+* Add ``az horizondb cluster pool maintenance-event list`` to display the
+  system-managed maintenance policy without querying maintenance events.
+
 1.0.0b9
 +++++++
 * Update the management API to ``2026-10-01-preview`` with PostgreSQL 17 and 18 support.
