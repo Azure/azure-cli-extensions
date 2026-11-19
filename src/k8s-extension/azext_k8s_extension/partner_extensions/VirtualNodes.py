@@ -11,7 +11,6 @@ import ipaddress
 from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.core.exceptions import HttpResponseError, ResourceNotFoundError as SdkResourceNotFoundError
-from azure.mgmt.compute import ComputeManagementClient
 from azure.mgmt.containerservice import ContainerServiceClient
 from azure.mgmt.core.tools import parse_resource_id
 from azure.mgmt.network import NetworkManagementClient
@@ -150,15 +149,18 @@ def validate_configuration(configuration_settings, configuration_protected_setti
 
 
 def validate_node_pools(cmd, cluster):
-    compute_client = get_mgmt_service_client(cmd.cli_ctx, ComputeManagementClient)
-    location = cluster.location
-    vm_sizes = compute_client.virtual_machine_sizes.list(location)
-    vm_size_dict = {vm.name: vm for vm in vm_sizes}
+    from azure.cli.command_modules.vm.operations.vm import VMListSizes
+
+    vm_sizes = VMListSizes(cli_ctx=cmd.cli_ctx)(command_args={
+        "location": cluster.location,
+    })
+    vm_size_dict = {vm_size.get("name"): vm_size for vm_size in vm_sizes}
 
     for pool in cluster.agent_pool_profiles:
         vm_size = pool.vm_size
         vm_info = vm_size_dict.get(vm_size)
-        if vm_info and vm_info.number_of_cores >= MIN_CPU_CORES and vm_info.memory_in_mb / 1024 >= MIN_MEM_GB:
+        if vm_info and vm_info.get("numberOfCores", 0) >= MIN_CPU_CORES and \
+                vm_info.get("memoryInMB", 0) / 1024 >= MIN_MEM_GB:
             return
 
     raise InvalidArgumentValueError(
