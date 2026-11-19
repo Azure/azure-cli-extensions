@@ -1,0 +1,114 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - commvault cloud-account role-mapping show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cloud-account-name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-commvault-test/providers/Commvault.ContentStore/cloudAccounts/cca-commvault-test/roleMappings/default?api-version=2026-09-30
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-commvault-test/providers/Commvault.ContentStore/cloudAccounts/cca-commvault-test/roleMappings/default","name":"default","type":"Commvault.ContentStore/cloudAccounts/roleMappings","properties":{"provisioningState":"Succeeded","roles":[{"roleName":"BackupAdmin","entities":[{"id":"88888888-8888-8888-8888-888888888888","displayName":"microsoft-11111111-1111-1111-1111-111111111111\\Commvault-Test-Backup-Admin-Group","entityType":"Group"}]},{"roleName":"BackupOperator","entities":[{"id":"99999999-9999-9999-9999-999999999999","displayName":"microsoft-11111111-1111-1111-1111-111111111111\\Commvault-Test-Backup-Operator-Group","entityType":"Group"}]}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '729'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 26 Oct 2026 19:25:52 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 6a10657e-535c-4240-87fc-1140ef66d47d
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:77777777-7777-7777-7777-777777777777
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '7900'
+      x-ms-operation-identifier:
+      - tenantId=11111111-1111-1111-1111-111111111111,objectId=22222222-2222-2222-2222-222222222222/eastus/9b87d7c3-9001-43aa-8901-e6f913e28dae
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 18F8B904D0164E6488FFBF6DAC16C8BE Ref B: SG2AA1040515042 Ref C: 2026-10-26T19:25:44Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - commvault cloud-account role-mapping list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cloud-account-name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-commvault-test/providers/Commvault.ContentStore/cloudAccounts/cca-commvault-test/roleMappings?api-version=2026-09-30
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-commvault-test/providers/Commvault.ContentStore/cloudAccounts/cca-commvault-test/roleMappings/default","name":"default","type":"Commvault.ContentStore/cloudAccounts/roleMappings","properties":{"provisioningState":"Succeeded","roles":[{"roleName":"BackupAdmin","entities":[{"id":"88888888-8888-8888-8888-888888888888","displayName":"microsoft-11111111-1111-1111-1111-111111111111\\Commvault-Test-Backup-Admin-Group","entityType":"Group"}]},{"roleName":"BackupOperator","entities":[{"id":"99999999-9999-9999-9999-999999999999","displayName":"microsoft-11111111-1111-1111-1111-111111111111\\Commvault-Test-Backup-Operator-Group","entityType":"Group"}]}]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '741'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 26 Oct 2026 19:25:56 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 61221cc6-f5b0-4aee-96a9-fd811f77929f
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:77777777-7777-7777-7777-777777777777
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '1526'
+      x-ms-operation-identifier:
+      - tenantId=11111111-1111-1111-1111-111111111111,objectId=22222222-2222-2222-2222-222222222222/eastus/df9611ce-f98e-4c0c-a699-c3d2b56dfb6d
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: D0F5CEFC2BCE47EB871C985B4EC3AAF8 Ref B: SG2AA1070305060 Ref C: 2026-10-26T19:25:54Z'
+    status:
+      code: 200
+      message: OK
+version: 1
