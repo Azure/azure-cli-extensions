@@ -422,6 +422,7 @@
 </div>
 
 <script nonce="__CSP_NONCE__">
+__SCHEMA_VALIDATOR__
 // ---- Data injected by `az migrate runbook parameter configure` -------------
 // The CLI substitutes the runbook's real inputs.json (schema + stepInputs +
 // envelope ids) and spec.json (entity list per step) at generation time.
@@ -479,42 +480,41 @@ const ORIGINAL = JSON.parse(JSON.stringify(DOC.stepInputs));
 
 // ---- helpers --------------------------------------------------------------
 const stepType = sid => sid.replace(/-\d+$/, '');
+const SCHEMA_KEYS = new Set(Object.keys(RunbookSchema.metaSchema.properties));
 const PREPARED_SCHEMAS = new Map(), ISSUE_CACHE = new Map();
-const isObject = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 const has = (o, k) => !!(o && Object.prototype.hasOwnProperty.call(o, k));
+let metaValidator;
 function preparedSchema(sid) {
   const type = stepType(sid);
   if (PREPARED_SCHEMAS.has(type)) return PREPARED_SCHEMAS.get(type);
   const raw = DOC.schema[type] || {};
   const entries = Object.entries(raw);
-  const fieldEntries = entries.filter(([k, v]) => k !== 'allOf' && isObject(v) &&
-    (typeof v.type === 'string' || Array.isArray(v.type)));
+  const fieldEntries = entries.filter(([k, v]) => !SCHEMA_KEYS.has(k) ||
+    (v && typeof v === 'object' && (typeof v.type === 'string' || Array.isArray(v.type)) &&
+      (typeof v.scope === 'string' || typeof v.isEditable === 'boolean' || typeof v.required === 'boolean')));
   const fields = Object.fromEntries(fieldEntries);
-  const result = { fields, conditions: [], error: null };
-  try {
-    const metadata = ['$schema', '$id', '$comment', 'title', 'description'];
-    const unsupported = entries.find(([k]) => !has(fields, k) && k !== 'allOf' && !metadata.includes(k));
-    if (unsupported) throw new Error(`Unsupported input rule: ${unsupported[0]}.`);
-    const namedFields = names => Array.isArray(names) && names.every(k => typeof k === 'string' && has(fields, k));
-    const keysOnly = (value, keys) => isObject(value) && Object.keys(value).every(k => keys.includes(k));
-    if (has(raw, 'allOf')) {
-      if (!Array.isArray(raw.allOf)) throw new Error('allOf must be an array of conditional input rules.');
-      raw.allOf.forEach((rule, i) => {
-        const valid = keysOnly(rule, ['if', 'then']) &&
-          keysOnly(rule.if, ['properties', 'required']) && keysOnly(rule.then, ['properties', 'required']) &&
-          (!has(rule.if, 'required') || namedFields(rule.if.required)) &&
-          (!has(rule.then, 'required') || namedFields(rule.then.required)) &&
-          (!has(rule.if, 'properties') || (isObject(rule.if.properties) &&
-            Object.entries(rule.if.properties).every(([k, v]) => has(fields, k) &&
-              keysOnly(v, ['const']) && has(v, 'const') && !isObject(v.const) && !Array.isArray(v.const)))) &&
-          (!has(rule.then, 'properties') || (isObject(rule.then.properties) &&
-            Object.entries(rule.then.properties).every(([k, v]) => has(fields, k) && typeof v === 'boolean')));
-        if (!valid) throw new Error(`Unsupported or malformed allOf rule ${i + 1}. Use if properties/const and required, then required and boolean properties.`);
-      });
-      result.conditions = raw.allOf;
+  const clauses = entries.filter(([k]) => !has(fields, k));
+  const result = { fields, validator: null, error: null };
+  if (clauses.length) {
+    try {
+      const schema = JSON.parse(JSON.stringify(Object.fromEntries(clauses)));
+      if (schema.$schema && !/^https?:\/\/json-schema\.org\/draft-07\/schema#?$/.test(schema.$schema))
+        throw new Error('Only JSON Schema Draft-07 is supported.');
+      // Reject the SDK's unsupported $ref/sibling-$id combination rather than misresolve it.
+      metaValidator = metaValidator || new RunbookSchema.Validator({
+        ...RunbookSchema.metaSchema, allOf: [{ not: { type: 'object', required: ['$ref', '$id'] } }]
+      }, '7', false);
+      const checked = metaValidator.validate(schema);
+      if (checked.errors.some(e => e.keyword === 'not'))
+        throw new Error('The browser validator does not support $ref with a sibling $id. Remove the ignored sibling $id.');
+      if (!checked.valid) throw new Error(checked.errors.map(e => `${e.instanceLocation}: ${e.error}`).join('; '));
+      schema.properties = { ...Object.fromEntries(fieldEntries.map(([k]) => [k, {}])), ...schema.properties };
+      result.validator = new RunbookSchema.Validator(schema, '7', false);
+      result.validator.addSchema(RunbookSchema.metaSchema);
+      result.schema = schema;
+    } catch (e) {
+      result.error = `Invalid or unsupported Draft-07 schema: ${e.message}`;
     }
-  } catch (e) {
-    result.error = e.message;
   }
   PREPARED_SCHEMAS.set(type, result);
   return result;
@@ -597,33 +597,12 @@ function effective(sid, eid, f) {
   return hasOverride(sid, eid, f) ? woFor(sid, eid)[f] :
     (has(DOC.stepInputs[sid], f) ? DOC.stepInputs[sid][f] : undefined);
 }
-function inputState(sid, eid = null) {
-  const prepared = preparedSchema(sid), required = new Set(), excluded = new Set();
-  const value = f => effective(sid, eid, f);
-  prepared.conditions.forEach(rule => {
-    const matches = (rule.if.required || []).every(f => !isEmpty(value(f))) &&
-      Object.entries(rule.if.properties || {}).every(([f, test]) => value(f) === test.const);
-    if (!matches) return;
-    (rule.then.required || []).forEach(f => required.add(f));
-    Object.entries(rule.then.properties || {}).forEach(([f, allowed]) => { if (!allowed) excluded.add(f); });
-  });
-  return { required, excluded };
-}
-function contextRules(sid, eid = null) {
-  const state = inputState(sid, eid);
-  return Object.fromEntries(Object.entries(rulesFor(sid)).filter(([f]) => !state.excluded.has(f))
-    .map(([f, r]) => [f, { ...r, required: !!r.required || state.required.has(f) }]));
-}
-function inputLayout(sid) {
-  return JSON.stringify([contextRules(sid), ...entitiesFor(sid).map(e => contextRules(sid, e.id))]
-    .map(rules => Object.entries(rules).map(([f, r]) => [f, r.required])));
-}
 function overrideCount(sid, f) {
-  return entitiesFor(sid).filter(e => !inputState(sid, e.id).excluded.has(f) && hasOverride(sid, e.id, f)).length;
+  return entitiesFor(sid).filter(e => hasOverride(sid, e.id, f)).length;
 }
 const overrideLabel = (c, n) => `Overridden for ${c} out of ${n} workload${n === 1 ? '' : 's'}`;
 function entityOverrideCount(sid, eid) {
-  return entityFields(sid).filter(f => !inputState(sid, eid).excluded.has(f) && hasOverride(sid, eid, f)).length;
+  return entityFields(sid).filter(f => hasOverride(sid, eid, f)).length;
 }
 function entityErrors(sid, eid) { return new Set(stepIssues(sid).filter(i => i.eid === eid).map(i => i.f || i.msg)).size; }
 function fmt(v) { return v == null ? '(empty)' : (typeof v === 'object' ? JSON.stringify(v) : String(v)); }
@@ -649,26 +628,50 @@ function summarise(v, rule) {
   }
   return short(fmt(v), 90);
 }
+function schemaIssues(sid, eid) {
+  const prepared = preparedSchema(sid);
+  if (prepared.error) return [{ f: null, msg: prepared.error }];
+  if (!prepared.validator) return [];
+  const data = { ...DOC.stepInputs[sid] };
+  delete data.workloadOverrides;
+  if (eid !== null) Object.entries(woFor(sid, eid) || {}).forEach(([f, v]) => { if (!isEmpty(v)) data[f] = v; });
+  try {
+    // Validate JSON properties only, never inherited Object.prototype names.
+    const instance = JSON.parse(JSON.stringify(data), (_, v) =>
+      v && typeof v === 'object' && !Array.isArray(v) ? Object.assign(Object.create(null), v) : v);
+    const result = prepared.validator.validate(instance);
+    // Show leaf failures, not their duplicate allOf/if/properties summaries.
+    return result.errors.filter(e => {
+      const location = e.keyword === 'if' ? e.keywordLocation.slice(0, -3) : e.keywordLocation;
+      return !result.errors.some(child => child !== e && child.keywordLocation.startsWith(location + '/'));
+    }).map(e => {
+      const path = e.instanceLocation.slice(2).split('/').map(p => p.replace(/~1/g, '/').replace(/~0/g, '~'));
+      let f = path[0] || null;
+      if (!f && e.keyword === 'required') {
+        const required = e.keywordLocation.slice(2).split('/').reduce((s, k) => s && s[k.replace(/~1/g, '/').replace(/~0/g, '~')], prepared.schema);
+        if (Array.isArray(required)) f = required.find(k =>
+          !has(data, k) && e.error.endsWith(`"${k}".`)) || null;
+      }
+      return { f: has(prepared.fields, f) ? f : null, msg: `${e.instanceLocation}: ${e.error}` };
+    });
+  } catch (e) {
+    return [{ f: null, msg: `Could not validate Draft-07 schema: ${e.message}` }];
+  }
+}
 function stepIssues(sid) {
   const stamp = JSON.stringify(DOC.stepInputs[sid]);
   const cached = ISSUE_CACHE.get(sid);
   if (cached && cached.stamp === stamp) return cached.issues;
-  const issues = [], data = DOC.stepInputs[sid];
+  const issues = [], rules = rulesFor(sid), data = DOC.stepInputs[sid];
   const add = (f, msg, e, condition = false) => {
     if (msg) issues.push({ sid, f, eid: e.id, name: e.name, msg, condition });
   };
   const base = { id: null, name: null };
+  applianceFields(sid).forEach(f => add(f, fieldError(rules[f], data[f]), base));
   const entities = entitiesFor(sid);
-  if (preparedSchema(sid).error) add(null, preparedSchema(sid).error, base, true);
+  entityFields(sid).forEach(f => entities.forEach(e => add(f, fieldError(rules[f], effective(sid, e.id, f)), e)));
   const contexts = stepIsEntity(sid) && entities.length ? entities : [base];
-  contexts.forEach(e => {
-    const state = inputState(sid, e.id);
-    Object.entries(contextRules(sid, e.id)).forEach(([f, rule]) => {
-      // Preserve the legacy no-entity behavior unless this field is conditional.
-      if (stepIsEntity(sid) && !entities.length && !state.required.has(f)) return;
-      add(f, fieldError(rule, e.id === null ? data[f] : effective(sid, e.id, f)), e, state.required.has(f));
-    });
-  });
+  contexts.forEach(e => schemaIssues(sid, e.id).forEach(i => add(i.f, i.msg, e, true)));
   ISSUE_CACHE.set(sid, { stamp, issues });
   return issues;
 }
@@ -708,7 +711,6 @@ function ruleForPath(path) { const p = path.split('|'); return rulesFor(p[1])[p[
 let current = Object.keys(DOC.stepInputs)[0];
 let selEntity = null;
 let fieldFilter = '';
-let displayedLayout;
 let savedSnapshot = JSON.stringify(DOC.stepInputs);
 const matchField = (rules, f) => {
   if (!fieldFilter) return true;
@@ -966,9 +968,8 @@ function renderForm() {
     sync();
     return;
   }
-  const sid = current, rules = contextRules(sid), data = DOC.stepInputs[sid];
+  const sid = current, rules = rulesFor(sid), data = DOC.stepInputs[sid];
   const es = entitiesFor(sid), all = Object.keys(rules);
-  displayedLayout = inputLayout(sid);
   let html = `<h2 class="step-h">${esc(stepLabel(sid))}</h2>
     <p class="step-sub">Step id <code>${esc(sid)}</code> &middot; ${
       es.length ? `${es.length} ${es.length === 1 ? 'workload' : 'workloads'}` : 'no per-workload inputs'}</p>
@@ -1030,7 +1031,7 @@ function renderOverrides() {
   if (!es.length) { pane.innerHTML = head + `<section class="card"><div class="ov-empty">This step has no workloads.</div></section>`; return; }
   const cur = es.find(e => e.id === selEntity) || es[0];
   selEntity = cur.id;
-  const rules = contextRules(sid, cur.id);
+  const rules = rulesFor(sid);
   const vis = fields.filter(f => has(rules, f) && matchField(rules, f));
   const ovCount = entityOverrideCount(sid, cur.id);
   const ovF = vis.filter(f => hasOverride(sid, cur.id, f));
@@ -1166,18 +1167,6 @@ function setValue(path, raw) {
 // Refresh derived UI in place so typing never loses focus.
 function afterEdit(path) {
   const p = path.split('|');
-  if (inputLayout(p[1]) !== displayedLayout) {
-    const active = ctrlEl(path);
-    const selection = active && [active.selectionStart, active.selectionEnd];
-    if (document.querySelector('#form')) reRenderPreserving(renderForm, '#form');
-    else renderForm();
-    const replacement = ctrlEl(path);
-    if (replacement) {
-      replacement.focus();
-      if (selection && selection[0] !== null && replacement.setSelectionRange)
-        replacement.setSelectionRange(...selection);
-    }
-  }
   updateChips(p[1]);
   refreshValidation();
   renderTabs();
@@ -1214,10 +1203,14 @@ function mark(path, err) {
 }
 function refreshValidation() {
   const sid = current, issues = stepIssues(sid);
-  const errorFor = (f, eid) => issues.filter(i => i.f === f && i.eid === eid).map(i => i.msg).join('; ');
+  const messages = list => [...new Set(list.map(i => i.msg))].join('; ');
+  const errorFor = (f, eid) => messages(issues.filter(i => i.f === f && i.eid === eid));
   const kind = stepIsEntity(sid) ? 'D' : 'A';
-  Object.entries(contextRules(sid)).forEach(([f, rule]) =>
-    mark(`${kind}|${sid}|${f}`, fieldError(rule, DOC.stepInputs[sid][f])));
+  const baseIssues = schemaIssues(sid, null);
+  Object.entries(rulesFor(sid)).forEach(([f, rule]) => {
+    const errors = [fieldError(rule, DOC.stepInputs[sid][f]), messages(baseIssues.filter(i => i.f === f))];
+    mark(`${kind}|${sid}|${f}`, errors.filter(Boolean).join('; ') || null);
+  });
   entityFields(sid).forEach(f => {
     // right pane shows the selected entity's inputs
     const ov = hasOverride(sid, selEntity, f), err = errorFor(f, selEntity);
@@ -1314,34 +1307,7 @@ function revealField(path, altPath) {
 // ---- toolbar / popover ----------------------------------------------------
 function firstFailingStep() { return Object.keys(DOC.stepInputs).find(s => stepErrors(s) > 0); }
 function exportedInputs() {
-  const result = JSON.parse(JSON.stringify(DOC.stepInputs));
-  Object.keys(result).forEach(sid => {
-    if (!preparedSchema(sid).conditions.length) return;
-    const data = DOC.stepInputs[sid], output = result[sid];
-    const ids = [...new Set([...entitiesFor(sid).map(e => e.id), ...Object.keys(data.workloadOverrides || {})])];
-    const base = inputState(sid);
-    const overrides = Object.assign(Object.create(null), output.workloadOverrides || {});
-    const states = ids.map(eid => ({
-      eid, excluded: inputState(sid, eid).excluded,
-      values: Object.assign(Object.create(null), overrides[eid] || {})
-    }));
-    Object.keys(rulesFor(sid)).forEach(f => {
-      // Move shared values into allowed workloads to prevent excluded workloads
-      // from inheriting them, retaining inactive property names as null.
-      if (!base.excluded.has(f) && !states.some(e => e.excluded.has(f))) return;
-      const value = output[f];
-      output[f] = null;
-      states.forEach(({ eid, excluded, values }) => {
-        if (excluded.has(f)) values[f] = null;
-        else if (!hasOverride(sid, eid, f) && !isEmpty(data[f])) values[f] = value;
-      });
-    });
-    states.forEach(({ eid, values }) => {
-      if (has(overrides, eid) || Object.keys(values).length) overrides[eid] = values;
-    });
-    if (has(output, 'workloadOverrides') || Object.keys(overrides).length) output.workloadOverrides = overrides;
-  });
-  return result;
+  return JSON.parse(JSON.stringify(DOC.stepInputs));
 }
 function buildInputsJson() {
   const root = JSON.parse(JSON.stringify(BOOT.inputsRoot || {}));

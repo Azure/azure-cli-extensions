@@ -41,5 +41,7 @@ setup(
         'azext_metadata.json',
         'runbook/visualize/templates/*.tmpl',
         'runbook/configure/templates/*.tmpl',
+        'runbook/configure/vendor/*.js',
+        'runbook/configure/vendor/LICENSE',
     ]}
 )
