@@ -16,11 +16,7 @@ from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
-from .utils.assert_messages import (
-    missing_field_message,
-    properties_key_mismatch_message,
-)
-from .utils.output_checks import get_value
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -39,18 +35,28 @@ def call_scenario1a(test):
     step_create_scenario1(
         test,
         checks=[
-            test.check("name", "{name}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
     step_update(
         test,
         checks=[
-            test.check("tags", "{tagsUpdate}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[
+            test.exists("name"),
+            test.exists("id"),
+            test.check("analyticsWorkspaceId", attr(test, "analyticsWorkspaceId")),
+            test.check("fabricControllerId", attr(test, "fabricControllerId")),
+            test.check("vmSize", attr(test, "vmSizeDefault")),
+            test.check("availabilityZones", attr(test, "availabilityZonesDefault")),
+        ],
+    )
     step_list_subscription(test)
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
@@ -63,15 +69,15 @@ def call_scenario1b(test):
     step_create_scenario2(
         test,
         checks=[
-            test.check("name", "{name}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
     step_update(
         test,
         checks=[
-            test.check("tags", "{tagsUpdate}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
 
@@ -84,18 +90,28 @@ def call_scenario2(test):
     step_create_vm_size_az(
         test,
         checks=[
-            test.check("name", "{name}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
     step_update(
         test,
         checks=[
-            test.check("tags", "{tagsUpdate}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[
+            test.exists("name"),
+            test.exists("id"),
+            test.check("analyticsWorkspaceId", attr(test, "analyticsWorkspaceId")),
+            test.check("fabricControllerId", attr(test, "fabricControllerId")),
+            test.check("vmSize", attr(test, "vmSize")),
+            test.check("availabilityZones", attr(test, "availabilityZones")),
+        ],
+    )
     step_list_subscription(test)
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
@@ -108,18 +124,28 @@ def call_scenario3(test):
     step_create_systemassigned_managedidentity(
         test,
         checks=[
-            test.check("name", "{name}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
     step_update(
         test,
         checks=[
-            test.check("tags", "{tagsUpdate}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[
+            test.exists("name"),
+            test.exists("id"),
+            test.check("analyticsWorkspaceId", attr(test, "analyticsWorkspaceId")),
+            test.check("fabricControllerId", attr(test, "fabricControllerId")),
+            test.check("vmSize", attr(test, "vmSizeDefault")),
+            test.check("availabilityZones", attr(test, "availabilityZonesDefault")),
+        ],
+    )
     step_list_subscription(test)
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
@@ -132,18 +158,28 @@ def call_scenario4(test):
     step_create_userassigned_managedidentity(
         test,
         checks=[
-            test.check("name", "{name}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
     step_update(
         test,
         checks=[
-            test.check("tags", "{tagsUpdate}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[
+            test.exists("name"),
+            test.exists("id"),
+            test.check("analyticsWorkspaceId", attr(test, "analyticsWorkspaceId")),
+            test.check("fabricControllerId", attr(test, "fabricControllerId")),
+            test.check("vmSize", attr(test, "vmSizeDefault")),
+            test.check("availabilityZones", attr(test, "availabilityZonesDefault")),
+        ],
+    )
     step_list_subscription(test)
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
@@ -160,7 +196,9 @@ def call_scenario5(test):
 def call_scenario6(test):
     """# Testcase: scenario5"""
     setup_scenario1(test)
-    step_update_relay_scenario1(test, checks=[])
+    step_update_relay_scenario1(
+        test, checks=[test.check("status", attr(test, "operationStatus"))]
+    )
     cleanup_scenario1(test)
 
 
@@ -173,7 +211,7 @@ def step_create_scenario1(test, checks=None):
         "--location {location} --resource-group {rg} "
         "--fabric-controller-id {fabricControllerId} "
         "--tags {tags} "
-        "--managed-resource-group-configuration name={mrg_name} "
+        "--managed-resource-group-configuration name={mrgGroupName} "
         "--analytics-workspace-id {analyticsWorkspaceId} "
         "--rollout-ring {rolloutRing}",
         checks=checks,
@@ -189,7 +227,7 @@ def step_create_scenario2(test, checks=None):
         "--location {location} --resource-group {rg} "
         "--fabric-controller-id {fabricControllerId} "
         "--tags {tags} "
-        "--mrg name={mrg_name} "
+        "--mrg name={mrgGroupName} "
         "--analytics-workspace-id {analyticsWorkspaceId} ",
         checks=checks,
     )
@@ -204,7 +242,7 @@ def step_create_vm_size_az(test, checks=None):
         "--location {location} --resource-group {rg} "
         "--fabric-controller-id {fabricControllerId} "
         "--tags {tags} "
-        "--managed-resource-group-configuration name={mrg_name} "
+        "--managed-resource-group-configuration name={mrgGroupName} "
         "--analytics-workspace-id {analyticsWorkspaceId} "
         "--vm-size {vmSize} "
         "--availability-zones {availabilityZones}",
@@ -221,7 +259,7 @@ def step_create_systemassigned_managedidentity(test, checks=None):
         "--location {location} --resource-group {rg} "
         "--fabric-controller-id {fabricControllerId} "
         "--tags {tags} "
-        "--managed-resource-group-configuration name={mrg_name} "
+        "--managed-resource-group-configuration name={mrgGroupName} "
         "--mi-system-assigned "
         "--analytics-workspace-id {analyticsWorkspaceId}",
         checks=checks,
@@ -237,7 +275,7 @@ def step_create_userassigned_managedidentity(test, checks=None):
         "--location {location} --resource-group {rg} "
         "--fabric-controller-id {fabricControllerId} "
         "--tags {tags} "
-        "--managed-resource-group-configuration name={mrg_name} "
+        "--managed-resource-group-configuration name={mrgGroupName} "
         "--mi-user-assigned {uai} "
         "--analytics-workspace-id {analyticsWorkspaceId}",
         checks=checks,
@@ -254,7 +292,7 @@ def step_create_UA_SA_managedidentity(test, checks=None):
             "--location {location} --resource-group {rg} "
             "--fabric-controller-id {fabricControllerId} "
             "--tags {tags} "
-            "--managed-resource-group-configuration name={mrg_name} "
+            "--managed-resource-group-configuration name={mrgGroupName} "
             "--mi-system-assigned "
             "--mi-user-assigned {uai} "
             "--analytics-workspace-id {analyticsWorkspaceId}",
@@ -277,7 +315,8 @@ def step_update_relay_scenario1(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud clustermanager update-relay-private-endpoint-connection --name {name} --resource-group {rg} "
-        "--connection-state {connectionState} --description {description} --private-endpoint-id {endpoint}"
+        "--connection-state {connectionState} --description {description} --private-endpoint-id {endpoint}",
+        checks=checks,
     )
 
 
@@ -294,46 +333,19 @@ def step_delete(test, checks=None):
 
 def step_show(test, checks=None):
     """ClusterManager show operation"""
-    if checks is not None:
-        test.cmd(
-            "az networkcloud clustermanager show --name {name} "
-            "--resource-group {rg}",
-            checks=checks,
-        )
-        return
-
-    result = test.cmd(
-        "az networkcloud clustermanager show --name {name} " "--resource-group {rg}"
-    ).get_output_in_json()
-    context = "Clustermanager show"
-    assert result.get("name") is not None, missing_field_message(
-        context, "name", result
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud clustermanager show --name {name} " "--resource-group {rg}",
+        checks=checks,
     )
-    properties = result.get("properties")
-    assert result.get("id"), missing_field_message(context, "id", result)
-    assert properties is not None, missing_field_message(context, "properties", result)
-    assert properties.get("analyticsWorkspaceId") == get_value(
-        test, "analyticsWorkspaceId"
-    ), properties_key_mismatch_message("analyticsWorkspaceId")
-
-    assert properties.get("fabricControllerId") == get_value(
-        test, "fabricControllerId"
-    ), properties_key_mismatch_message("fabricControllerId")
-
-    assert properties.get("vmSize") == get_value(
-        test, "vmSize"
-    ), properties_key_mismatch_message("vmSize")
-
-    assert properties.get("availabilityZones") == get_value(
-        test, "availabilityZones"
-    ), properties_key_mismatch_message("availabilityZones")
 
 
 def step_list_resource_group(test, checks=None):
     """ClusterManager list by resource group operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud clustermanager list --resource-group {rg}")
+    test.cmd("az networkcloud clustermanager list --resource-group {rg}", checks=checks)
 
 
 @AllowLargeResponse
@@ -349,7 +361,8 @@ def step_update(test, checks=None):
     test.cmd(
         "az networkcloud clustermanager update --name {name} "
         "--tags {tagsUpdate} --resource-group {rg} "
-        "--rollout-ring {rolloutRingUpdate}"
+        "--rollout-ring {rolloutRingUpdate}",
+        checks=checks,
     )
 
 
@@ -360,7 +373,8 @@ def step_update_SA_to_UA_managedidentity(test, checks=None):
     test.cmd(
         "az networkcloud clustermanager update --name {name} "
         "--mi-user-assigned {uai}"
-        "--tags {tagsUpdate} --resource-group {rg}"
+        "--tags {tagsUpdate} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -371,10 +385,8 @@ class ClusterManagerScenarioTest(ScenarioTest):
         super().__init__(*args, **kwargs)
         self.kwargs.update(
             {
-                "name": self.create_random_name(prefix="cli-test-cm-", length=24),
-                "mrg_name": self.create_random_name(
-                    prefix="cli-test-cm-mrg-", length=24
-                ),
+                "name": CONFIG.get("CLUSTER_MANAGER", "name"),
+                "mrgGroupName": CONFIG.get("CLUSTER_MANAGER", "mrg_name"),
                 "location": CONFIG.get("CLUSTER_MANAGER", "location"),
                 "analyticsWorkspaceId": CONFIG.get(
                     "CLUSTER_MANAGER", "analytics_workspace_id"
@@ -384,10 +396,17 @@ class ClusterManagerScenarioTest(ScenarioTest):
                 ),
                 "tags": CONFIG.get("CLUSTER_MANAGER", "tags"),
                 "tagsUpdate": CONFIG.get("CLUSTER_MANAGER", "tags_update"),
+                "provisioningState": CONFIG.get(
+                    "CLUSTER_MANAGER", "provisioning_state"
+                ),
                 "uai": CONFIG.get("CLUSTER_MANAGER", "uai"),
                 "vmSize": CONFIG.get("CLUSTER_MANAGER", "vm_size"),
+                "vmSizeDefault": CONFIG.get("CLUSTER_MANAGER", "vm_size_default"),
                 "availabilityZones": CONFIG.get(
                     "CLUSTER_MANAGER", "availability_zones"
+                ),
+                "availabilityZonesDefault": CONFIG.get(
+                    "CLUSTER_MANAGER", "availability_zones_default"
                 ),
                 "rolloutRing": CONFIG.get("CLUSTER_MANAGER", "rollout_ring"),
                 "rolloutRingUpdate": CONFIG.get(
@@ -402,6 +421,7 @@ class ClusterManagerScenarioTest(ScenarioTest):
                 "endpoint": CONFIG.get(
                     "CLUSTER_MANAGER", "update_relay_private_endpoint"
                 ),
+                "operationStatus": CONFIG.get("CLUSTER_MANAGER", "operation_status"),
             }
         )
 

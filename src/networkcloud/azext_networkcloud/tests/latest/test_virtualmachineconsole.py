@@ -12,11 +12,7 @@ VirtualMachine console tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
-from .utils.assert_messages import (
-    missing_field_message,
-    properties_key_mismatch_message,
-)
-from .utils.output_checks import get_value
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -32,9 +28,37 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_create(test, checks=[])
-    step_update(test, checks=[])
-    step_show(test, checks=[])
+    step_create(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+            test.check("enabled", attr(test, "enabled")),
+            test.check("expiration", attr(test, "expiration")),
+            test.check("sshPublicKey", attr(test, "sshPublicKey")),
+        ],
+    )
+    step_update(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("enabled", attr(test, "enabled")),
+            test.check("expiration", attr(test, "newExpiration")),
+            test.check("sshPublicKey", attr(test, "sshPublicKey")),
+        ],
+    )
+    step_show(
+        test,
+        checks=[
+            test.exists("name"),
+            test.exists("id"),
+            test.check("enabled", attr(test, "enabled")),
+            test.check("expiration", attr(test, "newExpiration")),
+            test.check("sshPublicKey", attr(test, "sshPublicKey")),
+        ],
+    )
     step_list(test, checks=[])
     step_delete(test, checks=[])
     cleanup_scenario1(test)
@@ -69,36 +93,13 @@ def step_update(test, checks=None):
 
 def step_show(test, checks=None):
     """VirtualMachine console show operation"""
-    if checks is not None:
-        test.cmd(
-            "az networkcloud virtualmachine console show "
-            "--resource-group {resourceGroup} --virtual-machine-name {virtualMachineName}",
-            checks=checks,
-        )
-        return
-
-    result = test.cmd(
+    if checks is None:
+        checks = []
+    test.cmd(
         "az networkcloud virtualmachine console show "
-        "--resource-group {resourceGroup} --virtual-machine-name {virtualMachineName}"
-    ).get_output_in_json()
-    context = "Virtualmachineconsole show"
-    assert result.get("name") is not None, missing_field_message(
-        context, "name", result
+        "--resource-group {resourceGroup} --virtual-machine-name {virtualMachineName}",
+        checks=checks,
     )
-    properties = result.get("properties")
-    assert result.get("id"), missing_field_message(context, "id", result)
-    assert properties is not None, missing_field_message(context, "properties", result)
-    assert properties.get("enabled") == get_value(
-        test, "enabled"
-    ), properties_key_mismatch_message("enabled")
-
-    assert properties.get("expiration") == get_value(
-        test, "expiration"
-    ), properties_key_mismatch_message("expiration")
-
-    assert properties.get("sshPublicKey") == get_value(
-        test, "sshPublicKey"
-    ), properties_key_mismatch_message("sshPublicKey")
 
 
 def step_list(test, checks=None):
@@ -130,6 +131,7 @@ class VirtualMachineConsoleScenarioTest(ScenarioTest):
         super().__init__(*args, **kwargs)
         self.kwargs.update(
             {
+                "name": CONFIG.get("VIRTUALMACHINE_CONSOLE", "name"),
                 "location": CONFIG.get("VIRTUALMACHINE_CONSOLE", "location"),
                 "extendedLocation": CONFIG.get(
                     "VIRTUALMACHINE_CONSOLE", "extended_location"
@@ -143,6 +145,9 @@ class VirtualMachineConsoleScenarioTest(ScenarioTest):
                 "sshPublicKey": CONFIG.get("VIRTUALMACHINE_CONSOLE", "ssh_public_key"),
                 "virtualMachineName": CONFIG.get(
                     "VIRTUALMACHINE_CONSOLE", "virtual_machine_name"
+                ),
+                "provisioningState": CONFIG.get(
+                    "VIRTUALMACHINE_CONSOLE", "provisioning_state"
                 ),
             }
         )

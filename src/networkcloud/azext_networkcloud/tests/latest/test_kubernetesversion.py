@@ -12,10 +12,7 @@ KubernetesVersion tests scenarios
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 
 from .config import CONFIG
-from .utils.assert_messages import (
-    missing_field_message,
-    properties_key_mismatch_message,
-)
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -31,8 +28,22 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_update(test, checks=[])
-    step_show(test, checks=[])
+    step_update(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+            test.check("tags", attr(test, "tagsUpdate")),
+        ],
+    )
+    step_show(
+        test,
+        checks=[
+            test.exists("name"),
+            test.exists("id"),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
     cleanup_scenario1(test)
@@ -40,40 +51,28 @@ def call_scenario1(test):
 
 def step_show(test, checks=None):
     """KubernetesVersion show operation"""
-    if checks is not None:
-        test.cmd(
-            "az networkcloud kubernetesversion show --name {name} --resource-group {rg}",
-            checks=checks,
-        )
-        return
-
-    result = test.cmd(
-        "az networkcloud kubernetesversion show --name {name} --resource-group {rg}"
-    ).get_output_in_json()
-    context = "Kubernetesversion show"
-    assert result.get("name") is not None, missing_field_message(
-        context, "name", result
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud kubernetesversion show --name {name} --resource-group {rg}",
+        checks=checks,
     )
-    properties = result.get("properties")
-    assert result.get("id"), missing_field_message(context, "id", result)
-    assert properties is not None, missing_field_message(context, "properties", result)
-    assert (
-        properties.get("provisioningState") == "Succeeded"
-    ), properties_key_mismatch_message("provisioningState")
 
 
 def step_list_resource_group(test, checks=None):
     """KubernetesVersion list by resource group operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud kubernetesversion list --resource-group {rg}")
+    test.cmd(
+        "az networkcloud kubernetesversion list --resource-group {rg}", checks=checks
+    )
 
 
 def step_list_subscription(test, checks=None):
     """KubernetesVersion list by subscription operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud kubernetesversion list")
+    test.cmd("az networkcloud kubernetesversion list", checks=checks)
 
 
 def step_update(test, checks=None):
@@ -81,7 +80,8 @@ def step_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud kubernetesversion update --name {name} --tags {tagsUpdate} --resource-group {rg}"
+        "az networkcloud kubernetesversion update --name {name} --tags {tagsUpdate} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -93,6 +93,9 @@ class KubernetesVersionScenarioTest(ScenarioTest):
         self.kwargs.update(
             {
                 "name": CONFIG.get("KUBERNETES_VERSION", "name"),
+                "provisioningState": CONFIG.get(
+                    "KUBERNETES_VERSION", "provisioning_state"
+                ),
                 "location": CONFIG.get("KUBERNETES_VERSION", "location"),
                 "extendedLocation": CONFIG.get("TRUNKED_NETWORK", "extended_location"),
                 "tags": CONFIG.get("TRUNKED_NETWORK", "tags"),
