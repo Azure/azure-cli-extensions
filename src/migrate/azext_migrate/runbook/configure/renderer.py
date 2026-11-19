@@ -23,9 +23,12 @@ import secrets
 
 _TEMPLATE_PATH = os.path.join(
     os.path.dirname(__file__), 'templates', 'configure.html.tmpl')
+_VALIDATOR_PATH = os.path.join(
+    os.path.dirname(__file__), 'vendor', 'json-schema.js')
 
 _DATA_TOKEN = '__RUNBOOK_DATA__'
 _NONCE_TOKEN = '__CSP_NONCE__'
+_VALIDATOR_TOKEN = '__SCHEMA_VALIDATOR__'
 
 # Escapes that neutralise a `</script>`/`<!--` breakout without altering the
 # parsed JSON value (JSON string parsing turns these back into </, > and &).
@@ -114,10 +117,13 @@ def render(inputs_root, spec_doc, meta, schema_doc=None):
     }
     with open(_TEMPLATE_PATH, encoding='utf-8') as handle:
         template = handle.read()
+    with open(_VALIDATOR_PATH, encoding='utf-8') as handle:
+        validator = handle.read()
     # Per-file random nonce: the Content-Security-Policy allows only the inline
     # <script> carrying this nonce to run, so any markup injected through a
     # service-supplied value (which cannot know the nonce) will not execute.
     nonce = secrets.token_urlsafe(16)
     return (template
+            .replace(_VALIDATOR_TOKEN, validator)
             .replace(_DATA_TOKEN, _embed(payload))
             .replace(_NONCE_TOKEN, nonce))
