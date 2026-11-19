@@ -1,0 +1,339 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing permission list-by-billing-account
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/billingPermissions?api-version=2024-04-01
+  response:
+    body:
+      string: '{"value":[{"actions":["Microsoft.Billing/billingAccounts/read","Microsoft.Billing/billingAccounts/write","Microsoft.Billing/billingAccounts/action","Microsoft.Billing/billingAccounts/enrollmentPolicies/read","Microsoft.Billing/billingAccounts/enrollmentPolicies/write","Microsoft.Billing/billingAccounts/enrollmentPolicies/action","Microsoft.Billing/billingAccounts/enrollmentNotificationContacts/read","Microsoft.Billing/billingAccounts/enrollmentNotificationContacts/write","Microsoft.Billing/billingAccounts/enrollmentNotificationContacts/delete","Microsoft.Billing/billingAccounts/enrollmentNotificationContacts/action","Microsoft.Billing/billingAccounts/departments/read","Microsoft.Billing/billingAccounts/departments/write","Microsoft.Billing/billingAccounts/departments/action","Microsoft.Billing/billingAccounts/departments/delete","Microsoft.Billing/billingAccounts/enrollmentAccounts/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/write","Microsoft.Billing/billingAccounts/enrollmentAccounts/action","Microsoft.Billing/billingAccounts/enrollmentAccounts/delete","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/write","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/action","Microsoft.Billing/billingAccounts/purchase/action","Microsoft.Billing/billingAccounts/commitments/read"]}]}'
+    headers:
+      api-supported-versions:
+      - 2019-10-01-preview, 2020-05-01, 2020-12-15-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1440'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Nov 2024 11:11:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: 50BA1936A0B44B378393F5D49D5B5F05 Ref B: MAA201060514051 Ref C: 2024-11-18T11:11:59Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"actions": ["Microsoft.Billing/billingAccounts/read", "Microsoft.Billing/billingAccounts/noAction"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing permission check-access-by-billing-account
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '101'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --billing-account-name --actions
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/checkAccess?api-version=2024-04-01
+  response:
+    body:
+      string: '[{"accessDecision":"Allowed","action":"Microsoft.Billing/billingAccounts/read"},{"accessDecision":"NotAllowed","action":"Microsoft.Billing/billingAccounts/noAction"}]'
+    headers:
+      api-supported-versions:
+      - 2019-10-01-preview, 2020-05-01, 2020-12-15-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Nov 2024 11:11:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '799'
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: 721545E25A444504A40B00BCE1C10345 Ref B: MAA201060514017 Ref C: 2024-11-18T11:11:59Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing permission list-by-department
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --department-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/departments/148446/billingPermissions?api-version=2024-04-01
+  response:
+    body:
+      string: '{"value":[{"actions":["Microsoft.Billing/billingAccounts/departments/read","Microsoft.Billing/billingAccounts/departments/write","Microsoft.Billing/billingAccounts/departments/action","Microsoft.Billing/billingAccounts/departments/delete","Microsoft.Billing/billingAccounts/enrollmentAccounts/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/write","Microsoft.Billing/billingAccounts/enrollmentAccounts/action","Microsoft.Billing/billingAccounts/enrollmentAccounts/delete","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/write","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/action"]}]}'
+    headers:
+      api-supported-versions:
+      - 2019-10-01-preview, 2020-05-01, 2020-12-15-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '733'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Nov 2024 11:12:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: 403728B11F9148F1ACC70AA2E1C16A06 Ref B: MAA201060516045 Ref C: 2024-11-18T11:12:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"actions": ["Microsoft.Billing/billingAccounts/departments/read", "Microsoft.Billing/billingAccounts/departments/noAction"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing permission check-access-by-department
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '125'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --billing-account-name --department-name --actions
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/departments/148446/checkAccess?api-version=2024-04-01
+  response:
+    body:
+      string: '[{"accessDecision":"Allowed","action":"Microsoft.Billing/billingAccounts/departments/read"},{"accessDecision":"NotAllowed","action":"Microsoft.Billing/billingAccounts/departments/noAction"}]'
+    headers:
+      api-supported-versions:
+      - 2019-10-01-preview, 2020-05-01, 2020-12-15-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '190'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Nov 2024 11:12:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '799'
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: B4EA934150254A35ACDD4377055E39DE Ref B: MAA201060515017 Ref C: 2024-11-18T11:12:01Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing permission list-by-enrollment-account
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --enrollment-account-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/enrollmentAccounts/261569/billingPermissions?api-version=2024-04-01
+  response:
+    body:
+      string: '{"value":[{"actions":["Microsoft.Billing/billingAccounts/enrollmentAccounts/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/write","Microsoft.Billing/billingAccounts/enrollmentAccounts/action","Microsoft.Billing/billingAccounts/enrollmentAccounts/delete","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/write","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/action","Microsoft.Subscription/subscriptions/write"]}]}'
+    headers:
+      api-supported-versions:
+      - 2019-10-01-preview, 2020-05-01, 2020-12-15-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '561'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Nov 2024 11:12:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: 3BE8244D852442F69BB3999C208A60D9 Ref B: MAA201060514037 Ref C: 2024-11-18T11:12:02Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"actions": ["Microsoft.Billing/billingAccounts/enrollmentAccounts/read",
+      "Microsoft.Billing/billingAccounts/enrollmentAccounts/noAction"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing permission check-access-by-enrollment-account
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '139'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --billing-account-name --enrollment-account-name --actions
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/enrollmentAccounts/261569/checkAccess?api-version=2024-04-01
+  response:
+    body:
+      string: '[{"accessDecision":"Allowed","action":"Microsoft.Billing/billingAccounts/enrollmentAccounts/read"},{"accessDecision":"NotAllowed","action":"Microsoft.Billing/billingAccounts/enrollmentAccounts/noAction"}]'
+    headers:
+      api-supported-versions:
+      - 2019-10-01-preview, 2020-05-01, 2020-12-15-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '204'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Nov 2024 11:12:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '799'
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: 4E8AAE1932AC49D9AD11823F5810EB86 Ref B: MAA201060515027 Ref C: 2024-11-18T11:12:03Z'
+    status:
+      code: 200
+      message: OK
+version: 1
