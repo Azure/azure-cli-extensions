@@ -18,3 +18,15 @@ def cf_swiftlet_cl(cli_ctx, *_):
 
 def cf_virtual_machine(cli_ctx, *_):
     return cf_swiftlet_cl(cli_ctx).virtual_machine
+
+
+def cf_virtual_machine_image(cli_ctx, *_):
+    return cf_swiftlet_cl(cli_ctx).virtual_machine_image
+
+
+def cf_virtual_machine_bundle(cli_ctx, *_):
+    return cf_swiftlet_cl(cli_ctx).virtual_machine_bundle
+
+
+def cf_virtual_machine_snapshot(cli_ctx, *_):
+    return cf_swiftlet_cl(cli_ctx).virtual_machine_snapshot

@@ -20,16 +20,25 @@ if TYPE_CHECKING:
 from ._configuration import SwiftletManagementClientConfiguration
 from .operations import OperationOperations
 from .operations import VirtualMachineOperations
+from .operations import VirtualMachineImageOperations
+from .operations import VirtualMachineBundleOperations
+from .operations import VirtualMachineSnapshotOperations
 from . import models
 
 
 class SwiftletManagementClient(object):
-    """The Swiftlet Management Client.
+    """Swiftlet Client.
 
     :ivar operation: OperationOperations operations
     :vartype operation: swiftlet_management_client.operations.OperationOperations
     :ivar virtual_machine: VirtualMachineOperations operations
     :vartype virtual_machine: swiftlet_management_client.operations.VirtualMachineOperations
+    :ivar virtual_machine_image: VirtualMachineImageOperations operations
+    :vartype virtual_machine_image: swiftlet_management_client.operations.VirtualMachineImageOperations
+    :ivar virtual_machine_bundle: VirtualMachineBundleOperations operations
+    :vartype virtual_machine_bundle: swiftlet_management_client.operations.VirtualMachineBundleOperations
+    :ivar virtual_machine_snapshot: VirtualMachineSnapshotOperations operations
+    :vartype virtual_machine_snapshot: swiftlet_management_client.operations.VirtualMachineSnapshotOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: Subscription credentials which uniquely identify Microsoft Azure subscription. The subscription ID forms part of the URI for every service call.
@@ -58,6 +67,12 @@ class SwiftletManagementClient(object):
         self.operation = OperationOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.virtual_machine = VirtualMachineOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.virtual_machine_image = VirtualMachineImageOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.virtual_machine_bundle = VirtualMachineBundleOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.virtual_machine_snapshot = VirtualMachineSnapshotOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def close(self):

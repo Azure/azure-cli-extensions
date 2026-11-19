@@ -8,8 +8,14 @@
 
 from ._operation_operations import OperationOperations
 from ._virtual_machine_operations import VirtualMachineOperations
+from ._virtual_machine_image_operations import VirtualMachineImageOperations
+from ._virtual_machine_bundle_operations import VirtualMachineBundleOperations
+from ._virtual_machine_snapshot_operations import VirtualMachineSnapshotOperations
 
 __all__ = [
     'OperationOperations',
     'VirtualMachineOperations',
+    'VirtualMachineImageOperations',
+    'VirtualMachineBundleOperations',
+    'VirtualMachineSnapshotOperations',
 ]

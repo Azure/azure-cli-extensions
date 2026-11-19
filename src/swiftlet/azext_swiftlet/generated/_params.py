@@ -37,18 +37,19 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
-        c.argument('swiftlet_bundle_sku', type=str, help='Specifies the Swiftlet bundle of this virtual machine (which '
+        c.argument('bundle_sku', type=str, help='Specifies the Swiftlet VM bundle of this virtual machine (which '
                    'specifies the selected tier of memory, processing, and storage).')
-        c.argument('swiftlet_image_id', type=str, help='The image ID to use. The image "platform" must match the '
-                   '"supportedImagePlatform" of the specified swiftletBundleSku.')
+        c.argument('image_id', type=str, help='The image ID to use. The image "platform" must match the '
+                   '"supportedImagePlatform" of the specified bundleSku.')
+        c.argument('snapshot_id', type=str, help='The ID of the VM snapshot from which this VM was created.')
         c.argument('username', type=str, help='The username for connecting the the virtual machine.')
         c.argument('ssh_public_key', type=str, help='The SSH public key used to connect to this virtual machine. Only '
                    'supported on Linux images. If specified on a Windows image, an error will be returned.')
+        c.argument('ports', action=AddSwiftletVirtualMachineCreatePorts, nargs='*', help='The ports on which inbound '
+                   'traffic will be allowed.')
         c.argument('password', type=str, help='The password for connecting to this Swiftlet. If the image platform '
                    'type is "linux", this is optional if sshPublicKey is set. If the image platform type is "windows", '
                    'this is required.')
-        c.argument('ports', action=AddSwiftletVirtualMachineCreatePorts, nargs='*', help='The ports on which inbound '
-                   'traffic will be allowed.')
         c.argument('startup_script', type=str, help='An inline script that will run upon startup of the virtual '
                    'machine.')
 
@@ -56,18 +57,12 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('vm_name', type=str, help='The name of the virtual machine.', id_part='name')
         c.argument('tags', tags_type)
-        c.argument('ports', action=AddSwiftletVirtualMachineUpdatePorts, nargs='*', help='Specifies the list of ports '
-                   'to be opened.')
+        c.argument('ports', action=AddSwiftletVirtualMachineUpdatePorts, nargs='*', help='The ports on which inbound '
+                   'traffic will be allowed.')
 
     with self.argument_context('swiftlet virtual-machine delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('vm_name', type=str, help='The name of the virtual machine.', id_part='name')
-
-    with self.argument_context('swiftlet virtual-machine list-bundle') as c:
-        c.argument('location', arg_type=get_location_type(self.cli_ctx))
-
-    with self.argument_context('swiftlet virtual-machine list-image') as c:
-        c.argument('location', arg_type=get_location_type(self.cli_ctx))
 
     with self.argument_context('swiftlet virtual-machine start') as c:
         c.argument('vm_name', type=str, help='The name of the virtual machine.', id_part='name')
@@ -80,3 +75,46 @@ def load_arguments(self, _):
     with self.argument_context('swiftlet virtual-machine wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('vm_name', type=str, help='The name of the virtual machine.', id_part='name')
+
+    with self.argument_context('swiftlet virtual-machine-image list') as c:
+        c.argument('location', arg_type=get_location_type(self.cli_ctx))
+
+    with self.argument_context('swiftlet virtual-machine-image show') as c:
+        c.argument('image_name', type=str, help='The name of the virtual machine image.', id_part='child_name_1')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), id_part='name')
+
+    with self.argument_context('swiftlet virtual-machine-bundle list') as c:
+        c.argument('location', arg_type=get_location_type(self.cli_ctx))
+
+    with self.argument_context('swiftlet virtual-machine-bundle show') as c:
+        c.argument('bundle_name', type=str, help='The name of the virtual machine bundle.', id_part='child_name_1')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), id_part='name')
+
+    with self.argument_context('swiftlet virtual-machine-snapshot list') as c:
+        c.argument('vm_name', type=str, help='The name of the virtual machine.')
+        c.argument('resource_group_name', resource_group_name_type)
+
+    with self.argument_context('swiftlet virtual-machine-snapshot show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('snapshot_name', type=str, help='The name of the virtual machine snapshot.', id_part='name')
+
+    with self.argument_context('swiftlet virtual-machine-snapshot create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('snapshot_name', type=str, help='The name of the virtual machine snapshot.')
+        c.argument('tags', tags_type)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+                   validator=get_default_location_from_resource_group)
+        c.argument('virtual_machine_id', type=str, help='The ID of the VM from which to create this snapshot.')
+
+    with self.argument_context('swiftlet virtual-machine-snapshot update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('snapshot_name', type=str, help='The name of the virtual machine snapshot.', id_part='name')
+        c.argument('tags', tags_type)
+
+    with self.argument_context('swiftlet virtual-machine-snapshot delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('snapshot_name', type=str, help='The name of the virtual machine snapshot.', id_part='name')
+
+    with self.argument_context('swiftlet virtual-machine-snapshot wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('snapshot_name', type=str, help='The name of the virtual machine snapshot.', id_part='name')
