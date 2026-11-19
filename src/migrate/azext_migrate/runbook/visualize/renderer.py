@@ -691,10 +691,10 @@ _EXEC_HELP_CHIPS = (
 
 
 _CMD_CONTEXT_TOKENS = (
-    ('<rg>', 'resource_group'),
-    ('<project>', 'project'),
-    ('<runbook>', 'runbook'),
-    ('<execution>', 'execution'),
+    ('--resource-group', '<rg>', 'resource_group'),
+    ('--project-name', '<project>', 'project'),
+    ('--runbook-name', '<runbook>', 'runbook'),
+    ('--execution-id', '<execution>', 'execution'),
 )
 
 
@@ -703,10 +703,14 @@ def _fill_cmd(cmd, context):
 
     Variable tokens (step/workstream/entity names) are left as ``<...>``
     placeholders; unfilled context tokens keep their placeholder too.
+    Local execution commands omit cloud identity arguments.
     """
     if not context:
         return cmd
-    for token, key in _CMD_CONTEXT_TOKENS:
+    for option, token, key in _CMD_CONTEXT_TOKENS:
+        if context.get('local_execution') and key != 'execution':
+            cmd = cmd.replace(' %s %s' % (option, token), '')
+            continue
         value = context.get(key)
         if value:
             cmd = cmd.replace(token, str(value))
