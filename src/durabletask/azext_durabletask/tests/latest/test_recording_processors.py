@@ -6,8 +6,12 @@
 import json
 import unittest
 from types import SimpleNamespace
+from unittest.mock import Mock
+
+from azure.core.exceptions import HttpResponseError
 
 from .recording_processors import IdentityRecordingProcessor
+from .test_durabletask_scenario import _delete_failover_instance
 
 
 class IdentityRecordingProcessorTests(unittest.TestCase):
@@ -104,3 +108,26 @@ class IdentityRecordingProcessorTests(unittest.TestCase):
         self.assertEqual(response['headers']['www-authenticate'], [
             'Bearer authorization="https://login.windows.net/00000000-0000-0000-0000-000000000000"',
         ])
+
+
+class FailoverCleanupTests(unittest.TestCase):
+    def test_uses_generated_lro_polling(self):
+        scenario = SimpleNamespace(cmd=Mock())
+        _delete_failover_instance(scenario)
+        scenario.cmd.assert_called_once_with(
+            'durabletask scheduler failover-instance delete -g {rg} -s {scheduler} --yes')
+
+    def test_missing_configuration_is_already_deleted(self):
+        missing = HttpResponseError(message='Not found')
+        missing.status_code = 404
+        scenario = SimpleNamespace(cmd=Mock(side_effect=missing))
+        _delete_failover_instance(scenario)
+        scenario.cmd.assert_called_once()
+
+    def test_does_not_hide_unexpected_service_errors(self):
+        denied = HttpResponseError(message='Access denied')
+        denied.status_code = 403
+        scenario = SimpleNamespace(cmd=Mock(side_effect=denied))
+        with self.assertRaises(HttpResponseError) as raised:
+            _delete_failover_instance(scenario)
+        self.assertIs(raised.exception, denied)
