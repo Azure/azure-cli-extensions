@@ -465,36 +465,64 @@ helps['containerapp add-on milvus'] = """
 helps['containerapp add-on redis create'] = """
     type: command
     short-summary: Command to create the redis add-on.
+    examples:
+    - name: Create a redis add-on.
+      text: |
+          az containerapp add-on redis create -g MyResourceGroup --name MyRedisAddOn --environment MyContainerappEnv
 """
 
 helps['containerapp add-on postgres create'] = """
     type: command
     short-summary: Command to create the postgres add-on.
+    examples:
+    - name: Create a postgres add-on.
+      text: |
+          az containerapp add-on postgres create -g MyResourceGroup --name MyPostgresAddOn --environment MyContainerappEnv
 """
 
 helps['containerapp add-on kafka create'] = """
     type: command
     short-summary: Command to create the kafka add-on.
+    examples:
+    - name: Create a kafka add-on.
+      text: |
+          az containerapp add-on kafka create -g MyResourceGroup --name MyKafkaAddOn --environment MyContainerappEnv
 """
 
 helps['containerapp add-on mariadb create'] = """
     type: command
     short-summary: Command to create the mariadb add-on.
+    examples:
+    - name: Create a mariadb add-on.
+      text: |
+          az containerapp add-on mariadb create -g MyResourceGroup --name MyMariadbAddOn --environment MyContainerappEnv
 """
 
 helps['containerapp add-on qdrant create'] = """
     type: command
     short-summary: Command to create the qdrant add-on.
+    examples:
+    - name: Create a qdrant add-on.
+      text: |
+          az containerapp add-on qdrant create -g MyResourceGroup --name MyQdrantAddOn --environment MyContainerappEnv
 """
 
 helps['containerapp add-on weaviate create'] = """
     type: command
     short-summary: Command to create the weaviate add-on.
+    examples:
+    - name: Create a weaviate add-on.
+      text: |
+          az containerapp add-on weaviate create -g MyResourceGroup --name MyWeaviateAddOn --environment MyContainerappEnv
 """
 
 helps['containerapp add-on milvus create'] = """
     type: command
     short-summary: Command to create the milvus add-on.
+    examples:
+    - name: Create a milvus add-on.
+      text: |
+          az containerapp add-on milvus create -g MyResourceGroup --name MyMilvusAddOn --environment MyContainerappEnv
 """
 
 helps['containerapp add-on redis delete'] = """
