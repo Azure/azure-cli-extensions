@@ -293,7 +293,7 @@ def load_command_table(self, _):
 
     # Data Transfer Service
     cosmosdb_data_transfer_job = CliCommandType(
-        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations._data_transfer_jobs_operations#DataTransferJobsOperations.{}',
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#DataTransferJobsOperations.{}',
         client_factory=cf_data_transfer_job
     )
 
@@ -307,7 +307,7 @@ def load_command_table(self, _):
 
     # Data Transfer Service
     cosmosdb_copy_job = CliCommandType(
-        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations._data_transfer_jobs_operations#DataTransferJobsOperations.{}',
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#DataTransferJobsOperations.{}',
         client_factory=cf_data_transfer_job
     )
 

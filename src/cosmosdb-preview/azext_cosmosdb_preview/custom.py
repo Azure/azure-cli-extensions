@@ -51,10 +51,11 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     Location,
     CreateMode,
     ConsistencyPolicy,
+    Capability,
     ResourceIdentityType,
     ManagedServiceIdentity,
     AnalyticalStorageConfiguration,
-    ManagedServiceIdentityUserAssignedIdentities,
+    ManagedServiceIdentityUserAssignedIdentity,
     CosmosCassandraDataTransferDataSourceSink,
     CosmosSqlDataTransferDataSourceSink,
     CosmosMongoDataTransferDataSourceSink,
@@ -124,6 +125,15 @@ def _handle_exists_exception(cloud_error):
     if cloud_error.status_code == 404:
         return False
     raise cloud_error
+
+
+def _convert_capabilities(capabilities):
+    if capabilities is None:
+        return None
+    return [
+        capability if isinstance(capability, Capability) else Capability(name=getattr(capability, 'name', None))
+        for capability in capabilities
+    ]
 
 
 def cli_cosmosdb_mongocluster_firewall_rule_create(client,
@@ -1054,6 +1064,7 @@ def cli_cosmosdb_update(client,
         analytical_storage_configuration = AnalyticalStorageConfiguration()
         analytical_storage_configuration.schema_type = analytical_storage_schema_type
 
+    capabilities = _convert_capabilities(capabilities)
     params = DatabaseAccountUpdateParameters(
         locations=locations,
         tags=tags,
@@ -1273,7 +1284,7 @@ def _create_database_account(client,
             user_identities = {}
             for x in assign_identity:
                 if x != SYSTEM_ID:
-                    user_identities[x] = ManagedServiceIdentityUserAssignedIdentities()  # pylint: disable=line-too-long
+                    user_identities[x] = ManagedServiceIdentityUserAssignedIdentity()  # pylint: disable=line-too-long
                 else:
                     enable_system = True
             if enable_system:
@@ -1359,6 +1370,7 @@ def _create_database_account(client,
         if disable_ttl is not None:
             restore_parameters.restore_with_ttl_disabled = disable_ttl
 
+    capabilities = _convert_capabilities(capabilities)
     params = DatabaseAccountCreateUpdateParameters(
         location=arm_location,
         locations=locations,
