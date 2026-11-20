@@ -1,0 +1,113 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-mgmt-azurearcdata/1.1.02586.818 Python/3.11.8 (Windows-10-10.0.22621-SP0)
+      x-ms-client-request-id:
+      - 9a4f8919-caaf-11ee-94c1-d8bbc1c51c4b
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/aagonzalez-CI-Test-mk6/providers/Microsoft.AzureArcData/sqlServerInstances/ArcBox-SQL_MSSQLSERVER01
+  response:
+    body:
+      string: '{"id":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/aagonzalez-CI-Test-mk6/providers/Microsoft.AzureArcData/sqlServerInstances/ArcBox-SQL_MSSQLSERVER01","name":"ArcBox-SQL_MSSQLSERVER01","type":"microsoft.azurearcdata/sqlserverinstances","location":"eastus","systemData":{"createdBy":"a12e8ccb-0fcd-46f8-b6a1-b9df7a9d7231","createdByType":"Application","createdAt":"2024-02-08T19:57:49.4129853Z","lastModifiedBy":"aagonzalez@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-02-13T20:31:45.5926894Z"},"properties":{"version":"SQL
+        Server 2019","edition":"Evaluation","containerResourceId":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourcegroups/aagonzalez-CI-Test-mk6/providers/Microsoft.HybridCompute/machines/ArcBox-SQL","createTime":null,"vCore":"1","cores":null,"status":"Connected","patchLevel":"15.0.2000.5","collation":"SQL_Latin1_General_CP1_CI_AS","currentVersion":"15.0.2000.5","instanceName":"MSSQLSERVER01","tcpDynamicPorts":"0","tcpStaticPorts":"","productId":"Unknown","licenseType":"Free","azureDefenderStatusLastUpdated":null,"azureDefenderStatus":"Unknown","provisioningState":"Succeeded","lastInventoryUploadTime":"2024-02-13T20:07:38.2473789Z","lastUsageUploadTime":null,"hostType":null,"alwaysOnRole":"None","failoverCluster":null,"backupPolicy":null,"upgradeLockedUntil":null,"monitoring":{"enabled":true},"migration":{"assessment":{"enabled":true}}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '1421'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Tue, 13 Feb 2024 20:36:45 GMT
+      ETag:
+      - '"df0362c7-0000-0100-0000-65cbd1b50000"'
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: AC271CFA11844F988B4A1A3D092094DE Ref B: BN1AA2051013011 Ref C: 2024-02-13T20:36:45Z'
+      x-ms-correlation-request-id:
+      - 1ed93e67-616c-4576-8b4b-ea3cdb1a806c
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99999'
+      x-ms-request-id:
+      - bff1bad4-d0d9-4b25-b128-87274af4a80d
+      x-ms-routing-request-id:
+      - EASTUS:20240213T203645Z:1ed93e67-616c-4576-8b4b-ea3cdb1a806c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-mgmt-azurearcdata/1.1.02586.818 Python/3.11.8 (Windows-10-10.0.22621-SP0)
+      x-ms-client-request-id:
+      - 9ab8b0da-caaf-11ee-bf1c-d8bbc1c51c4b
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/aagonzalez-CI-Test-mk6/providers/Microsoft.AzureArcData/sqlServerInstances/ArcBox-SQL_MSSQLSERVER01/databases/test_backups
+  response:
+    body:
+      string: '{"error": {"code": "ResourceNotFound", "message": "The Resource ''Microsoft.AzureArcData/SqlServerInstances/ArcBox-SQL_MSSQLSERVER01/Databases/test_backups''
+        under resource group ''aagonzalez-CI-Test-mk6'' was not found. For more details
+        please go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '283'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Tue, 13 Feb 2024 20:36:45 GMT
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: 5FB24E16921442B9BDC4F6340597005D Ref B: BN1AA2051013011 Ref C: 2024-02-13T20:36:46Z'
+      x-ms-correlation-request-id:
+      - cc59e8f6-39e0-46dc-92f7-e8d5374cb9ec
+      x-ms-failure-cause:
+      - gateway
+      x-ms-request-id:
+      - cc59e8f6-39e0-46dc-92f7-e8d5374cb9ec
+      x-ms-routing-request-id:
+      - EASTUS:20240213T203646Z:cc59e8f6-39e0-46dc-92f7-e8d5374cb9ec
+    status:
+      code: 404
+      message: Not Found
+version: 1

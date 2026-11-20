@@ -1,0 +1,18 @@
+stages:
+
+- stage: Release
+  dependsOn: build
+  jobs:
+  - deployment: DeployAzureExtensionIntoProduction
+    displayName: 'Release azure-cli extension'
+    environment: Production
+    pool:
+      vmImage: 'ubuntu-latest'
+      steps:
+      - task: Bash@3
+        displayName: 'Release azure-cli extension'
+        inputs:
+          targetType: 'inline'
+          script: scripts/version.sh
+          workingDirectory: $(Build.SourcesCliDirectory)
+          failOnStderr: false

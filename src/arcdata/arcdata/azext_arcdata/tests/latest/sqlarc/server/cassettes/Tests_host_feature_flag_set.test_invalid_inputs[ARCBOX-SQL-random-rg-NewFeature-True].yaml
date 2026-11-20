@@ -1,0 +1,54 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/random-rg/providers/Microsoft.HybridCompute/machines/ARCBOX-SQL/extensions/WindowsAgent.SqlServer
+  response:
+    body:
+      string: '{"error": {"code": "InvalidAuthenticationToken", "message": "The access
+        token is invalid."}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - close
+      Content-Length:
+      - '88'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Wed, 22 Nov 2023 08:41:58 GMT
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      WWW-Authenticate:
+      - Bearer authorization_uri="https://login.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47",
+        error="invalid_token", error_description="The access token is invalid."
+      X-Content-Type-Options:
+      - nosniff
+      x-ms-correlation-request-id:
+      - a51f044d-8b56-4e33-bebb-fb800bf47e4d
+      x-ms-failure-cause:
+      - gateway
+      x-ms-request-id:
+      - a51f044d-8b56-4e33-bebb-fb800bf47e4d
+      x-ms-routing-request-id:
+      - JIOINDIACENTRAL:20231122T084158Z:a51f044d-8b56-4e33-bebb-fb800bf47e4d
+    status:
+      code: 401
+      message: Unauthorized
+version: 1

@@ -1,0 +1,13 @@
+{
+	"apiVersion": "tasks.postgresql.arcdata.microsoft.com/v1beta1",
+	"kind": "PostgreSqlRestoreTask",
+	"metadata": {
+		"name": "postgres-restore-test1",
+		"namespace": "test"
+	},
+	"spec": {
+		"sourceName": "pg01",
+		"destinationName": "pg02",
+		"restorePoint": "2022-10-18T00:30:00+00:00"
+	}
+}
