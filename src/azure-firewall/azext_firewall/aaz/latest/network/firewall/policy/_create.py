@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create an Azure firewall policy.
+
+    :example: Create a Firewall Policy
+        az network firewall policy create -g MyResourceGroup -n MyFirewallPolicy --sql true
     """
 
     _aaz_info = {

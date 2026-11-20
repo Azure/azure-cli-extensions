@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 
 class Create(AAZCommand):
     """Create a draft Firewall Policy.
+
+    :example:   Create a draft Firewall Policy.
+        az network firewall policy draft create --policy-name MyFirewallPolicy --resource-group MyResourceGroup
     """
 
     _aaz_info = {
