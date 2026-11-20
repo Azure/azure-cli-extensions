@@ -298,14 +298,14 @@ class SshCustomCommandTest(unittest.TestCase):
         ])
 
     @mock.patch('builtins.open')
-    @mock.patch('oschmod.set_mode')
+    @mock.patch('azext_ssh._file_permission_utils.set_certificate_permissions')
     def test_write_cert_file(self, mock_mode, mock_open):
         mock_file = mock.Mock()
         mock_open.return_value.__enter__.return_value = mock_file
 
         custom._write_cert_file("cert", "publickey-aadcert.pub")
 
-        mock_mode.assert_called_once_with("publickey-aadcert.pub", 0o644)
+        mock_mode.assert_called_once_with("publickey-aadcert.pub")
         mock_open.assert_called_once_with("publickey-aadcert.pub", 'w', encoding='utf-8')
         mock_file.write.assert_called_once_with("ssh-rsa-cert-v01@openssh.com cert")
 
