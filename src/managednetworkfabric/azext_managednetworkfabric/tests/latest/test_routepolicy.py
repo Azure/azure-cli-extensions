@@ -12,6 +12,7 @@ Route Policy tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario(test):
@@ -27,8 +28,28 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_create_s1(test, checks=[])
-    step_show(test, checks=[])
+    step_create_s1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("addressFamilyType", attr(test, "addressFamilyType")),
+            test.check("defaultAction", attr(test, "defaultAction")),
+            test.check("networkFabricId", attr(test, "nfId")),
+            test.check("statements", attr(test, "expectedStatements")),
+        ],
+    )
+    step_show(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("addressFamilyType", attr(test, "addressFamilyType")),
+            test.check("defaultAction", attr(test, "defaultAction")),
+            test.check("networkFabricId", attr(test, "nfId")),
+            test.check("statements", attr(test, "expectedStatements")),
+        ],
+    )
     step_update(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
@@ -38,7 +59,17 @@ def call_scenario1(test):
 def call_scenario2(test):
     """Testcase: scenario2"""
     setup_scenario(test)
-    step_create_s2(test, checks=[])
+    step_create_s2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("addressFamilyType", attr(test, "addressFamilyType")),
+            test.check("defaultAction", attr(test, "defaultAction")),
+            test.check("networkFabricId", attr(test, "nfId")),
+            test.check("statements", attr(test, "expectedStatementsCreateS2")),
+        ],
+    )
     cleanup_scenario(test)
 
 
@@ -69,7 +100,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric routepolicy show --resource-name {name} --resource-group {rg}"
+        "az networkfabric routepolicy show --resource-name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -78,7 +110,8 @@ def step_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric routepolicy update --resource-group {rg} --resource-name {name} --statements {updatedStatementsWithIpcommunity} --default-action {defaultAction}",
+        "az networkfabric routepolicy update --resource-group {rg} --resource-name {name} --statements "
+        "{updatedStatementsWithIpcommunity} --default-action {defaultAction}",
         checks=checks,
     )
 
@@ -124,6 +157,13 @@ class GA_RoutePolicyScenarioTest1(ScenarioTest):
                 ),
                 "statementsWithIpextcommunity": CONFIG.get(
                     "ROUTE_POLICY", "statements_with_ipextcommunity"
+                ),
+                "expectedProvisioningState": CONFIG.get(
+                    "ROUTE_POLICY", "expected_provisioning_state"
+                ),
+                "expectedStatements": CONFIG.get("ROUTE_POLICY", "expected_statements"),
+                "expectedStatementsCreateS2": CONFIG.get(
+                    "ROUTE_POLICY", "expected_statements_create_s2"
                 ),
             }
         )

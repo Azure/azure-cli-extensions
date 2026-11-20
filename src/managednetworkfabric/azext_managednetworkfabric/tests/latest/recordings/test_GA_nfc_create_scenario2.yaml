@@ -1,0 +1,200 @@
+interactions:
+- request:
+    body: '{"identity": {"userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1": {}}, "type": "SystemAssigned,UserAssigned"}, "location": "eastus", "properties": {"annotation": "test-annotation", "infrastructureExpressRouteConnections": [{"expressRouteAuthorizationKey": "00000000-0000-0000-0000-f0413ab7347e", "expressRouteCircuitId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit"}], "ipv4AddressSpace": "10.248.224.0/19", "ipv6AddressSpace": "FC00::/59", "isWorkloadManagementNetworkEnabled": "True", "managedResourceGroupConfiguration": {"location": "eastus", "name": "Lab100GFABNFC-eus-HostedResources-089CB219"}, "nfcSku": "Standard", "publicConnectivity": {"infrastructureVpnGatewaySku": "VpnGw2AZ", "tenantVpnGatewaySku": "VpnGw3AZ"}, "vmProfile": {"vmSkuName": "VmSku6YZ"}, "workloadExpressRouteConnections": [{"expressRouteAuthorizationKey": "00000000-0000-0000-0000-f0413ab7347e", "expressRouteCircuitId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric controller create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1301'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --location --resource-name --annotation --ipv4-address-space --ipv6-address-space --is-workload-management-network-enabled --nfc-sku --infrastructure-express-route-connections --workload-er-connections --mrg --mi-user-assigned --mi-system-assigned --public-connectivity --vm-profile
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFCRG-eus/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/Lab100GFABNFC-eus?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFCRG-eus/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/Lab100GFABNFC-eus","name":"Lab100GFABNFC-eus","type":"microsoft.managednetworkfabric/networkfabriccontrollers","location":"eastus","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-02-14T12:30:29.0229557Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-02-14T12:30:29.0229557Z"},"properties":{"infrastructureExpressRouteConnections":[{"expressRouteCircuitId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit"}],"ipv4AddressSpace":"10.248.224.0/19","ipv6AddressSpace":"FC00::/59","isWorkloadManagementNetworkEnabled":"True","nfcSku":"Standard","workloadExpressRouteConnections":[{"expressRouteCircuitId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit"}],"managedResourceGroupConfiguration":{"location":"eastus","name":"Lab100GFABNFC-eus-HostedResources-089CB219"},"provisioningState":"Accepted","annotation":"test-annotation","publicConnectivity":{"infrastructureVpnGatewaySku":"VpnGw2AZ","tenantVpnGatewaySku":"VpnGw3AZ"},"vmProfile":{"vmSkuName":"VmSku6YZ"}},"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1":{}},"type":"SystemAssigned,UserAssigned"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-582b0a9e4bcc*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638435106309761381&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '1626'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Feb 2024 12:30:30 GMT
+      etag:
+      - '"00000000-0000-0000-0000-47f9a5af5ceb"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-8114734feee3
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: B96D49605D2B432887F1CF609096ABC9 Ref B: MAA201060515039 Ref C: 2024-02-14T12:30:27Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric controller create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --resource-name --annotation --ipv4-address-space --ipv6-address-space --is-workload-management-network-enabled --nfc-sku --infrastructure-express-route-connections --workload-er-connections --mrg --mi-user-assigned --mi-system-assigned --public-connectivity --vm-profile
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-582b0a9e4bcc*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638435106309761381&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-582b0a9e4bcc*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-582b0a9e4bcc*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFCRG-eus/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/Lab100GFABNFC-eus","status":"Accepted","startTime":"2024-02-14T12:30:30.2882194Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '595'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Feb 2024 12:30:31 GMT
+      etag:
+      - '"00000000-0000-0000-0000-dbd7b62e085a"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 7E16328155454C4794F0665C742F4C30 Ref B: MAA201060515049 Ref C: 2024-02-14T12:30:31Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric controller create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --resource-name --annotation --ipv4-address-space --ipv6-address-space --is-workload-management-network-enabled --nfc-sku --infrastructure-express-route-connections --workload-er-connections --mrg --mi-user-assigned --mi-system-assigned --public-connectivity --vm-profile
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-582b0a9e4bcc*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638435106309761381&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-582b0a9e4bcc*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-582b0a9e4bcc*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFCRG-eus/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/Lab100GFABNFC-eus","status":"Succeeded","startTime":"2024-02-14T12:30:30.2882194Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '614'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Feb 2024 13:15:02 GMT
+      etag:
+      - '"00000000-0000-0000-0000-531910b4d06f"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: ACDBEC9A608A4C7A8CD72DEB11D3EA1C Ref B: MAA201060514011 Ref C: 2024-02-14T13:15:02Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric controller create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --resource-name --annotation --ipv4-address-space --ipv6-address-space --is-workload-management-network-enabled --nfc-sku --infrastructure-express-route-connections --workload-er-connections --mrg --mi-user-assigned --mi-system-assigned --public-connectivity --vm-profile
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFCRG-eus/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/Lab100GFABNFC-eus?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFCRG-eus/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/Lab100GFABNFC-eus","name":"Lab100GFABNFC-eus","type":"microsoft.managednetworkfabric/networkfabriccontrollers","location":"eastus","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-02-14T12:30:29.0229557Z","lastModifiedBy":"00000000-0000-0000-0000-35edb3c9ef36","lastModifiedByType":"Application","lastModifiedAt":"2024-02-14T13:14:34.6644701Z"},"properties":{"provisioningState":"Succeeded","ipv4AddressSpace":"10.248.224.0/19","ipv6AddressSpace":"FC00::/59","workloadManagementNetwork":true,"isWorkloadManagementNetworkEnabled":"True","infrastructureExpressRouteConnections":[{"expressRouteCircuitId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit"}],"workloadExpressRouteConnections":[{"expressRouteCircuitId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit"}],"infrastructureServices":{"ipv4AddressSpaces":["10.248.224.0/21"],"ipv6AddressSpaces":[]},"workloadServices":{"ipv4AddressSpaces":["10.248.252.0/22"],"ipv6AddressSpaces":[]},"managedResourceGroupConfiguration":{"location":"eastus","name":"Lab100GFABNFC-eus-HostedResources-089CB219"},"nfcSku":"Standard","tenantInternetGatewayIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFCRG-eus/providers/Microsoft.ManagedNetworkFabric/internetGateways/Lab100GFABNFC-eus-workload"],"annotation":"test-annotation","publicConnectivity":{"infrastructureVpnGatewaySku":"VpnGw2AZ","tenantVpnGatewaySku":"VpnGw3AZ"},"vmProfile":{"vmSkuName":"VmSku6YZ"}},"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1":{}},"type":"SystemAssigned,UserAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2069'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Feb 2024 13:15:03 GMT
+      etag:
+      - '"00000000-0000-0000-0000-2cb4649939cd"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 811FD0B838444AB0900CE4A3497839BC Ref B: MAA201060516017 Ref C: 2024-02-14T13:15:03Z'
+    status:
+      code: 200
+      message: OK
+version: 1

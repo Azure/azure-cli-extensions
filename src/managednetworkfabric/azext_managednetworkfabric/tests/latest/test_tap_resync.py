@@ -12,6 +12,7 @@ Network Tap tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario(test):
@@ -27,28 +28,16 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_resync_scenario1(test, checks=[])
-    cleanup_scenario(test)
-
-
-def call_scenario2(test):
-    """Testcase: scenario2"""
-    setup_scenario(test)
-    step_resync_scenario2(test, checks=[])
+    step_resync_scenario1(
+        test,
+        checks=[
+            test.check("status", attr(test, "expectedStatus")),
+        ],
+    )
     cleanup_scenario(test)
 
 
 def step_resync_scenario1(test, checks=None):
-    """Network Tap create operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
-        "az networkfabric tap resync --resource-group {rg} --network-tap-name {name}",
-        checks=checks,
-    )
-
-
-def step_resync_scenario2(test, checks=None):
     """Network Tap create operation"""
     if checks is None:
         checks = []
@@ -67,6 +56,7 @@ class GA_TapResyncScenarioTest1(ScenarioTest):
             {
                 "name": CONFIG.get("NETWORK_TAP", "resync_name"),
                 "rg": CONFIG.get("NETWORK_TAP", "resync_resource_group"),
+                "expectedStatus": CONFIG.get("NETWORK_TAP", "expected_status"),
             }
         )
 

@@ -1,0 +1,306 @@
+interactions:
+- request:
+    body: '{"identity": {"userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1": {}}, "type": "SystemAssigned,UserAssigned"}, "location": "eastus2euap", "properties": {"annotation": "test-annotation", "configurationType": "Inline", "dynamicMatchConfigurations": [{"ipGroups": [{"ipAddressType": "IPv4", "ipPrefixes": ["10.20.3.1/20"], "name": "example-ipGroup"}], "vlanGroups": [{"name": "example-vlanGroup", "vlans": ["20-30"]}]}], "globalNetworkTapRuleActions": {"enableCount": "True", "truncate": "truncate-name"}, "identitySelector": {"identityType": "UserAssignedIdentity", "userAssignedIdentityResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1"}, "isMatchConfigurationUpdated": "True", "matchConfigurations": [{"actions": [{"type": "Count"}, {"type": "Drop"}], "ipAddressType": "IPv4", "matchConditions": [{"vlanMatchCondition": {"innerVlans": ["2012"], "vlans": ["100", "101", "200-300", "400", "500-520"]}}, {"vlanMatchCondition": {"innerVlans": ["2018"], "vlans": ["1000", "1001", "2000-3000", "4000", "4001-4050"]}}], "matchConfigurationName": "DEFAULT_TRAFFIC_RULE_M1", "sequenceNumber": 1001}, {"actions": [{"type": "Count"}, {"type": "Drop"}], "ipAddressType": "IPv6", "matchConditions": [{"vlanMatchCondition": {"innerVlans": ["2012"], "vlans": ["100", "101", "200-300", "400", "500-520"]}}], "matchConfigurationName": "DEFAULT_TRAFFIC_RULE_M2", "sequenceNumber": 1002}, {"actions": [{"type": "Count"}, {"type": "Drop"}], "ipAddressType": "IPv4", "matchConditions": [{"portCondition": {"layer4Protocol": "TCP", "portType": "SourcePort", "ports": ["50", "301", "300-305", "350", "400-500"]}, "protocolTypes": ["5", "6", "17"]}], "matchConfigurationName": "DEFAULT_TRAFFIC_RULE_M3", "sequenceNumber": 1010}, {"actions": [{"type": "Count"}], "ipAddressType": "IPv4", "matchConditions": [{"ipCondition": {"ipPrefixValues": ["2.2.2.0/24", "3.3.0.0/16"], "prefixType": "Prefix", "type": "DestinationIP"}}], "matchConfigurationName": "DEFAULT_TRAFFIC_RULE_M5", "sequenceNumber": 50}], "pollingIntervalInSeconds": 30, "tapRulesUrl": "https://microsoft.com/a"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric taprule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2295'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --location --resource-name --configuration-type --dynamic-match-configs --global-ntr-actions --match-configurations --polling-interval --tap-rules-url --identity-selector --user-assigned --system-assigned --annotation --is-mc-updated
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkTapRules/nffab3-5-1-taprule?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkTapRules/nffab3-5-1-taprule","name":"nffab3-5-1-taprule","type":"microsoft.managednetworkfabric/networktaprules","location":"eastus2euap","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-02-14T20:28:54.5549014Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-02-15T04:26:47.2344046Z"},"properties":{"configurationState":"Succeeded","provisioningState":"Accepted","administrativeState":"Disabled","pollingIntervalInSeconds":30,"configurationType":"Inline","matchConfigurations":[{"actions":[{"type":"Count","isTimestampEnabled":"False"},{"type":"Drop","isTimestampEnabled":"False"}],"ipAddressType":"IPv4","matchConditions":[{"vlanMatchCondition":{"innerVlans":["2012"],"vlans":["100","101","200-300","400","500-520"]},"encapsulationType":"None"},{"vlanMatchCondition":{"innerVlans":["2018"],"vlans":["1000","1001","2000-3000","4000","4001-4050"]},"encapsulationType":"None"}],"matchConfigurationName":"DEFAULT_TRAFFIC_RULE_M1","sequenceNumber":1001},{"actions":[{"type":"Count","isTimestampEnabled":"False"},{"type":"Drop","isTimestampEnabled":"False"}],"ipAddressType":"IPv6","matchConditions":[{"vlanMatchCondition":{"innerVlans":["2012"],"vlans":["100","101","200-300","400","500-520"]},"encapsulationType":"None"}],"matchConfigurationName":"DEFAULT_TRAFFIC_RULE_M2","sequenceNumber":1002},{"actions":[{"type":"Count","isTimestampEnabled":"False"},{"type":"Drop","isTimestampEnabled":"False"}],"ipAddressType":"IPv4","matchConditions":[{"portCondition":{"layer4Protocol":"TCP","portType":"SourcePort","ports":["50","301","300-305","350","400-500"]},"protocolTypes":["5","6","17"],"encapsulationType":"None"}],"matchConfigurationName":"DEFAULT_TRAFFIC_RULE_M3","sequenceNumber":1010},{"actions":[{"type":"Count","isTimestampEnabled":"False"}],"ipAddressType":"IPv4","matchConditions":[{"ipCondition":{"ipPrefixValues":["2.2.2.0/24","3.3.0.0/16"],"prefixType":"Prefix","type":"DestinationIP"},"encapsulationType":"None"}],"matchConfigurationName":"DEFAULT_TRAFFIC_RULE_M5","sequenceNumber":50}],"annotation":"test-annotation","dynamicMatchConfigurations":[{"ipGroups":[{"ipAddressType":"IPv4","ipPrefixes":["10.20.3.1/20"],"name":"example-ipGroup"}],"vlanGroups":[{"name":"example-vlanGroup","vlans":["20-30"]}]}],"globalNetworkTapRuleActions":{"enableCount":"True","truncate":"truncate-name"},"identitySelector":{"identityType":"UserAssignedIdentity","userAssignedIdentityResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1"},"isMatchConfigurationUpdated":"True","tapRulesUrl":"https://microsoft.com/a"},"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1":{}},"type":"SystemAssigned,UserAssigned"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-72688c48b6ae*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638435680104375579&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '3048'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 15 Feb 2024 04:26:50 GMT
+      etag:
+      - '"00000000-0000-0000-0000-11a1845e9616"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-321ea0b0c796
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 6FA3D831E29E489897394670C3524CF3 Ref B: MAA201060514019 Ref C: 2024-02-15T04:26:46Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric taprule create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --resource-name --configuration-type --dynamic-match-configs --global-ntr-actions --match-configurations --polling-interval --tap-rules-url --identity-selector --user-assigned --system-assigned --annotation --is-mc-updated
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-72688c48b6ae*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638435680104375579&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-72688c48b6ae*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-72688c48b6ae*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkTapRules/nffab3-5-1-taprule","status":"Succeeded","startTime":"2024-02-15T04:26:49.9097252Z","endTime":"2024-02-15T04:26:50.8243742Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '649'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 15 Feb 2024 04:26:51 GMT
+      etag:
+      - '"00000000-0000-0000-0000-aafdd0e1700a"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 3A1C1699FFF74E248E1D2682DE729497 Ref B: MAA201060516023 Ref C: 2024-02-15T04:26:50Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric taprule create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --resource-name --configuration-type --dynamic-match-configs --global-ntr-actions --match-configurations --polling-interval --tap-rules-url --identity-selector --user-assigned --system-assigned --annotation --is-mc-updated
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkTapRules/nffab3-5-1-taprule?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkTapRules/nffab3-5-1-taprule","name":"nffab3-5-1-taprule","type":"microsoft.managednetworkfabric/networktaprules","location":"eastus2euap","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-02-14T20:28:54.5549014Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-02-15T04:26:47.2344046Z"},"properties":{"configurationState":"Succeeded","provisioningState":"Succeeded","administrativeState":"Disabled","pollingIntervalInSeconds":30,"configurationType":"Inline","matchConfigurations":[{"actions":[{"type":"Count","isTimestampEnabled":"False"},{"type":"Drop","isTimestampEnabled":"False"}],"ipAddressType":"IPv4","matchConditions":[{"vlanMatchCondition":{"innerVlans":["2012"],"vlans":["100","101","200-300","400","500-520"]},"encapsulationType":"None"},{"vlanMatchCondition":{"innerVlans":["2018"],"vlans":["1000","1001","2000-3000","4000","4001-4050"]},"encapsulationType":"None"}],"matchConfigurationName":"DEFAULT_TRAFFIC_RULE_M1","sequenceNumber":1001},{"actions":[{"type":"Count","isTimestampEnabled":"False"},{"type":"Drop","isTimestampEnabled":"False"}],"ipAddressType":"IPv6","matchConditions":[{"vlanMatchCondition":{"innerVlans":["2012"],"vlans":["100","101","200-300","400","500-520"]},"encapsulationType":"None"}],"matchConfigurationName":"DEFAULT_TRAFFIC_RULE_M2","sequenceNumber":1002},{"actions":[{"type":"Count","isTimestampEnabled":"False"},{"type":"Drop","isTimestampEnabled":"False"}],"ipAddressType":"IPv4","matchConditions":[{"portCondition":{"layer4Protocol":"TCP","portType":"SourcePort","ports":["50","301","300-305","350","400-500"]},"protocolTypes":["5","6","17"],"encapsulationType":"None"}],"matchConfigurationName":"DEFAULT_TRAFFIC_RULE_M3","sequenceNumber":1010},{"actions":[{"type":"Count","isTimestampEnabled":"False"}],"ipAddressType":"IPv4","matchConditions":[{"ipCondition":{"ipPrefixValues":["2.2.2.0/24","3.3.0.0/16"],"prefixType":"Prefix","type":"DestinationIP"},"encapsulationType":"None"}],"matchConfigurationName":"DEFAULT_TRAFFIC_RULE_M5","sequenceNumber":50}],"annotation":"test-annotation","dynamicMatchConfigurations":[{"ipGroups":[{"ipAddressType":"IPv4","ipPrefixes":["10.20.3.1/20"],"name":"example-ipGroup"}],"vlanGroups":[{"name":"example-vlanGroup","vlans":["20-30"]}]}],"globalNetworkTapRuleActions":{"enableCount":"True","truncate":"truncate-name"},"identitySelector":{"identityType":"UserAssignedIdentity","userAssignedIdentityResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1"},"isMatchConfigurationUpdated":"True","tapRulesUrl":"https://microsoft.com/a"},"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1":{}},"type":"SystemAssigned,UserAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3049'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 15 Feb 2024 04:26:52 GMT
+      etag:
+      - '"00000000-0000-0000-0000-d849de4603e8"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: BD007C749BB34F6C88472254551D2C70 Ref B: MAA201060513009 Ref C: 2024-02-15T04:26:52Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1": {}}, "type": "SystemAssigned,UserAssigned"}, "properties": {"annotation": "test-annotation", "configurationType": "Inline", "dynamicMatchConfigurations": [{"ipGroups": [{"ipAddressType": "IPv4", "ipPrefixes": ["10.20.3.1/20"], "name": "example-ipGroup"}], "vlanGroups": [{"name": "example-vlanGroup", "vlans": ["20-30"]}]}], "globalNetworkTapRuleActions": {"enableCount": "True", "truncate": "truncate-name"}, "identitySelector": {"identityType": "UserAssignedIdentity", "userAssignedIdentityResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1"}, "isMatchConfigurationUpdated": "True", "matchConfigurations": [{"actions": [{"type": "Count"}], "ipAddressType": "IPv4", "matchConditions": [{"ipCondition": {"ipPrefixValues": ["10.30.0.124/30", "10.30.0.128/30", "10.30.0.129/30"], "prefixType": "Prefix", "type": "SourceIP"}}, {"ipCondition": {"ipPrefixValues": ["10.30.0.124/30", "10.30.0.128/30", "10.30.0.129/30"], "prefixType": "Prefix", "type": "DestinationIP"}}], "matchConfigurationName": "example-match", "sequenceNumber": 1234}], "tapRulesUrl": "https://microsoft.com/a"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric taprule update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1387'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-name --resource-group --match-configurations --tap-rules-url --identity-selector --user-assigned --system-assigned --dynamic-match-configs --annotation --global-ntr-actions --configuration-type --is-mc-updated
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkTapRules/nffab3-5-1-taprule?api-version=2026-07-15-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638435680104375579&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 15 Feb 2024 04:26:50 GMT
+      etag:
+      - '"00000000-0000-0000-0000-11a1845e9616"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-321ea0b0c796
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 6FA3D831E29E489897394670C3524CF3 Ref B: MAA201060514019 Ref C: 2024-02-15T04:26:46Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric taprule update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group --match-configurations --tap-rules-url --identity-selector --user-assigned --system-assigned --dynamic-match-configs --annotation --global-ntr-actions --configuration-type --is-mc-updated
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638435680104375579&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkTapRules/nffab3-5-1-taprule","status":"Succeeded","startTime":"2024-02-15T04:26:49.9097252Z","endTime":"2024-02-15T04:26:50.8243742Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '649'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 15 Feb 2024 04:26:51 GMT
+      etag:
+      - '"00000000-0000-0000-0000-aafdd0e1700a"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 3A1C1699FFF74E248E1D2682DE729497 Ref B: MAA201060516023 Ref C: 2024-02-15T04:26:50Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric taprule update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group --match-configurations --tap-rules-url --identity-selector --user-assigned --system-assigned --dynamic-match-configs --annotation --global-ntr-actions --configuration-type --is-mc-updated
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkTapRules/nffab3-5-1-taprule?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkTapRules/nffab3-5-1-taprule","name":"nffab3-5-1-taprule","type":"microsoft.managednetworkfabric/networktaprules","location":"eastus2euap","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-02-14T20:28:54.5549014Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-02-15T04:26:47.2344046Z"},"properties":{"configurationState":"Succeeded","provisioningState":"Succeeded","administrativeState":"Disabled","pollingIntervalInSeconds":30,"configurationType":"Inline","matchConfigurations":[{"actions":[{"type":"Count","isTimestampEnabled":"False"}],"ipAddressType":"IPv4","matchConditions":[{"ipCondition":{"ipPrefixValues":["10.30.0.124/30","10.30.0.128/30","10.30.0.129/30"],"prefixType":"Prefix","type":"SourceIP"},"encapsulationType":"None"},{"ipCondition":{"ipPrefixValues":["10.30.0.124/30","10.30.0.128/30","10.30.0.129/30"],"prefixType":"Prefix","type":"DestinationIP"},"encapsulationType":"None"}],"matchConfigurationName":"example-match","sequenceNumber":1234}],"annotation":"test-annotation","dynamicMatchConfigurations":[{"ipGroups":[{"ipAddressType":"IPv4","ipPrefixes":["10.20.3.1/20"],"name":"example-ipGroup"}],"vlanGroups":[{"name":"example-vlanGroup","vlans":["20-30"]}]}],"globalNetworkTapRuleActions":{"enableCount":"True","truncate":"truncate-name"},"identitySelector":{"identityType":"UserAssignedIdentity","userAssignedIdentityResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1"},"isMatchConfigurationUpdated":"True","tapRulesUrl":"https://microsoft.com/a"},"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1":{}},"type":"SystemAssigned,UserAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2013'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 15 Feb 2024 04:26:57 GMT
+      etag:
+      - '"00000000-0000-0000-0000-d849de4603e8"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: C32C4464F2A24B31A7B658F28C54E6B6 Ref B: MAA201060514039 Ref C: 2024-02-15T04:26:56Z'
+    status:
+      code: 200
+      message: OK
+version: 1

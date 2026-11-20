@@ -14,6 +14,7 @@ ExternalNetwork tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario(test):
@@ -29,14 +30,24 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_update_admin_state_scenario1(test, checks=[])
+    step_update_admin_state_scenario1(
+        test,
+        checks=[
+            test.check("status", attr(test, "expectedStatus")),
+        ],
+    )
     cleanup_scenario(test)
 
 
 def call_scenario2(test):
     """Testcase: scenario2"""
     setup_scenario(test)
-    step_update_admin_state_scenario2(test, checks=[])
+    step_update_admin_state_scenario2(
+        test,
+        checks=[
+            test.check("status", attr(test, "expectedStatus")),
+        ],
+    )
     cleanup_scenario(test)
 
 
@@ -45,7 +56,9 @@ def step_update_admin_state_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric externalnetwork update-admin-state --resource-name {name} --resource-group {rg} --l3domain {l3Domain} --state {state} --resource-ids {resourceIds}"
+        "az networkfabric externalnetwork update-admin-state --resource-name {name} -f {force}"
+        " --resource-group {rg} --l3domain {l3Domain} --state {state} --resource-ids {resourceIds}",
+        checks=checks,
     )
 
 
@@ -54,7 +67,10 @@ def step_update_admin_state_scenario2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric externalnetwork update-admin-state --resource-name {name} --resource-group {rg} --l3-isolation-domain-name {l3Domain} --state {state} --resource-ids {resourceIds}"
+        "az networkfabric externalnetwork update-admin-state --resource-name {name} --force {force}"
+        " --resource-group {rg} --l3-isolation-domain-name {l3Domain} --state {state} "
+        " --resource-ids {resourceIds}",
+        checks=checks,
     )
 
 
@@ -70,6 +86,8 @@ class GA_InternalNNetworkUpdateAdminStateScenarioTest1(ScenarioTest):
                 "l3Domain": CONFIG.get("EXTERNAL_NETWORK", "optiona_l3_domain"),
                 "state": CONFIG.get("EXTERNAL_NETWORK", "enabled_state"),
                 "resourceIds": CONFIG.get("EXTERNAL_NETWORK", "resource_ids"),
+                "force": CONFIG.get("EXTERNAL_NETWORK", "force_flag"),
+                "expectedStatus": CONFIG.get("EXTERNAL_NETWORK", "expected_status"),
             }
         )
 
@@ -77,3 +95,9 @@ class GA_InternalNNetworkUpdateAdminStateScenarioTest1(ScenarioTest):
     def test_GA_externalnetwork_update_admin_state_scenario1(self):
         """test scenario for ExternalNetwork CRUD operations"""
         call_scenario1(self)
+
+    @AllowLargeResponse()
+    def test_GA_externalnetwork_update_admin_state_scenario2(self):
+        """Test scenario 2 with alternate command parameters."""
+        call_scenario2(self)
+        self.assertTrue(self.cassette.all_played)

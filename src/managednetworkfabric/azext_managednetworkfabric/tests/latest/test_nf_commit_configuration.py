@@ -12,6 +12,7 @@ NF tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -27,7 +28,12 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario1(test)
-    step_commit(test)
+    step_commit(
+        test,
+        checks=[
+            test.check("status", attr(test, "expectedStatus")),
+        ],
+    )
     cleanup_scenario1(test)
 
 
@@ -36,7 +42,9 @@ def step_commit(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric commit-configuration --resource-name {name} --resource-group {resourceGroup} --commit-policy {commitPolicy} --commit-stage {commitStage} --devices {devices}",
+        "az networkfabric fabric commit-config --resource-name {name} --resource-group {resourceGroup} "
+        "--commit-policy {commitPolicy} --commit-stage {commitStage} --devices {devices}",
+        checks=checks,
     )
 
 
@@ -52,6 +60,7 @@ class GA_NFCommitScenarioTest1(ScenarioTest):
                 "commitPolicy": CONFIG.get("NETWORK_FABRIC", "commit_policy"),
                 "commitStage": CONFIG.get("NETWORK_FABRIC", "commit_stage"),
                 "devices": CONFIG.get("NETWORK_FABRIC", "devices"),
+                "expectedStatus": CONFIG.get("NETWORK_FABRIC", "expected_status"),
             }
         )
 
