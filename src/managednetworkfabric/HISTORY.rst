@@ -7,12 +7,8 @@ Release History
 ++++++++
 * New preview CLI version for latest api 2026-07-15-preview wihch includes 'Arc for Fabric' updates.
 * Adds the following new commands for command group `bootstrapdevice`:
-*  - `reboot`
-*  - `refresh-config`
-*  - `resync-password`
-*  - `update-admin-state`
-*  - `run-ro-rommand`
-*  - `run-rw-rommand`
+*  - `run-ro-command`
+*  - `run-rw-command`
 *  - `upgrade`
 * New `device` commands introduced: `device run-diagnostic` and `device run-validation`.
 * New `fabric` commands introduced: `fabric run-diagnostic` and `fabric run-validation`.
