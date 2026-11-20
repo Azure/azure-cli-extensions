@@ -148,7 +148,8 @@ def which(binary):
         binaries = [binary + extension for extension in extensions.split(';') if extension]
 
     for executable in binaries:
-        bin_path = os.path.realpath(executable)
+        # Preserve the invocation name for executables that dispatch by argv[0].
+        bin_path = os.path.join(os.path.realpath(os.path.dirname(executable)), os.path.basename(executable))
         if os.path.isfile(bin_path) and os.access(bin_path, os.X_OK):
             return bin_path
 

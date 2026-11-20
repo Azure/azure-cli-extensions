@@ -91,6 +91,26 @@ class TestWhich(unittest.TestCase):
                     self.assertTrue(os.path.samefile(resolved, expected))
                     self.assertFalse(os.path.samefile(resolved, self.installed_binary))
 
+    @unittest.skipIf(os.name == "nt", "Requires file and directory symlinks")
+    def test_preserves_explicit_executable_symlink_name(self):
+        alias = os.path.join(self.tools, "kubectl")
+        os.symlink(self.installed_binary, alias)
+        nested = os.path.join(self.tools, "nested")
+        os.mkdir(nested)
+        linked = os.path.join(self.directory, "linked")
+        os.symlink(nested, linked, target_is_directory=True)
+
+        for executable in (
+            alias,
+            os.path.relpath(alias, self.working_directory),
+            os.path.join(linked, "..", "kubectl"),
+        ):
+            with self.subTest(executable=executable):
+                resolved = which(executable)
+                self.assertEqual(os.path.basename(resolved), "kubectl")
+                self.assertTrue(os.path.islink(resolved))
+                self.assertTrue(os.path.samefile(resolved, self.installed_binary))
+
     @unittest.skipIf(os.name == "nt", "Requires file symlinks")
     def test_skips_path_executable_linked_to_working_directory(self):
         os.remove(self.installed_binary)
