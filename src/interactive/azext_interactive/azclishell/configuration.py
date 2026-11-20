@@ -9,6 +9,7 @@ from azure.cli.core._help import PRIVACY_STATEMENT
 
 from prompt_toolkit import prompt  # pylint: disable=import-error
 
+
 SELECT_SYMBOL = {
     'outside': '#',
     'query': '??',
@@ -21,6 +22,7 @@ SELECT_SYMBOL = {
 }
 
 GESTURE_INFO = {
+    SELECT_SYMBOL['outside'] + "[cmd]": "use commands outside the application",
     # pylint: disable=line-too-long
     SELECT_SYMBOL['search'] + '[keyword]': "search for commands and scenarios",
     SELECT_SYMBOL['outside'] + "[cmd]": "use commands outside the application",
@@ -44,7 +46,6 @@ class Configuration(object):
                       'y': True, 'Y': True, 'n': False, 'N': False}
 
     """ Configuration information """
-
     def __init__(self, cli_config, style=None):
         self.config = configparser.ConfigParser({
             'firsttime': 'yes',

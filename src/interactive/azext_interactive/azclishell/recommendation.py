@@ -13,10 +13,10 @@ from azure.cli.core import telemetry
 from azure.cli.core import __version__ as version
 from azure.cli.core.style import print_styled_text, Style
 from prompt_toolkit.history import FileHistory
-from .scenario_search import SearchThread
 
 
 class RecommendType(int, Enum):
+    Error = 0
     All = 1
     Solution = 2
     Command = 3
@@ -131,13 +131,13 @@ class Recommender:
             processed_exception = self.cur_thread.processed_exception
             if not recommendations:
                 send_feedback("-1", search_keywords, processed_exception, recommendations, accepted_recommend=None,
-                              api_version=api_version)
+                              api_version=api_version, request_type=RecommendType.Search)
             elif not scenario:
                 send_feedback("0", search_keywords, processed_exception, recommendations, accepted_recommend=None,
-                              api_version=api_version)
+                              api_version=api_version, request_type=RecommendType.Search)
             else:
                 send_feedback(f'c{search_idx}', search_keywords, processed_exception, recommendations,
-                              accepted_recommend=scenario, api_version=api_version, request_type=5)
+                              accepted_recommend=scenario, api_version=api_version, request_type=RecommendType.Search)
 
     def update_executing(self, cmd, feedback=True):
         """Update executing command info, and prefetch the recommendation result as if the execution is successful
@@ -316,14 +316,14 @@ def send_feedback(option_idx, latest_commands, processed_exception=None, recomme
 
     # get all recommend sources and types
     has_personalized_rec = False
-    if recommends:
+    if recommends and request_type != RecommendType.Search:
         recommends_list = []
         source_list = set()
         recommend_type_list = set()
         for item in recommends:
-            try:
+            if 'command' in item:
                 recommends_list.append({"command": str(item['command'])})
-            except KeyError:
+            elif 'scenario' in item:
                 recommends_list.append({"scenario": str(item['scenario'])})
             source_list.add(str(item['source']))
             recommend_type_list.add(str(item['type']))
@@ -363,13 +363,12 @@ def send_feedback(option_idx, latest_commands, processed_exception=None, recomme
 
 
 def _show_details_for_e2e_scenario(scenario, file=None):
-    print_styled_text([(Style.PRIMARY, scenario['scenario']),
-                       (Style.ACTION, " contains the following commands:\n")],
-                      file=file)
+    print_styled_text([(Style.PRIMARY, "\n\n" + scenario['scenario']),
+                       (Style.ACTION, " contains the following commands:\n")], file=file)
     nx_cmd_set = scenario["nextCommandSet"]
     exec_idx = scenario.get("executeIndex", [])
     for idx, nx_cmd in enumerate(nx_cmd_set):
-        styled_command = [(Style.ACTION, ' > '), (Style.PRIMARY, "az " + nx_cmd['command'])]
+        styled_command = _get_command_sample(nx_cmd)
         if idx not in exec_idx:
             styled_command.append((Style.WARNING, " (executed)"))
         print_styled_text(styled_command, file=file)
