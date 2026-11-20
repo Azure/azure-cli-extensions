@@ -16,10 +16,10 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a HorizonDB pool firewall rule.
+    """Create or replace a HorizonDB pool firewall rule.
 
     :example: Create or replace a firewall rule on a HorizonDB pool
-        az horizondb cluster pool firewall-rule create --resource-group example-resource-group --cluster-name example-cluster --pool-name example-pool-01 --firewall-rule-name example-firewall-rule-01 --start-ip-address 10.0.0.1 --end-ip-address 10.0.0.254 --description Allow access from the corporate network
+        az horizondb cluster pool firewall-rule create --resource-group example-resource-group --cluster-name example-cluster --pool-name example-pool-01 --firewall-rule-name example-firewall-rule-01 --start-ip-address 10.0.0.1 --end-ip-address 10.0.0.254 --description "Allow access from the corporate network"
     """
 
     _aaz_info = {
@@ -95,6 +95,7 @@ class Create(AAZCommand):
             options=["--end-ip-address"],
             arg_group="Properties",
             help="The end IPv4 address of the firewall rule in dotted-decimal notation. This address must be numerically greater than or equal to startIpAddress.",
+            required=True,
             fmt=AAZStrArgFormat(
                 pattern="^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])[.]){3}(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])$",
             ),
@@ -103,6 +104,7 @@ class Create(AAZCommand):
             options=["--start-ip-address"],
             arg_group="Properties",
             help="The start IPv4 address of the firewall rule in dotted-decimal notation.",
+            required=True,
             fmt=AAZStrArgFormat(
                 pattern="^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])[.]){3}(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])$",
             ),

@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.0.0b10
+++++++++
+* Require both IPv4 bounds on ``cluster pool firewall-rule create``. Reject invalid
+  or reversed ranges on create and update, including single-bound updates.
+* Correct the pool firewall rule create and update help examples.
+
 1.0.0b9
 +++++++
 * Update the management API to ``2026-10-01-preview`` with PostgreSQL 17 and 18 support.
