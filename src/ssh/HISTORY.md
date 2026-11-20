@@ -1,5 +1,9 @@
 Release History
 ===============
+2.0.10
+------
+* [Bug Fix] Resolve the Arc SSH proxy registry hostname from the active cloud endpoint.
+
 2.0.9
 -----
 * Migrate code from Azure SDK to AAZ based commands for compute operations (VM)
