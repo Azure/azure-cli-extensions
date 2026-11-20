@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "monitor data-collection rule create",
 )
 class Create(AAZCommand):
-    """Create a data collection rule.
+    r"""Create a data collection rule.
 
     :example: Create data collection rule
         az monitor data-collection rule create --resource-group "myResourceGroup" --location "eastus" --name "myCollectionRule" --rule-file "C:\samples\dcrEx1.json"
