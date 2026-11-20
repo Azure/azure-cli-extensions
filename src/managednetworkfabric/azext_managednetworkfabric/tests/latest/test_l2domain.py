@@ -12,6 +12,7 @@ L2 Domain tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario(test):
@@ -27,22 +28,97 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_create_scenario1(test, checks=[])
-    step_show(test, checks=[])
-    step_update_scenario1(test, checks=[])
+    step_create_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("networkFabricId", attr(test, "nfId")),
+            test.check("vlanId", int(attr(test, "vlanId"))),
+            test.check("mtu", int(attr(test, "mtu"))),
+            test.check("extendedVlan", attr(test, "extendedVlan")),
+            test.check(
+                "administrativeState", attr(test, "expectedAdministrativeState")
+            ),
+        ],
+    )
+    step_show(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("networkFabricId", attr(test, "nfId")),
+            test.check("vlanId", int(attr(test, "vlanId"))),
+            test.check("mtu", int(attr(test, "mtu"))),
+            test.check("extendedVlan", attr(test, "extendedVlan")),
+            test.check(
+                "administrativeState", attr(test, "expectedAdministrativeState")
+            ),
+        ],
+    )
+    step_update_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("networkFabricId", attr(test, "nfId")),
+            test.check("vlanId", int(attr(test, "vlanId"))),
+            test.check("mtu", int(attr(test, "updatedMtu"))),
+            test.check("extendedVlan", attr(test, "extendedVlan")),
+            test.check(
+                "administrativeState", attr(test, "expectedAdministrativeState")
+            ),
+        ],
+    )
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
-    step_update_admin_state_Enable(test, checks=[])
-    step_update_admin_state_Disable(test, checks=[])
+    step_update_admin_state_Enable(
+        test,
+        checks=[
+            test.check("status", attr(test, "expectedStatus")),
+        ],
+    )
+    step_update_admin_state_Disable(
+        test,
+        checks=[
+            test.check("status", attr(test, "expectedStatus")),
+        ],
+    )
     step_delete(test, checks=[])
     cleanup_scenario(test)
 
 
-def call_scenario1(test):
-    """Testcase: scenario1"""
+def call_scenario2(test):
+    """Testcase: scenario2"""
     setup_scenario(test)
-    step_create_scenario2(test, checks=[])
-    step_update_scenario2(test, checks=[])
+    step_create_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("networkFabricId", attr(test, "nfId")),
+            test.check("vlanId", int(attr(test, "vlanId"))),
+            test.check("mtu", int(attr(test, "mtu"))),
+            test.check("extendedVlan", attr(test, "extendedVlan")),
+            test.check(
+                "administrativeState", attr(test, "expectedAdministrativeState")
+            ),
+        ],
+    )
+    step_update_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("networkFabricId", attr(test, "nfId")),
+            test.check("vlanId", int(attr(test, "vlanId"))),
+            test.check("mtu", int(attr(test, "updatedMtu"))),
+            test.check("extendedVlan", attr(test, "extendedVlan")),
+            test.check(
+                "administrativeState", attr(test, "expectedAdministrativeState")
+            ),
+        ],
+    )
     cleanup_scenario(test)
 
 
@@ -53,7 +129,7 @@ def step_create_scenario1(test, checks=None):
     test.cmd(
         "az networkfabric l2domain create --resource-group {rg} --resource-name {name} --location {location} --network-fabric-id {nfId}"
         " --vlan-id {vlanId} --mtu {mtu} --extended-vlan {extendedVlan} --annotation {annotation} --nni-id {nniId}"
-        " --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity} --extended-vlan {extendedVlan}",
+        " --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity}",
         checks=checks,
     )
 
@@ -75,7 +151,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric l2domain show --resource-name {name} --resource-group {rg}"
+        "az networkfabric l2domain show --resource-name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -120,7 +197,9 @@ def step_update_admin_state_Enable(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric l2domain update-admin-state --resource-group {rg} --resource-name {name} --state {stateEnable} --resource-ids {resourceIds}"
+        "az networkfabric l2domain update-admin-state --resource-group {rg} --resource-name {name} --state "
+        "{stateEnable} --resource-ids {resourceIds} -f {force}",
+        checks=checks,
     )
 
 
@@ -129,7 +208,9 @@ def step_update_admin_state_Disable(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric l2domain update-admin-state --resource-group {rg} --resource-name {name} --state {stateDisable}"
+        "az networkfabric l2domain update-admin-state --resource-group {rg} --resource-name {name} --state "
+        "{stateDisable} --force {force}",
+        checks=checks,
     )
 
 
@@ -162,15 +243,27 @@ class GA_L2DomainScenarioTest1(ScenarioTest):
                 "nniId": CONFIG.get("L2_ISOLATION_DOMAIN", "nni_id"),
                 "extendedVlan": CONFIG.get("L2_ISOLATION_DOMAIN", "extended_vlan"),
                 "resourceIds": CONFIG.get("L2_ISOLATION_DOMAIN", "resource_ids"),
+                "force": CONFIG.get("L2_ISOLATION_DOMAIN", "force_flag"),
                 "userAssignedIdentity": CONFIG.get(
                     "MANAGED_IDENTITY", "user_assigned_identity"
                 ),
                 "systemAssignedIdentity": CONFIG.get(
                     "MANAGED_IDENTITY", "system_assigned_identity"
                 ),
+                "expectedAdministrativeState": CONFIG.get(
+                    "L2_ISOLATION_DOMAIN", "expected_administrative_state"
+                ),
+                "expectedProvisioningState": CONFIG.get(
+                    "L2_ISOLATION_DOMAIN", "expected_provisioning_state"
+                ),
+                "expectedStatus": CONFIG.get("L2_ISOLATION_DOMAIN", "expected_status"),
             }
         )
 
     def test_GA_l2domain_scenario1(self):
         """test scenario for L2 Domain CRUD operations"""
         call_scenario1(self)
+
+    def test_GA_l2domain_scenario2(self):
+        """test scenario for L2 Domain CRUD operations"""
+        call_scenario2(self)

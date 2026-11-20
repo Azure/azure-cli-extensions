@@ -1,0 +1,94 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "properties": {"description": "VLAN test", "managementPolicy": "Observe", "mtu": 1500, "vlanId": 100}, "tags": {"environment": "mock"}}'
+    headers:
+      CommandName:
+      - networkfabric fabric-v2 vlan create
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --fabric-v2-name --resource-name --location --vlan-id --desc --mgt-policy --mtu --tags
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      Content-Length:
+      - '158'
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/vlans/vlan-test?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/vlans/vlan-test","name":"vlan-test","type":"Microsoft.ManagedNetworkFabric/fabrics/vlans","location":"eastus","properties":{"description":"VLAN test","vlanId":100,"provisioningState":"Succeeded","managementPolicy":"Observe","mtu":1500},"tags":{"environment":"mock"}}'
+    headers:
+      content-type:
+      - application/json
+      cache-control:
+      - no-cache
+      date:
+      - Wed, 18 Nov 2026 12:00:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-19ada9477991
+      content-length:
+      - '424'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "Updated VLAN test", "managementPolicy": "Manage", "mtu": 1600}, "tags": {"environment": "updated"}}'
+    headers:
+      CommandName:
+      - networkfabric fabric-v2 vlan update
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --fabric-v2-name --resource-name --desc --mgt-policy --mtu --tags
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      Content-Length:
+      - '131'
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/vlans/vlan-test?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/vlans/vlan-test","name":"vlan-test","type":"Microsoft.ManagedNetworkFabric/fabrics/vlans","location":"eastus","properties":{"description":"Updated VLAN test","vlanId":100,"provisioningState":"Succeeded","managementPolicy":"Manage","mtu":1600},"tags":{"environment":"updated"}}'
+    headers:
+      content-type:
+      - application/json
+      cache-control:
+      - no-cache
+      date:
+      - Wed, 18 Nov 2026 12:00:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-f95df0e1fbef
+      content-length:
+      - '434'
+    status:
+      code: 200
+      message: OK
+version: 1

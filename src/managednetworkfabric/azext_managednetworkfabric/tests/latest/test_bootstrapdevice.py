@@ -14,6 +14,7 @@ Bootstrap Device tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -29,7 +30,21 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario1(test)
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("hostName", attr(test, "expectedHostName")),
+            test.check("networkDeviceSku", attr(test, "expectedNetworkDeviceSku")),
+            test.check("serialNumber", attr(test, "expectedSerialNumber")),
+            test.check("version", attr(test, "expectedVersion")),
+            test.check(
+                "administrativeState", attr(test, "expectedAdministrativeState")
+            ),
+            test.check("configurationState", attr(test, "expectedConfigurationState")),
+        ],
+    )
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
     cleanup_scenario1(test)
@@ -40,7 +55,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric bootstrapdevice show --resource-name {name} --resource-group {rg}"
+        "az networkfabric bootstrapdevice show --resource-name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -67,6 +83,25 @@ class GA_BootstrapDeviceScenarioTest1(ScenarioTest):
             {
                 "name": CONFIG.get("BOOTSTRAP_DEVICE", "name"),
                 "rg": CONFIG.get("BOOTSTRAP_DEVICE", "resource_group"),
+                "expectedAdministrativeState": CONFIG.get(
+                    "BOOTSTRAP_DEVICE", "expected_administrative_state"
+                ),
+                "expectedConfigurationState": CONFIG.get(
+                    "BOOTSTRAP_DEVICE", "expected_configuration_state"
+                ),
+                "expectedHostName": CONFIG.get(
+                    "BOOTSTRAP_DEVICE", "expected_host_name"
+                ),
+                "expectedNetworkDeviceSku": CONFIG.get(
+                    "BOOTSTRAP_DEVICE", "expected_network_device_sku"
+                ),
+                "expectedProvisioningState": CONFIG.get(
+                    "BOOTSTRAP_DEVICE", "expected_provisioning_state"
+                ),
+                "expectedSerialNumber": CONFIG.get(
+                    "BOOTSTRAP_DEVICE", "expected_serial_number"
+                ),
+                "expectedVersion": CONFIG.get("BOOTSTRAP_DEVICE", "expected_version"),
             }
         )
 

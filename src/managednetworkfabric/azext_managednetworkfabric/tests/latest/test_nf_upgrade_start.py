@@ -12,6 +12,7 @@ NF tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -27,7 +28,12 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario1(test)
-    step_upgrade(test)
+    step_upgrade(
+        test,
+        checks=[
+            test.check("status", attr(test, "expectedStatus")),
+        ],
+    )
     cleanup_scenario1(test)
 
 
@@ -36,7 +42,9 @@ def step_upgrade(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric upgrade --resource-name {name} --resource-group {resourceGroup} --action {upgradeActionStart} --version {upgradeVersion}"
+        "az networkfabric fabric upgrade --resource-name {name} --resource-group {resourceGroup} --action "
+        "{upgradeActionStart} --version {upgradeVersion}",
+        checks=checks,
     )
 
 
@@ -53,6 +61,7 @@ class GA_NFUpgradeStartScenarioTest1(ScenarioTest):
                     "NETWORK_FABRIC", "upgrade_action_start"
                 ),
                 "upgradeVersion": CONFIG.get("NETWORK_FABRIC", "upgrade_version"),
+                "expectedStatus": CONFIG.get("NETWORK_FABRIC", "expected_status"),
             }
         )
 

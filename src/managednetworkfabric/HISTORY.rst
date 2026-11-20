@@ -3,6 +3,30 @@
 Release History
 ===============
 
+10.0.0b5
+++++++++
+* New preview CLI version for latest api 2026-07-15-preview wihch includes 'Arc for Fabric' updates.
+* Adds the following new commands for command group `bootstrapdevice`:
+*  - `reboot`
+*  - `refresh-config`
+*  - `resync-password`
+*  - `update-admin-state`
+*  - `run-ro-rommand`
+*  - `run-rw-rommand`
+*  - `upgrade`
+* New `device` commands introduced: `device run-diagnostic` and `device run-validation`.
+* New `fabric` commands introduced: `fabric run-diagnostic` and `fabric run-validation`.
+* Adds the following new command/command groups:
+*  - `fabric-v2` with `create`, `update`, `show`, `list`, and `delete` commands.
+*  - `fabric-v2 vlan` with `create`, `update`, `show`, `list`, and `delete` commands.
+*  - `fabric-v2 vrf` with `create`, `update`, `show`, `list`, and `delete` commands.
+*  - `fabric-v2 vrf network` with `create`, `update`, `show`, `list`, and `delete` commands.
+* The following are scheduled for availability in the next CLI version (2026-11-15-preview API):
+*  - `fabric-v2 delegation` with `create`, `update`, `show`, `list`, and `delete` commands.
+*  - `fabric-v2 vrf delegation` with `create`, `update`, `show`, `list`, and `delete` commands.
+*  - `fabric-v2 vrf peering` with `create`, `update`, `show`, `list`, and `delete` commands.
+*  - `fabric-v2 vrf servicepeer` with `create`, `update`, `show`, `list`, `delete`, `confirm-attachment`, `prepare-attachment`, and `revoke` commands.
+
 10.0.0b4
 ++++++++
 * Adds the following new commands for command group `bootstrapdevice`:

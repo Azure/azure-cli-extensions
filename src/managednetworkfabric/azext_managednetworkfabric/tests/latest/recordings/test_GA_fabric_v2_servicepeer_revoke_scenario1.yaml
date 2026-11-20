@@ -1,0 +1,48 @@
+interactions:
+- request:
+    body: '{"consumerResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.Compute/virtualMachines/service-consumer", "force": "True", "reason": "Scenario test cleanup", "requestGeneration": 2}'
+    headers:
+      CommandName:
+      - networkfabric fabric-v2 vrf servicepeer revoke
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --fabric-v2 --vrf --resource-name --consumer-resource-id --request-generation --force --reason
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      Content-Length:
+      - '249'
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/vrfs/vrf-test/servicePeers/service-peer-test/revoke?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"requestId":"revoke-attachment-request"}'
+    headers:
+      content-type:
+      - application/json
+      cache-control:
+      - no-cache
+      date:
+      - Wed, 18 Nov 2026 12:00:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-9edec4ed9906
+      content-length:
+      - '41'
+    status:
+      code: 200
+      message: OK
+version: 1

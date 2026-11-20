@@ -17,14 +17,17 @@ from azure.cli.core.aaz import *
 class UpdateAdminState(AAZCommand):
     """Update the admin state of the Network Interface.
 
-    :example: Update the admin state of the Bootstrap Interface
-        az networkfabric bootstrapinterface update-admin-state --resource-group "example-rg" --bootstrap-device "example-device" --resource-name "example-interface" --resource-ids "[]" --state "Enable"
+    :example: Updates the Administrative state of the Bootstrap Interface
+        az networkfabric bootstrapinterface update-admin-state --resource-group "example-rg" --bootstrap-device "example-device" --resource-name "example-interface" --state "Enable" --force "True"
+
+    :example: Updates the Administrative state of the Bootstrap Interface with resource ids parameter
+        az networkfabric bootstrapinterface update-admin-state --resource-group "example-rg" --bootstrap-device "example-device" --resource-name "example-interface" --resource-ids "[/Subscriptions/example-subscription-id/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device/networkBootstrapInterfaces/example-interface-1]" --state "Enable"
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkbootstrapdevices/{}/networkbootstrapinterfaces/{}/updateadministrativestate", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkbootstrapdevices/{}/networkbootstrapinterfaces/{}/updateadministrativestate", "2026-07-15-preview"],
         ]
     }
 
@@ -45,8 +48,8 @@ class UpdateAdminState(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.network_bootstrap_device_name = AAZStrArg(
-            options=["--bootstrap-device", "--network-bootstrap-device-name"],
+        _args_schema.bootstrap_device = AAZStrArg(
+            options=["--bootstrap-device"],
             help="Name of the Network Bootstrap Device.",
             required=True,
             id_part="name",
@@ -54,8 +57,8 @@ class UpdateAdminState(AAZCommand):
                 pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
             ),
         )
-        _args_schema.network_bootstrap_interface_name = AAZStrArg(
-            options=["--resource-name", "--network-bootstrap-interface-name"],
+        _args_schema.resource_name = AAZStrArg(
+            options=["--resource-name"],
             help="Name of the Network Bootstrap Interface.",
             required=True,
             id_part="child_name_1",
@@ -70,6 +73,12 @@ class UpdateAdminState(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
+        _args_schema.force = AAZStrArg(
+            options=["-f", "--force"],
+            arg_group="Body",
+            help="Force update of administrative state on the resources. Default value is false.",
+            enum={"False": "False", "True": "True"},
+        )
         _args_schema.resource_ids = AAZListArg(
             options=["--resource-ids"],
             arg_group="Body",
@@ -149,11 +158,11 @@ class UpdateAdminState(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkBootstrapDeviceName", self.ctx.args.network_bootstrap_device_name,
+                    "networkBootstrapDeviceName", self.ctx.args.bootstrap_device,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "networkBootstrapInterfaceName", self.ctx.args.network_bootstrap_interface_name,
+                    "networkBootstrapInterfaceName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -171,7 +180,7 @@ class UpdateAdminState(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }
@@ -196,6 +205,7 @@ class UpdateAdminState(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("force", AAZStrType, ".force")
             _builder.set_prop("resourceIds", AAZListType, ".resource_ids")
             _builder.set_prop("state", AAZStrType, ".state")
 

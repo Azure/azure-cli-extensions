@@ -1,0 +1,58 @@
+interactions:
+- request:
+    body: '{"identity": {"userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1": {}}, "type": "SystemAssigned,UserAssigned"}, "properties": {"annotation": "test-annotation", "hostName": "Fab3-CP1-TOR1", "identitySelector": {"identityType": "UserAssignedIdentity", "userAssignedIdentityResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1"}, "serialNumber": "12345"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric device update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '592'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --resource-name --serial-number --annotation --host-name --identity-selector --user-assigned --system-assigned
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab3-5-1-CompRack1-TOR1?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab3-5-1-CompRack1-TOR1","name":"nffab3-5-1-CompRack1-TOR1","type":"microsoft.managednetworkfabric/networkdevices","location":"eastus2euap","systemData":{"createdBy":"00000000-0000-0000-0000-35edb3c9ef36","createdByType":"Application","createdAt":"2024-02-12T09:32:41.2764291Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-02-12T09:51:31.5850304Z"},"properties":{"networkRackId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkRacks/nffab3-5-1-comprack1","networkDeviceSku":"DefaultSku","networkDeviceRole":"ToR","hostName":"Fab3-CP1-TOR1","serialNumber":"12345","version":"1.0.0","configurationState":"Succeeded","administrativeState":"Enabled","provisioningState":"Succeeded","annotation":"test-annotation","identitySelector":{"identityType":"UserAssignedIdentity","userAssignedIdentityResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1"}},"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1":{}},"type":"SystemAssigned,UserAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1450'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 09:51:33 GMT
+      etag:
+      - '"00000000-0000-0000-0000-b37a2d1278cb"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-d5d9fa49553a
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 5D28D33E823240BA8F723983413D8199 Ref B: MAA201060516047 Ref C: 2024-02-12T09:51:31Z'
+    status:
+      code: 200
+      message: OK
+version: 1
