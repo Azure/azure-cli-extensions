@@ -34,6 +34,7 @@ from azure.cli.core.azclierror import (
     UnknownError,
     ValidationError,
 )
+from azure.cli.core.util import get_safe_executable_path
 from azure.core.exceptions import AzureError
 from knack.log import get_logger
 from knack.prompting import NoTTYException, prompt_y_n
@@ -136,31 +137,20 @@ def reset_agentpool_to_name_and_mode(agentpool, mode):
 
 
 def which(binary):
-    """Resolve an explicit executable path or search absolute directories in PATH."""
+    """Validate an explicit executable path or search trusted directories."""
+    if not os.path.dirname(binary):
+        return get_safe_executable_path(binary)
+
     is_windows = platform.system() == 'Windows'
     binaries = [binary]
     if is_windows and not os.path.splitext(binary)[1]:
         extensions = os.getenv('PATHEXT') or '.COM;.EXE;.BAT;.CMD'
         binaries = [binary + extension for extension in extensions.split(';') if extension]
 
-    explicit_path = bool(os.path.dirname(binary))
-    if explicit_path:
-        parts = ['']
-    else:
-        parts = os.getenv('PATH', '').split(';' if is_windows else ':')
-
-    for part in parts:
-        if is_windows:
-            part = part.strip('"')
-        # Empty, relative and drive-relative entries depend on the working directory.
-        if not explicit_path and (
-            not os.path.isabs(part) or (is_windows and not os.path.splitdrive(part)[0])
-        ):
-            continue
-        for executable in binaries:
-            bin_path = os.path.abspath(os.path.join(part, executable))
-            if os.path.isfile(bin_path) and os.access(bin_path, os.X_OK):
-                return bin_path
+    for executable in binaries:
+        bin_path = os.path.realpath(executable)
+        if os.path.isfile(bin_path) and os.access(bin_path, os.X_OK):
+            return bin_path
 
     return None
 

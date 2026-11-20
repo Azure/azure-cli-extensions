@@ -69,6 +69,35 @@ class TestWhich(unittest.TestCase):
         with patch.dict(os.environ, {"PATH": self.tools}):
             self.assertEqual(which(self.binary), self.installed_binary)
 
+    def test_skips_working_directory_in_absolute_path(self):
+        with patch.dict(os.environ, {"PATH": os.pathsep.join((self.working_directory, self.tools))}):
+            self.assertEqual(which(self.binary), self.installed_binary)
+
+    @unittest.skipIf(os.name == "nt", "Requires directory symlinks")
+    def test_preserves_directory_symlinks_followed_by_parent_components(self):
+        actual = os.path.join(self.directory, "actual")
+        nested = os.path.join(actual, "nested")
+        tools = os.path.join(actual, "installed tools")
+        os.makedirs(nested)
+        os.mkdir(tools)
+        expected = self._make_executable(tools)
+        linked = os.path.join(self.directory, "linked")
+        os.symlink(nested, linked, target_is_directory=True)
+        search_path = os.path.join(linked, "..", "installed tools")
+        with patch.dict(os.environ, {"PATH": search_path}):
+            for executable in (self.binary, os.path.join(search_path, self.binary)):
+                with self.subTest(executable=executable):
+                    resolved = which(executable)
+                    self.assertTrue(os.path.samefile(resolved, expected))
+                    self.assertFalse(os.path.samefile(resolved, self.installed_binary))
+
+    @unittest.skipIf(os.name == "nt", "Requires file symlinks")
+    def test_skips_path_executable_linked_to_working_directory(self):
+        os.remove(self.installed_binary)
+        os.symlink(self.local_binary, self.installed_binary)
+        with patch.dict(os.environ, {"PATH": self.tools}):
+            self.assertIsNone(which(self.binary))
+
     def test_ignores_empty_and_relative_path_entries(self):
         os.mkdir("relative")
         self._make_executable("relative")
@@ -128,16 +157,22 @@ class TestWhich(unittest.TestCase):
         ):
             with self.subTest(binary=binary):
                 mock_os = Mock()
-                mock_os.getenv.side_effect = lambda name, default=None: environment.get(name, default)
+                mock_os.environ = environment
+                mock_os.pathsep = ";"
+                mock_os.getcwd.return_value = r"C:\working"
                 mock_os.path = Mock(wraps=ntpath)
+                mock_os.path.isdir.return_value = True
+                mock_os.path.samefile.return_value = False
+                mock_os.path.realpath.side_effect = lambda path: path
                 mock_os.path.isfile.side_effect = lambda path: path.lower() == expected.lower()
                 mock_os.access.return_value = True
-                with patch("azext_aks_preview._helpers.platform.system", return_value="Windows"), patch(
-                    "azext_aks_preview._helpers.os", mock_os
+                with patch("azure.cli.core.util.sys.platform", "win32"), patch(
+                    "azure.cli.core.util.os", mock_os
                 ):
                     self.assertEqual(which(binary), expected)
                 for call in mock_os.path.isfile.call_args_list:
-                    self.assertTrue(call.args[0].startswith("C:\\Program Files\\Tools\\"))
+                    self.assertTrue(ntpath.isabs(call.args[0]))
+                    self.assertTrue(ntpath.splitdrive(call.args[0])[0])
 
 
 class TestFuzzyMatch(unittest.TestCase):
