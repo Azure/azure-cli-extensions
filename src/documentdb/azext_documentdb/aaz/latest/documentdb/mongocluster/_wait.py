@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster wait",
-    is_preview=True,
 )
 class Wait(AAZWaitCommand):
     """Place the CLI in a waiting state until a condition is met.
@@ -21,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}", "2026-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}", "2026-09-01"],
         ]
     }
 
@@ -122,7 +121,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-15-preview",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }

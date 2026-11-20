@@ -184,7 +184,21 @@ class DocumentdbScenario(ScenarioTest):
             checks=[
                 self.check('tags.env', 'test'),
                 self.check('tags.owner', 'cli'),
+            ],
+        )
+
+        # Tag updates can complete the LRO before the resource returns to Succeeded.
+        self.cmd(
+            'documentdb mongocluster wait -n {cluster} -g {rg} '
+            '--custom "properties.provisioningState==\'Succeeded\'" '
+            '--interval 30 --timeout 1800'
+        )
+        self.cmd(
+            'documentdb mongocluster show -n {cluster} -g {rg}',
+            checks=[
                 self.check('properties.provisioningState', 'Succeeded'),
+                self.check('tags.env', 'test'),
+                self.check('tags.owner', 'cli'),
             ],
         )
 
@@ -590,7 +604,7 @@ class DocumentdbScenario(ScenarioTest):
             })
             self.cmd(
                 'rest --method put --url /subscriptions/{subscription_id}/resourceGroups/{rg}/'
-                'providers/Microsoft.DocumentDB/mongoClusters/{cluster}?api-version=2026-06-15-preview '
+                'providers/Microsoft.DocumentDB/mongoClusters/{cluster}?api-version=2026-09-01 '
                 "--body '{source_body}'"
             )
             self.cmd(

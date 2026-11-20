@@ -17,12 +17,12 @@ interactions:
       ParameterSetName:
       - -g -n -l
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/climcmi000003?api-version=2025-05-31-preview
   response:
     body:
-      string: '{"location":"eastus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_documentdb_cmk000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/climcmi000003","name":"climcmi000003","type":"Microsoft.ManagedIdentity/userAssignedIdentities","properties":{"isolationScope":"None","assignmentRestrictions":{"providers":[]},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","principalId":"371571f0-e421-41a2-83f4-001428588e5a","clientId":"80e7b9e2-c168-4f1c-95e2-9a800a0a78ee"}}'
+      string: '{"location":"eastus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_documentdb_cmk000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/climcmi000003","name":"climcmi000003","type":"Microsoft.ManagedIdentity/userAssignedIdentities","properties":{"isolationScope":"None","assignmentRestrictions":{"providers":[]},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","principalId":"3f587ef3-0423-4586-b686-5b989f2a4197","clientId":"71b82240-e9cb-441f-a5bf-b83115539817"}}'
     headers:
       cache-control:
       - no-cache
@@ -31,7 +31,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:41:10 GMT
+      - Thu, 19 Nov 2026 21:31:37 GMT
       expires:
       - '-1'
       location:
@@ -45,13 +45,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/055d9bce-284b-400b-a22a-4b5a381f6b89
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/5ca6174d-2706-4ec6-8a0f-cecc47abf61d
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: D1403B2BC5764D0B81997647EB5EABB3 Ref B: IAD011092219062 Ref C: 2026-11-10T05:41:10Z'
+      - 'Ref A: 2B6840688201435D980A8D96B8435F5A Ref B: BL2AA2030101005 Ref C: 2026-11-19T21:31:36Z'
     status:
       code: 201
       message: Created
@@ -69,7 +69,7 @@ interactions:
       ParameterSetName:
       - -g -n -l --enable-purge-protection --enable-rbac-authorization
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.KeyVault/vaults/climckv000004?api-version=2026-05-15
   response:
@@ -85,7 +85,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:41:11 GMT
+      - Thu, 19 Nov 2026 21:31:39 GMT
       expires:
       - '-1'
       pragma:
@@ -99,7 +99,7 @@ interactions:
       x-ms-failure-cause:
       - gateway
       x-msedge-ref:
-      - 'Ref A: FAC53CF5B800458EBF42650AB6FB7144 Ref B: IAD011092216052 Ref C: 2026-11-10T05:41:12Z'
+      - 'Ref A: 64344F3641CF4BE5BC53AD9CF2D80FC9 Ref B: IAD011092218036 Ref C: 2026-11-19T21:31:39Z'
     status:
       code: 404
       message: Not Found
@@ -117,7 +117,7 @@ interactions:
       ParameterSetName:
       - -g -n -l --enable-purge-protection --enable-rbac-authorization
       User-Agent:
-      - python/3.14.9 (Windows-11-10.0.26300-SP0) AZURECLI/2.92.0
+      - python/3.14.10 (Windows-11-10.0.26300-SP0) AZURECLI/2.92.0
     method: GET
     uri: https://graph.microsoft.com/v1.0/me
   response:
@@ -138,11 +138,11 @@ interactions:
       - application/json; odata.metadata=minimal; odata.streaming=true; IEEE754Compatible=false;
         charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:41:13 GMT
+      - Thu, 19 Nov 2026 21:31:39 GMT
       odata-version:
       - '4.0'
       request-id:
-      - 0ccb15e6-0837-4462-be14-3865a3980226
+      - 4acb20bb-1bf0-4ec2-b7d3-d1a5f91e989a
       strict-transport-security:
       - max-age=31536000
       transfer-encoding:
@@ -152,7 +152,7 @@ interactions:
       x-cache:
       - CONFIG_NOCACHE
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"East US 2","Slice":"E","Ring":"5","ScaleUnit":"005","RoleInstance":"BN2PEPF000090AC"}}'
+      - '{"ServerInfo":{"DataCenter":"East US 2","Slice":"E","Ring":"5","ScaleUnit":"005","RoleInstance":"BN2PEPF000086D6"}}'
       x-ms-gateway-esc:
       - '200'
       x-ms-resource-unit:
@@ -184,12 +184,12 @@ interactions:
       ParameterSetName:
       - -g -n -l --enable-purge-protection --enable-rbac-authorization
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.KeyVault/vaults/climckv000004?api-version=2026-05-15
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.KeyVault/vaults/climckv000004","name":"climckv000004","type":"Microsoft.KeyVault/vaults","location":"eastus2","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-10T05:41:14.195Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-10T05:41:14.195Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"71581c6f-df31-4790-bc49-26c6b38df8bd","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enabledForDiskEncryption":false,"enabledForTemplateDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"enableRbacAuthorization":false,"enablePurgeProtection":true,"vaultUri":"https://climckv000004.vault.azure.net","provisioningState":"RegisteringDns","publicNetworkAccess":"Enabled"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.KeyVault/vaults/climckv000004","name":"climckv000004","type":"Microsoft.KeyVault/vaults","location":"eastus2","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-19T21:31:40.113Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-19T21:31:40.113Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"71581c6f-df31-4790-bc49-26c6b38df8bd","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enabledForDiskEncryption":false,"enabledForTemplateDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"enableRbacAuthorization":false,"enablePurgeProtection":true,"vaultUri":"https://climckv000004.vault.azure.net","provisioningState":"RegisteringDns","publicNetworkAccess":"Enabled"}}'
     headers:
       cache-control:
       - no-cache
@@ -198,7 +198,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:41:15 GMT
+      - Thu, 19 Nov 2026 21:31:46 GMT
       expires:
       - '-1'
       pragma:
@@ -212,15 +212,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-keyvault-service-version:
-      - 2.2.1271.0
+      - 2.2.1342.0
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/d9eb8fc3-c05a-437f-8f4c-65d6a1537f9b
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/e6728908-3e44-4ec3-b90a-1db8465873d0
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: B466C0D4997B4106B13A9251D683314D Ref B: IAD011092216052 Ref C: 2026-11-10T05:41:14Z'
+      - 'Ref A: 6635412520A546C1B9DDB416C47CDDAE Ref B: IAD011092218036 Ref C: 2026-11-19T21:31:39Z'
     status:
       code: 200
       message: OK
@@ -238,12 +238,12 @@ interactions:
       ParameterSetName:
       - -g -n -l --enable-purge-protection --enable-rbac-authorization
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.KeyVault/vaults/climckv000004?api-version=2026-05-15
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.KeyVault/vaults/climckv000004","name":"climckv000004","type":"Microsoft.KeyVault/vaults","location":"eastus2","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-10T05:41:14.195Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-10T05:41:14.195Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"71581c6f-df31-4790-bc49-26c6b38df8bd","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enabledForDiskEncryption":false,"enabledForTemplateDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"enableRbacAuthorization":false,"enablePurgeProtection":true,"vaultUri":"https://climckv000004.vault.azure.net/","provisioningState":"RegisteringDns","publicNetworkAccess":"Enabled"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.KeyVault/vaults/climckv000004","name":"climckv000004","type":"Microsoft.KeyVault/vaults","location":"eastus2","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-19T21:31:40.113Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-19T21:31:40.113Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"71581c6f-df31-4790-bc49-26c6b38df8bd","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enabledForDiskEncryption":false,"enabledForTemplateDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"enableRbacAuthorization":false,"enablePurgeProtection":true,"vaultUri":"https://climckv000004.vault.azure.net/","provisioningState":"RegisteringDns","publicNetworkAccess":"Enabled"}}'
     headers:
       cache-control:
       - no-cache
@@ -252,7 +252,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:41:15 GMT
+      - Thu, 19 Nov 2026 21:31:46 GMT
       expires:
       - '-1'
       pragma:
@@ -266,11 +266,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-keyvault-service-version:
-      - 2.2.1271.0
+      - 2.2.1342.0
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: A7CF4CE618BD4EC0A29D9CA1D3D883BA Ref B: IAD011092216052 Ref C: 2026-11-10T05:41:16Z'
+      - 'Ref A: 68D019525D7548CB86F7B8403B7BECF0 Ref B: IAD011092218036 Ref C: 2026-11-19T21:31:46Z'
     status:
       code: 200
       message: OK
@@ -288,12 +288,12 @@ interactions:
       ParameterSetName:
       - -g -n -l --enable-purge-protection --enable-rbac-authorization
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.KeyVault/vaults/climckv000004?api-version=2026-05-15
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.KeyVault/vaults/climckv000004","name":"climckv000004","type":"Microsoft.KeyVault/vaults","location":"eastus2","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-10T05:41:14.195Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-10T05:41:14.195Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"71581c6f-df31-4790-bc49-26c6b38df8bd","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enabledForDiskEncryption":false,"enabledForTemplateDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"enableRbacAuthorization":false,"enablePurgeProtection":true,"vaultUri":"https://climckv000004.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.KeyVault/vaults/climckv000004","name":"climckv000004","type":"Microsoft.KeyVault/vaults","location":"eastus2","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-19T21:31:40.113Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-19T21:31:40.113Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"71581c6f-df31-4790-bc49-26c6b38df8bd","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enabledForDiskEncryption":false,"enabledForTemplateDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"enableRbacAuthorization":false,"enablePurgeProtection":true,"vaultUri":"https://climckv000004.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
     headers:
       cache-control:
       - no-cache
@@ -302,7 +302,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:41:45 GMT
+      - Thu, 19 Nov 2026 21:32:16 GMT
       expires:
       - '-1'
       pragma:
@@ -316,11 +316,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-keyvault-service-version:
-      - 2.2.1271.0
+      - 2.2.1342.0
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: A9CB5FC23287447084EC1D8EF45B26E4 Ref B: IAD011092216052 Ref C: 2026-11-10T05:41:46Z'
+      - 'Ref A: 63EADD907B704990971C3BF083310E1C Ref B: IAD011092218036 Ref C: 2026-11-19T21:32:16Z'
     status:
       code: 200
       message: OK
@@ -338,12 +338,12 @@ interactions:
       ParameterSetName:
       - -g -n --object-id --key-permissions
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.KeyVault/vaults/climckv000004?api-version=2026-05-15
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.KeyVault/vaults/climckv000004","name":"climckv000004","type":"Microsoft.KeyVault/vaults","location":"eastus2","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-10T05:41:14.195Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-10T05:41:14.195Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"71581c6f-df31-4790-bc49-26c6b38df8bd","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enabledForDiskEncryption":false,"enabledForTemplateDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"enableRbacAuthorization":false,"enablePurgeProtection":true,"vaultUri":"https://climckv000004.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.KeyVault/vaults/climckv000004","name":"climckv000004","type":"Microsoft.KeyVault/vaults","location":"eastus2","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-19T21:31:40.113Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-19T21:31:40.113Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"71581c6f-df31-4790-bc49-26c6b38df8bd","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enabledForDiskEncryption":false,"enabledForTemplateDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"enableRbacAuthorization":false,"enablePurgeProtection":true,"vaultUri":"https://climckv000004.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
     headers:
       cache-control:
       - no-cache
@@ -352,7 +352,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:41:47 GMT
+      - Thu, 19 Nov 2026 21:32:17 GMT
       expires:
       - '-1'
       pragma:
@@ -366,11 +366,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-keyvault-service-version:
-      - 2.2.1271.0
+      - 2.2.1342.0
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: A0F3B6E7C7104EBD8C824ACCFF04E594 Ref B: IAD011092217029 Ref C: 2026-11-10T05:41:47Z'
+      - 'Ref A: 294B5A7C3ACF41249A906688DD22A790 Ref B: IAD011092218052 Ref C: 2026-11-19T21:32:17Z'
     status:
       code: 200
       message: OK
@@ -380,8 +380,8 @@ interactions:
       [{"tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "objectId": "71581c6f-df31-4790-bc49-26c6b38df8bd",
       "permissions": {"keys": ["all"], "secrets": ["all"], "certificates": ["all"],
       "storage": ["all"]}}, {"tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "objectId":
-      "371571f0-e421-41a2-83f4-001428588e5a", "permissions": {"keys": ["unwrapKey",
-      "get", "wrapKey", "list"]}}], "enabledForDeployment": false, "enabledForDiskEncryption":
+      "3f587ef3-0423-4586-b686-5b989f2a4197", "permissions": {"keys": ["list", "wrapKey",
+      "unwrapKey", "get"]}}], "enabledForDeployment": false, "enabledForDiskEncryption":
       false, "enabledForTemplateDeployment": false, "enableSoftDelete": true, "softDeleteRetentionInDays":
       90, "enableRbacAuthorization": false, "enablePurgeProtection": true, "vaultUri":
       "https://climckv000004.vault.azure.net/", "provisioningState": "Succeeded",
@@ -402,21 +402,21 @@ interactions:
       ParameterSetName:
       - -g -n --object-id --key-permissions
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.KeyVault/vaults/climckv000004?api-version=2026-05-15
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.KeyVault/vaults/climckv000004","name":"climckv000004","type":"Microsoft.KeyVault/vaults","location":"eastus2","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-10T05:41:14.195Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-10T05:41:48.44Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"71581c6f-df31-4790-bc49-26c6b38df8bd","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}},{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"371571f0-e421-41a2-83f4-001428588e5a","permissions":{"keys":["unwrapKey","get","wrapKey","list"]}}],"enabledForDeployment":false,"enabledForDiskEncryption":false,"enabledForTemplateDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"enableRbacAuthorization":false,"enablePurgeProtection":true,"vaultUri":"https://climckv000004.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.KeyVault/vaults/climckv000004","name":"climckv000004","type":"Microsoft.KeyVault/vaults","location":"eastus2","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-19T21:31:40.113Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-19T21:32:17.733Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"71581c6f-df31-4790-bc49-26c6b38df8bd","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}},{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"3f587ef3-0423-4586-b686-5b989f2a4197","permissions":{"keys":["list","wrapKey","unwrapKey","get"]}}],"enabledForDeployment":false,"enabledForDiskEncryption":false,"enabledForTemplateDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"enableRbacAuthorization":false,"enablePurgeProtection":true,"vaultUri":"https://climckv000004.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1267'
+      - '1268'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:41:47 GMT
+      - Thu, 19 Nov 2026 21:32:17 GMT
       expires:
       - '-1'
       pragma:
@@ -430,15 +430,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-keyvault-service-version:
-      - 2.2.1271.0
+      - 2.2.1342.0
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/065f3dd0-d31b-436e-830d-d07a16927d6f
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/2aa3d0e2-a509-44c3-96ab-f02a140cd5d8
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 7282786A93754C79B54EFC681088D5F5 Ref B: IAD011092217029 Ref C: 2026-11-10T05:41:48Z'
+      - 'Ref A: 0D1DF1842455484EA51699A1485365C7 Ref B: IAD011092218052 Ref C: 2026-11-19T21:32:17Z'
     status:
       code: 200
       message: OK
@@ -460,7 +460,7 @@ interactions:
       ParameterSetName:
       - --vault-name -n --kty
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: POST
     uri: https://climckv000004.vault.azure.net/keys/cli-mc-cmk-key/create?api-version=7.6-preview.2
   response:
@@ -475,7 +475,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:41:48 GMT
+      - Thu, 19 Nov 2026 21:32:17 GMT
       expires:
       - '-1'
       pragma:
@@ -488,11 +488,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-keyvault-network-info:
-      - conn_type=Ipv4;addr=40.117.66.44;act_addr_fam=InterNetwork;
+      - conn_type=Ipv4;addr=40.117.66.43;act_addr_fam=InterNetwork;
       x-ms-keyvault-region:
       - eastus2
       x-ms-keyvault-service-version:
-      - 1.9.3939.1
+      - 1.9.4024.1
     status:
       code: 401
       message: Unauthorized
@@ -514,12 +514,12 @@ interactions:
       ParameterSetName:
       - --vault-name -n --kty
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: POST
     uri: https://climckv000004.vault.azure.net/keys/cli-mc-cmk-key/create?api-version=7.6-preview.2
   response:
     body:
-      string: '{"key":{"kid":"https://climckv000004.vault.azure.net/keys/cli-mc-cmk-key/f9866d215af04d8f90354fb515d6c553","kty":"RSA","key_ops":["encrypt","decrypt","sign","verify","wrapKey","unwrapKey"],"n":"vkK9NCjnXhhxCfbgGKBf83uzVe5oBbqbsG1UlmVPIU7bXPpNhGg2TzUm3m6xfqo9409BcHTEtSZymYXSX56WSReygITPZzrubKmNNrhgmRAmU6dFqaVX_o7XSon08jMacAs6A4L5zHIbbRixqozAPL9drvFL7nHVkkAgANXrR340eoXBqAtJ10dYrtQD0rfck7-EPioZEjq10pTDzaKgR50xotA1HDmSXXVO_y78C5yEeaEpFGr45WkzoD7tnt9JhnQCqOopf9Ar6TI6r74zXXGYMJCZGYW7S8u-9vM0wTUFXwH5Mx9t_S1Kwa4RppIjeruOI4KseLHDvRLLuW4qRQ","e":"AQAB"},"attributes":{"enabled":true,"key_size":2048,"created":1794289310,"updated":1794289310,"recoveryLevel":"Recoverable","recoverableDays":90,"exportable":false,"hsmPlatform":"0"}}'
+      string: '{"key":{"kid":"https://climckv000004.vault.azure.net/keys/cli-mc-cmk-key/ed8a868dd45b45818c235b94d1b695e9","kty":"RSA","key_ops":["encrypt","decrypt","sign","verify","wrapKey","unwrapKey"],"n":"pdRLeyVSjYh-KrubOLtBEzAbObCRO_idXwoLdafuhA23J7zgTKFyI9DVvRk2zSjvhdxUVztFXJwkUoQOQR3pnnF5TPQwBkH-35P-oaGM4mmxMoTWFO4in-CMlEn7_9TD20mJvkYCTK6bEZgWXm-oewdcjjAg-PerJKen-twKzEkQiovxLr63pCKMzyJUSvfPYZTbXXCzksCGjiM0cnLLI9dOBOi1Fy-C5emMPEAxR1m-j7Ywj6vt50IdrmunlmAW4F9uwjKPnjVHIKJ0TH28kFn2zzCeGM2zXUg_-o70uz97ZtE2TjAFEFef_iRoorkySQJ786FV73edHcMpno69kQ","e":"AQAB"},"attributes":{"enabled":true,"key_size":2048,"created":1795123938,"updated":1795123938,"recoveryLevel":"Recoverable","recoverableDays":90,"exportable":false,"hsmPlatform":"0"}}'
     headers:
       cache-control:
       - no-cache
@@ -528,7 +528,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:41:50 GMT
+      - Thu, 19 Nov 2026 21:32:18 GMT
       expires:
       - '-1'
       pragma:
@@ -538,11 +538,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-keyvault-network-info:
-      - conn_type=Ipv4;addr=40.117.66.44;act_addr_fam=InterNetwork;
+      - conn_type=Ipv4;addr=40.117.66.43;act_addr_fam=InterNetwork;
       x-ms-keyvault-region:
       - eastus2
       x-ms-keyvault-service-version:
-      - 1.9.3939.1
+      - 1.9.4024.1
     status:
       code: 200
       message: OK
@@ -572,17 +572,17 @@ interactions:
       - -n -g --location --admin-user --password --tier --storage-size --storage-type
         --shard-count --high-availability --user-assigned --encryption
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.DocumentDB/mongoClusters/cli-mc000002?api-version=2026-06-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.DocumentDB/mongoClusters/cli-mc000002?api-version=2026-09-01
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.DocumentDB/mongoClusters/cli-mc000002\"\
         ,\n  \"name\": \"cli-mc000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\"\
         ,\n  \"tags\": {},\n  \"location\": \"eastus2\",\n  \"systemData\": {\n  \
-        \  \"createdAt\": \"2026-11-10T05:41:51.9020367Z\",\n    \"createdBy\": \"\
+        \  \"createdAt\": \"2026-11-19T21:32:20.8151017Z\",\n    \"createdBy\": \"\
         test@example.com\",\n    \"createdByType\": \"User\",\n    \"lastModifiedAt\"\
-        : \"2026-11-10T05:41:51.9020367Z\",\n    \"lastModifiedBy\": \"test@example.com\"\
+        : \"2026-11-19T21:32:20.8151017Z\",\n    \"lastModifiedBy\": \"test@example.com\"\
         ,\n    \"lastModifiedByType\": \"User\"\n  },\n  \"properties\": {\n    \"\
         provisioningState\": \"InProgress\",\n    \"clusterStatus\": \"Provisioning\"\
         ,\n    \"administrator\": {\n      \"userName\": \"testadmin\"\n    },\n \
@@ -605,7 +605,7 @@ interactions:
         : {}\n    }\n  }\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -619,17 +619,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:41:52 GMT
+      - Thu, 19 Nov 2026 21:32:22 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - 5e7a2af1-0795-4f7e-9834-55d68842b310
+      - f08460cb-f7bd-4000-9da4-612896d18818
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -643,13 +643,13 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/9ccce03c-16a7-4b42-ac86-db037b25885e
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/b83545ba-3ab4-49c9-8566-41dd6b38816c
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: EEA5480A8E544CCA8F69C58CAA6C411D Ref B: IAD011092218054 Ref C: 2026-11-10T05:41:51Z'
+      - 'Ref A: 24AEB64B2DD440B6B45C9ABAE6FA73AC Ref B: IAD011092216040 Ref C: 2026-11-19T21:32:20Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -672,17 +672,17 @@ interactions:
       - -n -g --location --admin-user --password --tier --storage-size --storage-type
         --shard-count --high-availability --user-assigned --encryption
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8\"\
-        ,\n  \"name\": \"289f2e48-7341-4e92-baca-837a9cb413a8\",\n  \"status\": \"\
-        InProgress\",\n  \"startTime\": \"2026-11-10 05:41:52 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3\"\
+        ,\n  \"name\": \"404e3502-00a5-43da-81e4-ee963558b6d3\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:32:21 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -696,17 +696,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:41:53 GMT
+      - Thu, 19 Nov 2026 21:32:22 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - be846506-1f0f-4370-9025-5f9c52a12491
+      - f9994041-68f6-4b7c-a171-f11efe494823
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -720,11 +720,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/7f3743b3-ee21-4054-993e-88cf224e5cb5
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/6c896aaf-f832-47e5-8848-20b9d9570388
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 1085307D23BC47A58C44E6B62FEBE49B Ref B: IAD011092218054 Ref C: 2026-11-10T05:41:53Z'
+      - 'Ref A: 9D98C517399C46FE8B4CD63494B7E25F Ref B: IAD011092216040 Ref C: 2026-11-19T21:32:22Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -747,17 +747,17 @@ interactions:
       - -n -g --location --admin-user --password --tier --storage-size --storage-type
         --shard-count --high-availability --user-assigned --encryption
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8\"\
-        ,\n  \"name\": \"289f2e48-7341-4e92-baca-837a9cb413a8\",\n  \"status\": \"\
-        InProgress\",\n  \"startTime\": \"2026-11-10 05:41:52 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3\"\
+        ,\n  \"name\": \"404e3502-00a5-43da-81e4-ee963558b6d3\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:32:21 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -771,17 +771,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:42:23 GMT
+      - Thu, 19 Nov 2026 21:32:53 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - 1af0af9f-2994-409b-9f45-c960a41ff9e9
+      - 16054ee0-e5c3-44f7-8ebe-a645e87d9888
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -795,11 +795,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/bf9289a4-9e24-4836-9ac7-30ebf5763330
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/6d7d8b52-0da8-43fb-b9de-fada8c943499
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: D5D41B4502A74B2DABF12C85A8F84174 Ref B: IAD011092218054 Ref C: 2026-11-10T05:42:24Z'
+      - 'Ref A: 8D104D31B7484A879087FD86464151A4 Ref B: IAD011092216040 Ref C: 2026-11-19T21:32:53Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -822,17 +822,17 @@ interactions:
       - -n -g --location --admin-user --password --tier --storage-size --storage-type
         --shard-count --high-availability --user-assigned --encryption
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8\"\
-        ,\n  \"name\": \"289f2e48-7341-4e92-baca-837a9cb413a8\",\n  \"status\": \"\
-        InProgress\",\n  \"startTime\": \"2026-11-10 05:41:52 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3\"\
+        ,\n  \"name\": \"404e3502-00a5-43da-81e4-ee963558b6d3\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:32:21 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -846,17 +846,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:42:53 GMT
+      - Thu, 19 Nov 2026 21:33:23 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - 1ac92627-3470-40e4-ad84-c8632c8010e4
+      - a5841f55-2f11-4dbe-b0c4-8c286524266e
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -870,11 +870,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/372bf8f9-a6ee-47df-9229-87e15770ae7b
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/d44fc094-08f4-4cc2-916f-a55a148d885e
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 328E049D050149D7852EB93965BEEE97 Ref B: IAD011092218054 Ref C: 2026-11-10T05:42:54Z'
+      - 'Ref A: 92F05D91DF0C412299F4F1D94905790F Ref B: IAD011092216040 Ref C: 2026-11-19T21:33:23Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -897,17 +897,17 @@ interactions:
       - -n -g --location --admin-user --password --tier --storage-size --storage-type
         --shard-count --high-availability --user-assigned --encryption
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8\"\
-        ,\n  \"name\": \"289f2e48-7341-4e92-baca-837a9cb413a8\",\n  \"status\": \"\
-        InProgress\",\n  \"startTime\": \"2026-11-10 05:41:52 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3\"\
+        ,\n  \"name\": \"404e3502-00a5-43da-81e4-ee963558b6d3\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:32:21 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -921,17 +921,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:43:24 GMT
+      - Thu, 19 Nov 2026 21:33:54 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - 3aedcdf7-40a8-4b09-b207-d64f2d5a8bfe
+      - a90d8439-aed9-4427-92e6-f3954e986465
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -945,11 +945,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/8b923771-6d00-4014-ad2f-5a43e847ee9a
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/e65f2537-4f74-4398-875d-23ec4f3ba71b
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 75F8CA621AB44DCD93FD6198F2A210C4 Ref B: IAD011092218054 Ref C: 2026-11-10T05:43:24Z'
+      - 'Ref A: 66BD52F0780941B2B75C3798191EA1B1 Ref B: IAD011092216040 Ref C: 2026-11-19T21:33:54Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -972,17 +972,17 @@ interactions:
       - -n -g --location --admin-user --password --tier --storage-size --storage-type
         --shard-count --high-availability --user-assigned --encryption
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8\"\
-        ,\n  \"name\": \"289f2e48-7341-4e92-baca-837a9cb413a8\",\n  \"status\": \"\
-        InProgress\",\n  \"startTime\": \"2026-11-10 05:41:52 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3\"\
+        ,\n  \"name\": \"404e3502-00a5-43da-81e4-ee963558b6d3\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:32:21 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -996,17 +996,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:43:54 GMT
+      - Thu, 19 Nov 2026 21:34:24 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - 4a1a5218-0b8b-45fd-9962-35f51111e616
+      - 9b12346c-2345-4325-a6ad-72c1233402af
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -1020,11 +1020,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/e6d41bbd-b1b8-480b-8c32-841c4ca2f2fd
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/1f039cb7-29d7-4a42-ac36-5524c078955f
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 5D49BD723A0F4535AA50E0077CB98877 Ref B: IAD011092218054 Ref C: 2026-11-10T05:43:55Z'
+      - 'Ref A: C4BC9F082E3941BD8DBCACD5CEFB51BF Ref B: IAD011092216040 Ref C: 2026-11-19T21:34:24Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -1047,17 +1047,17 @@ interactions:
       - -n -g --location --admin-user --password --tier --storage-size --storage-type
         --shard-count --high-availability --user-assigned --encryption
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8\"\
-        ,\n  \"name\": \"289f2e48-7341-4e92-baca-837a9cb413a8\",\n  \"status\": \"\
-        InProgress\",\n  \"startTime\": \"2026-11-10 05:41:52 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3\"\
+        ,\n  \"name\": \"404e3502-00a5-43da-81e4-ee963558b6d3\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:32:21 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -1071,17 +1071,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:44:24 GMT
+      - Thu, 19 Nov 2026 21:34:54 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - b83b0421-3057-47e3-9587-14756d82158c
+      - d1ad10ff-5679-4ee8-93b1-e9a72a1c0435
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -1095,11 +1095,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/382a67f0-b3e2-4677-ad55-182e0e12858d
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/87bfcef4-ac1d-40c9-8e24-f5f6f8a9fdb6
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: C8CAAF49BDC04D5B9549E02E8E3CA08B Ref B: IAD011092218054 Ref C: 2026-11-10T05:44:25Z'
+      - 'Ref A: AF0483B32E6D4173BF54585A6E758A4B Ref B: IAD011092216040 Ref C: 2026-11-19T21:34:54Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -1122,17 +1122,17 @@ interactions:
       - -n -g --location --admin-user --password --tier --storage-size --storage-type
         --shard-count --high-availability --user-assigned --encryption
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8\"\
-        ,\n  \"name\": \"289f2e48-7341-4e92-baca-837a9cb413a8\",\n  \"status\": \"\
-        InProgress\",\n  \"startTime\": \"2026-11-10 05:41:52 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3\"\
+        ,\n  \"name\": \"404e3502-00a5-43da-81e4-ee963558b6d3\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:32:21 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -1146,17 +1146,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:44:55 GMT
+      - Thu, 19 Nov 2026 21:35:25 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - 26709e23-7c89-4f02-99b4-5fbc02e05464
+      - 49e49140-ddf4-4240-9a51-2e8cbe468811
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -1170,11 +1170,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/c081dc84-85c7-4832-907e-4c7a4b0e328b
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/83e5c516-890f-474b-ae0e-c13ce8e793f9
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 59B090A0130E4011A8E2A888B4B900E4 Ref B: IAD011092218054 Ref C: 2026-11-10T05:44:55Z'
+      - 'Ref A: 9A61CE6A82A14ED9A0C524A86D9DB219 Ref B: IAD011092216040 Ref C: 2026-11-19T21:35:25Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -1197,17 +1197,17 @@ interactions:
       - -n -g --location --admin-user --password --tier --storage-size --storage-type
         --shard-count --high-availability --user-assigned --encryption
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8\"\
-        ,\n  \"name\": \"289f2e48-7341-4e92-baca-837a9cb413a8\",\n  \"status\": \"\
-        InProgress\",\n  \"startTime\": \"2026-11-10 05:41:52 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3\"\
+        ,\n  \"name\": \"404e3502-00a5-43da-81e4-ee963558b6d3\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:32:21 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -1221,17 +1221,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:45:25 GMT
+      - Thu, 19 Nov 2026 21:35:55 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - a55cd5a3-5e31-4b1e-ad0f-2a46b300a978
+      - 233a1549-eee1-4806-b7bf-40192fa4642f
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -1245,11 +1245,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/58cd8fb6-6e6f-46d7-aa86-f1de60288196
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/cea95488-717b-456d-aefe-e678e3a8eb53
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: AA1430A99E874FD2B193C27BD056AE82 Ref B: IAD011092218054 Ref C: 2026-11-10T05:45:26Z'
+      - 'Ref A: CB934E9781E648D7921F52EC19F507F7 Ref B: IAD011092216040 Ref C: 2026-11-19T21:35:55Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -1272,17 +1272,17 @@ interactions:
       - -n -g --location --admin-user --password --tier --storage-size --storage-type
         --shard-count --high-availability --user-assigned --encryption
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8\"\
-        ,\n  \"name\": \"289f2e48-7341-4e92-baca-837a9cb413a8\",\n  \"status\": \"\
-        InProgress\",\n  \"startTime\": \"2026-11-10 05:41:52 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3\"\
+        ,\n  \"name\": \"404e3502-00a5-43da-81e4-ee963558b6d3\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:32:21 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -1296,17 +1296,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:45:55 GMT
+      - Thu, 19 Nov 2026 21:36:25 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - 0e67f08b-2f95-4f9a-8b53-780a97a7cd13
+      - 2e1b4d79-4e11-484e-bb1a-3cf123b3c2d3
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -1320,11 +1320,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/a3cb08c8-6a49-4db6-a9da-68146b24a4fa
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/388c4909-b787-449d-b0f1-fcb5ba43290b
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: D8B5A8867F9B4182AEA7B2A640B41C9F Ref B: IAD011092218054 Ref C: 2026-11-10T05:45:56Z'
+      - 'Ref A: 1AD1EE9D3DB6492EAF3CB9FF5CAF8C1D Ref B: IAD011092216040 Ref C: 2026-11-19T21:36:25Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -1347,17 +1347,17 @@ interactions:
       - -n -g --location --admin-user --password --tier --storage-size --storage-type
         --shard-count --high-availability --user-assigned --encryption
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8\"\
-        ,\n  \"name\": \"289f2e48-7341-4e92-baca-837a9cb413a8\",\n  \"status\": \"\
-        InProgress\",\n  \"startTime\": \"2026-11-10 05:41:52 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3\"\
+        ,\n  \"name\": \"404e3502-00a5-43da-81e4-ee963558b6d3\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:32:21 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -1371,17 +1371,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:46:26 GMT
+      - Thu, 19 Nov 2026 21:36:56 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - 07384df8-cc6f-464d-98a1-68f9019ef02a
+      - 897542d7-7db4-4e7c-ba25-b7dec9d95036
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -1395,11 +1395,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/f0456d9a-8599-4dae-bf09-017a18951750
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/b3660b91-ef5e-4f14-b779-f901018fd6f0
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 3B460DA4CDE645EBA2645433E97BC2B2 Ref B: IAD011092218054 Ref C: 2026-11-10T05:46:26Z'
+      - 'Ref A: 97154C85E0664566895CD9ACA505CC78 Ref B: IAD011092216040 Ref C: 2026-11-19T21:36:56Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -1422,17 +1422,17 @@ interactions:
       - -n -g --location --admin-user --password --tier --storage-size --storage-type
         --shard-count --high-availability --user-assigned --encryption
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8\"\
-        ,\n  \"name\": \"289f2e48-7341-4e92-baca-837a9cb413a8\",\n  \"status\": \"\
-        InProgress\",\n  \"startTime\": \"2026-11-10 05:41:52 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3\"\
+        ,\n  \"name\": \"404e3502-00a5-43da-81e4-ee963558b6d3\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:32:21 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -1446,17 +1446,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:46:56 GMT
+      - Thu, 19 Nov 2026 21:37:26 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - 0de57cd3-3cf3-4d8c-b9d6-fecda0e8a42e
+      - f326dab8-5585-411f-ac51-d228fde00aa0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -1470,11 +1470,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/1410fa1f-711a-4431-8380-341950265b05
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/aa699c86-dd87-40e9-a30e-0af6b0bc2122
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 87E283D31581436099540AFDB23AE313 Ref B: IAD011092218054 Ref C: 2026-11-10T05:46:57Z'
+      - 'Ref A: 34C12DAB2C54464A876E1414BAE69911 Ref B: IAD011092216040 Ref C: 2026-11-19T21:37:26Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -1497,17 +1497,17 @@ interactions:
       - -n -g --location --admin-user --password --tier --storage-size --storage-type
         --shard-count --high-availability --user-assigned --encryption
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8\"\
-        ,\n  \"name\": \"289f2e48-7341-4e92-baca-837a9cb413a8\",\n  \"status\": \"\
-        InProgress\",\n  \"startTime\": \"2026-11-10 05:41:52 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3\"\
+        ,\n  \"name\": \"404e3502-00a5-43da-81e4-ee963558b6d3\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:32:21 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -1521,17 +1521,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:47:26 GMT
+      - Thu, 19 Nov 2026 21:37:56 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - ff46f808-5b10-43bd-9eab-5f2abffa35a6
+      - 7dd05885-df33-4b7f-add7-7ff04e238691
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -1545,11 +1545,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/b7c3deea-a305-4dc2-89b1-ed18f0cb42b9
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/339d0dd4-fd63-4f17-9a9c-6549f8f8e717
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 1FE177CC6CD14CACB046F34BEF0E0921 Ref B: IAD011092218054 Ref C: 2026-11-10T05:47:27Z'
+      - 'Ref A: 69CBAF8A9E264BA08071DCFBFBF6B623 Ref B: IAD011092216040 Ref C: 2026-11-19T21:37:57Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -1572,17 +1572,17 @@ interactions:
       - -n -g --location --admin-user --password --tier --storage-size --storage-type
         --shard-count --high-availability --user-assigned --encryption
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8\"\
-        ,\n  \"name\": \"289f2e48-7341-4e92-baca-837a9cb413a8\",\n  \"status\": \"\
-        InProgress\",\n  \"startTime\": \"2026-11-10 05:41:52 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3\"\
+        ,\n  \"name\": \"404e3502-00a5-43da-81e4-ee963558b6d3\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:32:21 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -1596,17 +1596,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:47:57 GMT
+      - Thu, 19 Nov 2026 21:38:27 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - 3d91a14f-909c-4964-a2d5-c1e45371aecb
+      - f29bc84b-b51a-4827-8281-a75ef821b361
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -1620,11 +1620,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/d114cfd0-671e-4952-a27f-e398883767f9
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/7b52a964-79af-432b-a8ec-d5ff68a67057
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 4B5D7EEBBDDF41219E65574381F9628D Ref B: IAD011092218054 Ref C: 2026-11-10T05:47:57Z'
+      - 'Ref A: 9C87633509754C8E96E84F622E6393A9 Ref B: IAD011092216040 Ref C: 2026-11-19T21:38:27Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -1647,17 +1647,17 @@ interactions:
       - -n -g --location --admin-user --password --tier --storage-size --storage-type
         --shard-count --high-availability --user-assigned --encryption
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8\"\
-        ,\n  \"name\": \"289f2e48-7341-4e92-baca-837a9cb413a8\",\n  \"status\": \"\
-        InProgress\",\n  \"startTime\": \"2026-11-10 05:41:52 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3\"\
+        ,\n  \"name\": \"404e3502-00a5-43da-81e4-ee963558b6d3\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:32:21 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -1671,17 +1671,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:48:27 GMT
+      - Thu, 19 Nov 2026 21:38:57 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - eaa5cae3-938a-4ad6-9548-bf83e5a806a6
+      - 191c3ba8-8bf7-418f-ac87-78f0955941ea
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -1695,11 +1695,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/7f811e4d-00dd-4927-a34e-7963467c1e90
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/68db4e82-f6f6-44c0-aeff-8dca85e0071e
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: AC9805792C234A70A7030734FC53C6D0 Ref B: IAD011092218054 Ref C: 2026-11-10T05:48:28Z'
+      - 'Ref A: C805723A49D84EA4B35E41C2CD5C10B3 Ref B: IAD011092216040 Ref C: 2026-11-19T21:38:57Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -1722,17 +1722,17 @@ interactions:
       - -n -g --location --admin-user --password --tier --storage-size --storage-type
         --shard-count --high-availability --user-assigned --encryption
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8\"\
-        ,\n  \"name\": \"289f2e48-7341-4e92-baca-837a9cb413a8\",\n  \"status\": \"\
-        InProgress\",\n  \"startTime\": \"2026-11-10 05:41:52 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3\"\
+        ,\n  \"name\": \"404e3502-00a5-43da-81e4-ee963558b6d3\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:32:21 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -1746,17 +1746,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:48:57 GMT
+      - Thu, 19 Nov 2026 21:39:28 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - e58d5677-8fb6-4980-bd20-31a1a98a18e9
+      - 2280744f-7ae4-4010-b3b0-ba52bb31cd70
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -1770,11 +1770,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/bc8db171-1dc9-481b-b3ac-6ec92cd154b8
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/cbe03603-0b7e-4beb-a847-8d4526af102d
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 3C2CCC00D3F341B98A0E246135ED0B45 Ref B: IAD011092218054 Ref C: 2026-11-10T05:48:58Z'
+      - 'Ref A: 341972CD94ED48C099EDF0105B8EED10 Ref B: IAD011092216040 Ref C: 2026-11-19T21:39:28Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -1797,17 +1797,17 @@ interactions:
       - -n -g --location --admin-user --password --tier --storage-size --storage-type
         --shard-count --high-availability --user-assigned --encryption
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8\"\
-        ,\n  \"name\": \"289f2e48-7341-4e92-baca-837a9cb413a8\",\n  \"status\": \"\
-        InProgress\",\n  \"startTime\": \"2026-11-10 05:41:52 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3\"\
+        ,\n  \"name\": \"404e3502-00a5-43da-81e4-ee963558b6d3\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:32:21 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -1821,17 +1821,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:49:27 GMT
+      - Thu, 19 Nov 2026 21:39:58 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - c740f64f-936e-431a-bfe1-f54d2ade1253
+      - a49717d3-2e1c-4bd1-af36-d352096d0219
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -1845,11 +1845,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/3d822025-c2ca-427f-b2a2-69cb530b2e3f
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/ecf1683c-40a2-43ce-8200-d6aa576b3093
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: BAD4691B1784460291C4C469602CE8EF Ref B: IAD011092218054 Ref C: 2026-11-10T05:49:28Z'
+      - 'Ref A: 7D0FF168172341C68AED05DB93B5931C Ref B: IAD011092216040 Ref C: 2026-11-19T21:39:58Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -1872,17 +1872,317 @@ interactions:
       - -n -g --location --admin-user --password --tier --storage-size --storage-type
         --shard-count --high-availability --user-assigned --encryption
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8\"\
-        ,\n  \"name\": \"289f2e48-7341-4e92-baca-837a9cb413a8\",\n  \"status\": \"\
-        Succeeded\",\n  \"startTime\": \"2026-11-10 05:41:52 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3\"\
+        ,\n  \"name\": \"404e3502-00a5-43da-81e4-ee963558b6d3\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:32:21 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '303'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; connect-src 'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com
+        https://microsoft-onmicrosoft-com.access.mcas.ms; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Nov 2026 21:40:28 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 58305a16-f865-4289-bafe-a55e4398d547
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/460961da-0d5d-40a4-9bfe-225d923b2e49
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 346243416BEC4B0D808FE90DDF9F66A9 Ref B: IAD011092216040 Ref C: 2026-11-19T21:40:29Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - documentdb mongocluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --location --admin-user --password --tier --storage-size --storage-type
+        --shard-count --high-availability --user-assigned --encryption
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3\"\
+        ,\n  \"name\": \"404e3502-00a5-43da-81e4-ee963558b6d3\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:32:21 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '303'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; connect-src 'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com
+        https://microsoft-onmicrosoft-com.access.mcas.ms; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Nov 2026 21:40:59 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - b76b230c-479c-4ccd-9e5d-f1ae1381eba3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/15060824-f1a2-4619-bbbf-61c5611fab1c
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 6ABE5421F0CE43AEA7C2BF2AA4948FF5 Ref B: IAD011092216040 Ref C: 2026-11-19T21:40:59Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - documentdb mongocluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --location --admin-user --password --tier --storage-size --storage-type
+        --shard-count --high-availability --user-assigned --encryption
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3\"\
+        ,\n  \"name\": \"404e3502-00a5-43da-81e4-ee963558b6d3\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:32:21 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '303'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; connect-src 'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com
+        https://microsoft-onmicrosoft-com.access.mcas.ms; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Nov 2026 21:41:29 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 92cbcdf7-bcc1-49b9-8ad9-b580a01eafae
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/e24643ba-bf80-4513-8fff-8c0bacdd6066
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: CF9381FD8D724237839E88771E395D74 Ref B: IAD011092216040 Ref C: 2026-11-19T21:41:29Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - documentdb mongocluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --location --admin-user --password --tier --storage-size --storage-type
+        --shard-count --high-availability --user-assigned --encryption
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3\"\
+        ,\n  \"name\": \"404e3502-00a5-43da-81e4-ee963558b6d3\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:32:21 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '303'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; connect-src 'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com
+        https://microsoft-onmicrosoft-com.access.mcas.ms; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Nov 2026 21:41:59 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 20afbad3-51b3-46df-87fc-4d95a1ef9bf9
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/5f564c0e-5df7-47d0-bbf1-e6804610d15a
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 6D2313A5C76842AF96752A34BFAF1659 Ref B: IAD011092216040 Ref C: 2026-11-19T21:42:00Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - documentdb mongocluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --location --admin-user --password --tier --storage-size --storage-type
+        --shard-count --high-availability --user-assigned --encryption
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3\"\
+        ,\n  \"name\": \"404e3502-00a5-43da-81e4-ee963558b6d3\",\n  \"status\": \"\
+        Succeeded\",\n  \"startTime\": \"2026-11-19 21:32:21 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -1896,17 +2196,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:49:58 GMT
+      - Thu, 19 Nov 2026 21:42:30 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/289f2e48-7341-4e92-baca-837a9cb413a8?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/404e3502-00a5-43da-81e4-ee963558b6d3?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - 1c792d00-cc42-4b52-a799-1031ea1ffc04
+      - c241efb9-b969-4be3-a0af-5e8b7480ec1c
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -1920,11 +2220,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/74838396-9815-4b5b-9900-e1b4b0f324ee
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/eff2e15f-f9bd-4623-8736-64386d464165
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 73882A124FE14BC98C5F6F1B58C0C211 Ref B: IAD011092218054 Ref C: 2026-11-10T05:49:59Z'
+      - 'Ref A: 941A2F82E1844075A0F67E4EF519606D Ref B: IAD011092216040 Ref C: 2026-11-19T21:42:30Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -1947,17 +2247,17 @@ interactions:
       - -n -g --location --admin-user --password --tier --storage-size --storage-type
         --shard-count --high-availability --user-assigned --encryption
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.DocumentDB/mongoClusters/cli-mc000002?api-version=2026-06-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.DocumentDB/mongoClusters/cli-mc000002?api-version=2026-09-01
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.DocumentDB/mongoClusters/cli-mc000002\"\
         ,\n  \"name\": \"cli-mc000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\"\
         ,\n  \"tags\": {},\n  \"location\": \"eastus2\",\n  \"systemData\": {\n  \
-        \  \"createdAt\": \"2026-11-10T05:41:51.9020367Z\",\n    \"createdBy\": \"\
+        \  \"createdAt\": \"2026-11-19T21:32:20.8151017Z\",\n    \"createdBy\": \"\
         test@example.com\",\n    \"createdByType\": \"User\",\n    \"lastModifiedAt\"\
-        : \"2026-11-10T05:41:51.9020367Z\",\n    \"lastModifiedBy\": \"test@example.com\"\
+        : \"2026-11-19T21:32:20.8151017Z\",\n    \"lastModifiedBy\": \"test@example.com\"\
         ,\n    \"lastModifiedByType\": \"User\"\n  },\n  \"properties\": {\n    \"\
         provisioningState\": \"Succeeded\",\n    \"clusterStatus\": \"Ready\",\n \
         \   \"administrator\": {\n      \"userName\": \"testadmin\"\n    },\n    \"\
@@ -1978,8 +2278,8 @@ interactions:
         \n      }\n    },\n    \"networkBypassMode\": \"None\"\n  },\n  \"identity\"\
         : {\n    \"type\": \"UserAssigned\",\n    \"userAssignedIdentities\": {\n\
         \      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/climcmi000003\"\
-        : {\n        \"principalId\": \"371571f0-e421-41a2-83f4-001428588e5a\",\n\
-        \        \"clientId\": \"80e7b9e2-c168-4f1c-95e2-9a800a0a78ee\"\n      }\n\
+        : {\n        \"principalId\": \"3f587ef3-0423-4586-b686-5b989f2a4197\",\n\
+        \        \"clientId\": \"71b82240-e9cb-441f-a5bf-b83115539817\"\n      }\n\
         \    }\n  }\n}"
     headers:
       cache-control:
@@ -1995,7 +2295,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:49:58 GMT
+      - Thu, 19 Nov 2026 21:42:31 GMT
       expires:
       - '-1'
       pragma:
@@ -2003,7 +2303,7 @@ interactions:
       referrer-policy:
       - same-origin
       request-id:
-      - 112d24eb-5d11-4d4a-9266-b5c02f5532fc
+      - bc0f95e9-58c7-4f11-be1d-0a0bc0905eac
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -2019,7 +2319,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: A0133138DF344DCFA6B916CB1D186201 Ref B: IAD011092218054 Ref C: 2026-11-10T05:49:59Z'
+      - 'Ref A: D6E748AB171E4CC5AFB4A05C3443AA93 Ref B: IAD011092216040 Ref C: 2026-11-19T21:42:31Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -2041,17 +2341,17 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.DocumentDB/mongoClusters/cli-mc000002?api-version=2026-06-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.DocumentDB/mongoClusters/cli-mc000002?api-version=2026-09-01
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.DocumentDB/mongoClusters/cli-mc000002\"\
         ,\n  \"name\": \"cli-mc000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\"\
         ,\n  \"tags\": {},\n  \"location\": \"eastus2\",\n  \"systemData\": {\n  \
-        \  \"createdAt\": \"2026-11-10T05:41:51.9020367Z\",\n    \"createdBy\": \"\
+        \  \"createdAt\": \"2026-11-19T21:32:20.8151017Z\",\n    \"createdBy\": \"\
         test@example.com\",\n    \"createdByType\": \"User\",\n    \"lastModifiedAt\"\
-        : \"2026-11-10T05:41:51.9020367Z\",\n    \"lastModifiedBy\": \"test@example.com\"\
+        : \"2026-11-19T21:32:20.8151017Z\",\n    \"lastModifiedBy\": \"test@example.com\"\
         ,\n    \"lastModifiedByType\": \"User\"\n  },\n  \"properties\": {\n    \"\
         provisioningState\": \"Succeeded\",\n    \"clusterStatus\": \"Ready\",\n \
         \   \"administrator\": {\n      \"userName\": \"testadmin\"\n    },\n    \"\
@@ -2072,8 +2372,8 @@ interactions:
         \n      }\n    },\n    \"networkBypassMode\": \"None\"\n  },\n  \"identity\"\
         : {\n    \"type\": \"UserAssigned\",\n    \"userAssignedIdentities\": {\n\
         \      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/climcmi000003\"\
-        : {\n        \"principalId\": \"371571f0-e421-41a2-83f4-001428588e5a\",\n\
-        \        \"clientId\": \"80e7b9e2-c168-4f1c-95e2-9a800a0a78ee\"\n      }\n\
+        : {\n        \"principalId\": \"3f587ef3-0423-4586-b686-5b989f2a4197\",\n\
+        \        \"clientId\": \"71b82240-e9cb-441f-a5bf-b83115539817\"\n      }\n\
         \    }\n  }\n}"
     headers:
       cache-control:
@@ -2089,7 +2389,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:50:00 GMT
+      - Thu, 19 Nov 2026 21:42:31 GMT
       expires:
       - '-1'
       pragma:
@@ -2097,7 +2397,7 @@ interactions:
       referrer-policy:
       - same-origin
       request-id:
-      - 7b99b11a-0d01-43b8-9cf0-d26c256dd2c6
+      - 4a84600d-b78b-4f18-ae99-496534b2aa97
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -2113,7 +2413,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 8BD3BC02825446D7A9FFB2282971D495 Ref B: IAD011092218060 Ref C: 2026-11-10T05:50:00Z'
+      - 'Ref A: 7F28FC5674CA4BA181A4F53F8DF66109 Ref B: BL2AA2010205027 Ref C: 2026-11-19T21:42:32Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -2137,15 +2437,15 @@ interactions:
       ParameterSetName:
       - -n -g --yes
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.DocumentDB/mongoClusters/cli-mc000002?api-version=2026-06-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_cmk000001/providers/Microsoft.DocumentDB/mongoClusters/cli-mc000002?api-version=2026-09-01
   response:
     body:
       string: '{}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/4328bc26-b577-4c4f-ab76-37c46cb0668c?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -2159,17 +2459,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:50:02 GMT
+      - Thu, 19 Nov 2026 21:42:32 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/4328bc26-b577-4c4f-ab76-37c46cb0668c?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - 177bcf34-3361-4099-bd5d-ae56602a0e36
+      - c9d4dfac-f6d8-4574-a23e-a077d7969b34
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -2183,13 +2483,13 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/14685dec-9d77-4955-b66f-4350f6b93d7f
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/fd5cd395-3b48-4b98-9358-a91c057d91c3
       x-ms-ratelimit-remaining-subscription-deletes:
       - '799'
       x-ms-ratelimit-remaining-subscription-global-deletes:
       - '11999'
       x-msedge-ref:
-      - 'Ref A: 710F3869C5C945E19A54919208379CAA Ref B: IAD011092218052 Ref C: 2026-11-10T05:50:01Z'
+      - 'Ref A: EB1F9F110AF4432691D727DE2075BF64 Ref B: BL2AA2010204027 Ref C: 2026-11-19T21:42:32Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -2211,17 +2511,17 @@ interactions:
       ParameterSetName:
       - -n -g --yes
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/4328bc26-b577-4c4f-ab76-37c46cb0668c?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/4328bc26-b577-4c4f-ab76-37c46cb0668c\"\
-        ,\n  \"name\": \"4328bc26-b577-4c4f-ab76-37c46cb0668c\",\n  \"status\": \"\
-        InProgress\",\n  \"startTime\": \"2026-11-10 05:50:01 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd\"\
+        ,\n  \"name\": \"57e0d8db-7bc7-4b82-9b42-079dfebb99dd\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:42:33 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/4328bc26-b577-4c4f-ab76-37c46cb0668c?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -2235,17 +2535,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:50:02 GMT
+      - Thu, 19 Nov 2026 21:42:32 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/4328bc26-b577-4c4f-ab76-37c46cb0668c?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - cb0ce766-374a-4f69-b0fb-ec0627bb4ce7
+      - eee04f8a-e024-4872-8359-9e9491a202df
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -2259,11 +2559,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/b99fd13e-8423-4f0a-b448-eb6484edd7f7
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/aa72395d-7fbf-4e7b-a9fa-18d7935f533f
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: D56D331B07724654AEB18BB48C7160B8 Ref B: IAD011092218052 Ref C: 2026-11-10T05:50:02Z'
+      - 'Ref A: E3A4252E2A9D41E484F255996E487E24 Ref B: BL2AA2010204027 Ref C: 2026-11-19T21:42:33Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -2285,17 +2585,17 @@ interactions:
       ParameterSetName:
       - -n -g --yes
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/4328bc26-b577-4c4f-ab76-37c46cb0668c?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/4328bc26-b577-4c4f-ab76-37c46cb0668c\"\
-        ,\n  \"name\": \"4328bc26-b577-4c4f-ab76-37c46cb0668c\",\n  \"status\": \"\
-        InProgress\",\n  \"startTime\": \"2026-11-10 05:50:01 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd\"\
+        ,\n  \"name\": \"57e0d8db-7bc7-4b82-9b42-079dfebb99dd\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:42:33 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/4328bc26-b577-4c4f-ab76-37c46cb0668c?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -2309,17 +2609,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:50:32 GMT
+      - Thu, 19 Nov 2026 21:43:03 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/4328bc26-b577-4c4f-ab76-37c46cb0668c?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - 06e116fa-17e4-4e79-8bab-7c15bd9dcf75
+      - 9100576c-f0ca-4cd8-98c2-b5d08039da6f
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -2333,11 +2633,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/9f676ce2-3119-4c79-b1e7-6119b42f780a
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/b7babc7b-4d22-470f-b5c9-1a9ee11157f6
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 553DBCEB071B459CBDBEEB604005220C Ref B: IAD011092218052 Ref C: 2026-11-10T05:50:33Z'
+      - 'Ref A: 450AF091E4914A989CF7E822C653A8EA Ref B: BL2AA2010204027 Ref C: 2026-11-19T21:43:03Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -2359,17 +2659,17 @@ interactions:
       ParameterSetName:
       - -n -g --yes
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/4328bc26-b577-4c4f-ab76-37c46cb0668c?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/4328bc26-b577-4c4f-ab76-37c46cb0668c\"\
-        ,\n  \"name\": \"4328bc26-b577-4c4f-ab76-37c46cb0668c\",\n  \"status\": \"\
-        InProgress\",\n  \"startTime\": \"2026-11-10 05:50:01 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd\"\
+        ,\n  \"name\": \"57e0d8db-7bc7-4b82-9b42-079dfebb99dd\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:42:33 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/4328bc26-b577-4c4f-ab76-37c46cb0668c?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -2383,17 +2683,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:51:02 GMT
+      - Thu, 19 Nov 2026 21:43:34 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/4328bc26-b577-4c4f-ab76-37c46cb0668c?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - 40cb93cb-5ac7-4526-b449-8b0c36318d39
+      - 2e208c16-016d-4cb0-b38e-23f0297dc37c
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -2407,11 +2707,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/3fcf3b44-dec8-481c-970b-55ca00a5b42a
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/1213a13f-13d1-4b82-ad25-467ec4ecaf8a
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 4A78B932FE644119B55E14A9AE2A3F92 Ref B: IAD011092218052 Ref C: 2026-11-10T05:51:03Z'
+      - 'Ref A: 9E148A89A7104086BFC39658CEE48B2A Ref B: BL2AA2010204027 Ref C: 2026-11-19T21:43:34Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -2433,17 +2733,17 @@ interactions:
       ParameterSetName:
       - -n -g --yes
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/4328bc26-b577-4c4f-ab76-37c46cb0668c?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/4328bc26-b577-4c4f-ab76-37c46cb0668c\"\
-        ,\n  \"name\": \"4328bc26-b577-4c4f-ab76-37c46cb0668c\",\n  \"status\": \"\
-        InProgress\",\n  \"startTime\": \"2026-11-10 05:50:01 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd\"\
+        ,\n  \"name\": \"57e0d8db-7bc7-4b82-9b42-079dfebb99dd\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:42:33 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/4328bc26-b577-4c4f-ab76-37c46cb0668c?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -2457,17 +2757,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:51:33 GMT
+      - Thu, 19 Nov 2026 21:44:04 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/4328bc26-b577-4c4f-ab76-37c46cb0668c?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - 95e62ab3-244e-418b-bf5b-b05affed9381
+      - 5e52ffc0-c251-4089-8e44-a0d327944166
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -2481,11 +2781,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/9e5060f1-cf8a-4ffc-aa83-9505b7716191
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/81e6d164-6fae-4df9-ade1-b63ac724cc72
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: FF1895256BFA47FA895B1793042E934F Ref B: IAD011092218052 Ref C: 2026-11-10T05:51:33Z'
+      - 'Ref A: F16AF128C940482181D31AF709A7EE0A Ref B: BL2AA2010204027 Ref C: 2026-11-19T21:44:04Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -2507,17 +2807,165 @@ interactions:
       ParameterSetName:
       - -n -g --yes
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/4328bc26-b577-4c4f-ab76-37c46cb0668c?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/4328bc26-b577-4c4f-ab76-37c46cb0668c\"\
-        ,\n  \"name\": \"4328bc26-b577-4c4f-ab76-37c46cb0668c\",\n  \"status\": \"\
-        Succeeded\",\n  \"startTime\": \"2026-11-10 05:50:01 +0000\"\n}"
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd\"\
+        ,\n  \"name\": \"57e0d8db-7bc7-4b82-9b42-079dfebb99dd\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:42:33 +0000\"\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/4328bc26-b577-4c4f-ab76-37c46cb0668c?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '303'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; connect-src 'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com
+        https://microsoft-onmicrosoft-com.access.mcas.ms; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Nov 2026 21:44:35 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 4a038cf9-7805-4d92-95b0-c676a1bc8612
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/cde45d2d-bb3e-48fe-889d-087cbcd42747
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A09F52BBD2A64BF19B270F3A94D53C87 Ref B: BL2AA2010204027 Ref C: 2026-11-19T21:44:34Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - documentdb mongocluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd\"\
+        ,\n  \"name\": \"57e0d8db-7bc7-4b82-9b42-079dfebb99dd\",\n  \"status\": \"\
+        InProgress\",\n  \"startTime\": \"2026-11-19 21:42:33 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '303'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; connect-src 'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com
+        https://microsoft-onmicrosoft-com.access.mcas.ms; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Nov 2026 21:45:05 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 87f499de-a291-4672-b203-5a40eb4ee227
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/5ca29943-6a02-4ed9-a61e-ca079fa93762
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 3D980EC7FB884BF8AC913AB0A127ED0A Ref B: BL2AA2010204027 Ref C: 2026-11-19T21:45:05Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - documentdb mongocluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd\"\
+        ,\n  \"name\": \"57e0d8db-7bc7-4b82-9b42-079dfebb99dd\",\n  \"status\": \"\
+        Succeeded\",\n  \"startTime\": \"2026-11-19 21:42:33 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -2531,17 +2979,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:52:03 GMT
+      - Thu, 19 Nov 2026 21:45:35 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/4328bc26-b577-4c4f-ab76-37c46cb0668c?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - 7db353a1-dd9a-482f-85c2-35152d8ff49f
+      - ebb3592d-060d-4bf6-8bd1-be1bc99761a7
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -2555,11 +3003,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/8ff40919-40f2-405e-92ee-15c2da39ad5c
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/00ed7b86-7db4-4c1d-b3ea-e2a1689e8429
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: EB9080627C4A438CA83D34A098409089 Ref B: IAD011092218052 Ref C: 2026-11-10T05:52:04Z'
+      - 'Ref A: 637F60E7159B4C77976F4E8AA6E2E135 Ref B: BL2AA2010204027 Ref C: 2026-11-19T21:45:35Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:
@@ -2581,15 +3029,15 @@ interactions:
       ParameterSetName:
       - -n -g --yes
       User-Agent:
-      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.9 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/4328bc26-b577-4c4f-ab76-37c46cb0668c?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
       string: '{}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/4328bc26-b577-4c4f-ab76-37c46cb0668c?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterAzureAsyncOperation/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -2603,17 +3051,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Nov 2026 05:52:03 GMT
+      - Thu, 19 Nov 2026 21:45:36 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/4328bc26-b577-4c4f-ab76-37c46cb0668c?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/mongoClusterOperationResults/57e0d8db-7bc7-4b82-9b42-079dfebb99dd?api-version=2026-09-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       referrer-policy:
       - same-origin
       request-id:
-      - 3ab93d1b-d23f-4160-b699-e2f9b5e18705
+      - 084c86b3-c255-43d4-87e3-85becbeec77a
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -2627,11 +3075,11 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/8a4bb461-8efd-44d1-be68-32c8443f2cfa
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/807c1e70-4fe6-461b-87c2-5e374cd28b01
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 04E81B66109E4556B47D0A4F209ED55F Ref B: IAD011092218052 Ref C: 2026-11-10T05:52:04Z'
+      - 'Ref A: 47CAF4DE16344842B726974CCDA1C9C7 Ref B: BL2AA2010204027 Ref C: 2026-11-19T21:45:35Z'
       x-permitted-cross-domain-policies:
       - none
       x-xss-protection:

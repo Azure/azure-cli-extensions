@@ -5,7 +5,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - documentdb mongocluster show
       Connection:
@@ -13,9 +13,9 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_neg000001/providers/Microsoft.DocumentDB/mongoClusters/cli-mc000002?api-version=2026-06-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_neg000001/providers/Microsoft.DocumentDB/mongoClusters/cli-mc000002?api-version=2026-09-01
   response:
     body:
       string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.DocumentDB/mongoClusters/cli-mc000002''
@@ -29,7 +29,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Jul 2026 21:23:39 GMT
+      - Thu, 19 Nov 2026 19:23:53 GMT
       expires:
       - '-1'
       pragma:
@@ -43,7 +43,7 @@ interactions:
       x-ms-failure-cause:
       - gateway
       x-msedge-ref:
-      - 'Ref A: C4F0C8F5324B49BCBCC64C644FE1934F Ref B: BL2AA2030101049 Ref C: 2026-07-17T21:23:40Z'
+      - 'Ref A: 9FD29CDD3E8542B8BB35008C938F2B38 Ref B: BL2AA2010205017 Ref C: 2026-11-19T19:23:54Z'
     status:
       code: 404
       message: Not Found
@@ -53,7 +53,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - documentdb mongocluster firewall-rule show
       Connection:
@@ -61,9 +61,9 @@ interactions:
       ParameterSetName:
       - -n --cluster-name -g
       User-Agent:
-      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_neg000001/providers/Microsoft.DocumentDB/mongoClusters/cli-mc000002/firewallRules/missing-rule?api-version=2026-06-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_neg000001/providers/Microsoft.DocumentDB/mongoClusters/cli-mc000002/firewallRules/missing-rule?api-version=2026-09-01
   response:
     body:
       string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.DocumentDB/mongoClusters/cli-mc000002''
@@ -77,7 +77,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Jul 2026 21:23:40 GMT
+      - Thu, 19 Nov 2026 19:23:55 GMT
       expires:
       - '-1'
       pragma:
@@ -91,7 +91,7 @@ interactions:
       x-ms-failure-cause:
       - gateway
       x-msedge-ref:
-      - 'Ref A: FA3C08E62F8B4F37BCB387536E9AD266 Ref B: MNZ221060619031 Ref C: 2026-07-17T21:23:40Z'
+      - 'Ref A: 791EB816237B4B2DB18AAEDD16826693 Ref B: BL2AA2030101003 Ref C: 2026-11-19T19:23:55Z'
     status:
       code: 404
       message: Not Found
@@ -101,7 +101,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - documentdb mongocluster microsoft-entra-user show
       Connection:
@@ -109,9 +109,9 @@ interactions:
       ParameterSetName:
       - -n --cluster-name -g
       User-Agent:
-      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_neg000001/providers/Microsoft.DocumentDB/mongoClusters/cli-mc000002/users/missing-user?api-version=2026-06-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_neg000001/providers/Microsoft.DocumentDB/mongoClusters/cli-mc000002/users/missing-user?api-version=2026-09-01
   response:
     body:
       string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.DocumentDB/mongoClusters/cli-mc000002''
@@ -125,7 +125,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Jul 2026 21:23:40 GMT
+      - Thu, 19 Nov 2026 19:23:55 GMT
       expires:
       - '-1'
       pragma:
@@ -139,7 +139,7 @@ interactions:
       x-ms-failure-cause:
       - gateway
       x-msedge-ref:
-      - 'Ref A: 41AA53F41F8148F5B4D3BD50BB4D12A2 Ref B: BL2AA2010204035 Ref C: 2026-07-17T21:23:41Z'
+      - 'Ref A: A20CDE01DA4B43DAB58BED5BE1A5D19C Ref B: IAD011092216042 Ref C: 2026-11-19T19:23:56Z'
     status:
       code: 404
       message: Not Found
@@ -149,17 +149,17 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - documentdb mongocluster replica list
       Connection:
       - keep-alive
       ParameterSetName:
-      - --cluster-name -g
+      - --source-cluster -g
       User-Agent:
-      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_neg000001/providers/Microsoft.DocumentDB/mongoClusters/cli-mc000002/replicas?api-version=2026-06-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_documentdb_neg000001/providers/Microsoft.DocumentDB/mongoClusters/cli-mc000002/replicas?api-version=2026-09-01
   response:
     body:
       string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.DocumentDB/mongoClusters/cli-mc000002''
@@ -173,7 +173,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Jul 2026 21:23:41 GMT
+      - Thu, 19 Nov 2026 19:23:57 GMT
       expires:
       - '-1'
       pragma:
@@ -187,7 +187,7 @@ interactions:
       x-ms-failure-cause:
       - gateway
       x-msedge-ref:
-      - 'Ref A: 6CFDAF9685654844B906FB7F727A2721 Ref B: BL2AA2010205033 Ref C: 2026-07-17T21:23:42Z'
+      - 'Ref A: FEAAE754C2664EDAB1DDB0B42D49D1AD Ref B: BL2AA2030101029 Ref C: 2026-11-19T19:23:57Z'
     status:
       code: 404
       message: Not Found

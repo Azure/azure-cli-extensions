@@ -3,6 +3,13 @@
 Release History
 ===============
 
+1.1.0
+++++++
+* Prepare the extension package for stable release.
+* Target the ``2026-09-01`` stable API instead of ``2026-06-15-preview``,
+  retaining existing capabilities, including planned replica promotion and GeoReplicas.
+* Mark all command groups and commands as Stable.
+
 1.1.0b2
 +++++++
 * Keep Microsoft Entra ID authentication and user assignment separate from point-in-time restore.
