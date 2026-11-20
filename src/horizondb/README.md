@@ -161,6 +161,13 @@ az horizondb cluster update --resource-group example-resource-group --name examp
 az horizondb cluster pool firewall-rule create --resource-group example-resource-group --cluster-name example-cluster --pool-name example-pool --name client-access --start-ip-address 203.0.113.10 --end-ip-address 203.0.113.10
 ```
 
+`create` replaces a rule of the same name and requires both ends of the inclusive
+IPv4 range. `update` reads the existing pool rule and replaces it with the requested
+changes, so you can supply just one end of the range or change the description.
+Neither command changes an individual endpoint. Use `--no-wait` on create, update,
+or delete to return after submission; use `firewall-rule wait --created` or
+`--deleted` with the same resource group, cluster, pool, and rule name to wait.
+
 ## Included Features
 
 ### HorizonDB Cluster Management
