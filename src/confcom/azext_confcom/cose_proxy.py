@@ -32,23 +32,23 @@ _binaries_dir = get_binaries_dir()
 _cosesign1_binaries = {
     "Linux": {
         "path": _binaries_dir / "sign1util",
-        "url": "https://github.com/microsoft/cosesign1go/releases/download/v1.4.0/sign1util",
-        "sha256": "526b54aeb6293fc160e8fa1f81be6857300aba9641d45955f402f8b082a4d4a5",
+        "url": "https://github.com/microsoft/cosesign1go/releases/download/v1.9.0/sign1util",
+        "sha256": "b42274c099a08acf0a81b1f0e6b2a7630b6f2e71d04e624812cf89e76eaac474",
     },
     "Windows": {
         "path": _binaries_dir / "sign1util.exe",
-        "url": "https://github.com/microsoft/cosesign1go/releases/download/v1.4.0/sign1util.exe",
-        "sha256": "f33cccf2b1bb8c3a495c730984b47d0f0715678981dbfe712248a2452dd53303",
+        "url": "https://github.com/microsoft/cosesign1go/releases/download/v1.9.0/sign1util.exe",
+        "sha256": "a2c62e5d621a9c7ce7b17e9b2f6c83eb4e36458bf594a1899dcfbdb5fe04d083",
     },
     "Darwin-arm64": {
         "path": _binaries_dir / "sign1util-darwin-arm64",
-        "url": "https://github.com/microsoft/cosesign1go/releases/download/v1.7.0/sign1util-darwin-arm64",
-        "sha256": "c0c89b54f42e33317127697936a8eed70281934d4546acfc1446e588fcf2fe69",
+        "url": "https://github.com/microsoft/cosesign1go/releases/download/v1.9.0/sign1util-darwin-arm64",
+        "sha256": "202d148932aa9ed7d4ac7d5fd8844b85072ba7f5b5c133c00d42939f536de64e",
     },
     "Darwin-amd64": {
         "path": _binaries_dir / "sign1util-darwin-amd64",
-        "url": "https://github.com/microsoft/cosesign1go/releases/download/v1.7.0/sign1util-darwin-amd64",
-        "sha256": "82168735a472002faca5ffad5342eeda3c307d06e892cd851c64766d5aa02049",
+        "url": "https://github.com/microsoft/cosesign1go/releases/download/v1.9.0/sign1util-darwin-amd64",
+        "sha256": "9bdfe7418418117728384fcdd5147d147dbbad9fffb597f71d7e71f483639c07",
     },
 }
 

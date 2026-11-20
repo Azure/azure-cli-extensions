@@ -32,7 +32,7 @@ _binaries_dir = get_binaries_dir()
 # package bundles the binaries for every supported platform, so we always fetch
 # all of them here.
 
-_INTEGRITY_VHD_VERSION = "v2.4"
+_INTEGRITY_VHD_VERSION = "v2.5"
 _INTEGRITY_VHD_RELEASE_URL = (
     f"https://github.com/microsoft/integrity-vhd/releases/download/{_INTEGRITY_VHD_VERSION}"
 )
@@ -41,23 +41,23 @@ _dmverity_vhd_binaries = [
     {
         "path": _binaries_dir / "dmverity-vhd",
         "url": f"{_INTEGRITY_VHD_RELEASE_URL}/dmverity-vhd",
-        "sha256": "00ee109bdc250f93a82d341859a78eff4e8f0ac8746722118ff27fbc2ab81daa",
+        "sha256": "c4cafddb87a452e60dbd8d920c4d5fd0c0321318dee437672905e7029e678492",
     },
     # Windows
     {
         "path": _binaries_dir / "dmverity-vhd.exe",
         "url": f"{_INTEGRITY_VHD_RELEASE_URL}/dmverity-vhd.exe",
-        "sha256": "a00429b781883b304839e14c01ec9788912fef7e016d0ee8b6fad7571a330f08",
+        "sha256": "3ec389266c07de8cce865a08a430409ecdf0f33033f83a687eccdb4201206832",
     },
     {
         "path": _binaries_dir / "dmverity-vhd-darwin-arm64",
         "url": f"{_INTEGRITY_VHD_RELEASE_URL}/dmverity-vhd-darwin-arm64",
-        "sha256": "020d2a93cae2466673b6ee42638c42b6b7b88535e607c61d503632b72fda03cf",
+        "sha256": "6902439fb36c7ec7572e4e528363a44b9afb80db5fd3b2e3d800a218b6b5daf4",
     },
     {
         "path": _binaries_dir / "dmverity-vhd-darwin-amd64",
         "url": f"{_INTEGRITY_VHD_RELEASE_URL}/dmverity-vhd-darwin-amd64",
-        "sha256": "11d19739b2d6e5cd4fb71a6ac65cabee6df48a4adfd30a5ea4f8acf612b777f4",
+        "sha256": "765c053357a1c9ac484750f454bf5f9ff4523330410756e3539b6200718b80eb",
     },
     {
         "path": _binaries_dir / "CimWriter.dll",

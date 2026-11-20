@@ -14,7 +14,7 @@
 
 ## Prerequisites
 
-**MacOS** is supported for Linux-container policy generation. Native Darwin binaries for `dmverity-vhd` (integrity-vhd v2.4) and `sign1util` (cosesign1go v1.7.0) are included in the extension package.
+**MacOS** is supported for Linux-container policy generation. Native Darwin binaries for `dmverity-vhd` (integrity-vhd v2.5) and `sign1util` (cosesign1go v1.9.0) are included in the extension package.
 
 - **64-bit** `Python 3.6+` and `pip`
   - **64-bit** **Windows 10** or later
