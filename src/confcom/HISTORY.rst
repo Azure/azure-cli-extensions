@@ -9,6 +9,7 @@ Release History
 * Add ``--env-rule-format`` to ``acifragmentgen`` to generate environment rules with separate name and value fields
 * Always pretty-print generated policies and fragments, including policies encoded as base64
 * Deprecate ``acipolicygen --outraw-pretty-print`` in favor of ``--outraw``
+* Update bundled integrity-vhd to v2.5 and cosesign1go to v1.8.0
 
 2.4.1
 +++++
