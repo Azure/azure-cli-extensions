@@ -14,7 +14,6 @@ from ._show import _ShowHelper
 
 @register_command(
     "documentdb mongocluster identity list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List the managed identities assigned to a mongo cluster.
@@ -24,9 +23,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-15-preview",
+        "version": "2026-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}", "2026-06-15-preview", "identity"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}", "2026-09-01", "identity"],
         ]
     }
 
@@ -138,7 +137,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-15-preview",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }
