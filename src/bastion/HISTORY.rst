@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.4.4
+++++++
+* Fix concurrent `az network bastion tunnel` sessions overwriting `last_token` so only the last Bastion session was cleaned up (#10137).
+
 1.4.3
 ++++++
 * Replace deprecated pkg_resources with packaging for Python 3.13 compatibility
