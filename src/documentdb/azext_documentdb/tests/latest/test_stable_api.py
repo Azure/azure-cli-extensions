@@ -11,11 +11,12 @@ from urllib.parse import parse_qs, urlsplit
 from knack.cli import CLI
 
 from azure.core import PipelineClient
-from azure.core.pipeline.policies import SansIOHTTPPolicy
+from azure.core.pipeline.policies import ContentDecodePolicy, SansIOHTTPPolicy
 from azure.core.pipeline.transport import HttpResponse, HttpTransport
 from azure.cli.core.aaz._command_ctx import AAZCommandCtx
 from azure.mgmt.resource.resources import ResourceManagementClient
 
+from azext_documentdb.aaz.latest.documentdb.mongocluster import Create, Update
 from azext_documentdb.aaz.latest.documentdb.mongocluster.firewall_rule import Create as FirewallRuleCreate
 from azext_documentdb.custom import ReplicaPromote, Restore
 
@@ -63,7 +64,7 @@ class StableApiRequestTest(unittest.TestCase):
         command.ctx.format_args()
         return command
 
-    def _send_request(self, command):
+    def _send_request(self, command, initial_resource=None):
         request_builder = PipelineClient(
             self._BASE_URL,
             transport=Mock(spec=HttpTransport),
@@ -71,15 +72,22 @@ class StableApiRequestTest(unittest.TestCase):
         )
         # Keep the real URL, query and JSON encoding; intercept only sending and polling.
         client = Mock(wraps=request_builder)
-        client.send_request = Mock(return_value=Mock(http_response=Mock(status_code=202)))
+        responses = []
+        if initial_resource is not None:
+            responses.append(Mock(
+                http_response=Mock(status_code=200),
+                context={ContentDecodePolicy.CONTEXT_NAME: initial_resource},
+            ))
+        responses.append(Mock(http_response=Mock(status_code=202)))
+        client.send_request = Mock(side_effect=responses)
         client.build_lro_polling = Mock()
         command.ctx.get_http_client = Mock(return_value=client)
 
         list(command._execute_operations())
 
-        client.send_request.assert_called_once()
+        self.assertEqual(len(responses), client.send_request.call_count)
         request = client.send_request.call_args.kwargs["request"]
-        client.send_request.assert_called_once_with(request=request, stream=False)
+        client.send_request.assert_called_with(request=request, stream=False)
         return request, client
 
     def _assert_request(self, request, method, path):
@@ -88,6 +96,67 @@ class StableApiRequestTest(unittest.TestCase):
         self.assertEqual(self._BASE_URL, url.scheme + "://" + url.netloc)
         self.assertEqual(path, url.path)
         self.assertEqual({"api-version": ["2026-09-01"]}, parse_qs(url.query))
+
+    def test_create_request_omits_unspecified_storage_type(self):
+        command = self._create_command(
+            Create,
+            cluster_name="test-cluster",
+            location="eastus2",
+            admin_user="testadmin",
+            admin_password="unit-test-password",
+            tier="M30",
+            storage_size=128,
+            shard_count=1,
+            high_availability="Disabled",
+        )
+
+        request, _ = self._send_request(command)
+
+        self.assertEqual({
+            "location": "eastus2",
+            "properties": {
+                "administrator": {
+                    "userName": "testadmin",
+                    "password": "unit-test-password",
+                },
+                "compute": {"tier": "M30"},
+                "storage": {"sizeGb": 128},
+                "sharding": {"shardCount": 1},
+                "highAvailability": {"targetMode": "Disabled"},
+            },
+        }, json.loads(request.body))
+        self._assert_request(request, "PUT", self._CLUSTER_ID)
+
+    def test_tags_only_update_request_preserves_existing_storage_type(self):
+        command = self._create_command(
+            Update,
+            cluster_name="test-cluster",
+            tags={"environment": "after", "owner": "cli"},
+        )
+        initial_resource = {
+            "id": self._CLUSTER_ID,
+            "name": "test-cluster",
+            "type": "Microsoft.DocumentDB/mongoClusters",
+            "location": "eastus2",
+            "tags": {"environment": "before"},
+            "properties": {
+                "provisioningState": "Succeeded",
+                "storage": {"sizeGb": 128, "type": "PremiumSSD"},
+            },
+        }
+
+        request, client = self._send_request(command, initial_resource=initial_resource)
+
+        self.assertEqual({
+            "location": "eastus2",
+            "tags": {"environment": "after", "owner": "cli"},
+            "properties": {
+                "storage": {"sizeGb": 128, "type": "PremiumSSD"},
+            },
+        }, json.loads(request.body))
+        get_request = client.send_request.call_args_list[0].kwargs["request"]
+        self._assert_request(get_request, "GET", self._CLUSTER_ID)
+        self._assert_request(request, "PATCH", self._CLUSTER_ID)
 
     def test_restore_cmk_request_preserves_omitted_auth_and_target_configuration(self):
         key_url = "https://example.vault.azure.net/keys/documentdb-cmk"
