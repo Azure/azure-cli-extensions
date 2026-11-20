@@ -71,11 +71,11 @@ helps[
 
         - name: --outraw
           type: boolean
-          short-summary: 'Output policy in clear text compact JSON instead of default base64 format'
+          short-summary: 'Output policy as plain-text Rego instead of default base64 format'
 
         - name: --outraw-pretty-print
           type: boolean
-          short-summary: 'Output policy in clear text and pretty print format'
+          short-summary: 'Output policy as plain-text Rego instead of default base64 format'
 
         - name: --save-to-file -s
           type: string
@@ -121,7 +121,7 @@ helps[
         - name: Input an ARM Template file to inject a base64 encoded Confidential Container Security Policy into the ARM Template
           text: az confcom acipolicygen --template-file "./template.json"
         - name: Input an ARM Template file to create a human-readable Confidential Container Security Policy
-          text: az confcom acipolicygen --template-file "./template.json" --outraw-pretty-print
+          text: az confcom acipolicygen --template-file "./template.json" --outraw
         - name: Input an ARM Template file to save a Confidential Container Security Policy to a file as base64 encoded text
           text: az confcom acipolicygen --template-file "./template.json" -s "./output-file.txt" --print-policy
         - name: Input an ARM Template file and use a tar file as the image source instead of the Docker daemon
@@ -129,7 +129,7 @@ helps[
         - name: Input an ARM Template file and use a fragments JSON file to generate a policy
           text: az confcom acipolicygen --template-file "./template.json" --fragments-json "./fragments.json" --include-fragments
         - name: Generate a Windows container policy (requires Docker Desktop in Windows containers mode)
-          text: az confcom acipolicygen --template-file "./template.json" --platform windows/amd64 --outraw-pretty-print
+          text: az confcom acipolicygen --template-file "./template.json" --platform windows/amd64 --outraw
 """
 
 helps[
@@ -139,6 +139,10 @@ helps[
     short-summary: Create a Confidential Container Policy Fragment for ACI.
 
     parameters:
+        - name: --env-rule-format
+          type: string
+          short-summary: 'Format of generated environment rules: pattern (default) or name-value'
+
         - name: --image
           type: string
           short-summary: 'Image to use for the generated policy fragment'
@@ -203,7 +207,7 @@ helps[
 
         - name: --outraw
           type: boolean
-          short-summary: 'Output policy in clear text compact JSON instead of default pretty print format'
+          short-summary: 'Output policy fragment as plain-text Rego (the default)'
 
         - name: --upload-fragment -u
           type: boolean

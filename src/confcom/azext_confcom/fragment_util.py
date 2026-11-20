@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import copy
-from typing import List
+from typing import Dict, List, Tuple
 
 import yaml
 from azext_confcom import config, oras_proxy
@@ -12,10 +12,48 @@ from azext_confcom.errors import eprint
 from azext_confcom.template_util import (case_insensitive_dict_get,
                                          extract_containers_from_text,
                                          extract_namespace_from_text,
-                                         extract_svn_from_text)
+                                         extract_svn_from_text,
+                                         process_fragment_imports)
 from knack.log import get_logger
 
 logger = get_logger(__name__)
+
+
+def resolve_fragment_imports(
+    fragments: List[dict], container_names: List[str]
+) -> Tuple[List[dict], Dict[str, List[dict]]]:
+    """Return (fragments_without_container_name, fragments_by_container_name).
+
+    Imports with container_name must match exactly one input container. Map
+    values are lists preserving separate imports and their parameters.
+    Parameters without container_name are rejected.
+    """
+    fragments_without_container_name = []
+    fragments_by_container_name = {}
+    for fragment in fragments or []:
+        if not isinstance(fragment, dict):
+            eprint("Fragment imports must be objects")
+        if "parameters" in fragment and "container_name" not in fragment:
+            eprint("container_name is required for fragment imports that specify parameters.")
+        if "container_name" not in fragment:
+            fragments_without_container_name.append(fragment)
+            continue
+        process_fragment_imports([fragment])
+        name = fragment.get("container_name")
+        if not isinstance(name, str) or not name.strip():
+            eprint("Fragment container_name must be a non-empty string")
+        if not isinstance(fragment.get("parameters", {}), dict):
+            eprint("Fragment parameters must be an object")
+        matches = container_names.count(name)
+        if matches != 1:
+            eprint(
+                'Fragment container_name "%s" must match exactly one container; found %s',
+                name, matches,
+            )
+        binding = copy.deepcopy(fragment)
+        binding.setdefault("parameters", {})
+        fragments_by_container_name.setdefault(name, []).append(binding)
+    return fragments_without_container_name, fragments_by_container_name
 
 
 def sanitize_fragment_fields(fragments_list: List[dict]) -> List[dict]:
@@ -23,7 +61,8 @@ def sanitize_fragment_fields(fragments_list: List[dict]) -> List[dict]:
         config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED,
         config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN,
         config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_INCLUDES,
-        config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISSUER
+        config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISSUER,
+        "parameters",
     ]
     out_list = copy.deepcopy(fragments_list)
     for fragment in out_list:
@@ -51,7 +90,10 @@ def get_all_fragment_contents(
     platform: str = None,
 ) -> List[str]:
     # was getting errors with pass by reference so we need to copy it
-    remaining_fragments = copy.deepcopy(fragment_imports)
+    remaining_fragments = copy.deepcopy([
+        fragment for fragment in fragment_imports
+        if "container_name" not in fragment
+    ])
 
     def remove_from_list_via_feed(fragment_import_list, feed):
         for i, fragment_import in enumerate(fragment_import_list):

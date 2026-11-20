@@ -194,7 +194,7 @@ def load_arguments(self, _):
             options_list=("--outraw"),
             required=False,
             action="store_true",
-            help="Output policy in clear text compact JSON instead of default base64 format",
+            help="Output policy as plain-text Rego instead of default base64 format",
             validator=validate_print_format,
         )
         c.argument(
@@ -202,7 +202,8 @@ def load_arguments(self, _):
             options_list=("--outraw-pretty-print"),
             required=False,
             action="store_true",
-            help="Output policy in clear text and pretty print format",
+            deprecate_info=c.deprecate(redirect="--outraw", hide=True),
+            help="Output policy as plain-text Rego instead of default base64 format",
             validator=validate_print_format,
         )
         c.argument(
@@ -277,6 +278,13 @@ def load_arguments(self, _):
         )
 
     with self.argument_context("confcom acifragmentgen") as c:
+        c.argument(
+            "env_rule_format",
+            options_list=("--env-rule-format",),
+            choices=["pattern", "name-value"],
+            default="pattern",
+            help="Format of generated environment rules.",
+        )
         c.argument(
             "image_name",
             options_list=("--image"),
@@ -400,7 +408,7 @@ def load_arguments(self, _):
             "outraw",
             options_list=("--outraw"),
             required=False,
-            help="Output policy fragment in clear text compact JSON instead of default base64 format",
+            help="Output policy fragment as plain-text Rego (the default)",
         )
         c.argument(
             "upload_fragment",

@@ -22,6 +22,7 @@ import azext_confcom.config as config
 from azext_confcom.custom import acipolicygen_confcom
 from azext_confcom.template_util import (
     case_insensitive_dict_get,
+    compare_env_vars,
     decompose_confidential_properties,
     extract_containers_from_text,
     DockerClient,
@@ -1630,6 +1631,50 @@ class PolicyDiff(unittest.TestCase):
         }
 
         self.assertEqual(diff, expected_diff)
+
+
+class PolicyDiffEnvironmentRules(unittest.TestCase):
+    def test_name_value_env_rules(self):
+        named_rule = {
+            "name": "Port", "name_strategy": "string",
+            "value": "8080", "value_strategy": "string", "required": False,
+        }
+        self.assertEqual(compare_env_vars("app", [named_rule], [named_rule]), {})
+        for field in ("name", "value"):
+            with self.subTest(field=field):
+                different = dict(named_rule, **{field: "different"})
+                self.assertTrue(compare_env_vars("app", [named_rule], [different]))
+
+    def test_mixed_env_rule_formats(self):
+        named_rule = {
+            "name": "Port", "name_strategy": "string",
+            "value": "8080", "value_strategy": "string", "required": False,
+        }
+        pattern_rule = {"pattern": "Port=8080", "strategy": "string", "required": False}
+        for policy_rule, actual in (
+            (named_rule, pattern_rule), (pattern_rule, named_rule),
+        ):
+            with self.subTest(policy_rule=policy_rule, actual=actual):
+                self.assertTrue(compare_env_vars("app", [policy_rule], [actual]))
+
+    def test_name_value_env_rules_regex(self):
+        policy_rule = {
+            "name": "Port[0-9]*", "name_strategy": "re2",
+            "value": "80[0-9]+", "value_strategy": "re2",
+        }
+        matching = {
+            "name": "Port", "name_strategy": "string",
+            "value": "8080", "value_strategy": "string",
+        }
+        self.assertEqual(compare_env_vars("app", [policy_rule], [matching]), {})
+        self.assertEqual(compare_env_vars("app", [policy_rule], [policy_rule]), {})
+        for actual in (
+            dict(matching, name="OtherPort"),
+            dict(matching, value="18080"),
+            dict(policy_rule, value=".*"),
+        ):
+            with self.subTest(actual=actual):
+                self.assertTrue(compare_env_vars("app", [policy_rule], [actual]))
 
 
 class PolicyGeneratingArmInfrastructureSvn(unittest.TestCase):
