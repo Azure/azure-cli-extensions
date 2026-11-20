@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create an IscsiPath in a private cloud
+    
+    :example: Create an IscsiPath in a private cloud
+        az vmware iscsi-path create -c cloud1 -g rg1 --network-block 192.168.48.0/22
     """
 
     _aaz_info = {
