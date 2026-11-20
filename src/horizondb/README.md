@@ -54,6 +54,30 @@ For example, scale the pool's vCores:
 az horizondb cluster pool update --resource-group example-resource-group --cluster-name example-cluster --name example-pool --v-cores 4
 ```
 
+## Manage cluster authentication
+
+List the cluster's service-created authentication methods, then inspect the password method:
+
+```powershell
+az horizondb cluster authentication list -g example-resource-group --cluster-name example-cluster
+az horizondb cluster authentication password show -g example-resource-group --cluster-name example-cluster
+```
+
+For initial setup, use `password create` with `--state Enabled` and the administrator login.
+Pass `--admin-password` (alias `--administrator-login-password`) **without a value** in a terminal to enter and confirm
+the password without echo. An inline password can appear in shell history, process arguments,
+or CLI debug logs. Passwords are never returned by these commands.
+
+```powershell
+az horizondb cluster authentication password create -g example-resource-group --cluster-name example-cluster --state Enabled --administrator-login exampleadmin --admin-password
+az horizondb cluster authentication password update -g example-resource-group --cluster-name example-cluster --admin-password --no-wait
+az horizondb cluster authentication password wait -g example-resource-group --cluster-name example-cluster --updated
+```
+
+`password update` changes only the supplied settings. Use `--state Disabled` alone
+to disable password authentication, or `--state Enabled` with a password to
+re-enable the method and reset the password. Both create and update accept `--no-wait`.
+
 ## Manage parameter groups
 
 Create a parameter group for the cluster's PostgreSQL version, then associate
