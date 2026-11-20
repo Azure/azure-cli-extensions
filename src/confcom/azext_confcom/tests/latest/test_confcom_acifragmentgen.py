@@ -262,6 +262,35 @@ def test_acifragmentgen_fragment_push(docker_image, cert_chain, capsysbinary):
         assert f.read() == signed_fragment
 
 
+# ── Unit tests for call_oras_cli ───────────────────────────────────────────
+
+
+def test_call_oras_cli_resolves_outside_current_directory(monkeypatch, tmp_path):
+    from azext_confcom.oras_proxy import call_oras_cli
+
+    current = tmp_path / "work"
+    trusted = tmp_path / "tools"
+    current.mkdir()
+    trusted.mkdir()
+    name = "oras.exe" if os.name == "nt" else "oras"
+    for executable in (current / name, trusted / name):
+        executable.touch()
+        executable.chmod(0o755)
+    monkeypatch.chdir(current)
+    monkeypatch.setenv("PATHEXT", ".EXE")
+    monkeypatch.setenv("PATH", os.pathsep.join([str(current), str(trusted)]))
+
+    with patch("azext_confcom.oras_proxy.subprocess.run") as mock_run:
+        call_oras_cli(["oras", "version"])
+        mock_run.assert_called_once_with(
+            [os.path.realpath(trusted / name), "version"], check=False, capture_output=True, timeout=120
+        )
+        monkeypatch.setenv("PATH", str(current))
+        with pytest.raises(SystemExit):
+            call_oras_cli(["oras", "version"])
+        mock_run.assert_called_once()
+
+
 # ── Unit tests for prepend_docker_registry ─────────────────────────────────
 
 

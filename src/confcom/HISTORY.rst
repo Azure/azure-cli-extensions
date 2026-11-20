@@ -9,6 +9,7 @@ Release History
 * Support container-bound parameterized fragment imports
 * Add ``--env-rule-format`` to ``acifragmentgen`` to generate environment rules with separate name and value fields
 * Update bundled integrity-vhd to v2.5 and cosesign1go to v1.9.0
+* Prevent executing an ORAS binary from the current directory
 
 2.4.1
 +++++

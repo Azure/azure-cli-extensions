@@ -25,6 +25,43 @@ FRAGMENT_DISCOVERY_PLATFORM = "linux/amd64"
 logger = get_logger(__name__)
 
 
+def resolve_oras_path() -> str:
+    """Resolve ORAS outside the current directory."""
+    current_directory = os.path.normcase(os.path.realpath(os.getcwd()))
+    executable_extensions = [""]
+    if os.name == "nt":
+        executable_extensions = [
+            extension if extension.startswith(".") else f".{extension}"
+            for extension in os.environ.get("PATHEXT", ".COM;.EXE;.BAT;.CMD").split(os.pathsep)
+            if extension
+        ]
+
+    for path_entry in os.environ.get("PATH", "").split(os.pathsep):
+        path_entry = path_entry.strip().strip('"')
+        if not path_entry or not os.path.isabs(path_entry):
+            continue
+        if os.name == "nt" and not os.path.splitdrive(path_entry)[0]:
+            continue
+
+        resolved_directory = os.path.realpath(path_entry)
+        # Exclude CWD as recommended for preventing binary planting attacks:
+        # https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-security
+        if os.path.normcase(resolved_directory) == current_directory:
+            continue
+
+        for extension in executable_extensions:
+            candidate = shutil.which(os.path.join(resolved_directory, f"oras{extension}"))
+            if candidate:
+                candidate = os.path.realpath(os.path.abspath(candidate))
+                if os.path.normcase(os.path.dirname(candidate)) != current_directory:
+                    return candidate
+
+    eprint(
+        "ORAS CLI not found in absolute PATH entries outside the current directory. "
+        "Please install ORAS CLI: https://oras.land/docs/installation"
+    )
+
+
 def prepend_docker_registry(image_name: str) -> str:
     """
     Normalize a Docker image reference by adding `docker.io/library` if necessary.
@@ -55,14 +92,9 @@ def prepend_docker_registry(image_name: str) -> str:
 
 
 def call_oras_cli(args, check=False, **kwargs):
-    if shutil.which("oras") is None:
-        eprint(
-            "The 'oras' CLI was not found in PATH. Install oras and make sure the "
-            "'oras' executable is on your PATH, then try again."
-        )
     kwargs.setdefault("capture_output", True)
     kwargs.setdefault("timeout", 120)
-    return subprocess.run(args, check=check, **kwargs)
+    return subprocess.run([resolve_oras_path(), *args[1:]], check=check, **kwargs)
 
 
 def manifest_fetch(image_tag: str) -> Optional[dict]:
