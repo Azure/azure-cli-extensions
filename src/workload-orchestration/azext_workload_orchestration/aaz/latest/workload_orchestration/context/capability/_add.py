@@ -13,6 +13,10 @@ requested capabilities already exist.
 """
 
 from azure.cli.core.aaz import *
+from knack.log import get_logger
+
+
+logger = get_logger(__name__)
 
 
 @register_command(
@@ -21,9 +25,8 @@ from azure.cli.core.aaz import *
 class AddCapability(AAZCommand):
     """Add capabilities to a context (idempotent).
 
-    Replaces the painful 7-line PowerShell pattern (show → append → dedup →
-    write file → context create) with a single command. Hierarchies and other
-    properties are preserved.
+    This command is deprecated. Context capabilities are now managed
+    automatically through Targets.
 
     If description is omitted for a capability, it defaults to the name.
 
@@ -80,6 +83,10 @@ class AddCapability(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
+        logger.warning(
+            "This command is deprecated and will be removed in a future release. "
+            "Context capabilities are now managed automatically through Targets."
+        )
 
         args = self.ctx.args
 

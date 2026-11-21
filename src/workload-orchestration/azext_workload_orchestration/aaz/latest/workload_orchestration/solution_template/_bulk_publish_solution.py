@@ -21,9 +21,9 @@ class BulkPublishSolution(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-08-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/solutiontemplates/{}/versions/{}/bulkpublishsolution", "2025-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/solutiontemplates/{}/versions/{}/bulkpublishsolution", "2026-06-01"],
         ]
     }
 
@@ -340,7 +340,7 @@ class BulkPublishSolution(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-08-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }

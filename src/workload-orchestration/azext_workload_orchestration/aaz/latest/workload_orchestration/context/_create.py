@@ -10,6 +10,19 @@
 
 from azure.cli.core.aaz import *
 from azure.cli.core.azclierror import CLIInternalError as CLIError
+from knack.log import get_logger
+
+
+logger = get_logger(__name__)
+
+CURRENT_CONTEXT_API_VERSION = "2026-06-01"
+LEGACY_CONTEXT_API_VERSION = "2025-08-01"
+
+
+def _get_capabilities(args):
+    if not has_value(args.capabilities):
+        return []
+    return args.capabilities.to_serialized_data() or []
 
 
 @register_command(
@@ -18,13 +31,13 @@ from azure.cli.core.azclierror import CLIInternalError as CLIError
 class Create(AAZCommand):
     """Create Context Resource
     :example: Create Context Resource
-        az workload-orchestration context create -g MyResourceGroup -n MyContext --location eastus --capabilities '[{"description":"description","name":"name"}]' --hierarchies '[{"description":"description","name":"name"}]'
+        az workload-orchestration context create -g MyResourceGroup -n MyContext --location eastus --hierarchies '[{"description":"description","name":"name"}]'
     """
 
     _aaz_info = {
-        "version": "2025-08-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/contexts/{}", "2025-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/contexts/{}", "2026-06-01"],
         ]
     }
 
@@ -57,12 +70,13 @@ class Create(AAZCommand):
             required=True,
         )
 
-        _args_schema = cls._args_schema
         _args_schema.capabilities = AAZListArg(
             options=["--capabilities"],
             arg_group="Properties",
-            help="List of Capabilities",
-            required=True
+            help=(
+                "Deprecated. Context capabilities are now managed automatically "
+                "through Targets. This argument will be removed in a future release."
+            ),
         )
         _args_schema.hierarchies = AAZListArg(
             options=["--hierarchies"],
@@ -140,7 +154,12 @@ class Create(AAZCommand):
 
     @register_callback
     def pre_operations(self):
-        pass
+        if has_value(self.ctx.args.capabilities):
+            logger.warning(
+                "Argument '--capabilities' is deprecated and will be removed in "
+                "a future release. Context capabilities are now managed "
+                "automatically through Targets."
+            )
 
     @register_callback
     def post_operations(self):
@@ -258,9 +277,14 @@ class Create(AAZCommand):
 
         @property
         def query_parameters(self):
+            api_version = (
+                LEGACY_CONTEXT_API_VERSION
+                if _get_capabilities(self.ctx.args)
+                else CURRENT_CONTEXT_API_VERSION
+            )
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-08-01",
+                    "api-version", api_version,
                     required=True,
                 ),
             }
@@ -291,7 +315,7 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("capabilities", AAZListType, ".capabilities", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("capabilities", AAZListType, ".capabilities")
                 properties.set_prop("hierarchies", AAZListType, ".hierarchies", typ_kwargs={"flags": {"required": True}})
 
             capabilities = _builder.get(".properties.capabilities")
@@ -317,7 +341,9 @@ class Create(AAZCommand):
             if tags is not None:
                 tags.set_elements(AAZStrType, ".")
 
-            return self.serialize_content(_content_value)
+            body = self.serialize_content(_content_value)
+            body.setdefault("properties", {})["capabilities"] = _get_capabilities(self.ctx.args)
+            return body
 
         def on_200_201(self, session):
             data = self.deserialize_http_content(session)

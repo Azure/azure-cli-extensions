@@ -132,7 +132,6 @@ class WorkloadOrchestrationTest(ScenarioTest):
                 f'az workload-orchestration init '
                 f'-c {cluster_name} -g {rg} -l {location} '
                 f'--context-name {context_name} --context-location {context_location} '
-                f'--capabilities [0].name=Quality [0].description=quality '
                 f'--hierarchies [0].name=country [0].description=Country '
                 f'[1].name=region [1].description=Region'
             ).get_output_in_json()
@@ -145,10 +144,7 @@ class WorkloadOrchestrationTest(ScenarioTest):
             # Clean tenant: a Context was freshly created by init.
             assert result["context"]["name"] == context_name
             assert result["context"]["properties"]["provisioningState"] == "Succeeded"
-            assert any(
-                c["name"] == "Quality"
-                for c in result["context"]["properties"]["capabilities"]
-            ), "Quality capability not found on the created context"
+            assert result["context"]["properties"]["capabilities"] == []
             # Clean up the Context created by init (cluster prep is idempotent
             # and intentionally left in place).
             self.cmd(
@@ -159,29 +155,6 @@ class WorkloadOrchestrationTest(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     def test_full_wom_workflow(self):
-        # Get existing context and update capabilities
-        context = self.cmd(
-            f'az workload-orchestration context show --resource-group {self.context_rg} --name {self.context_name}'
-        ).get_output_in_json()
-        # Add new capabilities and remove duplicates
-        capabilities = context["properties"]["capabilities"] + [
-            {"name": f"{self.resource_prefix}-Shampoo", "description": f"{self.resource_prefix}-Shampoo"},
-            {"name": f"{self.resource_prefix}-Soap", "description": f"{self.resource_prefix}-Soap"}
-        ]
-        unique_capabilities = { (c["name"], c["description"]): c for c in capabilities }.values()
-        # Write capabilities to a JSON file
-        capabilities_file = os.path.join(os.path.dirname(__file__), "context-capabilities.json")
-        with open(capabilities_file, "w") as f:
-            json.dump(list(unique_capabilities), f, separators=(',', ':'))
-        # Create context with updated capabilities and hierarchies
-        self.cmd(
-            f'az workload-orchestration context create '
-            f'--resource-group {self.context_rg} '
-            f'--location {self.context_location} '
-            f'--name {self.context_name} '
-            f'--capabilities "@{capabilities_file}" '
-            f'--hierarchies [0].name=country [0].description=Country [1].name=region [1].description=Region [2].name=factory [2].description=Factory [3].name=line [3].description=Line'
-        )
         # List contexts and check for created entry
         result = self.cmd(
             f'az workload-orchestration context list --resource-group {self.context_rg}'
@@ -345,9 +318,6 @@ class WorkloadOrchestrationTest(ScenarioTest):
             f"--resource-group {rg} --yes",
             checks=None
         )
-        # Clean up the capabilities file
-        os.remove(capabilities_file)
-        
         # Remove schema version
         self.cmd(
             f'az workload-orchestration schema remove-version --schema-name {schema_name} --version {version} --resource-group {rg}'
@@ -422,5 +392,4 @@ class WorkloadOrchestrationTest(ScenarioTest):
             )
         finally:
             shutil.rmtree(temp_dir)
-
 

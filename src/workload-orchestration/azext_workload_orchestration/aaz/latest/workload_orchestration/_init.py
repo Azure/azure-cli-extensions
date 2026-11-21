@@ -35,11 +35,11 @@ class Init(AAZCommand):
       5. Create Context resource
 
     :example: Initialize a cluster and create a context
-        az workload-orchestration init -c my-cluster -g my-rg -l eastus2euap --context-name MyContext --context-location eastus --capabilities '[{"description":"desc","name":"cap1"}]' --hierarchies '[{"description":"desc","name":"country"}]'
+        az workload-orchestration init -c my-cluster -g my-rg -l eastus2euap --context-name MyContext --context-location eastus --hierarchies '[{"description":"desc","name":"country"}]'
     :example: Use a specific release train
-        az workload-orchestration init -c my-cluster -g my-rg -l eastus2euap --release-train dev --context-name MyContext --context-location eastus --capabilities '[{"description":"desc","name":"cap1"}]' --hierarchies '[{"description":"desc","name":"country"}]'
+        az workload-orchestration init -c my-cluster -g my-rg -l eastus2euap --release-train dev --context-name MyContext --context-location eastus --hierarchies '[{"description":"desc","name":"country"}]'
     :example: Create the context in a different resource group / region
-        az workload-orchestration init -c my-cluster -g my-rg -l eastus2euap --context-name MyContext --context-resource-group ctx-rg --context-location eastus --capabilities '[{"description":"desc","name":"cap1"}]' --hierarchies '[{"description":"desc","name":"country"}]'
+        az workload-orchestration init -c my-cluster -g my-rg -l eastus2euap --context-name MyContext --context-resource-group ctx-rg --context-location eastus --hierarchies '[{"description":"desc","name":"country"}]'
     """
 
     _aaz_info = {
@@ -151,8 +151,10 @@ class Init(AAZCommand):
         _args_schema.capabilities = AAZListArg(
             options=["--capabilities"],
             arg_group="Context",
-            required=True,
-            help="List of Capabilities.",
+            help=(
+                "Deprecated. Context capabilities are now managed automatically "
+                "through Targets. This argument will be removed in a future release."
+            ),
         )
         _args_schema.capabilities.Element = AAZObjectArg()
         _capability = _args_schema.capabilities.Element
@@ -284,7 +286,6 @@ class Init(AAZCommand):
             else args.resource_group.to_serialized_data()
         )
         context_location = args.context_location.to_serialized_data()
-        capabilities = args.capabilities.to_serialized_data()
         hierarchies = args.hierarchies.to_serialized_data()
 
         cli_args = [
@@ -292,9 +293,12 @@ class Init(AAZCommand):
             "-g", context_rg,
             "--name", context_name,
             "--location", context_location,
-            "--capabilities", json.dumps(capabilities),
             "--hierarchies", json.dumps(hierarchies),
         ]
+
+        if has_value(args.capabilities):
+            capabilities = args.capabilities.to_serialized_data() or []
+            cli_args += ["--capabilities", json.dumps(capabilities)]
 
         if has_value(args.tags):
             tags = args.tags.to_serialized_data()

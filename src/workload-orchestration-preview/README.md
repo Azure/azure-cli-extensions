@@ -76,7 +76,6 @@ az workload-orchestration-preview context create \
   --resource-group <resource-group> \
   --location <location> \
   --name <context-name> \
-  --capabilities "@context-capabilities.json" \
   --hierarchies [0].name=country [0].description=Country [1].name=region [1].description=Region [2].name=factory [2].description=Factory [3].name=line [3].description=Line
 ```
 

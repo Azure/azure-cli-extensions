@@ -18,7 +18,7 @@ class SetContext(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-08-01"
+        "version": "2026-06-01"
     }
 
     def _handler(self, command_args):
