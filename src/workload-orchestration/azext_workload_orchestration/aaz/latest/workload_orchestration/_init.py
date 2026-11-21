@@ -309,6 +309,13 @@ class Init(AAZCommand):
         if has_value(args.site_id):
             cli_args += ["--site-id", args.site_id.to_serialized_data()]
 
+        if has_value(args.capabilities):
+            logger.warning(
+                "Argument '--capabilities' is deprecated and will be removed in "
+                "a future release. Context capabilities are now managed "
+                "automatically through Targets."
+            )
+
         _eprint(f"\nCreating Context: '{context_name}'...")
         # Suppress the child command's ERROR-level logging while it runs — we
         # decide how to surface any failure ourselves (warning vs error) once
