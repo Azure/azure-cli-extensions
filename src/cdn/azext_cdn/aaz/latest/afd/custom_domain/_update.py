@@ -17,17 +17,17 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update a new domain within the specified profile.
 
-    :example: Update the custom domain's supported minimum TLS version.
-        az afd custom-domain update -g group --custom-domain-name customDomain --profile-name profile --minimum-tls-version TLS12
+    :example: AFDCustomDomains_Create
+        az afd custom-domain update --resource-group RG --profile-name profile1 --custom-domain-name domain1 --azure-dns-zone  --host-name www.someDomain.net --mtls-settings "{allowedFqdns:[foo.contoso.com],scenario:ClientCertificateRequiredAndValidated,secrets:[{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.Cdn/profiles/profile1/secrets/name1},{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.Cdn/profiles/profile1/secrets/name2}]}" --certificate-type ManagedCertificate --cipher-suite-set-type Customized --customized-cipher-suite-set "{cipher-suite-set-for-tls12:[ECDHE_RSA_AES128_GCM_SHA256],cipher-suite-set-for-tls13:[TLS_AES_128_GCM_SHA256,TLS_AES_256_GCM_SHA384]}" --minimum-tls-version TLS12
 
-    :example: Update the custom domain's certificate type to AFD managed certificate.
-        az afd custom-domain update -g group --custom-domain-name customDomain --profile-name profile --certificate-type ManagedCertificate
+    :example: Configure custom TLS groups
+        az afd custom-domain update --resource-group MyResourceGroup --profile-name MyProfile --custom-domain-name MyDomain --server-tls-group-policy Custom --server-tls-groups X25519MLKEM768 X25519
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/customdomains/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/customdomains/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -83,6 +83,92 @@ class Update(AAZCommand):
 
         # define Arg Group "Properties"
 
+        _args_schema = cls._args_schema
+        _args_schema.mtls_settings = AAZObjectArg(
+            options=["--mtls-settings"],
+            arg_group="Properties",
+            help="The configuration specifying how to enable mutual TLS for the domain, including specifying allowed FQDNs and which server certificate(s) to use.",
+            nullable=True,
+        )
+
+        mtls_settings = cls._args_schema.mtls_settings
+        mtls_settings.client_certificate_required_and_origin_validates = AAZObjectArg(
+            options=["client-certificate-required-and-origin-validates"],
+            blank={},
+        )
+        mtls_settings.client_certificate_required_and_validated = AAZObjectArg(
+            options=["client-certificate-required-and-validated"],
+        )
+        mtls_settings.client_certificate_validated_if_presented = AAZObjectArg(
+            options=["client-certificate-validated-if-presented"],
+        )
+        mtls_settings.complete_mtls_passthrough_to_origin = AAZObjectArg(
+            options=["complete-mtls-passthrough-to-origin"],
+            blank={},
+        )
+
+        client_certificate_required_and_validated = cls._args_schema.mtls_settings.client_certificate_required_and_validated
+        client_certificate_required_and_validated.allowed_fqdns = AAZListArg(
+            options=["allowed-fqdns"],
+            help="List of FQDNs that will be accepted for mutual TLS validation.",
+            nullable=True,
+        )
+        client_certificate_required_and_validated.certificate_revocation_check = AAZStrArg(
+            options=["certificate-revocation-check"],
+            help="Set to Enabled by default. If set to Disabled, revocation status of client certificate chain will be checked before establishing mutual TLS connection.",
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        client_certificate_required_and_validated.secrets = AAZListArg(
+            options=["secrets"],
+            help="List of one or two of Resource References (ie. subs/rg/profile/secret) to Secrets of type MtlsCertificateChain to use in mutual TLS handshake as the trusted issuer certificate chain.",
+        )
+
+        allowed_fqdns = cls._args_schema.mtls_settings.client_certificate_required_and_validated.allowed_fqdns
+        allowed_fqdns.Element = AAZStrArg(
+            nullable=True,
+            fmt=AAZStrArgFormat(
+                pattern="^((?!xn--)[a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,61}$",
+            ),
+        )
+
+        secrets = cls._args_schema.mtls_settings.client_certificate_required_and_validated.secrets
+        secrets.Element = AAZObjectArg(
+            nullable=True,
+        )
+        cls._build_args_resource_reference_update(secrets.Element)
+
+        client_certificate_validated_if_presented = cls._args_schema.mtls_settings.client_certificate_validated_if_presented
+        client_certificate_validated_if_presented.allowed_fqdns = AAZListArg(
+            options=["allowed-fqdns"],
+            help="List of FQDNs that will be accepted for mutual TLS validation.",
+            nullable=True,
+        )
+        client_certificate_validated_if_presented.certificate_revocation_check = AAZStrArg(
+            options=["certificate-revocation-check"],
+            help="Set to Enabled by default. If set to Disabled, revocation status of client certificate chain will be checked before establishing mutual TLS connection.",
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        client_certificate_validated_if_presented.secrets = AAZListArg(
+            options=["secrets"],
+            help="List of one or two of Resource References (ie. subs/rg/profile/secret) to Secrets of type MtlsCertificateChain to use in mutual TLS handshake as the trusted issuer certificate chain.",
+        )
+
+        allowed_fqdns = cls._args_schema.mtls_settings.client_certificate_validated_if_presented.allowed_fqdns
+        allowed_fqdns.Element = AAZStrArg(
+            nullable=True,
+            fmt=AAZStrArgFormat(
+                pattern="^((?!xn--)[a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,61}$",
+            ),
+        )
+
+        secrets = cls._args_schema.mtls_settings.client_certificate_validated_if_presented.secrets
+        secrets.Element = AAZObjectArg(
+            nullable=True,
+        )
+        cls._build_args_resource_reference_update(secrets.Element)
+
         # define Arg Group "Secret"
 
         _args_schema = cls._args_schema
@@ -122,6 +208,19 @@ class Update(AAZCommand):
             nullable=True,
             enum={"TLS10": "TLS10", "TLS12": "TLS12", "TLS13": "TLS13"},
         )
+        _args_schema.server_tls_group_policy = AAZStrArg(
+            options=["--tls-group-policy", "--server-tls-group-policy"],
+            arg_group="TlsSettings",
+            help="Server TLS group policy that will be used for Https.",
+            nullable=True,
+            enum={"Custom": "Custom", "Enhanced": "Enhanced", "Standard": "Standard"},
+        )
+        _args_schema.server_tls_groups = AAZListArg(
+            options=["--server-tls-groups"],
+            arg_group="TlsSettings",
+            help="Server TLS groups that will be used for Https when serverTlsGroupPolicy is Custom.",
+            nullable=True,
+        )
 
         customized_cipher_suite_set = cls._args_schema.customized_cipher_suite_set
         customized_cipher_suite_set.cipher_suite_set_for_tls12 = AAZListArg(
@@ -145,6 +244,12 @@ class Update(AAZCommand):
         cipher_suite_set_for_tls13.Element = AAZStrArg(
             nullable=True,
             enum={"TLS_AES_128_GCM_SHA256": "TLS_AES_128_GCM_SHA256", "TLS_AES_256_GCM_SHA384": "TLS_AES_256_GCM_SHA384"},
+        )
+
+        server_tls_groups = cls._args_schema.server_tls_groups
+        server_tls_groups.Element = AAZStrArg(
+            nullable=True,
+            enum={"SecP256r1MLKEM768": "SecP256r1MLKEM768", "SecP384r1MLKEM1024": "SecP384r1MLKEM1024", "X25519": "X25519", "X25519MLKEM768": "X25519MLKEM768", "prime256v1": "prime256v1", "secp384r1": "secp384r1", "secp521r1": "secp521r1"},
         )
         return cls._args_schema
 
@@ -251,7 +356,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -354,7 +459,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -417,11 +522,51 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("azureDnsZone", AAZObjectType)
+                properties.set_prop("mtlsSettings", AAZObjectType, ".mtls_settings")
                 properties.set_prop("tlsSettings", AAZObjectType)
 
             azure_dns_zone = _builder.get(".properties.azureDnsZone")
             if azure_dns_zone is not None:
                 azure_dns_zone.set_prop("id", AAZStrType, ".azure_dns_zone")
+
+            mtls_settings = _builder.get(".properties.mtlsSettings")
+            if mtls_settings is not None:
+                mtls_settings.set_const("scenario", "ClientCertificateRequiredAndOriginValidates", AAZStrType, ".client_certificate_required_and_origin_validates", typ_kwargs={"flags": {"required": True}})
+                mtls_settings.set_const("scenario", "ClientCertificateRequiredAndValidated", AAZStrType, ".client_certificate_required_and_validated", typ_kwargs={"flags": {"required": True}})
+                mtls_settings.set_const("scenario", "ClientCertificateValidatedIfPresented", AAZStrType, ".client_certificate_validated_if_presented", typ_kwargs={"flags": {"required": True}})
+                mtls_settings.set_const("scenario", "CompleteMtlsPassthroughToOrigin", AAZStrType, ".complete_mtls_passthrough_to_origin", typ_kwargs={"flags": {"required": True}})
+                mtls_settings.discriminate_by("scenario", "ClientCertificateRequiredAndOriginValidates")
+                mtls_settings.discriminate_by("scenario", "ClientCertificateRequiredAndValidated")
+                mtls_settings.discriminate_by("scenario", "ClientCertificateValidatedIfPresented")
+                mtls_settings.discriminate_by("scenario", "CompleteMtlsPassthroughToOrigin")
+
+            disc_client_certificate_required_and_validated = _builder.get(".properties.mtlsSettings{scenario:ClientCertificateRequiredAndValidated}")
+            if disc_client_certificate_required_and_validated is not None:
+                disc_client_certificate_required_and_validated.set_prop("allowedFqdns", AAZListType, ".client_certificate_required_and_validated.allowed_fqdns")
+                disc_client_certificate_required_and_validated.set_prop("certificateRevocationCheck", AAZStrType, ".client_certificate_required_and_validated.certificate_revocation_check")
+                disc_client_certificate_required_and_validated.set_prop("secrets", AAZListType, ".client_certificate_required_and_validated.secrets", typ_kwargs={"flags": {"required": True}})
+
+            allowed_fqdns = _builder.get(".properties.mtlsSettings{scenario:ClientCertificateRequiredAndValidated}.allowedFqdns")
+            if allowed_fqdns is not None:
+                allowed_fqdns.set_elements(AAZStrType, ".")
+
+            secrets = _builder.get(".properties.mtlsSettings{scenario:ClientCertificateRequiredAndValidated}.secrets")
+            if secrets is not None:
+                _UpdateHelper._build_schema_resource_reference_update(secrets.set_elements(AAZObjectType, "."))
+
+            disc_client_certificate_validated_if_presented = _builder.get(".properties.mtlsSettings{scenario:ClientCertificateValidatedIfPresented}")
+            if disc_client_certificate_validated_if_presented is not None:
+                disc_client_certificate_validated_if_presented.set_prop("allowedFqdns", AAZListType, ".client_certificate_validated_if_presented.allowed_fqdns")
+                disc_client_certificate_validated_if_presented.set_prop("certificateRevocationCheck", AAZStrType, ".client_certificate_validated_if_presented.certificate_revocation_check")
+                disc_client_certificate_validated_if_presented.set_prop("secrets", AAZListType, ".client_certificate_validated_if_presented.secrets", typ_kwargs={"flags": {"required": True}})
+
+            allowed_fqdns = _builder.get(".properties.mtlsSettings{scenario:ClientCertificateValidatedIfPresented}.allowedFqdns")
+            if allowed_fqdns is not None:
+                allowed_fqdns.set_elements(AAZStrType, ".")
+
+            secrets = _builder.get(".properties.mtlsSettings{scenario:ClientCertificateValidatedIfPresented}.secrets")
+            if secrets is not None:
+                _UpdateHelper._build_schema_resource_reference_update(secrets.set_elements(AAZObjectType, "."))
 
             tls_settings = _builder.get(".properties.tlsSettings")
             if tls_settings is not None:
@@ -430,6 +575,8 @@ class Update(AAZCommand):
                 tls_settings.set_prop("customizedCipherSuiteSet", AAZObjectType, ".customized_cipher_suite_set")
                 tls_settings.set_prop("minimumTlsVersion", AAZStrType, ".minimum_tls_version")
                 tls_settings.set_prop("secret", AAZObjectType)
+                tls_settings.set_prop("serverTlsGroupPolicy", AAZStrType, ".server_tls_group_policy")
+                tls_settings.set_prop("serverTlsGroups", AAZListType, ".server_tls_groups")
 
             customized_cipher_suite_set = _builder.get(".properties.tlsSettings.customizedCipherSuiteSet")
             if customized_cipher_suite_set is not None:
@@ -447,6 +594,10 @@ class Update(AAZCommand):
             secret = _builder.get(".properties.tlsSettings.secret")
             if secret is not None:
                 secret.set_prop("id", AAZStrType, ".secret")
+
+            server_tls_groups = _builder.get(".properties.tlsSettings.serverTlsGroups")
+            if server_tls_groups is not None:
+                server_tls_groups.set_elements(AAZStrType, ".")
 
             return _instance_value
 
@@ -520,6 +671,9 @@ class _UpdateHelper:
             serialized_name="hostName",
             flags={"required": True},
         )
+        properties.mtls_settings = AAZObjectType(
+            serialized_name="mtlsSettings",
+        )
         properties.pre_validated_custom_domain_resource_id = AAZObjectType(
             serialized_name="preValidatedCustomDomainResourceId",
         )
@@ -543,6 +697,47 @@ class _UpdateHelper:
         extended_properties = _schema_afd_domain_read.properties.extended_properties
         extended_properties.Element = AAZStrType()
 
+        mtls_settings = _schema_afd_domain_read.properties.mtls_settings
+        mtls_settings.scenario = AAZStrType(
+            flags={"required": True},
+        )
+
+        disc_client_certificate_required_and_validated = _schema_afd_domain_read.properties.mtls_settings.discriminate_by("scenario", "ClientCertificateRequiredAndValidated")
+        disc_client_certificate_required_and_validated.allowed_fqdns = AAZListType(
+            serialized_name="allowedFqdns",
+        )
+        disc_client_certificate_required_and_validated.certificate_revocation_check = AAZStrType(
+            serialized_name="certificateRevocationCheck",
+        )
+        disc_client_certificate_required_and_validated.secrets = AAZListType(
+            flags={"required": True},
+        )
+
+        allowed_fqdns = _schema_afd_domain_read.properties.mtls_settings.discriminate_by("scenario", "ClientCertificateRequiredAndValidated").allowed_fqdns
+        allowed_fqdns.Element = AAZStrType()
+
+        secrets = _schema_afd_domain_read.properties.mtls_settings.discriminate_by("scenario", "ClientCertificateRequiredAndValidated").secrets
+        secrets.Element = AAZObjectType()
+        cls._build_schema_resource_reference_read(secrets.Element)
+
+        disc_client_certificate_validated_if_presented = _schema_afd_domain_read.properties.mtls_settings.discriminate_by("scenario", "ClientCertificateValidatedIfPresented")
+        disc_client_certificate_validated_if_presented.allowed_fqdns = AAZListType(
+            serialized_name="allowedFqdns",
+        )
+        disc_client_certificate_validated_if_presented.certificate_revocation_check = AAZStrType(
+            serialized_name="certificateRevocationCheck",
+        )
+        disc_client_certificate_validated_if_presented.secrets = AAZListType(
+            flags={"required": True},
+        )
+
+        allowed_fqdns = _schema_afd_domain_read.properties.mtls_settings.discriminate_by("scenario", "ClientCertificateValidatedIfPresented").allowed_fqdns
+        allowed_fqdns.Element = AAZStrType()
+
+        secrets = _schema_afd_domain_read.properties.mtls_settings.discriminate_by("scenario", "ClientCertificateValidatedIfPresented").secrets
+        secrets.Element = AAZObjectType()
+        cls._build_schema_resource_reference_read(secrets.Element)
+
         tls_settings = _schema_afd_domain_read.properties.tls_settings
         tls_settings.certificate_type = AAZStrType(
             serialized_name="certificateType",
@@ -559,6 +754,12 @@ class _UpdateHelper:
         )
         tls_settings.secret = AAZObjectType()
         cls._build_schema_resource_reference_read(tls_settings.secret)
+        tls_settings.server_tls_group_policy = AAZStrType(
+            serialized_name="serverTlsGroupPolicy",
+        )
+        tls_settings.server_tls_groups = AAZListType(
+            serialized_name="serverTlsGroups",
+        )
 
         customized_cipher_suite_set = _schema_afd_domain_read.properties.tls_settings.customized_cipher_suite_set
         customized_cipher_suite_set.cipher_suite_set_for_tls12 = AAZListType(
@@ -573,6 +774,9 @@ class _UpdateHelper:
 
         cipher_suite_set_for_tls13 = _schema_afd_domain_read.properties.tls_settings.customized_cipher_suite_set.cipher_suite_set_for_tls13
         cipher_suite_set_for_tls13.Element = AAZStrType()
+
+        server_tls_groups = _schema_afd_domain_read.properties.tls_settings.server_tls_groups
+        server_tls_groups.Element = AAZStrType()
 
         validation_properties = _schema_afd_domain_read.properties.validation_properties
         validation_properties.expiration_date = AAZStrType(

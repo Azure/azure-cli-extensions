@@ -10,21 +10,26 @@ from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 import operator as op
 
 class CloudhsmScenario(ScenarioTest):
-    # TODO: add tests here
+
+    def _identity_id(self):
+        # Pre-provisioned user-assigned identity with Storage Blob Data Contributor on the backup storage account.
+        return '/subscriptions/{}/resourceGroups/cli-test/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cli-test-identity'.format(self.get_subscription_id())
+
     @ResourceGroupPreparer(name_prefix='cli', location='ukwest', parameter_name = 'group_name')
     def test_create_list_and_get_cloudHsm(self, group_name):
         chsm_name = self.create_random_name(prefix='cli', length=8)
         self.kwargs.update({
           "chsm_name":chsm_name,
-          "gr_name": group_name
+          "gr_name": group_name,
+          "identity": self._identity_id()
         })
 
         #Create
-        cloud_hsm = self.cmd('az cloudhsm create --name {chsm_name} --resource-group {gr_name} --location ukwest --tags UseMockHfc=True MockHfcDelayInMs=1 --domain-name-label-scope "TenantReuse" --mi-user-assigned /subscriptions/75e96d09-a291-40e1-a5e6-cda78233d867/resourceGroups/cli-test/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cli-test-identity').get_output_in_json()
+        cloud_hsm = self.cmd('az cloudhsm create --name {chsm_name} --resource-group {gr_name} --location ukwest --sku Standard_B1v2 --tags UseMockHfc=True MockHfcDelayInMs=1 --domain-name-label-scope "TenantReuse" --mi-user-assigned {identity}').get_output_in_json()
         assert cloud_hsm['name'] == chsm_name
         assert cloud_hsm['location'] == "ukwest"
         assert cloud_hsm['provisioningState'] == "Succeeded"
-        assert cloud_hsm['sku']['name'] == "Standard_B1"
+        assert cloud_hsm['sku']['name'] == "Standard_B1v2"
         assert len(cloud_hsm['tags']) ==2
 
         #List --resource-group 
@@ -32,7 +37,7 @@ class CloudhsmScenario(ScenarioTest):
         assert cloud_hsm[0]['name'] == chsm_name
         assert cloud_hsm[0]['location'] == "ukwest"
         assert cloud_hsm[0]['provisioningState'] == "Succeeded"
-        assert cloud_hsm[0]['sku']['name'] == "Standard_B1" 
+        assert cloud_hsm[0]['sku']['name'] == "Standard_B1v2"
         assert len(cloud_hsm[0]['tags']) ==2
 
         #List -- cannot be tested because we have multiple resources in the sub and cannot acticipate the result. 
@@ -41,7 +46,7 @@ class CloudhsmScenario(ScenarioTest):
         # assert cloud_hsm[0]['name'] == chsm_name
         # assert cloud_hsm[0]['location'] == "ukwest"
         # assert cloud_hsm[0]['provisioningState'] == "Succeeded"
-        # assert cloud_hsm[0]['sku']['name'] == "Standard_B1" 
+        # assert cloud_hsm[0]['sku']['name'] == "Standard_B1v2"
         # assert len(cloud_hsm[0]['tags']) ==2
         
         #Show --name --resource_group
@@ -49,7 +54,7 @@ class CloudhsmScenario(ScenarioTest):
         assert cloud_hsm['name'] == chsm_name
         assert cloud_hsm['location'] == "ukwest"
         assert cloud_hsm['provisioningState'] == "Succeeded"
-        assert cloud_hsm['sku']['name'] == "Standard_B1" 
+        assert cloud_hsm['sku']['name'] == "Standard_B1v2"
         assert len(cloud_hsm['tags']) ==2
 
         #Update  --tags
@@ -57,23 +62,66 @@ class CloudhsmScenario(ScenarioTest):
         assert cloud_hsm['name'] == chsm_name
         assert cloud_hsm['location'] == "ukwest"
         assert cloud_hsm['provisioningState'] == "Succeeded"
-        assert cloud_hsm['sku']['name'] == "Standard_B1" 
+        assert cloud_hsm['sku']['name'] == "Standard_B1v2"
         assert len(cloud_hsm['tags']) ==3
-    
-    def test_backup_restore(self):
-        #Backup 
-        # We cannot do it on a random generated chsm becuase the device must be activate before we can run this command
-        # Will run this tests locally, generate the recordings and comment out the test case.
-        cloud_hsm_backup = self.cmd('az cloudhsm backup start --cluster-name myhsm --resource-group cli-test --blob-container-uri https://clitestbackup.blob.core.windows.net/testbackup ').get_output_in_json()
 
+        #Delete
+        self.cmd('az cloudhsm delete --name {chsm_name} --resource-group {gr_name} --yes')
+        cloud_hsm = self.cmd('az cloudhsm list --resource-group {gr_name}').get_output_in_json()
+        assert len(cloud_hsm) == 0
 
-        assert op.contains(cloud_hsm_backup['backupId'], "cloudhsm-")
-        assert cloud_hsm_backup['jobId'] != ""
-        assert cloud_hsm_backup['status'] == "Succeeded"
-        backup_id = cloud_hsm_backup['backupId']
-        
+    @ResourceGroupPreparer(name_prefix='cli', location='ukwest', parameter_name = 'group_name')
+    def test_backup_restore(self, group_name):
+        # The mock HFC only reports a cluster as Active (required for backup) when it is named 'AquiredHsm';
+        # a newly created cluster with any other name stays NotActivated, which is required for restore.
+        restored_name = self.create_random_name(prefix='cli', length=8)
         self.kwargs.update({
-          "backup_id":backup_id,
+          "gr_name": group_name,
+          "source_name": "AquiredHsm",
+          "restored_name": restored_name,
+          "identity": self._identity_id(),
+          "container_uri": "https://clitestbackup.blob.core.windows.net/testbackup"
         })
 
-        cloud_hsm_restore = self.cmd('az cloudhsm restore start --cluster-name myrestoredhsm --resource-group cli-test --backup-id {backup_id} --blob-container-uri https://clitestbackup.blob.core.windows.net/testbackup').get_output_in_json()
+        source = self.cmd('az cloudhsm create --name {source_name} --resource-group {gr_name} --location ukwest --tags UseMockHfc=True MockHfcDelayInMs=1 --domain-name-label-scope "TenantReuse" --mi-user-assigned {identity}').get_output_in_json()
+        assert source['provisioningState'] == "Succeeded"
+        assert source['activationState'] == "Active"
+
+        restored = self.cmd('az cloudhsm create --name {restored_name} --resource-group {gr_name} --location ukwest --tags UseMockHfc=True MockHfcDelayInMs=1 --domain-name-label-scope "TenantReuse" --mi-user-assigned {identity}').get_output_in_json()
+        assert restored['provisioningState'] == "Succeeded"
+        assert restored['activationState'] == "NotActivated"
+
+        #Backup start
+        cloud_hsm_backup = self.cmd('az cloudhsm backup start --cluster-name {source_name} --resource-group {gr_name} --blob-container-uri {container_uri}').get_output_in_json()
+        assert cloud_hsm_backup['backupId'] != ""
+        assert cloud_hsm_backup['jobId'] != ""
+        assert cloud_hsm_backup['status'] == "Succeeded"
+        self.kwargs.update({
+          "backup_id": cloud_hsm_backup['backupId'],
+          "backup_job_id": cloud_hsm_backup['jobId'],
+        })
+
+        #Backup show
+        self.cmd('az cloudhsm backup show --cluster-name {source_name} --resource-group {gr_name} --job-id {backup_job_id}', checks=[
+            self.check('jobId', '{backup_job_id}'),
+            self.check('backupId', '{backup_id}'),
+            self.check('status', 'Succeeded')
+        ])
+
+        #Restore start
+        cloud_hsm_restore = self.cmd('az cloudhsm restore start --cluster-name {restored_name} --resource-group {gr_name} --backup-id {backup_id} --blob-container-uri {container_uri}').get_output_in_json()
+        assert cloud_hsm_restore['properties']['jobId'] != ""
+        assert cloud_hsm_restore['properties']['status'] == "Succeeded"
+        self.kwargs.update({
+          "restore_job_id": cloud_hsm_restore['properties']['jobId'],
+        })
+
+        #Restore show
+        self.cmd('az cloudhsm restore show --cluster-name {restored_name} --resource-group {gr_name} --job-id {restore_job_id}', checks=[
+            self.check('properties.jobId', '{restore_job_id}'),
+            self.check('properties.status', 'Succeeded')
+        ])
+
+        #Cleanup
+        self.cmd('az cloudhsm delete --name {restored_name} --resource-group {gr_name} --yes')
+        self.cmd('az cloudhsm delete --name {source_name} --resource-group {gr_name} --yes')

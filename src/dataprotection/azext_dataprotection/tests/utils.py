@@ -44,8 +44,13 @@ def track_job_to_completion(test, job_id=None):
         time.sleep(10)
         job_response = test.cmd('az dataprotection job show --ids "{jobId}"').get_output_in_json()
         job_status = job_response["properties"]["status"]
-        if job_status not in ["Completed", "InProgress"]:
-            raise Exception("Undefined job status received")
+        if job_status == "Completed":
+            break
+        if job_status == "Failed":
+            error_details = job_response["properties"].get("errorDetails") or []
+            raise AssertionError(f"Data Protection job failed: {error_details}")
+        if job_status != "InProgress":
+            raise AssertionError(f"Unexpected Data Protection job status: {job_status}")
 
 
 def get_midpoint_of_time_range(start_time_str, end_time_str):

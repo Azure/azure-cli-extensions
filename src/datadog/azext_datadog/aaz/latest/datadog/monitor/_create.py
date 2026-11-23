@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "datadog monitor create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Creates a new Datadog monitor resource in your Azure subscription. This sets up the integration between Azure and your Datadog account, enabling observability and monitoring of your Azure resources through Datadog.
@@ -25,9 +26,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-06-11",
+        "version": "2025-12-26-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}", "2025-06-11"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}", "2025-12-26-preview"],
         ]
     }
 
@@ -111,12 +112,22 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Datadog organization properties",
         )
+        _args_schema.marketplace_offer_details = AAZObjectArg(
+            options=["--marketplace-offer-details"],
+            arg_group="Properties",
+            help="Details about the marketplace offer associated with the resource. Required for API version 2025-11 and later. For earlier API versions, defaults to the legacy offer.",
+        )
         _args_schema.monitoring_status = AAZStrArg(
             options=["--monitoring-status"],
             arg_group="Properties",
             help="Flag specifying if the resource monitoring is enabled or disabled.",
             default="Enabled",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.saas_data = AAZObjectArg(
+            options=["--saas-data"],
+            arg_group="Properties",
+            help="SaaS details",
         )
         _args_schema.user_info = AAZObjectArg(
             options=["--user-info"],
@@ -176,6 +187,22 @@ class Create(AAZCommand):
         org_properties.resource_collection = AAZBoolArg(
             options=["resource-collection"],
             help="The configuration which describes the state of resource collection. This collects configuration information for all resources in a subscription.",
+        )
+
+        marketplace_offer_details = cls._args_schema.marketplace_offer_details
+        marketplace_offer_details.offer_id = AAZStrArg(
+            options=["offer-id"],
+            help="The offer ID (e.g., \"dd_liftr_v3_decoupled\").",
+        )
+        marketplace_offer_details.publisher_id = AAZStrArg(
+            options=["publisher-id"],
+            help="The publisher ID (e.g., \"datadog1591740804488\").",
+        )
+
+        saas_data = cls._args_schema.saas_data
+        saas_data.saa_s_resource_id = AAZStrArg(
+            options=["saa-s-resource-id"],
+            help="SaaS resource id",
         )
 
         user_info = cls._args_schema.user_info
@@ -283,7 +310,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-11",
+                    "api-version", "2025-12-26-preview",
                     required=True,
                 ),
             }
@@ -321,7 +348,9 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("datadogOrganizationProperties", AAZObjectType, ".org_properties")
+                properties.set_prop("marketplaceOfferDetails", AAZObjectType, ".marketplace_offer_details")
                 properties.set_prop("monitoringStatus", AAZStrType, ".monitoring_status")
+                properties.set_prop("saaSData", AAZObjectType, ".saas_data")
                 properties.set_prop("userInfo", AAZObjectType, ".user_info")
 
             datadog_organization_properties = _builder.get(".properties.datadogOrganizationProperties")
@@ -336,6 +365,15 @@ class Create(AAZCommand):
                 datadog_organization_properties.set_prop("name", AAZStrType, ".name")
                 datadog_organization_properties.set_prop("redirectUri", AAZStrType, ".redirect_uri")
                 datadog_organization_properties.set_prop("resourceCollection", AAZBoolType, ".resource_collection")
+
+            marketplace_offer_details = _builder.get(".properties.marketplaceOfferDetails")
+            if marketplace_offer_details is not None:
+                marketplace_offer_details.set_prop("offerId", AAZStrType, ".offer_id")
+                marketplace_offer_details.set_prop("publisherId", AAZStrType, ".publisher_id")
+
+            saa_s_data = _builder.get(".properties.saaSData")
+            if saa_s_data is not None:
+                saa_s_data.set_prop("saaSResourceId", AAZStrType, ".saa_s_resource_id")
 
             user_info = _builder.get(".properties.userInfo")
             if user_info is not None:
@@ -415,6 +453,9 @@ class Create(AAZCommand):
                 serialized_name="liftrResourcePreference",
                 flags={"read_only": True},
             )
+            properties.marketplace_offer_details = AAZObjectType(
+                serialized_name="marketplaceOfferDetails",
+            )
             properties.marketplace_subscription_status = AAZStrType(
                 serialized_name="marketplaceSubscriptionStatus",
                 flags={"read_only": True},
@@ -426,6 +467,9 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.saa_s_data = AAZObjectType(
+                serialized_name="saaSData",
+            )
             properties.user_info = AAZObjectType(
                 serialized_name="userInfo",
             )
@@ -436,6 +480,19 @@ class Create(AAZCommand):
             datadog_organization_properties.name = AAZStrType()
             datadog_organization_properties.resource_collection = AAZBoolType(
                 serialized_name="resourceCollection",
+            )
+
+            marketplace_offer_details = cls._schema_on_200_201.properties.marketplace_offer_details
+            marketplace_offer_details.offer_id = AAZStrType(
+                serialized_name="offerId",
+            )
+            marketplace_offer_details.publisher_id = AAZStrType(
+                serialized_name="publisherId",
+            )
+
+            saa_s_data = cls._schema_on_200_201.properties.saa_s_data
+            saa_s_data.saa_s_resource_id = AAZStrType(
+                serialized_name="saaSResourceId",
             )
 
             user_info = cls._schema_on_200_201.properties.user_info

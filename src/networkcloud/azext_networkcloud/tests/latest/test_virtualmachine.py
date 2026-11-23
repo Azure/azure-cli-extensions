@@ -17,6 +17,7 @@ from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -45,25 +46,39 @@ def call_scenario1(test):
     step_create(
         test,
         checks=[
-            test.check("name", "{name}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
     step_update_scenario1(
         test,
         checks=[
-            test.check("tags", "{tagsUpdate}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[
+            test.exists("name"),
+            test.exists("id"),
+            test.check("adminUsername", attr(test, "adminUserName")),
+            test.check("bootMethod", attr(test, "bootMethod")),
+            test.check("cpuCores", attr(test, "cpuCores")),
+            test.check("memorySizeGB", attr(test, "memorySize")),
+            test.check("placementHints", attr(test, "placementHints")),
+            test.check("vmDeviceModel", attr(test, "vmDeviceModel")),
+        ],
+    )
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
-    step_reimage(test, checks=[])
-    step_restart(test, checks=[])
-    step_power_off(test, checks=[])
-    step_start(test, checks=[])
-    step_assign_relay(test, checks=[])
+    step_reimage(test, checks=[test.check("status", attr(test, "operationStatus"))])
+    step_restart(test, checks=[test.check("status", attr(test, "operationStatus"))])
+    step_power_off(test, checks=[test.check("status", attr(test, "operationStatus"))])
+    step_start(test, checks=[test.check("status", attr(test, "operationStatus"))])
+    step_assign_relay(
+        test, checks=[test.check("status", attr(test, "operationStatus"))]
+    )
     step_delete(test, checks=[])
     cleanup_scenario1(test)
 
@@ -74,25 +89,37 @@ def call_scenario2(test):
     step_create_with_userassigned_identity(
         test,
         checks=[
-            test.check("name", "{name}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
     step_update_UA_to_SA_managedidentity_scenario1(
         test,
         checks=[
-            test.check("tags", "{tagsUpdate}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
     step_update_scenario2(
         test,
         checks=[
-            test.check("tags", "{tagsUpdate}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[
+            test.exists("name"),
+            test.exists("id"),
+            test.check("adminUsername", attr(test, "adminUserName")),
+            test.check("bootMethod", attr(test, "bootMethod")),
+            test.check("cpuCores", attr(test, "cpuCores")),
+            test.check("memorySizeGB", attr(test, "memorySize")),
+            test.check("placementHints", attr(test, "placementHints")),
+            test.check("vmDeviceModel", attr(test, "vmDeviceModel")),
+        ],
+    )
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
     cleanup_scenario(test)
@@ -104,18 +131,30 @@ def call_scenario3(test):
     step_create_systemassigned_managedidentity(
         test,
         checks=[
-            test.check("name", "{name}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
     step_update_UA_to_SA_managedidentity_scenario2(
         test,
         checks=[
-            test.check("tags", "{tagsUpdate}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[
+            test.exists("name"),
+            test.exists("id"),
+            test.check("adminUsername", attr(test, "adminUserName")),
+            test.check("bootMethod", attr(test, "bootMethod")),
+            test.check("cpuCores", attr(test, "cpuCores")),
+            test.check("memorySizeGB", attr(test, "memorySize")),
+            test.check("placementHints", attr(test, "placementHints")),
+            test.check("vmDeviceModel", attr(test, "vmDeviceModel")),
+        ],
+    )
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
     cleanup_scenario(test)
@@ -127,11 +166,23 @@ def call_scenario4(test):
     step_create_UA_SA_managedidentity(
         test,
         checks=[
-            test.check("name", "{name}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[
+            test.exists("name"),
+            test.exists("id"),
+            test.check("adminUsername", attr(test, "adminUserName")),
+            test.check("bootMethod", attr(test, "bootMethod")),
+            test.check("cpuCores", attr(test, "cpuCores")),
+            test.check("memorySizeGB", attr(test, "memorySize")),
+            test.check("placementHints", attr(test, "placementHints")),
+            test.check("vmDeviceModel", attr(test, "vmDeviceModel")),
+        ],
+    )
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
     cleanup_scenario1(test)
@@ -230,7 +281,10 @@ def step_show(test, checks=None):
     """VirtualMachine show operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud virtualmachine show --name {name} --resource-group {rg}")
+    test.cmd(
+        "az networkcloud virtualmachine show --name {name} --resource-group {rg}",
+        checks=checks,
+    )
 
 
 def step_reimage(test, checks=None):
@@ -238,7 +292,8 @@ def step_reimage(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud virtualmachine reimage --name {name} --resource-group {rg} "
+        "az networkcloud virtualmachine reimage --name {name} --resource-group {rg} ",
+        checks=checks,
     )
 
 
@@ -247,7 +302,8 @@ def step_restart(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud virtualmachine restart --name {name} --resource-group {rg} "
+        "az networkcloud virtualmachine restart --name {name} --resource-group {rg} ",
+        checks=checks,
     )
 
 
@@ -257,7 +313,8 @@ def step_power_off(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud virtualmachine power-off --name {name} --resource-group {rg} "
-        '--skip-shutdown "True"'
+        '--skip-shutdown "True"',
+        checks=checks,
     )
 
 
@@ -266,7 +323,8 @@ def step_start(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud virtualmachine start --name {name} --resource-group {rg} "
+        "az networkcloud virtualmachine start --name {name} --resource-group {rg} ",
+        checks=checks,
     )
 
 
@@ -275,7 +333,8 @@ def step_assign_relay(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud virtualmachine assign-relay --name {name} --resource-group {rg}  --machine-id {machineID} --relay-type {relayType} "
+        "az networkcloud virtualmachine assign-relay --name {name} --resource-group {rg}  --machine-id {machineID} --relay-type {relayType} ",
+        checks=checks,
     )
 
 
@@ -284,7 +343,8 @@ def step_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud virtualmachine delete --name {name} --resource-group {rg} -y"
+        "az networkcloud virtualmachine delete --name {name} --resource-group {rg} --yes",
+        checks=checks,
     )
 
 
@@ -292,14 +352,14 @@ def step_list_resource_group(test, checks=None):
     """VirtualMachine list by resource group operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud virtualmachine list --resource-group {rg}")
+    test.cmd("az networkcloud virtualmachine list --resource-group {rg}", checks=checks)
 
 
 def step_list_subscription(test, checks=None):
     """VirtualMachine list by subscription operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud virtualmachine list")
+    test.cmd("az networkcloud virtualmachine list", checks=checks)
 
 
 def step_update_scenario1(test, checks=None):
@@ -310,7 +370,8 @@ def step_update_scenario1(test, checks=None):
         "az networkcloud virtualmachine update --name {name} "
         "--vm-image-repository-credentials password={password} registry-url={registryURL} username={userName} "
         "--tags {tagsUpdate} --resource-group {rg} --vmi-creds password={password} "
-        "registry-url={registryURL} username={userName} --user-assigned {miUserAssigned}"
+        "registry-url={registryURL} username={userName} --user-assigned {miUserAssigned}",
+        checks=checks,
     )
 
 
@@ -322,7 +383,8 @@ def step_update_scenario2(test, checks=None):
         "az networkcloud virtualmachine update --name {name} "
         "--vm-image-repository-credentials password={password} registry-url={registryURL} username={userName} "
         "--tags {tagsUpdate} --resource-group {rg} --vmi-creds password={password} "
-        "registry-url={registryURL} username={userName} --mi-user-assigned {miUserAssigned}"
+        "registry-url={registryURL} username={userName} --mi-user-assigned {miUserAssigned}",
+        checks=checks,
     )
 
 
@@ -334,7 +396,8 @@ def step_update_UA_to_SA_managedidentity_scenario1(test, checks=None):
         "az networkcloud virtualmachine update --virtual-machine-name {name} "
         "--vm-image-repository-credentials password={password} registry-url={registryURL} username={userName} "
         "--tags {tagsUpdate} --resource-group {rg} "
-        "--mi-system-assigned"
+        "--mi-system-assigned",
+        checks=checks,
     )
 
 
@@ -346,7 +409,8 @@ def step_update_UA_to_SA_managedidentity_scenario2(test, checks=None):
         "az networkcloud virtualmachine update --virtual-machine-name {name} "
         "--vm-image-repository-credentials password={password} registry-url={registryURL} username={userName} "
         "--tags {tagsUpdate} --resource-group {rg} "
-        "--system-assigned"
+        "--system-assigned",
+        checks=checks,
     )
 
 
@@ -357,7 +421,7 @@ class VirtualMachineScenarioTest(ScenarioTest):
         super().__init__(*args, **kwargs)
         self.kwargs.update(
             {
-                "name": self.create_random_name(prefix="cliTestVM", length=24),
+                "name": CONFIG.get("VIRTUALMACHINE", "name"),
                 "location": CONFIG.get("VIRTUALMACHINE", "location"),
                 "extendedLocation": CONFIG.get("VIRTUALMACHINE", "extended_location"),
                 "adminUserName": CONFIG.get("VIRTUALMACHINE", "admin_user_name"),
@@ -370,6 +434,15 @@ class VirtualMachineScenarioTest(ScenarioTest):
                 "networkAttachments": CONFIG.get(
                     "VIRTUALMACHINE", "network_attachments"
                 ),
+                "networkAttachmentsScenario1": CONFIG.get(
+                    "VIRTUALMACHINE", "network_attachments_scenario1"
+                ),
+                "networkAttachmentsScenario3": CONFIG.get(
+                    "VIRTUALMACHINE", "network_attachments_scenario3"
+                ),
+                "networkAttachmentsScenario4": CONFIG.get(
+                    "VIRTUALMACHINE", "network_attachments_scenario4"
+                ),
                 "networkDataContent": CONFIG.get(
                     "VIRTUALMACHINE", "network_data_content"
                 ),
@@ -380,6 +453,7 @@ class VirtualMachineScenarioTest(ScenarioTest):
                 "deleteOpt": CONFIG.get("VIRTUALMACHINE", "delete_opt"),
                 "tags": CONFIG.get("VIRTUALMACHINE", "tags"),
                 "tagsUpdate": CONFIG.get("VIRTUALMACHINE", "tags_update"),
+                "provisioningState": CONFIG.get("VIRTUALMACHINE", "provisioning_state"),
                 "userDataContent": CONFIG.get("VIRTUALMACHINE", "user_data_content"),
                 "vmDeviceModel": CONFIG.get("VIRTUALMACHINE", "vm_device_model"),
                 "vmName": CONFIG.get("VIRTUALMACHINE", "vm_name"),
@@ -389,6 +463,7 @@ class VirtualMachineScenarioTest(ScenarioTest):
                 "miUserAssigned": CONFIG.get("VIRTUALMACHINE", "mi_user_assigned"),
                 "machineID": CONFIG.get("VIRTUALMACHINE", "machine_id"),
                 "relayType": CONFIG.get("VIRTUALMACHINE", "relay_type"),
+                "operationStatus": CONFIG.get("VIRTUALMACHINE", "operation_status"),
             }
         )
 

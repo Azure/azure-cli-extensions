@@ -39,9 +39,9 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         help='Document identifier (dataset, query, or consent document)'
     )
 
-    job_id_type = CLIArgumentType(
-        options_list=['--job-id', '-j'],
-        help='Query job identifier (for run results)'
+    run_id_type = CLIArgumentType(
+        options_list=['--run-id', '-r'],
+        help='Query run identifier'
     )
 
     consent_action_type = CLIArgumentType(
@@ -78,7 +78,10 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
     # Analytics SKR policy context
     with self.argument_context('managedcleanroom frontend analytics skr-policy') as c:
         c.argument('dataset_id', options_list=['--dataset-id', '-d'],
-                   help='Dataset identifier for which to retrieve SKR policy')
+                   help='Optional dataset identifier. When provided, returns the '
+                   'dataset-scoped SKR policy based on the dataset KEK authority (use for '
+                   'MAA-backed datasets). When omitted, returns the collaboration-level CGS '
+                   'SKR policy.')
 
     # OIDC context
     with self.argument_context('managedcleanroom frontend oidc issuerinfo') as c:
@@ -91,6 +94,10 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
 
     # OIDC keys context
     with self.argument_context('managedcleanroom frontend oidc keys') as c:
+        c.argument('collaboration_id', collaboration_id_type)
+
+    # Collaborator context
+    with self.argument_context('managedcleanroom frontend collaborator') as c:
         c.argument('collaboration_id', collaboration_id_type)
 
     # Invitation context
@@ -136,7 +143,8 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument(
             'storage_account_type',
             options_list=['--storage-account-type'],
-            help='Storage account type (e.g., AzureStorageAccount)')
+            help='Storage account type: Azure_BlobStorage, Azure_BlobStorage_DataLakeGen2, '
+            'Azure_OneLake or Aws_S3')
         c.argument(
             'encryption_mode',
             options_list=['--encryption-mode'],
@@ -151,17 +159,18 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument(
             'schema_format',
             options_list=['--schema-format'],
-            help='Schema format (default: Delta)')
+            help='Schema format: csv, json or parquet. Overrides the format in the schema file')
 
         # Access policy parameters
         c.argument(
             'access_mode',
             options_list=['--access-mode'],
-            help='Access mode (e.g., ReadWrite)')
+            arg_type=get_enum_type(['read', 'write']),
+            help='Access mode for the dataset')
         c.argument(
             'allowed_fields',
             options_list=['--allowed-fields'],
-            help='Comma-separated list of allowed field names')
+            help='Comma-separated list of allowed field names (required)')
 
         # Identity parameters
         c.argument(
@@ -179,7 +188,9 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument(
             'identity_issuer_url',
             options_list=['--identity-issuer-url'],
-            help='OIDC issuer URL (HTTPS)')
+            deprecate_info=c.deprecate(target='--identity-issuer-url', hide=True),
+            help='Deprecated and ignored. Configure the OIDC issuer through governance '
+            '(az managedcleanroom frontend oidc set-issuer-url).')
 
         # CPK DEK parameters
         c.argument(
@@ -201,9 +212,21 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             options_list=['--kek-secret-id'],
             help='KEK secret ID (CPK mode only)')
         c.argument(
-            'kek_maa_url',
-            options_list=['--kek-maa-url'],
-            help='MAA URL for KEK (CPK mode only)')
+            'kek_authority_type',
+            options_list=['--kek-authority-type'],
+            arg_type=get_enum_type(['CGS', 'MAA']),
+            help='Attestation authority used for KEK secure key release (CPK mode only). '
+            'Defaults to MAA when only --kek-authority-endpoint is supplied.')
+        c.argument(
+            'kek_authority_endpoint',
+            options_list=[
+                '--kek-authority-endpoint',
+                c.deprecate(
+                    target='--kek-maa-url',
+                    redirect='--kek-authority-endpoint',
+                    hide=True)],
+            help='Attestation authority endpoint for the KEK (CPK mode only). Required for '
+            'MAA; not allowed for CGS.')
         c.argument(
             'subdirectory',
             options_list=['--subdirectory'],
@@ -265,7 +288,7 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             type=str,
             help='JSON string or @file path containing run configuration. '
             'Optional fields: runId (auto-generated if not provided), '
-            'dryRun, startDate, endDate, useOptimizer.')
+            'dryRun, startDate, endDate, useOptimizer, scaleSku.')
 
         c.argument(
             'dry_run',
@@ -285,6 +308,11 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             options_list=['--use-optimizer'],
             action='store_true',
             help='Use query optimizer')
+        c.argument(
+            'scale_sku',
+            options_list=['--scale-sku'],
+            arg_type=get_enum_type(['small', 'medium', 'large']),
+            help='Compute size for the query run. If omitted, the service default (small) is used.')
 
     # Query vote context (unified)
     with self.argument_context('managedcleanroom frontend analytics query vote') as c:
@@ -301,12 +329,23 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
     with self.argument_context('managedcleanroom frontend analytics query runhistory list') as c:
         c.argument('document_id', document_id_type)
 
+    with self.argument_context('managedcleanroom frontend analytics query cancel-run') as c:
+        c.argument('collaboration_id', collaboration_id_type)
+        c.argument('document_id', document_id_type)
+        c.argument('run_id', run_id_type)
+
     # Query runresult context
     with self.argument_context('managedcleanroom frontend analytics query runresult') as c:
         c.argument('collaboration_id', collaboration_id_type)
 
     with self.argument_context('managedcleanroom frontend analytics query runresult show') as c:
-        c.argument('job_id', job_id_type)
+        c.argument(
+            'run_id',
+            options_list=[
+                '--run-id', '-r',
+                c.deprecate(target='--job-id', redirect='--run-id', hide=True),
+                c.deprecate(target='-j', redirect='-r', hide=True)],
+            help='Query run identifier')
 
     # Audit context
     with self.argument_context('managedcleanroom frontend analytics auditevent') as c:

@@ -69,14 +69,19 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
     @AllowLargeResponse()
     def test_dataprotection_backup_instance_update_policy(test):
         test.kwargs.update({
+            'subscriptionId': '38304e13-357e-405e-9e9a-220351dcce8c',
             'rg': 'clitest-dpp-rg',
             'vaultName': 'clitest-bkp-vault-donotdelete',
-            'backupInstanceName': 'clitestblobsadnd-clitestblobsadnd-92e88a05-3816-418b-8987-1285f34c2030',
-            'policyName': 'altvaultpolicy',
-            'policyId': '/subscriptions/59e574f1-e278-4b66-875b-e3e4fe74ad88/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/altvaultpolicy',
-            'altPolicyName': 'vaultpolicy',
-            'altPolicyId': '/subscriptions/59e574f1-e278-4b66-875b-e3e4fe74ad88/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/vaultpolicy'
+            'backupInstanceName': 'clitestblobvijami-clitestblobvijami-92e88a05-3816-418b-8987-1285f34c2030',
+            'policyName': 'blobpolicy',
+            'policyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/blobpolicy',
+            'altPolicyName': 'altvaultpolicy',
+            'altPolicyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/altvaultpolicy'
         })
+        if test.is_live:
+            test.kwargs['originalSubscriptionId'] = test.cmd('az account show --query id -o tsv').output.strip()
+            test.addCleanup(lambda: test.cmd('az account set --subscription "{originalSubscriptionId}"'))
+            test.cmd('az account set --subscription "{subscriptionId}"')
         test.cmd('az dataprotection backup-instance wait -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --timeout 300 '
                  '--custom "properties.currentProtectionState==\'ProtectionConfigured\'"')
 
@@ -216,16 +221,16 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
     @AllowLargeResponse()
     def test_dataprotection_backup_instance_softdelete(test):
         test.kwargs.update({
-            'location': 'eastus',
+            'location': 'centraluseuap',
             'rg': 'clitest-dpp-rg',
             'vaultName': 'clitest-bkp-vault-persistent-bi-donotdelete',
             'softDeleteVault': 'clitest-bkp-vault-sd1-donotdelete',
             'diskName': 'clitest-disk-sd-donotdelete',
-            'diskId': '/subscriptions/59e574f1-e278-4b66-875b-e3e4fe74ad88/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-sd-donotdelete',
+            'diskId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-sd-donotdelete',
             'dataSourceType': "AzureDisk",
             'backupInstanceName1': "clitest-disk-sd-donotdelete-clitest-disk-sd-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1",
             'backupInstanceName2': "clitest-disk-sd-donotdelete-clitest-disk-sd-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1",
-            'policyId2': '/subscriptions/59e574f1-e278-4b66-875b-e3e4fe74ad88/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupPolicies/diskpolicy',
+            'policyId2': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupPolicies/diskpolicy',
             'policyRuleName': "BackupHourly",
             'permissionsScope': "Resource",
         })

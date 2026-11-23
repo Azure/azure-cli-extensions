@@ -42,7 +42,7 @@ class CheckResourceTest(ScenarioTest):
         with self.assertRaises(ComputeClientResourceNotFoundError):
             check_resource(self.cli_ctx, resource_group, name, "0")
 
-        self.cmd('az vmss create -g {rg} -n {name} --image {urn} --instance-count 2 -l {loc} --orchestration-mode uniform')
+        self.cmd('az vmss create -g {rg} -n {name} --image {urn} --instance-count 2 -l {loc} --orchestration-mode uniform --vm-sku Standard_D2s_v3')
 
         with self.assertRaises(ResourceNotFoundError):
             check_resource(self.cli_ctx, resource_group, name, None)
@@ -132,7 +132,7 @@ class CheckResourceTest(ScenarioTest):
         with self.assertRaises(ComputeClientResourceNotFoundError):
             check_resource(self.cli_ctx, resource_group, name, "0")
 
-        self.cmd('az vm create -g {rg} -n {name} --image {urn} -l {loc} --generate-ssh-keys')
+        self.cmd('az vm create -g {rg} -n {name} --image {urn} -l {loc} --generate-ssh-keys --size Standard_D2s_v3')
 
         with self.assertRaises(AzureConnectionError):
             check_resource(self.cli_ctx, resource_group, name, None)

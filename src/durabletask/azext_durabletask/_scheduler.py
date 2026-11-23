@@ -6,7 +6,11 @@
 from .aaz.latest.durabletask.scheduler import Create as _SchedulerCreate
 from .aaz.latest.durabletask.scheduler import Update as _SchedulerUpdate
 from .aaz.latest.durabletask.scheduler import Show as _SchedulerShow
+from .aaz.latest.durabletask.scheduler import Restart as _SchedulerRestart
+from .aaz.latest.durabletask.scheduler.identity import Assign as _IdentityAssign
+from .aaz.latest.durabletask.scheduler.identity import Remove as _IdentityRemove
 from .aaz.latest.durabletask.taskhub import Show as _TaskHubShow
+from azure.cli.core.aaz import has_value
 from azure.cli.core.azclierror import ValidationError, ResourceNotFoundError
 from azure.core.exceptions import HttpResponseError
 
@@ -73,6 +77,68 @@ class UpdateScheduler(_SchedulerUpdate):
         capacity = sku.capacity.to_serialized_data()
         if capacity is None or capacity == 0:
             sku.capacity = None
+
+
+class RestartScheduler(_SchedulerRestart):
+    """Preserve the restart response while using the generated operation."""
+
+    def _handler(self, command_args):
+        super()._handler(command_args)
+        return {
+            "schedulerName": self.ctx.args.scheduler_name.to_serialized_data(),
+            "resourceGroupName": self.ctx.args.resource_group.to_serialized_data(),
+            "status": "Restart initiated",
+        }
+
+
+def _unset_unused_sku_capacity(scheduler_instance):
+    """Drop the sku capacity from the scheduler payload when unset or 0.
+
+    The identity assign/remove operations issue a full PUT of the scheduler.
+    Sending a sku capacity for a non-Dedicated SKU (e.g. Consumption) is
+    invalid, so the property must be removed when it is not applicable.
+    """
+    sku = scheduler_instance.properties.sku
+    capacity_field = getattr(sku, "capacity", None)
+    capacity = capacity_field.to_serialized_data() if capacity_field is not None else None
+    if capacity is None or capacity == 0:
+        sku.capacity = None
+
+
+class AssignIdentity(_IdentityAssign):
+    """Assign managed identities to a Durabletask scheduler."""
+
+    def post_instance_update(self, instance):
+        """Avoid sending sku capacity that does not apply to the scheduler's SKU."""
+        _unset_unused_sku_capacity(self.ctx.vars.instance)
+
+
+class RemoveIdentity(_IdentityRemove):
+    """Remove managed identities from a Durabletask scheduler."""
+
+    def post_instance_update(self, instance):
+        """Remove only the requested identities and preserve unrelated scheduler settings."""
+        if has_value(self.ctx.args.mi_user_assigned):
+            requested = self.ctx.args.mi_user_assigned.to_serialized_data()
+            identities = {}
+            has_system = False
+            if has_value(instance):
+                if has_value(instance.user_assigned_identities):
+                    identities = instance.user_assigned_identities.to_serialized_data()
+                if has_value(instance.type):
+                    has_system = "systemassigned" in instance.type.to_serialized_data().lower()
+            requested_ids = {resource_id.lower() for resource_id in requested}
+            remaining = {
+                resource_id: {} for resource_id in identities
+                if resource_id.lower() not in requested_ids
+            } if requested else {}
+            identity = {"type": "SystemAssigned" if has_system else "None"}
+            if remaining:
+                identity["type"] = "SystemAssigned,UserAssigned" if has_system else "UserAssigned"
+                identity["user_assigned_identities"] = remaining
+            # AAZ otherwise treats a single removal ID as "remove all".
+            self.ctx.vars.instance.identity = identity
+        _unset_unused_sku_capacity(self.ctx.vars.instance)
 
 
 def _get_caller_object_id(cli_ctx):

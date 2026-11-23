@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 class Create(AAZCommand):
-    """Creates an Endpoint resource, which represents a data transfer source or destination.
+    """Create an Endpoint resource, which represents a data transfer source or destination.
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2026-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2026-05-01"],
         ]
     }
 
@@ -42,6 +42,9 @@ class Create(AAZCommand):
             options=["-n", "--name", "--endpoint-name"],
             help="The name of the Endpoint resource.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -50,6 +53,9 @@ class Create(AAZCommand):
             options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
 
         # define Arg Group "Identity"
@@ -78,10 +84,9 @@ class Create(AAZCommand):
             options=["--azure-multi-cloud-connector"],
             arg_group="Properties",
         )
-        _args_schema.storage_blob_container = AAZObjectArg(
-            options=["--storage-blob-container"],
+        _args_schema.azure_storage_blob_container = AAZObjectArg(
+            options=["--azure-storage-blob-container"],
             arg_group="Properties",
-            help="Storage Blob Container Object",
         )
         _args_schema.azure_storage_nfs_file_share = AAZObjectArg(
             options=["--azure-storage-nfs-file-share"],
@@ -95,6 +100,10 @@ class Create(AAZCommand):
             options=["--nfs-mount"],
             arg_group="Properties",
         )
+        _args_schema.s3_with_hmac = AAZObjectArg(
+            options=["--s3-with-hmac"],
+            arg_group="Properties",
+        )
         _args_schema.smb_mount = AAZObjectArg(
             options=["--smb-mount"],
             arg_group="Properties",
@@ -103,6 +112,12 @@ class Create(AAZCommand):
             options=["--description"],
             arg_group="Properties",
             help="A description for the Endpoint.",
+        )
+        _args_schema.endpoint_kind = AAZStrArg(
+            options=["--endpoint-kind"],
+            arg_group="Properties",
+            help="The Endpoint resource kind source or target.",
+            enum={"Source": "Source", "Target": "Target"},
         )
 
         azure_multi_cloud_connector = cls._args_schema.azure_multi_cloud_connector
@@ -117,17 +132,29 @@ class Create(AAZCommand):
             required=True,
         )
 
-        storage_blob_container = cls._args_schema.storage_blob_container
-        storage_blob_container.blob_container_name = AAZStrArg(
+        azure_storage_blob_container = cls._args_schema.azure_storage_blob_container
+        azure_storage_blob_container.allowed_storage_accounts = AAZListArg(
+            options=["allowed-storage-accounts"],
+            help="Full ARM resource IDs of partner-tenant storage accounts that are allowed to be the other side of a cross-tenant data transfer pair with this endpoint. For a source endpoint this lists allowed target storage accounts; for a target endpoint this lists allowed source storage accounts. The full list is replaced on PATCH (omit an entry to remove it; include an entry to add it). Mutual presence in both endpoints' allow lists is re-validated at every job run start, so removing an entry blocks future runs that reference the removed storage account.",
+        )
+        azure_storage_blob_container.blob_container_name = AAZStrArg(
             options=["blob-container-name"],
             help="The name of the Storage blob container that is the target destination.",
             required=True,
         )
-        storage_blob_container.storage_account_resource_id = AAZResourceIdArg(
+        azure_storage_blob_container.enable_cross_tenant_transfer = AAZBoolArg(
+            options=["enable-cross-tenant-transfer"],
+            help="Opt-in flag enabling this endpoint to be used as one side of a cross-tenant data transfer pair. When set to true, RBAC for the endpoint's managed identity is granted on the customer's storage account so that authorization can be performed entirely in the tenant where this endpoint lives. Defaults to false. Can be updated via PATCH.",
+            default=False,
+        )
+        azure_storage_blob_container.storage_account_resource_id = AAZResourceIdArg(
             options=["storage-account-resource-id"],
             help="The Azure Resource ID of the storage account that is the target destination.",
             required=True,
         )
+
+        allowed_storage_accounts = cls._args_schema.azure_storage_blob_container.allowed_storage_accounts
+        allowed_storage_accounts.Element = AAZStrArg()
 
         azure_storage_nfs_file_share = cls._args_schema.azure_storage_nfs_file_share
         azure_storage_nfs_file_share.file_share_name = AAZStrArg(
@@ -142,6 +169,15 @@ class Create(AAZCommand):
         )
 
         azure_storage_smb_file_share = cls._args_schema.azure_storage_smb_file_share
+        azure_storage_smb_file_share.allowed_storage_accounts = AAZListArg(
+            options=["allowed-storage-accounts"],
+            help="Full ARM resource IDs of partner-tenant storage accounts that are allowed to be the other side of a cross-tenant data transfer pair with this endpoint. For a source endpoint this lists allowed target storage accounts; for a target endpoint this lists allowed source storage accounts. The full list is replaced on PATCH (omit an entry to remove it; include an entry to add it). Mutual presence in both endpoints' allow lists is re-validated at every job run start, so removing an entry blocks future runs that reference the removed storage account.",
+        )
+        azure_storage_smb_file_share.enable_cross_tenant_transfer = AAZBoolArg(
+            options=["enable-cross-tenant-transfer"],
+            help="Opt-in flag enabling this endpoint to be used as one side of a cross-tenant data transfer pair. When set to true, RBAC for the endpoint's managed identity is granted on the customer's storage account so that authorization can be performed entirely in the tenant where this endpoint lives. Defaults to false. Can be updated via PATCH.",
+            default=False,
+        )
         azure_storage_smb_file_share.file_share_name = AAZStrArg(
             options=["file-share-name"],
             help="The name of the Azure Storage file share.",
@@ -152,6 +188,9 @@ class Create(AAZCommand):
             help="The Azure Resource ID of the storage account.",
             required=True,
         )
+
+        allowed_storage_accounts = cls._args_schema.azure_storage_smb_file_share.allowed_storage_accounts
+        allowed_storage_accounts.Element = AAZStrArg()
 
         nfs_mount = cls._args_schema.nfs_mount
         nfs_mount.export = AAZStrArg(
@@ -167,7 +206,42 @@ class Create(AAZCommand):
         nfs_mount.nfs_version = AAZStrArg(
             options=["nfs-version"],
             help="The NFS protocol version.",
-            enum={"NFSauto": "NFSauto", "NFSv3": "NFSv3", "NFSv4": "NFSv4"},
+            enum={"NFSauto": "NFSauto", "NFSv3": "NFSv3", "NFSv4": "NFSv4", "NFSv4_1": "NFSv4_1"},
+        )
+        nfs_mount.source_type = AAZStrArg(
+            options=["source-type"],
+            help="Source type to differentiate NFSMount and FSX-SMB endpoints. Default is NFSMount.",
+            default="NfsMount",
+            enum={"FSX-EFS": "FSX-EFS", "NfsMount": "NfsMount"},
+        )
+
+        s3_with_hmac = cls._args_schema.s3_with_hmac
+        s3_with_hmac.credentials = AAZObjectArg(
+            options=["credentials"],
+            help="The Azure Key Vault credentials which stores the access key and secret key. Use empty string to clean-up existing value.",
+        )
+        s3_with_hmac.other_source_type_description = AAZStrArg(
+            options=["other-source-type-description"],
+            help="The description for other source type of S3WithHmac endpoint.",
+        )
+        s3_with_hmac.source_type = AAZStrArg(
+            options=["source-type"],
+            help="The source type of S3WithHmac endpoint.",
+            enum={"ALIBABA": "ALIBABA", "DELL_EMC": "DELL_EMC", "GCS": "GCS", "IBM": "IBM", "MINIO": "MINIO", "OTHER": "OTHER"},
+        )
+        s3_with_hmac.source_uri = AAZStrArg(
+            options=["source-uri"],
+            help="The  URI which points to the source.",
+        )
+
+        credentials = cls._args_schema.s3_with_hmac.credentials
+        credentials.access_key_uri = AAZStrArg(
+            options=["access-key-uri"],
+            help="The Azure Key Vault secret URI which stores the username. Use empty string to clean-up existing value.",
+        )
+        credentials.secret_key_uri = AAZStrArg(
+            options=["secret-key-uri"],
+            help="The Azure Key Vault secret URI which stores the password. Use empty string to clean-up existing value.",
         )
 
         smb_mount = cls._args_schema.smb_mount
@@ -184,6 +258,12 @@ class Create(AAZCommand):
             options=["share-name"],
             help="The name of the SMB share being exported from the server.",
             required=True,
+        )
+        smb_mount.source_type = AAZStrArg(
+            options=["source-type"],
+            help="Source type to differentiate SMBMount and FSX-SMB endpoints. Default is SMBMount.",
+            default="SmbMount",
+            enum={"FSX-SMB": "FSX-SMB", "SmbMount": "SmbMount"},
         )
 
         credentials = cls._args_schema.smb_mount.credentials
@@ -266,7 +346,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-05-01",
                     required=True,
                 ),
             }
@@ -306,17 +386,20 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
+                properties.set_prop("endpointKind", AAZStrType, ".endpoint_kind")
                 properties.set_const("endpointType", "AzureMultiCloudConnector", AAZStrType, ".azure_multi_cloud_connector", typ_kwargs={"flags": {"required": True}})
-                properties.set_const("endpointType", "AzureStorageBlobContainer", AAZStrType, ".storage_blob_container", typ_kwargs={"flags": {"required": True}})
+                properties.set_const("endpointType", "AzureStorageBlobContainer", AAZStrType, ".azure_storage_blob_container", typ_kwargs={"flags": {"required": True}})
                 properties.set_const("endpointType", "AzureStorageNfsFileShare", AAZStrType, ".azure_storage_nfs_file_share", typ_kwargs={"flags": {"required": True}})
                 properties.set_const("endpointType", "AzureStorageSmbFileShare", AAZStrType, ".azure_storage_smb_file_share", typ_kwargs={"flags": {"required": True}})
                 properties.set_const("endpointType", "NfsMount", AAZStrType, ".nfs_mount", typ_kwargs={"flags": {"required": True}})
+                properties.set_const("endpointType", "S3WithHMAC", AAZStrType, ".s3_with_hmac", typ_kwargs={"flags": {"required": True}})
                 properties.set_const("endpointType", "SmbMount", AAZStrType, ".smb_mount", typ_kwargs={"flags": {"required": True}})
                 properties.discriminate_by("endpointType", "AzureMultiCloudConnector")
                 properties.discriminate_by("endpointType", "AzureStorageBlobContainer")
                 properties.discriminate_by("endpointType", "AzureStorageNfsFileShare")
                 properties.discriminate_by("endpointType", "AzureStorageSmbFileShare")
                 properties.discriminate_by("endpointType", "NfsMount")
+                properties.discriminate_by("endpointType", "S3WithHMAC")
                 properties.discriminate_by("endpointType", "SmbMount")
 
             disc_azure_multi_cloud_connector = _builder.get(".properties{endpointType:AzureMultiCloudConnector}")
@@ -326,8 +409,14 @@ class Create(AAZCommand):
 
             disc_azure_storage_blob_container = _builder.get(".properties{endpointType:AzureStorageBlobContainer}")
             if disc_azure_storage_blob_container is not None:
-                disc_azure_storage_blob_container.set_prop("blobContainerName", AAZStrType, ".storage_blob_container.blob_container_name", typ_kwargs={"flags": {"required": True}})
-                disc_azure_storage_blob_container.set_prop("storageAccountResourceId", AAZStrType, ".storage_blob_container.storage_account_resource_id", typ_kwargs={"flags": {"required": True}})
+                disc_azure_storage_blob_container.set_prop("allowedStorageAccounts", AAZListType, ".azure_storage_blob_container.allowed_storage_accounts")
+                disc_azure_storage_blob_container.set_prop("blobContainerName", AAZStrType, ".azure_storage_blob_container.blob_container_name", typ_kwargs={"flags": {"required": True}})
+                disc_azure_storage_blob_container.set_prop("enableCrossTenantTransfer", AAZBoolType, ".azure_storage_blob_container.enable_cross_tenant_transfer")
+                disc_azure_storage_blob_container.set_prop("storageAccountResourceId", AAZStrType, ".azure_storage_blob_container.storage_account_resource_id", typ_kwargs={"flags": {"required": True}})
+
+            allowed_storage_accounts = _builder.get(".properties{endpointType:AzureStorageBlobContainer}.allowedStorageAccounts")
+            if allowed_storage_accounts is not None:
+                allowed_storage_accounts.set_elements(AAZStrType, ".")
 
             disc_azure_storage_nfs_file_share = _builder.get(".properties{endpointType:AzureStorageNfsFileShare}")
             if disc_azure_storage_nfs_file_share is not None:
@@ -336,20 +425,41 @@ class Create(AAZCommand):
 
             disc_azure_storage_smb_file_share = _builder.get(".properties{endpointType:AzureStorageSmbFileShare}")
             if disc_azure_storage_smb_file_share is not None:
+                disc_azure_storage_smb_file_share.set_prop("allowedStorageAccounts", AAZListType, ".azure_storage_smb_file_share.allowed_storage_accounts")
+                disc_azure_storage_smb_file_share.set_prop("enableCrossTenantTransfer", AAZBoolType, ".azure_storage_smb_file_share.enable_cross_tenant_transfer")
                 disc_azure_storage_smb_file_share.set_prop("fileShareName", AAZStrType, ".azure_storage_smb_file_share.file_share_name", typ_kwargs={"flags": {"required": True}})
                 disc_azure_storage_smb_file_share.set_prop("storageAccountResourceId", AAZStrType, ".azure_storage_smb_file_share.storage_account_resource_id", typ_kwargs={"flags": {"required": True}})
+
+            allowed_storage_accounts = _builder.get(".properties{endpointType:AzureStorageSmbFileShare}.allowedStorageAccounts")
+            if allowed_storage_accounts is not None:
+                allowed_storage_accounts.set_elements(AAZStrType, ".")
 
             disc_nfs_mount = _builder.get(".properties{endpointType:NfsMount}")
             if disc_nfs_mount is not None:
                 disc_nfs_mount.set_prop("export", AAZStrType, ".nfs_mount.export", typ_kwargs={"flags": {"required": True}})
                 disc_nfs_mount.set_prop("host", AAZStrType, ".nfs_mount.host", typ_kwargs={"flags": {"required": True}})
                 disc_nfs_mount.set_prop("nfsVersion", AAZStrType, ".nfs_mount.nfs_version")
+                disc_nfs_mount.set_prop("sourceType", AAZStrType, ".nfs_mount.source_type")
+
+            disc_s3_with_hmac = _builder.get(".properties{endpointType:S3WithHMAC}")
+            if disc_s3_with_hmac is not None:
+                disc_s3_with_hmac.set_prop("credentials", AAZObjectType, ".s3_with_hmac.credentials")
+                disc_s3_with_hmac.set_prop("otherSourceTypeDescription", AAZStrType, ".s3_with_hmac.other_source_type_description")
+                disc_s3_with_hmac.set_prop("sourceType", AAZStrType, ".s3_with_hmac.source_type")
+                disc_s3_with_hmac.set_prop("sourceUri", AAZStrType, ".s3_with_hmac.source_uri")
+
+            credentials = _builder.get(".properties{endpointType:S3WithHMAC}.credentials")
+            if credentials is not None:
+                credentials.set_prop("accessKeyUri", AAZStrType, ".access_key_uri")
+                credentials.set_prop("secretKeyUri", AAZStrType, ".secret_key_uri")
+                credentials.set_const("type", "AzureKeyVaultS3WithHMAC", AAZStrType, ".", typ_kwargs={"flags": {"required": True}})
 
             disc_smb_mount = _builder.get(".properties{endpointType:SmbMount}")
             if disc_smb_mount is not None:
                 disc_smb_mount.set_prop("credentials", AAZObjectType, ".smb_mount.credentials")
                 disc_smb_mount.set_prop("host", AAZStrType, ".smb_mount.host", typ_kwargs={"flags": {"required": True}})
                 disc_smb_mount.set_prop("shareName", AAZStrType, ".smb_mount.share_name", typ_kwargs={"flags": {"required": True}})
+                disc_smb_mount.set_prop("sourceType", AAZStrType, ".smb_mount.source_type")
 
             credentials = _builder.get(".properties{endpointType:SmbMount}.credentials")
             if credentials is not None:
@@ -409,6 +519,7 @@ class Create(AAZCommand):
             )
             identity.user_assigned_identities = AAZDictType(
                 serialized_name="userAssignedIdentities",
+                nullable=True,
             )
 
             user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
@@ -426,6 +537,9 @@ class Create(AAZCommand):
 
             properties = cls._schema_on_200.properties
             properties.description = AAZStrType()
+            properties.endpoint_kind = AAZStrType(
+                serialized_name="endpointKind",
+            )
             properties.endpoint_type = AAZStrType(
                 serialized_name="endpointType",
                 flags={"required": True},
@@ -446,14 +560,23 @@ class Create(AAZCommand):
             )
 
             disc_azure_storage_blob_container = cls._schema_on_200.properties.discriminate_by("endpoint_type", "AzureStorageBlobContainer")
+            disc_azure_storage_blob_container.allowed_storage_accounts = AAZListType(
+                serialized_name="allowedStorageAccounts",
+            )
             disc_azure_storage_blob_container.blob_container_name = AAZStrType(
                 serialized_name="blobContainerName",
                 flags={"required": True},
+            )
+            disc_azure_storage_blob_container.enable_cross_tenant_transfer = AAZBoolType(
+                serialized_name="enableCrossTenantTransfer",
             )
             disc_azure_storage_blob_container.storage_account_resource_id = AAZStrType(
                 serialized_name="storageAccountResourceId",
                 flags={"required": True},
             )
+
+            allowed_storage_accounts = cls._schema_on_200.properties.discriminate_by("endpoint_type", "AzureStorageBlobContainer").allowed_storage_accounts
+            allowed_storage_accounts.Element = AAZStrType()
 
             disc_azure_storage_nfs_file_share = cls._schema_on_200.properties.discriminate_by("endpoint_type", "AzureStorageNfsFileShare")
             disc_azure_storage_nfs_file_share.file_share_name = AAZStrType(
@@ -466,6 +589,12 @@ class Create(AAZCommand):
             )
 
             disc_azure_storage_smb_file_share = cls._schema_on_200.properties.discriminate_by("endpoint_type", "AzureStorageSmbFileShare")
+            disc_azure_storage_smb_file_share.allowed_storage_accounts = AAZListType(
+                serialized_name="allowedStorageAccounts",
+            )
+            disc_azure_storage_smb_file_share.enable_cross_tenant_transfer = AAZBoolType(
+                serialized_name="enableCrossTenantTransfer",
+            )
             disc_azure_storage_smb_file_share.file_share_name = AAZStrType(
                 serialized_name="fileShareName",
                 flags={"required": True},
@@ -474,6 +603,9 @@ class Create(AAZCommand):
                 serialized_name="storageAccountResourceId",
                 flags={"required": True},
             )
+
+            allowed_storage_accounts = cls._schema_on_200.properties.discriminate_by("endpoint_type", "AzureStorageSmbFileShare").allowed_storage_accounts
+            allowed_storage_accounts.Element = AAZStrType()
 
             disc_nfs_mount = cls._schema_on_200.properties.discriminate_by("endpoint_type", "NfsMount")
             disc_nfs_mount.export = AAZStrType(
@@ -485,6 +617,32 @@ class Create(AAZCommand):
             disc_nfs_mount.nfs_version = AAZStrType(
                 serialized_name="nfsVersion",
             )
+            disc_nfs_mount.source_type = AAZStrType(
+                serialized_name="sourceType",
+            )
+
+            disc_s3_with_hmac = cls._schema_on_200.properties.discriminate_by("endpoint_type", "S3WithHMAC")
+            disc_s3_with_hmac.credentials = AAZObjectType()
+            disc_s3_with_hmac.other_source_type_description = AAZStrType(
+                serialized_name="otherSourceTypeDescription",
+            )
+            disc_s3_with_hmac.source_type = AAZStrType(
+                serialized_name="sourceType",
+            )
+            disc_s3_with_hmac.source_uri = AAZStrType(
+                serialized_name="sourceUri",
+            )
+
+            credentials = cls._schema_on_200.properties.discriminate_by("endpoint_type", "S3WithHMAC").credentials
+            credentials.access_key_uri = AAZStrType(
+                serialized_name="accessKeyUri",
+            )
+            credentials.secret_key_uri = AAZStrType(
+                serialized_name="secretKeyUri",
+            )
+            credentials.type = AAZStrType(
+                flags={"required": True},
+            )
 
             disc_smb_mount = cls._schema_on_200.properties.discriminate_by("endpoint_type", "SmbMount")
             disc_smb_mount.credentials = AAZObjectType()
@@ -494,6 +652,9 @@ class Create(AAZCommand):
             disc_smb_mount.share_name = AAZStrType(
                 serialized_name="shareName",
                 flags={"required": True},
+            )
+            disc_smb_mount.source_type = AAZStrType(
+                serialized_name="sourceType",
             )
 
             credentials = cls._schema_on_200.properties.discriminate_by("endpoint_type", "SmbMount").credentials

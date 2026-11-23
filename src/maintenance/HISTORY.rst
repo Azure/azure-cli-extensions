@@ -2,6 +2,11 @@
 
 Release History
 ===============
+2.0.0b2
++++++
+* Update command name for acknowledging list of scheduled events
+* Update response handling for acknowledging scheduled events
+
 2.0.0b1
 ++++++
 * Added support for approving list of scheduled events

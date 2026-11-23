@@ -24,9 +24,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-12-01",
+        "version": "2027-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridconnectivity/solutiontypes/{}", "2024-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridconnectivity/solutiontypes/{}", "2027-01-01"],
         ]
     }
 
@@ -122,7 +122,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-12-01",
+                    "api-version", "2027-01-01",
                     required=True,
                 ),
             }
@@ -172,6 +172,9 @@ class Show(AAZCommand):
 
             properties = cls._schema_on_200.properties
             properties.description = AAZStrType()
+            properties.host_types = AAZListType(
+                serialized_name="hostTypes",
+            )
             properties.solution_settings = AAZListType(
                 serialized_name="solutionSettings",
             )
@@ -181,6 +184,9 @@ class Show(AAZCommand):
             properties.supported_azure_regions = AAZListType(
                 serialized_name="supportedAzureRegions",
             )
+
+            host_types = cls._schema_on_200.properties.host_types
+            host_types.Element = AAZStrType()
 
             solution_settings = cls._schema_on_200.properties.solution_settings
             solution_settings.Element = AAZObjectType()
@@ -201,6 +207,10 @@ class Show(AAZCommand):
                 serialized_name="displayName",
                 flags={"required": True},
             )
+            _element.host_types = AAZListType(
+                serialized_name="hostTypes",
+                flags={"required": True},
+            )
             _element.name = AAZStrType(
                 flags={"required": True},
             )
@@ -210,6 +220,9 @@ class Show(AAZCommand):
 
             allowed_values = cls._schema_on_200.properties.solution_settings.Element.allowed_values
             allowed_values.Element = AAZStrType()
+
+            host_types = cls._schema_on_200.properties.solution_settings.Element.host_types
+            host_types.Element = AAZStrType()
 
             supported_azure_regions = cls._schema_on_200.properties.supported_azure_regions
             supported_azure_regions.Element = AAZStrType()

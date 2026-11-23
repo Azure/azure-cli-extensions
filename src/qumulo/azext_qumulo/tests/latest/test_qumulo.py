@@ -63,4 +63,20 @@ class QumuloScenario(ScenarioTest):
             self.check('[0].availabilityZone', '1'),
             self.check('[0].tags.provisionResource', '55e031c5d497a3508838f44ec8767c84')
         ])
+        self.cmd('qumulo storage file-system update -n {sys_name} -g {rg} '
+                 '--tags {{updatedBy:scenario}}',
+                 checks=[
+                     self.check('name', '{sys_name}'),
+                     self.check('tags.updatedBy', 'scenario')
+                 ])
+        self.cmd('qumulo storage file-system show -n {sys_name} -g {rg}', checks=[
+            self.check('tags.updatedBy', 'scenario')
+        ])
+        self.cmd('qumulo storage file-system identity assign -n {sys_name} -g {rg} --system-assigned', checks=[
+            self.check('type', 'SystemAssigned')
+        ])
+        self.cmd('qumulo storage file-system identity show -n {sys_name} -g {rg}', checks=[
+            self.check('type', 'SystemAssigned')
+        ])
+        self.cmd('qumulo storage file-system identity remove -n {sys_name} -g {rg} --system-assigned')
         self.cmd('qumulo storage file-system delete -n {sys_name} -g {rg} -y')

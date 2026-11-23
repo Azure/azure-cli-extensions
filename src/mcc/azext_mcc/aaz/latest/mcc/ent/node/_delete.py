@@ -18,14 +18,14 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Deletes a Microsoft Connected Cache for Enterprise cache node.
 
-    :example: Delete MCC Enterprise Cache Node
-        az mcc ent node delete --mcc-resource-name [MccResourceName] --cache-node-name [MccCacheNodeName] --resource-group [MccResourceRgName]
+    :example: Delete an MCC Enterprise cache node
+        az mcc ent node delete --mcc-resource-name MyMccResource --cache-node-name MyCacheNode --resource-group MyResourceGroup
     """
 
     _aaz_info = {
-        "version": "2024-11-30-preview",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/enterprisemcccustomers/{}/enterprisemcccachenodes/{}", "2024-11-30-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/enterprisemcccustomers/{}/enterprisemcccachenodes/{}", "2026-06-01"],
         ]
     }
 
@@ -163,7 +163,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-30-preview",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }

@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update a new Azure Front Door Standard or Azure Front Door Premium or CDN profile with a profile name under the specified subscription and resource group.
 
-    :example: Update an AFD profile with tags.
-        az afd profile update --profile-name profile --resource-group MyResourceGroup --tags tag1=value1
+    :example: Profiles_Create
+        az afd profile update --resource-group RG --profile-name profile1 --sku Premium_AzureFrontDoor
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -52,6 +52,11 @@ class Update(AAZCommand):
             help="Name of the Azure Front Door Standard or Azure Front Door Premium or CDN profile which is unique within the resource group.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9]+(-*[a-zA-Z0-9])*$",
+                max_length=260,
+                min_length=1,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -246,7 +251,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -293,7 +298,7 @@ class Update(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200, 201]:
@@ -302,7 +307,7 @@ class Update(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -345,7 +350,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }

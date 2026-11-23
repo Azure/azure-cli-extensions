@@ -79,7 +79,8 @@ jobs:
   - bash: |
       #!/usr/bin/env bash
       set -ev
-      pip install wheel==0.30.0 requests packaging setuptools
+      pip install --upgrade azdev==0.2.13
+      pip install requests packaging setuptools
       export CI="ADO"
       python ./scripts/ci/test_index.py -v
     displayName: "Verify Extensions Index"
@@ -106,8 +107,6 @@ jobs:
       inputs:
         versionSpec: '$(python.version)'
     - template: .azure-pipelines/templates/azdev_setup.yml
-    - bash: pip install wheel==0.30.0
-      displayName: 'Install wheel==0.30.0'
     - bash: |
         #!/usr/bin/env bash
         set -ev

@@ -18,7 +18,7 @@ class List(AAZCommand):
     """List all Network Interfaces in the provided resource group
 
     :example: List the Network Interfaces for Resource Group
-        az networkfabric interface list -g "example-rg" --network-device-name "example-device"
+        az networkfabric interface list --resource-group "example-rg" --network-device-name "example-device"
     """
 
     _aaz_info = {

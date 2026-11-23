@@ -1,0 +1,23 @@
+datadog activate-saas:
+  parameters:
+    datadog_organization_properties:
+      rule_exclusions:
+      - option_length_too_long
+datadog monitor create:
+  parameters:
+    marketplace_offer_details:
+      rule_exclusions:
+      - option_length_too_long
+datadog monitor update:
+  parameters:
+    marketplace_offer_details:
+      rule_exclusions:
+      - option_length_too_long
+    sre_agent_configuration:
+      rule_exclusions:
+      - option_length_too_long
+datadog monitor manage-sre-agent-connector:
+  parameters:
+    mcp_connector_resource_id_list:
+      rule_exclusions:
+      - option_length_too_long

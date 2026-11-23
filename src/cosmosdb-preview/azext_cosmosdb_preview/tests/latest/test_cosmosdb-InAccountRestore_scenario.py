@@ -3,8 +3,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
 import os
+import shlex
 import unittest
+from unittest import mock
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
@@ -20,11 +23,22 @@ logger = get_logger(__name__)
 
 class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
 
+    def setUp(self):
+        super().setUp()
+        # The in-account restore scenarios sleep for several minutes so the
+        # service can process the restore operations. Those waits only matter
+        # against a live backend, so skip them during cassette playback to keep
+        # test runs fast.
+        if not self.is_live:
+            sleep_patcher = mock.patch('time.sleep')
+            sleep_patcher.start()
+            self.addCleanup(sleep_patcher.stop)
+
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_database')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_database', location='westcentralus')
     def test_cosmosdb_sql_database(self, resource_group):
         db_name = self.create_random_name(prefix='cli', length=15)
-        location = "WestUS"
+        location = "westcentralus"
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
@@ -32,7 +46,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
             'loc': location
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc}')
 
         database = self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name}').get_output_in_json()
         assert database["name"] == db_name
@@ -50,10 +64,15 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         assert not self.cmd('az cosmosdb sql database exists -g {rg} -a {acc} -n {db_name}').get_output_in_json()
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_container')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_container', location='westus2')
     def test_cosmosdb_sql_container(self, resource_group):
+        from azext_cosmosdb_preview._client_factory import cf_sql_resources
+        from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
+            ComputedProperty, SqlContainerResource, SqlContainerCreateUpdateParameters,
+        )
+
         col = self.create_random_name(prefix='cli', length=15)
-        location = "WestUS"
+        location = "westus2"
         partition = "/pk"
 
         self.kwargs.update({
@@ -65,15 +84,65 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
             'part': partition
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc}')
 
         self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name}')
 
-        collection = self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {col} -p {part}').get_output_in_json()
+        collection = self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {col} -p {part} --ttl 3600').get_output_in_json()
         assert collection["name"] == col
+
+        computed_properties = [
+            {'name': 'normalizedName', 'query': 'SELECT VALUE UPPER(c.name) FROM c'},
+            {'name': 'nameLength', 'query': 'SELECT VALUE LENGTH(c.name) FROM c'},
+        ]
+        # Container create has no computed-properties option; seed through the preview SDK.
+        client = cf_sql_resources(self.cli_ctx, None)
+        existing = client.get_sql_container(
+            resource_group, self.kwargs['acc'], self.kwargs['db_name'], col).resource
+        resource = SqlContainerResource(
+            id=col,
+            partition_key=existing.partition_key,
+            indexing_policy=existing.indexing_policy,
+            default_ttl=existing.default_ttl,
+            unique_key_policy=existing.unique_key_policy,
+            conflict_resolution_policy=existing.conflict_resolution_policy,
+            computed_properties=[ComputedProperty(**prop) for prop in computed_properties],
+        )
+        client.begin_create_update_sql_container(
+            resource_group, self.kwargs['acc'], self.kwargs['db_name'], col,
+            SqlContainerCreateUpdateParameters(resource=resource, options={}),
+        ).result()
 
         collection_show = self.cmd('az cosmosdb sql container show -g {rg} -a {acc} -d {db_name} -n {col}').get_output_in_json()
         assert collection_show["name"] == col
+        self.assertCountEqual(collection_show['resource']['computedProperties'], computed_properties)
+
+        updated_indexing = {
+            'indexingMode': 'consistent',
+            'automatic': True,
+            'includedPaths': [
+                {'path': '/*'}, {'path': '/normalizedName/?'}, {'path': '/nameLength/?'},
+            ],
+            'excludedPaths': [{'path': '/headquarters/employees/?'}, {'path': '/"_etag"/?'}],
+        }
+        self.kwargs['updated_indexing'] = shlex.quote(json.dumps(updated_indexing))
+        for operation, expected_ttl in [
+                ('update --idx {updated_indexing}', 3600),
+                ('show', 3600),
+                ('update --ttl 7200', 7200),
+                ('show', 7200)]:
+            container = self.cmd('az cosmosdb sql container ' + operation +
+                                 ' -g {rg} -a {acc} -d {db_name} -n {col}').get_output_in_json()
+            self.assertEqual(container['name'], col)
+            self.assertCountEqual(container['resource']['computedProperties'], computed_properties)
+            self.assertEqual(container['resource']['defaultTtl'], expected_ttl)
+            self.assertEqual(container['resource']['indexingPolicy']['indexingMode'], 'consistent')
+            self.assertEqual(container['resource']['indexingPolicy']['automatic'], True)
+            self.assertCountEqual(
+                [path['path'] for path in container['resource']['indexingPolicy']['includedPaths']],
+                [path['path'] for path in updated_indexing['includedPaths']])
+            self.assertCountEqual(
+                container['resource']['indexingPolicy']['excludedPaths'], updated_indexing['excludedPaths'])
 
         assert self.cmd('az cosmosdb sql container exists -g {rg} -a {acc} -d {db_name} -n {col}').get_output_in_json()
         assert not self.cmd('az cosmosdb sql container exists -g {rg} -a {acc} -d {db_name} -n invalid').get_output_in_json()
@@ -84,17 +153,17 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb sql container delete -g {rg} -a {acc} -d {db_name} -n {col} --yes')
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_normal_database_restore')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_normal_database_restore', location='westcentralus')
     def test_cosmosdb_sql_normal_database_restore(self, resource_group):
         db_name = self.create_random_name(prefix='cli', length=15)
-        location = "WestUS"
+        location = "westcentralus"
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
             'db_name': db_name,
             'loc': location
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc}')
 
         assert not self.cmd('az cosmosdb sql database exists -g {rg} -a {acc} -n {db_name}').get_output_in_json()
 
@@ -156,7 +225,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
             'ttl': ttl
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc}')
         self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name} --throughput {tp1}')
 
         assert not self.cmd('az cosmosdb sql container exists -g {rg} -a {acc} -d {db_name} -n {ctn_name}').get_output_in_json()
@@ -221,7 +290,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         assert len(database_list) == 0
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_normal_database_prov_container_restore')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_normal_database_prov_container_restore', location='westcentralus')
     def test_cosmosdb_sql_normal_database_prov_container_restore(self, resource_group):
         db_name = self.create_random_name(prefix='cli', length=15)
         ctn_name = self.create_random_name(prefix='cli', length=15)
@@ -229,7 +298,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         unique_key_policy = '"{\\"uniqueKeys\\": [{\\"paths\\": [\\"/path/to/key1\\"]}, {\\"paths\\": [\\"/path/to/key2\\"]}]}"'
         conflict_resolution_policy = '"{\\"mode\\": \\"lastWriterWins\\", \\"conflictResolutionPath\\": \\"/path\\"}"'
         indexing = '"{\\"indexingMode\\": \\"consistent\\", \\"automatic\\": true, \\"includedPaths\\": [{\\"path\\": \\"/*\\"}], \\"excludedPaths\\": [{\\"path\\": \\"/headquarters/employees/?\\"}]}"'
-        location = "WestUS"
+        location = "westcentralus"
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
@@ -242,7 +311,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
             'loc': location
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc}')
         self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name}')
 
         assert not self.cmd('az cosmosdb sql container exists -g {rg} -a {acc} -d {db_name} -n {ctn_name}').get_output_in_json()
@@ -304,7 +373,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         assert container_show["name"] == ctn_name
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_shared_database_prov_container_restore')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_shared_database_prov_container_restore', location='westcentralus')
     def test_cosmosdb_sql_shared_database_prov_container_restore(self, resource_group):
         db_name = self.create_random_name(prefix='cli', length=15)
         ctn_name = self.create_random_name(prefix='cli', length=15)
@@ -312,7 +381,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         unique_key_policy = '"{\\"uniqueKeys\\": [{\\"paths\\": [\\"/path/to/key1\\"]}, {\\"paths\\": [\\"/path/to/key2\\"]}]}"'
         conflict_resolution_policy = '"{\\"mode\\": \\"lastWriterWins\\", \\"conflictResolutionPath\\": \\"/path\\"}"'
         indexing = '"{\\"indexingMode\\": \\"consistent\\", \\"automatic\\": true, \\"includedPaths\\": [{\\"path\\": \\"/*\\"}], \\"excludedPaths\\": [{\\"path\\": \\"/headquarters/employees/?\\"}]}"'
-        location = "WestUS"
+        location = "westcentralus"
         tp1 = 1000
 
         self.kwargs.update({
@@ -327,7 +396,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
             'tp1': tp1
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc}')
         self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name} --throughput {tp1}')
 
         assert not self.cmd('az cosmosdb sql container exists -g {rg} -a {acc} -d {db_name} -n {ctn_name}').get_output_in_json()
@@ -389,10 +458,10 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         assert container_show["name"] == ctn_name
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_database')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_database', location='westcentralus')
     def test_cosmosdb_mongodb_database(self, resource_group):
         db_name = self.create_random_name(prefix='cli', length=15)
-        location = "WestUS"
+        location = "westcentralus"
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
@@ -400,7 +469,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
             'loc': location
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --kind MongoDB --server-version 3.6 --backup-policy-type Continuous --locations regionName={loc}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --kind MongoDB --server-version 3.6 --backup-policy-type Continuous --locations regionName={loc}')
 
         assert not self.cmd('az cosmosdb mongodb database exists -g {rg} -a {acc} -n {db_name}').get_output_in_json()
 
@@ -420,11 +489,11 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         assert len(database_list) == 0
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_collection')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_collection', location='westcentralus')
     def test_cosmosdb_mongodb_collection(self, resource_group):
         col = self.create_random_name(prefix='cli', length=15)
         partition_key = "/thePartitionKey"
-        location = "WestUS"
+        location = "westcentralus"
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
@@ -435,7 +504,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
             'loc': location
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --kind MongoDB --server-version 3.6 --backup-policy-type Continuous --locations regionName={loc}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --kind MongoDB --server-version 3.6 --backup-policy-type Continuous --locations regionName={loc}')
 
         self.cmd('az cosmosdb mongodb database create -g {rg} -a {acc} -n {db_name}')
 
@@ -454,10 +523,10 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb mongodb collection delete -g {rg} -a {acc} -d {db_name} -n {col} --yes')
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_normal_database_prov_collection_restore')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_normal_database_prov_collection_restore', location='westcentralus')
     def test_cosmosdb_mongodb_normal_database_prov_collection_restore(self, resource_group):
         col_name = self.create_random_name(prefix='cli', length=15)
-        location = "WestUS"
+        location = "westcentralus"
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
@@ -469,7 +538,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         })
 
         # Create normal database + prov collection
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --kind MongoDB --server-version 3.6 --backup-policy-type Continuous --locations regionName={loc}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --kind MongoDB --server-version 3.6 --backup-policy-type Continuous --locations regionName={loc}')
         self.cmd('az cosmosdb mongodb database create -g {rg} -a {acc} -n {db_name}')
 
         assert not self.cmd('az cosmosdb mongodb collection exists -g {rg} -a {acc} -d {db_name} -n {col_name}').get_output_in_json()
@@ -543,11 +612,11 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         assert len(collection_list) == 0
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_shared_database_prov_collection_restore')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_shared_database_prov_collection_restore', location='westcentralus')
     def test_cosmosdb_mongodb_shared_database_prov_collection_restore(self, resource_group):
         col_name = self.create_random_name(prefix='cli', length=15)
         col_name2 = self.create_random_name(prefix='cli', length=15)
-        location = "WestUS"
+        location = "westcentralus"
         tp1 = 1000
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
@@ -561,7 +630,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         })
 
         # create mongodb shared database + shared collection + prov collection
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --kind MongoDB --server-version 3.6 --backup-policy-type Continuous --locations regionName={loc}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --kind MongoDB --server-version 3.6 --backup-policy-type Continuous --locations regionName={loc}')
         self.cmd('az cosmosdb mongodb database create -g {rg} -a {acc} -n {db_name} --throughput {tp1}')
 
         assert not self.cmd('az cosmosdb mongodb collection exists -g {rg} -a {acc} -d {db_name} -n {col_name}').get_output_in_json()
@@ -637,7 +706,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         assert len(database_list) == 0
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_normal_database_prov_container_restore_nt')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_normal_database_prov_container_restore_nt', location='westcentralus')
     def test_cosmosdb_sql_normal_database_prov_container_restore_nt(self, resource_group):
         # InAccount No timestamp restore validation
         # Step 1: Initialize variables
@@ -647,7 +716,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         unique_key_policy = '"{\\"uniqueKeys\\": [{\\"paths\\": [\\"/path/to/key1\\"]}, {\\"paths\\": [\\"/path/to/key2\\"]}]}"'
         conflict_resolution_policy = '"{\\"mode\\": \\"lastWriterWins\\", \\"conflictResolutionPath\\": \\"/path\\"}"'
         indexing = '"{\\"indexingMode\\": \\"consistent\\", \\"automatic\\": true, \\"includedPaths\\": [{\\"path\\": \\"/*\\"}], \\"excludedPaths\\": [{\\"path\\": \\"/headquarters/employees/?\\"}]}"'
-        location = "WestUS"
+        location = "westcentralus"
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='ntbrcli', length=15),
@@ -662,7 +731,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
 
         # Step 2: Create CosmosDB account
         logger.info("# Step 2: Create CosmosDB account")
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc}')
 
         # Step 3: Create SQL database
         logger.info("# Step 3: Create SQL database")

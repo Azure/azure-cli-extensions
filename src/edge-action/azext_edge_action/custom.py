@@ -10,13 +10,129 @@
 # pylint: disable=line-too-long
 
 import base64
+import binascii
 import os
 import zipfile
 from io import BytesIO
+from azure.cli.core.aaz import AAZResourceIdArg, AAZStrArg, has_value, register_client
+from azure.cli.core.aaz._client import AAZMgmtClient
+from azure.cli.core.azclierror import FileOperationError, ValidationError
 from knack.log import get_logger
 from knack.util import CLIError
 
+from .aaz.latest.edge_action.execution_filter import Update as _ExecutionFilterUpdate
+from .aaz.latest.edge_action.version import GetVersionCode as _GetVersionCode
+from .aaz.latest.edge_action.version import SwapDefault as _SwapDefault
+
 logger = get_logger(__name__)
+
+
+@register_client("EdgeActionSwapDefaultMgmtClient")
+class EdgeActionSwapDefaultMgmtClient(AAZMgmtClient):
+    def build_lro_polling(self, no_wait, initial_session, deserialization_callback, error_callback,
+                          lro_options=None, path_format_arguments=None):
+        # A no-result action may still finish with a nonempty polling status document.
+        if deserialization_callback is None:
+            deserialization_callback = self._ignore_result
+        return super().build_lro_polling(
+            no_wait, initial_session, deserialization_callback, error_callback,
+            lro_options=lro_options, path_format_arguments=path_format_arguments,
+        )
+
+    @staticmethod
+    def _ignore_result(_session):
+        return None
+
+
+class SwapDefault(_SwapDefault):
+    class EdgeActionVersionsSwapDefault(_SwapDefault.EdgeActionVersionsSwapDefault):
+        CLIENT_TYPE = "EdgeActionSwapDefaultMgmtClient"
+
+
+class GetVersionCode(_GetVersionCode):
+    # Isolate both the generated cache and AAZ's public schema cache.
+    _args_schema = None
+    _arguments_schema = None
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        if cls._args_schema is not None:
+            return cls._args_schema
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.output_directory = AAZStrArg(
+            options=["--output-directory", "-d"],
+            help="Output directory to save the decoded version code as a zip file. "
+                 "If not specified, returns the base64-encoded content.",
+        )
+        return args_schema
+
+    def _output(self, *args, **kwargs):
+        result = super()._output(*args, **kwargs)
+        output_dir = (self.ctx.args.output_directory.to_serialized_data()
+                      if has_value(self.ctx.args.output_directory) else None)
+        if not output_dir:
+            return result
+
+        content = result.get("content")
+        if not content:
+            raise ValidationError("No content returned from the API")
+        try:
+            decoded_content = base64.b64decode(content, validate=True)
+        except (binascii.Error, ValueError) as ex:
+            raise ValidationError(f"Failed to decode base64 content: {ex}") from ex
+
+        name = result.get("name", "version_code")
+        # A service-supplied name must not escape the requested directory.
+        if not name or name in (".", "..") or any(char in name for char in "/\\:\0"):
+            raise ValidationError("Invalid version code file name returned from the API")
+        output_file = os.path.join(output_dir, f"{name}.zip")
+        try:
+            os.makedirs(output_dir, exist_ok=True)
+            with open(output_file, "wb") as output:
+                output.write(decoded_content)
+        except OSError as ex:
+            raise FileOperationError(f"Failed to save file: {ex}") from ex
+
+        message = f"Version code saved to: {output_file}"
+        logger.warning("%s", message)
+        return {"message": message, "file": output_file}
+
+
+class ExecutionFilterUpdate(_ExecutionFilterUpdate):
+    _args_schema = None
+    _arguments_schema = None
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        if cls._args_schema is not None:
+            return cls._args_schema
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.version_id = AAZResourceIdArg(
+            options=["--version-id"],
+            arg_group="Properties",
+            help="The resource ID of a version under the same Edge Action.",
+        )
+        args_schema.execution_filter_identifier_header_name = AAZStrArg(
+            options=["--execution-filter-identifier-header-name"],
+            arg_group="Properties",
+            help="Custom header name associated with the execution filter.",
+        )
+        args_schema.execution_filter_identifier_header_value = AAZStrArg(
+            options=["--execution-filter-identifier-header-value"],
+            arg_group="Properties",
+            help="Custom header value associated with the execution filter.",
+        )
+        return args_schema
+
+    def pre_instance_update(self, instance):
+        # The PUT model excludes these writable fields from generated update arguments.
+        args = self.ctx.args
+        if has_value(args.version_id):
+            instance.properties.version_id = args.version_id
+        if has_value(args.execution_filter_identifier_header_name):
+            instance.properties.execution_filter_identifier_header_name = args.execution_filter_identifier_header_name
+        if has_value(args.execution_filter_identifier_header_value):
+            instance.properties.execution_filter_identifier_header_value = args.execution_filter_identifier_header_value
 
 
 def deploy_edge_action_version(cmd, resource_group, edge_action_name, version,

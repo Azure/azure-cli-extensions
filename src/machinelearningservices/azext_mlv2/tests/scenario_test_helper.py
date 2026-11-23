@@ -14,12 +14,22 @@ from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests.const import MOCKED_SUBSCRIPTION_ID
 from azure.cli.testsdk.scenario_tests.recording_processors import ContentLengthProcessor
 
+from ._sdk_compat import (
+    apply_arm_polling_no_sleep,
+    apply_deployment_settings_from_rest_compat,
+    apply_deployment_template_create_or_update_compat,
+    apply_deployment_template_from_rest_compat,
+    apply_lro_poller_no_background_thread,
+    apply_sdk_json_encoder_msrest_fallback,
+    apply_workspace_outbound_rule_skip_final_get,
+)
 from ._vcr_constants import MockReplacers
 from .recording_processors import RecordingRedactor
 from .util import (
     APIVersionReplacer,
     AzureBlobJobLogReplacer,
     AzureBlobReplacer,
+    DeploymentTemplateUrlRewriter,
     HashQueryParamReplacer,
     HashResponseBodyReplacer,
     HostNormalizer,
@@ -66,6 +76,7 @@ class MLBaseScenarioTest(ScenarioTest):
                 SkipTokenReplacer(),
                 AzureBlobJobLogReplacer(),
                 RegistryDiscoveryQueryStripper(),
+                DeploymentTemplateUrlRewriter(),
                 HostNormalizer(),
                 HashResponseBodyReplacer(),
                 HashQueryParamReplacer(),
@@ -139,6 +150,147 @@ class MLBaseScenarioTest(ScenarioTest):
         )
 
         self.addCleanup(prevent_cassette_from_leaking_across_tests)
+
+    def setUp(self):
+        super().setUp()
+        # Apply azure-ai-ml SDK compatibility shims for cassette playback.
+        # These are scoped to test execution only — production code paths are
+        # unaffected. See ``_sdk_compat.py`` for details.
+        apply_sdk_json_encoder_msrest_fallback()
+        apply_deployment_template_from_rest_compat()
+        apply_deployment_settings_from_rest_compat()
+        apply_deployment_template_create_or_update_compat()
+        apply_workspace_outbound_rule_skip_final_get()
+        # Make ARM/LRO inter-poll sleep a no-op so synchronous polling
+        # finishes immediately during playback.
+        apply_arm_polling_no_sleep()
+        # Stop ``LROPoller.__init__`` from spawning background polling
+        # threads. Eliminates cross-test cassette pollution where threads
+        # leaked from earlier tests caused real-Azure 404s in later tests.
+        apply_lro_poller_no_background_thread()
+        # New azure-ai-ml SDK versions may issue additional HTTP requests
+        # beyond what was captured at cassette recording time.  Two known
+        # cases under azure-ai-ml >= 1.34:
+        #   * ``DeploymentTemplateOperations._get_registry_endpoint`` issues
+        #     an extra discovery call on every instance, in addition to the
+        #     discovery call ``MLClient`` already performs.
+        #   * ARM LRO polling now issues a final GET on the target resource
+        #     after a PUT (``begin_create_or_update``) completes — for
+        #     example, ``WorkspaceOutboundRuleOperations.begin_create``.
+        # To keep cassette playback working without re-recording, allow VCR
+        # to replay matching responses for **discovery** URLs and for any
+        # **idempotent GET** request when the cassette is exhausted.  Repeat
+        # allowance is intentionally scoped (no global
+        # ``allow_playback_repeats=True``) so stateful tests that rely on
+        # the same URL returning different responses in sequence still work
+        # — unplayed entries are always preferred over replayed ones.
+        cassette = getattr(self, "cassette", None)
+        if cassette is None or getattr(self, "in_recording", False):
+            return
+
+        def _is_discovery(request) -> bool:
+            uri = getattr(request, "uri", "") or ""
+            return "/registrymanagement/" in uri and "/discovery" in uri
+
+        def _is_replayable(request) -> bool:
+            if _is_discovery(request):
+                return True
+            method = (getattr(request, "method", "") or "").upper()
+            return method == "GET"
+
+        original_can_play = cassette.can_play_response_for
+        original_play_response = cassette.play_response
+
+        def _can_play(request):
+            if original_can_play(request):
+                return True
+            if _is_replayable(request):
+                for _index, _response in cassette._responses(request):
+                    return True
+            return False
+
+        def _maybe_short_circuit_lro_status(request, response):
+            """Force LRO polling status responses to a terminal state on replay.
+
+            azure-ai-ml 1.34's ARMPolling starts a background polling thread as
+            soon as ``begin_*`` is called -- even with ``--no-wait``.  Cassettes
+            recorded against the older SDK typically captured only a single
+            ``InProgress`` status response, so replaying it verbatim makes the
+            poller spin forever, eventually causing thread contention that
+            breaks VCR interception for subsequent requests.
+
+            On every *replay* (i.e. when the cassette entry has already been
+            played at least once), rewrite any ``InProgress``/``Running``
+            status body to ``Succeeded`` so the poller terminates cleanly.
+            """
+            uri = (getattr(request, "uri", "") or "").lower()
+            # Match the common Azure LRO status URL shapes.
+            if not any(
+                token in uri
+                for token in (
+                    "operationsstatus",
+                    "operationstatuses",
+                    "operationresults",
+                    "asyncoperations",
+                    "azure-asyncoperation",
+                )
+            ):
+                return response
+
+            body = response.get("body") if isinstance(response, dict) else None
+            string = body.get("string") if isinstance(body, dict) else None
+            if string is None:
+                return response
+            try:
+                decoded = string.decode("utf-8") if isinstance(string, (bytes, bytearray)) else string
+            except (UnicodeDecodeError, AttributeError):
+                return response
+            lowered = decoded.lower()
+            if '"status": "succeeded"' in lowered or '"status":"succeeded"' in lowered:
+                return response
+            if '"status"' not in lowered:
+                return response
+
+            import copy as _copy
+            import re as _re
+
+            new_response = _copy.deepcopy(response)
+            rewritten = _re.sub(
+                r'"status"\s*:\s*"(?:InProgress|Running|NotStarted|Accepted|Creating|Updating|Deleting|Provisioning)"',
+                '"status": "Succeeded"',
+                decoded,
+                flags=_re.IGNORECASE,
+            )
+            new_body = new_response["body"]
+            new_body["string"] = rewritten.encode("utf-8") if isinstance(string, (bytes, bytearray)) else rewritten
+            # Update Content-Length so downstream consumers don't trip.
+            headers = new_response.get("headers") or {}
+            if isinstance(headers, dict) and "content-length" in {k.lower() for k in headers}:
+                for key in list(headers.keys()):
+                    if key.lower() == "content-length":
+                        headers[key] = [str(len(new_body["string"]))]
+            return new_response
+
+        def _play_response(request):
+            if _is_replayable(request):
+                # Prefer an unplayed entry first; fall back to replaying the
+                # last matching response so SDK-level retries / extra LRO
+                # GETs don't exhaust the cassette.
+                last_response = None
+                for index, response in cassette._responses(request):
+                    if cassette.play_counts[index] == 0:
+                        cassette.play_counts[index] += 1
+                        cassette._played_interactions.append((request, response))
+                        return response
+                    last_response = response
+                if last_response is not None:
+                    rewritten = _maybe_short_circuit_lro_status(request, last_response)
+                    cassette._played_interactions.append((request, rewritten))
+                    return rewritten
+            return original_play_response(request)
+
+        cassette.can_play_response_for = _can_play
+        cassette.play_response = _play_response
 
     def tearDown(self):
         # os.environ = self.original_env

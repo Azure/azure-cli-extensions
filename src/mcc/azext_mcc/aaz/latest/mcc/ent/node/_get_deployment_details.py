@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class GetDeploymentDetails(AAZCommand):
     """Retrieves Microsoft Connected Cache for Enterprise cache node details and keys needed to deploy cache node.
 
-    :example: Get Deployment Details For MCC Enterprise Cache Node
-        az mcc ent node get-deployment-details --mcc-resource-name [MccResourceName] --cache-node-name [MccCacheNodeName] --resource-group [MccResourceRgName]
+    :example: Get the keys and details needed to deploy a cache node
+        az mcc ent node get-deployment-details --mcc-resource-name MyMccResource --cache-node-name MyCacheNode --resource-group MyResourceGroup
     """
 
     _aaz_info = {
-        "version": "2024-11-30-preview",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/enterprisemcccustomers/{}/enterprisemcccachenodes/{}/getcachenodeinstalldetails", "2024-11-30-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/enterprisemcccustomers/{}/enterprisemcccachenodes/{}/getcachenodeinstalldetails", "2026-06-01"],
         ]
     }
 
@@ -140,7 +140,7 @@ class GetDeploymentDetails(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-30-preview",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }

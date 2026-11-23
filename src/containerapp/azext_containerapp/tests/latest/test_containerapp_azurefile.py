@@ -40,7 +40,9 @@ class ContainerAppMountAzureFileTest(ScenarioTest):
         if format_location(storage_account_location) == format_location(STAGE_LOCATION):
             storage_account_location = "eastus"
         self.cmd(
-            f'az storage account create --resource-group {resource_group}  --name {storage} --location {storage_account_location} --kind StorageV2 --sku Standard_LRS --enable-large-file-share --output none')
+            f'az storage account create --resource-group {resource_group} --name {storage} '
+            f'--location {storage_account_location} --kind StorageV2 --sku Standard_LRS '
+            '--enable-large-file-share --tags "Az.Sec.DisableLocalAuth.Storage::Skip=true" --output none')
         self.cmd(
             f'az storage share-rm create --resource-group {resource_group}  --storage-account {storage} --name {share} --quota 1024 --enabled-protocols SMB --output none')
 

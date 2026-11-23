@@ -15,37 +15,39 @@ interactions:
       ParameterSetName:
       - --location
       User-Agent:
-      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.11.9 (Windows-10-10.0.26300-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.FileShares/locations/eastus/getUsageData?api-version=2026-06-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.FileShares/locations/eastus2euap/getUsageData?api-version=2026-09-01
   response:
     body:
-      string: '{"properties":{"liveShares":{"fileShareCount":2}}}'
+      string: '{"properties":{"liveShares":{"fileShareCount":30}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '50'
+      - '51'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 28 May 2026 08:11:29 GMT
+      - Fri, 30 Oct 2026 01:03:06 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=544a7a2e-697f-487c-b2b0-a13df7f346b6,objectId=7c1fae93-9490-4ea9-ad13-1c6792d577ec/eastus2euap/fe15d878-e1f4-4b47-b3f1-46b961c75e18
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=496ae77e-6ca8-4a1f-924c-83b8c9661760/eastus2euap/416c92cc-6f6b-413d-ab0a-b7d276c87dad
       x-ms-ratelimit-remaining-subscription-writes:
-      - '199'
+      - '799'
       x-ms-throttling-version:
       - v2
+      x-msedge-ref:
+      - 'Ref A: 35EC654B680C4D1FB45E80F32AA93422 Ref B: SN4AA2022305045 Ref C: 2026-10-30T01:03:07Z'
     status:
       code: 200
       message: OK

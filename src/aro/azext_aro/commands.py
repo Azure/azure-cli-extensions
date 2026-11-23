@@ -1,0 +1,43 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
+from azure.cli.core.commands import CliCommandType
+from azext_aro._client_factory import cf_aro
+from azext_aro._format import (
+    aro_show_table_format,
+    aro_list_table_format,
+    aro_version_table_format
+)
+from azext_aro._help import helps  # pylint: disable=unused-import
+
+
+def load_command_table(loader, _):
+    aro_sdk = CliCommandType(
+        operations_tmpl='azext_aro.vendored_sdks.azure.mgmt.redhatopenshift.operations#OpenShiftClustersOperations.{}',  # pylint: disable=line-too-long
+        client_factory=cf_aro)
+
+    with loader.command_group('aro', aro_sdk, client_factory=cf_aro) as g:
+        g.custom_command('create', 'aro_create', supports_no_wait=True)
+        g.custom_command('delete', 'aro_delete', supports_no_wait=True, confirmation=True)
+        g.custom_command('list', 'aro_list', table_transformer=aro_list_table_format)
+        g.custom_show_command('show', 'aro_show', table_transformer=aro_show_table_format)
+        g.custom_command('update', 'aro_update', supports_no_wait=True)
+        g.wait_command('wait')
+
+        g.custom_command('list-credentials', 'aro_list_credentials')
+        g.custom_command('get-admin-kubeconfig', 'aro_get_admin_kubeconfig')
+
+        g.custom_command('get-versions', 'aro_get_versions', table_transformer=aro_version_table_format)
+
+        g.custom_command('validate', 'aro_validate')
+
+    with loader.command_group('aro identity', aro_sdk, client_factory=cf_aro) as g:
+        g.custom_command(
+            'create-required',
+            'aro_identity_create_required',
+            confirmation="Required identities and role assignments will be created. Proceed?",
+            supports_no_wait=False
+        )
+        g.custom_command('get-required', 'aro_identity_get_required', supports_no_wait=False)

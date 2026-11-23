@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update to update certain properties of the IP Prefix resource.
 
     :example: Update the Ip prefix
-        az networkfabric ipprefix update  -g "example-rg" --resource-name "example-ipprefix" --ip-prefix-rules "[{action:Permit,sequenceNumber:4155123341,networkPrefix:'10.10.10.10/30',condition:GreaterThanOrEqualTo,subnetMaskLength:10}]"
+        az networkfabric ipprefix update --resource-group "example-rg" --resource-name "example-ipprefix" --ip-prefix-rules "[{action:Permit,sequenceNumber:4155123341,networkPrefix:'10.10.10.10/30',condition:GreaterThanOrEqualTo,subnetMaskLength:10}]"
     """
 
     _aaz_info = {

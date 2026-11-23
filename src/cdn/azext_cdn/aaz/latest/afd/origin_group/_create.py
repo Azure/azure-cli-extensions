@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a new origin group within the specified profile.
 
-    :example: Creates a new origin group within the specified profile.
-        az afd origin-group create --resource-group RG --profile-name profile1 --origin-group-name origingroup1 --sample-size 3 --successful-samples-required 3 --additional-latency-in-milliseconds 1000 --health-probe-settings "{probe-path:/path2,probe-request-type:NotSet,probe-protocol:NotSet,probe-interval-in-seconds:10}" --traffic-restoration-time-to-healed-or-new-endpoints-in-minutes 5
+    :example: AFDOriginGroups_Create
+        az afd origin-group create --resource-group RG --profile-name profile1 --origin-group-name origingroup1 --authentication "{type:UserAssignedIdentity,scope:'https://www.contoso.com/.default',user-assigned-identity:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/user-assigned-id-1}}" --probe-interval-in-seconds 10 --probe-path /path2 --probe-protocol NotSet --probe-request-type NotSet --additional-latency-in-milliseconds 1000 --sample-size 3 --successful-samples-required 3 --traffic-restoration-time-to-healed-or-new-endpoints-in-minutes 5
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -52,7 +52,7 @@ class Create(AAZCommand):
         )
         _args_schema.profile_name = AAZStrArg(
             options=["--profile-name"],
-            help="Name of the Azure Front Door Standard or Azure Front Door Premium which is unique within the resource group.",
+            help="Name of the Azure Front Door Standard or Azure Front Door Premium profile which is unique within the resource group.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9]+(-*[a-zA-Z0-9])*$",
@@ -64,6 +64,36 @@ class Create(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "HealthProbeSettings"
+
+        _args_schema = cls._args_schema
+        _args_schema.probe_interval_in_seconds = AAZIntArg(
+            options=["--probe-interval-in-seconds"],
+            arg_group="HealthProbeSettings",
+            help="The number of seconds between health probes.Default is 240sec.",
+            fmt=AAZIntArgFormat(
+                maximum=255,
+                minimum=1,
+            ),
+        )
+        _args_schema.probe_path = AAZStrArg(
+            options=["--probe-path"],
+            arg_group="HealthProbeSettings",
+            help="The path relative to the origin that is used to determine the health of the origin.",
+        )
+        _args_schema.probe_protocol = AAZStrArg(
+            options=["--probe-protocol"],
+            arg_group="HealthProbeSettings",
+            help="Protocol to use for health probe.",
+            enum={"Grpc": "Grpc", "Http": "Http", "Https": "Https", "NotSet": "NotSet"},
+        )
+        _args_schema.probe_request_type = AAZStrArg(
+            options=["--probe-request-type"],
+            arg_group="HealthProbeSettings",
+            help="The type of health probe request that is made.",
+            enum={"GET": "GET", "HEAD": "HEAD", "NotSet": "NotSet"},
+        )
+
         # define Arg Group "LoadBalancingSettings"
 
         _args_schema = cls._args_schema
@@ -71,6 +101,11 @@ class Create(AAZCommand):
             options=["--additional-latency-in-milliseconds"],
             arg_group="LoadBalancingSettings",
             help="The additional latency in milliseconds for probes to fall into the lowest latency bucket",
+        )
+        _args_schema.capacity_distribution_settings = AAZObjectArg(
+            options=["--capacity-settings", "--capacity-distribution-settings"],
+            arg_group="LoadBalancingSettings",
+            help="Capacity based round-robin load balancing settings",
         )
         _args_schema.sample_size = AAZIntArg(
             options=["--sample-size"],
@@ -83,6 +118,21 @@ class Create(AAZCommand):
             help="The number of samples within the sample period that must succeed",
         )
 
+        capacity_distribution_settings = cls._args_schema.capacity_distribution_settings
+        capacity_distribution_settings.capacity_conscious_threshold = AAZIntArg(
+            options=["capacity-conscious-threshold"],
+            help="Threshold at which additional backends are added for capacity based load balancing. Default is 80 percent.",
+            fmt=AAZIntArgFormat(
+                maximum=100,
+                minimum=20,
+            ),
+        )
+        capacity_distribution_settings.distribution_type = AAZStrArg(
+            options=["distribution-type"],
+            help="Type of distribution used in capacity based load balancing.",
+            enum={"DynamicWeights": "DynamicWeights", "StaticWeights": "StaticWeights"},
+        )
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -91,31 +141,16 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Authentication settings for origin in origin group.",
         )
-        _args_schema.health_probe_settings = AAZObjectArg(
-            options=["--health-probe-settings"],
-            arg_group="Properties",
-            help="Health probe settings to the origin that is used to determine the health of the origin.",
-        )
-        _args_schema.session_affinity_state = AAZStrArg(
-            options=["--session-affinity-state"],
-            arg_group="Properties",
-            help="Whether to allow session affinity on this host. Valid options are 'Enabled' or 'Disabled'",
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-        _args_schema.traffic_restoration_time_to_healed_or_new_endpoints_in_minutes = AAZIntArg(
-            options=["--traffic-restoration-time-to-healed-or-new-endpoints-in-minutes"],
-            arg_group="Properties",
-            help="Time in minutes to shift the traffic to the endpoint gradually when an unhealthy endpoint comes healthy or a new endpoint is added. Default is 10 mins. This property is currently not supported.",
-            fmt=AAZIntArgFormat(
-                maximum=50,
-                minimum=0,
-            ),
-        )
 
         authentication = cls._args_schema.authentication
         authentication.scope = AAZStrArg(
             options=["scope"],
             help="The scope used when requesting token from Microsoft Entra. For example, for Azure Blob Storage, scope could be \"https://storage.azure.com/.default\".",
+        )
+        authentication.token_destination_header = AAZStrArg(
+            options=["token-destination-header"],
+            help="The HTTP request header where the origin authentication token will be placed when forwarding the request to the origin. If not specified, the service will use the `Authorization` header for backward compatibility.",
+            enum={"Authorization": "Authorization", "X-Azure-Authorization": "X-Azure-Authorization"},
         )
         authentication.type = AAZStrArg(
             options=["type"],
@@ -131,30 +166,6 @@ class Create(AAZCommand):
         user_assigned_identity.id = AAZStrArg(
             options=["id"],
             help="Resource ID.",
-        )
-
-        health_probe_settings = cls._args_schema.health_probe_settings
-        health_probe_settings.probe_interval_in_seconds = AAZIntArg(
-            options=["probe-interval-in-seconds"],
-            help="The number of seconds between health probes.Default is 240sec.",
-            fmt=AAZIntArgFormat(
-                maximum=255,
-                minimum=1,
-            ),
-        )
-        health_probe_settings.probe_path = AAZStrArg(
-            options=["probe-path"],
-            help="The path relative to the origin that is used to determine the health of the origin.",
-        )
-        health_probe_settings.probe_protocol = AAZStrArg(
-            options=["probe-protocol"],
-            help="Protocol to use for health probe.",
-            enum={"Http": "Http", "Https": "Https", "NotSet": "NotSet"},
-        )
-        health_probe_settings.probe_request_type = AAZStrArg(
-            options=["probe-request-type"],
-            help="The type of health probe request that is made.",
-            enum={"GET": "GET", "HEAD": "HEAD", "NotSet": "NotSet"},
         )
         return cls._args_schema
 
@@ -243,7 +254,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -273,14 +284,13 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("authentication", AAZObjectType, ".authentication")
-                properties.set_prop("healthProbeSettings", AAZObjectType, ".health_probe_settings")
+                properties.set_prop("healthProbeSettings", AAZObjectType)
                 properties.set_prop("loadBalancingSettings", AAZObjectType)
-                properties.set_prop("sessionAffinityState", AAZStrType, ".session_affinity_state")
-                properties.set_prop("trafficRestorationTimeToHealedOrNewEndpointsInMinutes", AAZIntType, ".traffic_restoration_time_to_healed_or_new_endpoints_in_minutes")
 
             authentication = _builder.get(".properties.authentication")
             if authentication is not None:
                 authentication.set_prop("scope", AAZStrType, ".scope")
+                authentication.set_prop("tokenDestinationHeader", AAZStrType, ".token_destination_header")
                 authentication.set_prop("type", AAZStrType, ".type")
                 authentication.set_prop("userAssignedIdentity", AAZObjectType, ".user_assigned_identity")
 
@@ -298,8 +308,14 @@ class Create(AAZCommand):
             load_balancing_settings = _builder.get(".properties.loadBalancingSettings")
             if load_balancing_settings is not None:
                 load_balancing_settings.set_prop("additionalLatencyInMilliseconds", AAZIntType, ".additional_latency_in_milliseconds")
+                load_balancing_settings.set_prop("capacityDistributionSettings", AAZObjectType, ".capacity_distribution_settings")
                 load_balancing_settings.set_prop("sampleSize", AAZIntType, ".sample_size")
                 load_balancing_settings.set_prop("successfulSamplesRequired", AAZIntType, ".successful_samples_required")
+
+            capacity_distribution_settings = _builder.get(".properties.loadBalancingSettings.capacityDistributionSettings")
+            if capacity_distribution_settings is not None:
+                capacity_distribution_settings.set_prop("capacityConsciousThreshold", AAZIntType, ".capacity_conscious_threshold")
+                capacity_distribution_settings.set_prop("distributionType", AAZStrType, ".distribution_type")
 
             return self.serialize_content(_content_value)
 
@@ -388,6 +404,9 @@ class _CreateHelper:
 
         authentication = _schema_afd_origin_group_read.properties.authentication
         authentication.scope = AAZStrType()
+        authentication.token_destination_header = AAZStrType(
+            serialized_name="tokenDestinationHeader",
+        )
         authentication.type = AAZStrType()
         authentication.user_assigned_identity = AAZObjectType(
             serialized_name="userAssignedIdentity",
@@ -414,11 +433,22 @@ class _CreateHelper:
         load_balancing_settings.additional_latency_in_milliseconds = AAZIntType(
             serialized_name="additionalLatencyInMilliseconds",
         )
+        load_balancing_settings.capacity_distribution_settings = AAZObjectType(
+            serialized_name="capacityDistributionSettings",
+        )
         load_balancing_settings.sample_size = AAZIntType(
             serialized_name="sampleSize",
         )
         load_balancing_settings.successful_samples_required = AAZIntType(
             serialized_name="successfulSamplesRequired",
+        )
+
+        capacity_distribution_settings = _schema_afd_origin_group_read.properties.load_balancing_settings.capacity_distribution_settings
+        capacity_distribution_settings.capacity_conscious_threshold = AAZIntType(
+            serialized_name="capacityConsciousThreshold",
+        )
+        capacity_distribution_settings.distribution_type = AAZStrType(
+            serialized_name="distributionType",
         )
 
         system_data = _schema_afd_origin_group_read.system_data

@@ -19,9 +19,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01-preview",
+        "version": "2026-08-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.relationships/dependencyof/{}", "2023-09-01-preview"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.relationships/dependencyof/{}", "2026-08-01"],
         ]
     }
 
@@ -46,9 +46,6 @@ class Create(AAZCommand):
             options=["--name"],
             help="Name of dependencyOf relationship.",
             required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9]{3,64}$",
-            ),
         )
         _args_schema.resource_uri = AAZStrArg(
             options=["--resource-uri"],
@@ -150,7 +147,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01-preview",
+                    "api-version", "2026-08-01",
                     required=True,
                 ),
             }

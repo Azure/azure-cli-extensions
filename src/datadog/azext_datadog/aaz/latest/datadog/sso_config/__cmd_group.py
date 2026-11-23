@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "datadog sso-config",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Provides a set of commands to manage Single Sign-On (SSO) configurations for Datadog monitor resources, enabling secure and streamlined access for users.

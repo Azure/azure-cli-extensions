@@ -19,7 +19,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Datadog/agreements/default?api-version=2025-06-11
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Datadog/agreements/default?api-version=2025-12-26-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Datadog/agreements/default","name":"default","type":"microsoft.datadog/agreements","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-31T07:59:53.3867773Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-31T07:59:53.3867773Z"},"properties":{"publisher":null,"product":null,"plan":null,"licenseTextLink":null,"privacyPolicyLink":null,"retrieveDatetime":null,"signature":null,"accepted":true}}'
@@ -75,7 +75,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Datadog/agreements?api-version=2025-06-11
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Datadog/agreements?api-version=2025-12-26-preview
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Datadog/agreements/marketplace","name":"marketplace","type":"Microsoft.Datadog/agreements","properties":{"publisher":"Microsoft","product":"Marketplace","plan":"Marketplace","licenseTextLink":"https://azure.microsoft.com/en-us/support/legal/marketplace-terms/","privacyPolicyLink":"http://www.microsoft.com/privacy","signature":"","accepted":true}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Datadog/agreements/datadog","name":"datadog","type":"Microsoft.Datadog/agreements","properties":{"publisher":"Datadog","product":"Datadog","plan":"Datadog","licenseTextLink":"https://www.datadoghq.com/pdf/Datadog_AzureMarketplace.pdf","privacyPolicyLink":"https://www.datadoghq.com/legal/privacy/","signature":"","accepted":true}}]}'

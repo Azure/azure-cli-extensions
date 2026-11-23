@@ -153,7 +153,7 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return None, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             _request = prepare_request(next_link)
@@ -166,7 +166,11 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -224,7 +228,11 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("GremlinDatabaseGetResults", pipeline_response.http_response)
 
@@ -294,14 +302,19 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 202:
-            response_headers["azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("azure-AsyncOperation")
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
             )
-            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -438,7 +451,9 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -496,14 +511,18 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 202:
-            response_headers["azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("azure-AsyncOperation")
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
             )
-            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -556,7 +575,9 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
                 return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -569,530 +590,6 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
                 deserialization_callback=get_long_running_output,
             )
         return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
-    @distributed_trace_async
-    async def get_gremlin_database_throughput(
-        self, resource_group_name: str, account_name: str, database_name: str, **kwargs: Any
-    ) -> _models.ThroughputSettingsGetResults:
-        """Gets the RUs per second of the Gremlin database under an existing Azure Cosmos DB database
-        account with the provided name.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param account_name: Cosmos DB database account name. Required.
-        :type account_name: str
-        :param database_name: Cosmos DB database name. Required.
-        :type database_name: str
-        :return: ThroughputSettingsGetResults or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.ThroughputSettingsGetResults
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
-
-        _request = build_get_gremlin_database_throughput_request(
-            resource_group_name=resource_group_name,
-            account_name=account_name,
-            database_name=database_name,
-            subscription_id=self._config.subscription_id,
-            api_version=api_version,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = False
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response.http_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})  # type: ignore
-
-        return deserialized  # type: ignore
-
-    async def _update_gremlin_database_throughput_initial(  # pylint: disable=name-too-long
-        self,
-        resource_group_name: str,
-        account_name: str,
-        database_name: str,
-        update_throughput_parameters: Union[_models.ThroughputSettingsUpdateParameters, IO[bytes]],
-        **kwargs: Any
-    ) -> AsyncIterator[bytes]:
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
-
-        content_type = content_type or "application/json"
-        _json = None
-        _content = None
-        if isinstance(update_throughput_parameters, (IOBase, bytes)):
-            _content = update_throughput_parameters
-        else:
-            _json = self._serialize.body(update_throughput_parameters, "ThroughputSettingsUpdateParameters")
-
-        _request = build_update_gremlin_database_throughput_request(
-            resource_group_name=resource_group_name,
-            account_name=account_name,
-            database_name=database_name,
-            subscription_id=self._config.subscription_id,
-            api_version=api_version,
-            content_type=content_type,
-            json=_json,
-            content=_content,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _decompress = kwargs.pop("decompress", True)
-        _stream = True
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 202]:
-            try:
-                await response.read()  # Load the body in memory and close the socket
-            except (StreamConsumedError, StreamClosedError):
-                pass
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        response_headers = {}
-        if response.status_code == 202:
-            response_headers["azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("azure-AsyncOperation")
-            )
-            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
-
-        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
-
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @overload
-    async def begin_update_gremlin_database_throughput(
-        self,
-        resource_group_name: str,
-        account_name: str,
-        database_name: str,
-        update_throughput_parameters: _models.ThroughputSettingsUpdateParameters,
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> AsyncLROPoller[_models.ThroughputSettingsGetResults]:
-        """Update RUs per second of an Azure Cosmos DB Gremlin database.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param account_name: Cosmos DB database account name. Required.
-        :type account_name: str
-        :param database_name: Cosmos DB database name. Required.
-        :type database_name: str
-        :param update_throughput_parameters: The RUs per second of the parameters to provide for the
-         current Gremlin database. Required.
-        :type update_throughput_parameters:
-         ~azure.mgmt.cosmosdb.models.ThroughputSettingsUpdateParameters
-        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the
-         result of cls(response)
-        :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.ThroughputSettingsGetResults]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @overload
-    async def begin_update_gremlin_database_throughput(
-        self,
-        resource_group_name: str,
-        account_name: str,
-        database_name: str,
-        update_throughput_parameters: IO[bytes],
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> AsyncLROPoller[_models.ThroughputSettingsGetResults]:
-        """Update RUs per second of an Azure Cosmos DB Gremlin database.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param account_name: Cosmos DB database account name. Required.
-        :type account_name: str
-        :param database_name: Cosmos DB database name. Required.
-        :type database_name: str
-        :param update_throughput_parameters: The RUs per second of the parameters to provide for the
-         current Gremlin database. Required.
-        :type update_throughput_parameters: IO[bytes]
-        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the
-         result of cls(response)
-        :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.ThroughputSettingsGetResults]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @distributed_trace_async
-    async def begin_update_gremlin_database_throughput(
-        self,
-        resource_group_name: str,
-        account_name: str,
-        database_name: str,
-        update_throughput_parameters: Union[_models.ThroughputSettingsUpdateParameters, IO[bytes]],
-        **kwargs: Any
-    ) -> AsyncLROPoller[_models.ThroughputSettingsGetResults]:
-        """Update RUs per second of an Azure Cosmos DB Gremlin database.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param account_name: Cosmos DB database account name. Required.
-        :type account_name: str
-        :param database_name: Cosmos DB database name. Required.
-        :type database_name: str
-        :param update_throughput_parameters: The RUs per second of the parameters to provide for the
-         current Gremlin database. Is either a ThroughputSettingsUpdateParameters type or a IO[bytes]
-         type. Required.
-        :type update_throughput_parameters:
-         ~azure.mgmt.cosmosdb.models.ThroughputSettingsUpdateParameters or IO[bytes]
-        :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the
-         result of cls(response)
-        :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.ThroughputSettingsGetResults]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
-        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
-        if cont_token is None:
-            raw_result = await self._update_gremlin_database_throughput_initial(
-                resource_group_name=resource_group_name,
-                account_name=account_name,
-                database_name=database_name,
-                update_throughput_parameters=update_throughput_parameters,
-                api_version=api_version,
-                content_type=content_type,
-                cls=lambda x, y, z: x,
-                headers=_headers,
-                params=_params,
-                **kwargs
-            )
-            await raw_result.http_response.read()  # type: ignore
-        kwargs.pop("error_map", None)
-
-        def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response.http_response)
-            if cls:
-                return cls(pipeline_response, deserialized, {})  # type: ignore
-            return deserialized
-
-        if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
-        elif polling is False:
-            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
-        else:
-            polling_method = polling
-        if cont_token:
-            return AsyncLROPoller[_models.ThroughputSettingsGetResults].from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output,
-            )
-        return AsyncLROPoller[_models.ThroughputSettingsGetResults](
-            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
-        )
-
-    async def _migrate_gremlin_database_to_autoscale_initial(  # pylint: disable=name-too-long
-        self, resource_group_name: str, account_name: str, database_name: str, **kwargs: Any
-    ) -> AsyncIterator[bytes]:
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
-
-        _request = build_migrate_gremlin_database_to_autoscale_request(
-            resource_group_name=resource_group_name,
-            account_name=account_name,
-            database_name=database_name,
-            subscription_id=self._config.subscription_id,
-            api_version=api_version,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _decompress = kwargs.pop("decompress", True)
-        _stream = True
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 202]:
-            try:
-                await response.read()  # Load the body in memory and close the socket
-            except (StreamConsumedError, StreamClosedError):
-                pass
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        response_headers = {}
-        if response.status_code == 202:
-            response_headers["azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("azure-AsyncOperation")
-            )
-            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
-
-        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
-
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @distributed_trace_async
-    async def begin_migrate_gremlin_database_to_autoscale(  # pylint: disable=name-too-long
-        self, resource_group_name: str, account_name: str, database_name: str, **kwargs: Any
-    ) -> AsyncLROPoller[_models.ThroughputSettingsGetResults]:
-        """Migrate an Azure Cosmos DB Gremlin database from manual throughput to autoscale.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param account_name: Cosmos DB database account name. Required.
-        :type account_name: str
-        :param database_name: Cosmos DB database name. Required.
-        :type database_name: str
-        :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the
-         result of cls(response)
-        :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.ThroughputSettingsGetResults]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
-        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
-        if cont_token is None:
-            raw_result = await self._migrate_gremlin_database_to_autoscale_initial(
-                resource_group_name=resource_group_name,
-                account_name=account_name,
-                database_name=database_name,
-                api_version=api_version,
-                cls=lambda x, y, z: x,
-                headers=_headers,
-                params=_params,
-                **kwargs
-            )
-            await raw_result.http_response.read()  # type: ignore
-        kwargs.pop("error_map", None)
-
-        def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response.http_response)
-            if cls:
-                return cls(pipeline_response, deserialized, {})  # type: ignore
-            return deserialized
-
-        if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
-        elif polling is False:
-            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
-        else:
-            polling_method = polling
-        if cont_token:
-            return AsyncLROPoller[_models.ThroughputSettingsGetResults].from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output,
-            )
-        return AsyncLROPoller[_models.ThroughputSettingsGetResults](
-            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
-        )
-
-    async def _migrate_gremlin_database_to_manual_throughput_initial(  # pylint: disable=name-too-long
-        self, resource_group_name: str, account_name: str, database_name: str, **kwargs: Any
-    ) -> AsyncIterator[bytes]:
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
-
-        _request = build_migrate_gremlin_database_to_manual_throughput_request(
-            resource_group_name=resource_group_name,
-            account_name=account_name,
-            database_name=database_name,
-            subscription_id=self._config.subscription_id,
-            api_version=api_version,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _decompress = kwargs.pop("decompress", True)
-        _stream = True
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 202]:
-            try:
-                await response.read()  # Load the body in memory and close the socket
-            except (StreamConsumedError, StreamClosedError):
-                pass
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        response_headers = {}
-        if response.status_code == 202:
-            response_headers["azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("azure-AsyncOperation")
-            )
-            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
-
-        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
-
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @distributed_trace_async
-    async def begin_migrate_gremlin_database_to_manual_throughput(  # pylint: disable=name-too-long
-        self, resource_group_name: str, account_name: str, database_name: str, **kwargs: Any
-    ) -> AsyncLROPoller[_models.ThroughputSettingsGetResults]:
-        """Migrate an Azure Cosmos DB Gremlin database from autoscale to manual throughput.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param account_name: Cosmos DB database account name. Required.
-        :type account_name: str
-        :param database_name: Cosmos DB database name. Required.
-        :type database_name: str
-        :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the
-         result of cls(response)
-        :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.ThroughputSettingsGetResults]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
-        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
-        if cont_token is None:
-            raw_result = await self._migrate_gremlin_database_to_manual_throughput_initial(
-                resource_group_name=resource_group_name,
-                account_name=account_name,
-                database_name=database_name,
-                api_version=api_version,
-                cls=lambda x, y, z: x,
-                headers=_headers,
-                params=_params,
-                **kwargs
-            )
-            await raw_result.http_response.read()  # type: ignore
-        kwargs.pop("error_map", None)
-
-        def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response.http_response)
-            if cls:
-                return cls(pipeline_response, deserialized, {})  # type: ignore
-            return deserialized
-
-        if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
-        elif polling is False:
-            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
-        else:
-            polling_method = polling
-        if cont_token:
-            return AsyncLROPoller[_models.ThroughputSettingsGetResults].from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output,
-            )
-        return AsyncLROPoller[_models.ThroughputSettingsGetResults](
-            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
-        )
 
     @distributed_trace
     def list_gremlin_graphs(
@@ -1163,7 +660,7 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return None, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             _request = prepare_request(next_link)
@@ -1176,7 +673,11 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -1236,7 +737,11 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("GremlinGraphGetResults", pipeline_response.http_response)
 
@@ -1306,14 +811,19 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 202:
-            response_headers["azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("azure-AsyncOperation")
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
             )
-            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -1457,7 +967,9 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -1516,14 +1028,18 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 202:
-            response_headers["azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("azure-AsyncOperation")
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
             )
-            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -1579,7 +1095,9 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
                 return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -1592,6 +1110,229 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
                 deserialization_callback=get_long_running_output,
             )
         return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    async def _retrieve_continuous_backup_information_initial(  # pylint: disable=name-too-long
+        self,
+        resource_group_name: str,
+        account_name: str,
+        database_name: str,
+        graph_name: str,
+        location: Union[_models.ContinuousBackupRestoreLocation, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        content_type = content_type or "application/json"
+        _json = None
+        _content = None
+        if isinstance(location, (IOBase, bytes)):
+            _content = location
+        else:
+            _json = self._serialize.body(location, "ContinuousBackupRestoreLocation")
+
+        _request = build_retrieve_continuous_backup_information_request(
+            resource_group_name=resource_group_name,
+            account_name=account_name,
+            database_name=database_name,
+            graph_name=graph_name,
+            subscription_id=self._config.subscription_id,
+            api_version=api_version,
+            content_type=content_type,
+            json=_json,
+            content=_content,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _decompress = kwargs.pop("decompress", True)
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
+        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @overload
+    async def begin_retrieve_continuous_backup_information(  # pylint: disable=name-too-long
+        self,
+        resource_group_name: str,
+        account_name: str,
+        database_name: str,
+        graph_name: str,
+        location: _models.ContinuousBackupRestoreLocation,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.BackupInformation]:
+        """Retrieves continuous backup information for a gremlin graph.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param account_name: Cosmos DB database account name. Required.
+        :type account_name: str
+        :param database_name: Cosmos DB database name. Required.
+        :type database_name: str
+        :param graph_name: Cosmos DB graph name. Required.
+        :type graph_name: str
+        :param location: The name of the continuous backup restore location. Required.
+        :type location: ~azure.mgmt.cosmosdb.models.ContinuousBackupRestoreLocation
+        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns either BackupInformation or the result of
+         cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.BackupInformation]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @overload
+    async def begin_retrieve_continuous_backup_information(  # pylint: disable=name-too-long
+        self,
+        resource_group_name: str,
+        account_name: str,
+        database_name: str,
+        graph_name: str,
+        location: IO[bytes],
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.BackupInformation]:
+        """Retrieves continuous backup information for a gremlin graph.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param account_name: Cosmos DB database account name. Required.
+        :type account_name: str
+        :param database_name: Cosmos DB database name. Required.
+        :type database_name: str
+        :param graph_name: Cosmos DB graph name. Required.
+        :type graph_name: str
+        :param location: The name of the continuous backup restore location. Required.
+        :type location: IO[bytes]
+        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns either BackupInformation or the result of
+         cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.BackupInformation]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @distributed_trace_async
+    async def begin_retrieve_continuous_backup_information(  # pylint: disable=name-too-long
+        self,
+        resource_group_name: str,
+        account_name: str,
+        database_name: str,
+        graph_name: str,
+        location: Union[_models.ContinuousBackupRestoreLocation, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.BackupInformation]:
+        """Retrieves continuous backup information for a gremlin graph.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param account_name: Cosmos DB database account name. Required.
+        :type account_name: str
+        :param database_name: Cosmos DB database name. Required.
+        :type database_name: str
+        :param graph_name: Cosmos DB graph name. Required.
+        :type graph_name: str
+        :param location: The name of the continuous backup restore location. Is either a
+         ContinuousBackupRestoreLocation type or a IO[bytes] type. Required.
+        :type location: ~azure.mgmt.cosmosdb.models.ContinuousBackupRestoreLocation or IO[bytes]
+        :return: An instance of AsyncLROPoller that returns either BackupInformation or the result of
+         cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.BackupInformation]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.BackupInformation] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._retrieve_continuous_backup_information_initial(
+                resource_group_name=resource_group_name,
+                account_name=account_name,
+                database_name=database_name,
+                graph_name=graph_name,
+                location=location,
+                api_version=api_version,
+                content_type=content_type,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize("BackupInformation", pipeline_response.http_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})  # type: ignore
+            return deserialized
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[_models.BackupInformation].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[_models.BackupInformation](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
     @distributed_trace_async
     async def get_gremlin_graph_throughput(
@@ -1648,7 +1389,11 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response.http_response)
 
@@ -1718,14 +1463,19 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 202:
-            response_headers["azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("azure-AsyncOperation")
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
             )
-            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -1872,7 +1622,9 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -1935,10 +1687,11 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
 
         response_headers = {}
         if response.status_code == 202:
-            response_headers["azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("azure-AsyncOperation")
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
             )
-            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -1998,7 +1751,9 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -2061,10 +1816,11 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
 
         response_headers = {}
         if response.status_code == 202:
-            response_headers["azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("azure-AsyncOperation")
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
             )
-            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -2124,7 +1880,9 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -2141,21 +1899,21 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
         )
 
     @distributed_trace_async
-    async def get_gremlin_role_definition(
-        self, resource_group_name: str, account_name: str, role_definition_id: str, **kwargs: Any
-    ) -> _models.GremlinRoleDefinitionResource:
-        """Retrieves the properties of an existing Azure Cosmos DB Gremlin Role Definition with the given
-        Id.
+    async def get_gremlin_database_throughput(
+        self, resource_group_name: str, account_name: str, database_name: str, **kwargs: Any
+    ) -> _models.ThroughputSettingsGetResults:
+        """Gets the RUs per second of the Gremlin database under an existing Azure Cosmos DB database
+        account with the provided name.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param account_name: Cosmos DB database account name. Required.
         :type account_name: str
-        :param role_definition_id: The GUID for the Role Definition. Required.
-        :type role_definition_id: str
-        :return: GremlinRoleDefinitionResource or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.GremlinRoleDefinitionResource
+        :param database_name: Cosmos DB database name. Required.
+        :type database_name: str
+        :return: ThroughputSettingsGetResults or the result of cls(response)
+        :rtype: ~azure.mgmt.cosmosdb.models.ThroughputSettingsGetResults
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map: MutableMapping = {
@@ -2170,12 +1928,12 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.GremlinRoleDefinitionResource] = kwargs.pop("cls", None)
+        cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
 
-        _request = build_get_gremlin_role_definition_request(
+        _request = build_get_gremlin_database_throughput_request(
             resource_group_name=resource_group_name,
             account_name=account_name,
-            role_definition_id=role_definition_id,
+            database_name=database_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             headers=_headers,
@@ -2198,19 +1956,19 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
             )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("GremlinRoleDefinitionResource", pipeline_response.http_response)
+        deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response.http_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
 
         return deserialized  # type: ignore
 
-    async def _create_update_gremlin_role_definition_initial(  # pylint: disable=name-too-long
+    async def _update_gremlin_database_throughput_initial(  # pylint: disable=name-too-long
         self,
         resource_group_name: str,
         account_name: str,
-        role_definition_id: str,
-        create_update_gremlin_role_definition_parameters: Union[_models.GremlinRoleDefinitionResource, IO[bytes]],
+        database_name: str,
+        update_throughput_parameters: Union[_models.ThroughputSettingsUpdateParameters, IO[bytes]],
         **kwargs: Any
     ) -> AsyncIterator[bytes]:
         error_map: MutableMapping = {
@@ -2231,17 +1989,15 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
         content_type = content_type or "application/json"
         _json = None
         _content = None
-        if isinstance(create_update_gremlin_role_definition_parameters, (IOBase, bytes)):
-            _content = create_update_gremlin_role_definition_parameters
+        if isinstance(update_throughput_parameters, (IOBase, bytes)):
+            _content = update_throughput_parameters
         else:
-            _json = self._serialize.body(
-                create_update_gremlin_role_definition_parameters, "GremlinRoleDefinitionResource"
-            )
+            _json = self._serialize.body(update_throughput_parameters, "ThroughputSettingsUpdateParameters")
 
-        _request = build_create_update_gremlin_role_definition_request(
+        _request = build_update_gremlin_database_throughput_request(
             resource_group_name=resource_group_name,
             account_name=account_name,
-            role_definition_id=role_definition_id,
+            database_name=database_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             content_type=content_type,
@@ -2274,10 +2030,11 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
 
         response_headers = {}
         if response.status_code == 202:
-            response_headers["azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("azure-AsyncOperation")
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
             )
-            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -2287,99 +2044,99 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
         return deserialized  # type: ignore
 
     @overload
-    async def begin_create_update_gremlin_role_definition(  # pylint: disable=name-too-long
+    async def begin_update_gremlin_database_throughput(
         self,
         resource_group_name: str,
         account_name: str,
-        role_definition_id: str,
-        create_update_gremlin_role_definition_parameters: _models.GremlinRoleDefinitionResource,
+        database_name: str,
+        update_throughput_parameters: _models.ThroughputSettingsUpdateParameters,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.GremlinRoleDefinitionResource]:
-        """Creates or updates an Azure Cosmos DB Gremlin Role Definition.
+    ) -> AsyncLROPoller[_models.ThroughputSettingsGetResults]:
+        """Update RUs per second of an Azure Cosmos DB Gremlin database.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param account_name: Cosmos DB database account name. Required.
         :type account_name: str
-        :param role_definition_id: The GUID for the Role Definition. Required.
-        :type role_definition_id: str
-        :param create_update_gremlin_role_definition_parameters: The properties required to create or
-         update a Role Definition. Required.
-        :type create_update_gremlin_role_definition_parameters:
-         ~azure.mgmt.cosmosdb.models.GremlinRoleDefinitionResource
+        :param database_name: Cosmos DB database name. Required.
+        :type database_name: str
+        :param update_throughput_parameters: The RUs per second of the parameters to provide for the
+         current Gremlin database. Required.
+        :type update_throughput_parameters:
+         ~azure.mgmt.cosmosdb.models.ThroughputSettingsUpdateParameters
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns either GremlinRoleDefinitionResource or the
+        :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the
          result of cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.GremlinRoleDefinitionResource]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.ThroughputSettingsGetResults]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
     @overload
-    async def begin_create_update_gremlin_role_definition(  # pylint: disable=name-too-long
+    async def begin_update_gremlin_database_throughput(
         self,
         resource_group_name: str,
         account_name: str,
-        role_definition_id: str,
-        create_update_gremlin_role_definition_parameters: IO[bytes],
+        database_name: str,
+        update_throughput_parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.GremlinRoleDefinitionResource]:
-        """Creates or updates an Azure Cosmos DB Gremlin Role Definition.
+    ) -> AsyncLROPoller[_models.ThroughputSettingsGetResults]:
+        """Update RUs per second of an Azure Cosmos DB Gremlin database.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param account_name: Cosmos DB database account name. Required.
         :type account_name: str
-        :param role_definition_id: The GUID for the Role Definition. Required.
-        :type role_definition_id: str
-        :param create_update_gremlin_role_definition_parameters: The properties required to create or
-         update a Role Definition. Required.
-        :type create_update_gremlin_role_definition_parameters: IO[bytes]
+        :param database_name: Cosmos DB database name. Required.
+        :type database_name: str
+        :param update_throughput_parameters: The RUs per second of the parameters to provide for the
+         current Gremlin database. Required.
+        :type update_throughput_parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns either GremlinRoleDefinitionResource or the
+        :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the
          result of cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.GremlinRoleDefinitionResource]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.ThroughputSettingsGetResults]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
     @distributed_trace_async
-    async def begin_create_update_gremlin_role_definition(  # pylint: disable=name-too-long
+    async def begin_update_gremlin_database_throughput(
         self,
         resource_group_name: str,
         account_name: str,
-        role_definition_id: str,
-        create_update_gremlin_role_definition_parameters: Union[_models.GremlinRoleDefinitionResource, IO[bytes]],
+        database_name: str,
+        update_throughput_parameters: Union[_models.ThroughputSettingsUpdateParameters, IO[bytes]],
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.GremlinRoleDefinitionResource]:
-        """Creates or updates an Azure Cosmos DB Gremlin Role Definition.
+    ) -> AsyncLROPoller[_models.ThroughputSettingsGetResults]:
+        """Update RUs per second of an Azure Cosmos DB Gremlin database.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param account_name: Cosmos DB database account name. Required.
         :type account_name: str
-        :param role_definition_id: The GUID for the Role Definition. Required.
-        :type role_definition_id: str
-        :param create_update_gremlin_role_definition_parameters: The properties required to create or
-         update a Role Definition. Is either a GremlinRoleDefinitionResource type or a IO[bytes] type.
-         Required.
-        :type create_update_gremlin_role_definition_parameters:
-         ~azure.mgmt.cosmosdb.models.GremlinRoleDefinitionResource or IO[bytes]
-        :return: An instance of AsyncLROPoller that returns either GremlinRoleDefinitionResource or the
+        :param database_name: Cosmos DB database name. Required.
+        :type database_name: str
+        :param update_throughput_parameters: The RUs per second of the parameters to provide for the
+         current Gremlin database. Is either a ThroughputSettingsUpdateParameters type or a IO[bytes]
+         type. Required.
+        :type update_throughput_parameters:
+         ~azure.mgmt.cosmosdb.models.ThroughputSettingsUpdateParameters or IO[bytes]
+        :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the
          result of cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.GremlinRoleDefinitionResource]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.ThroughputSettingsGetResults]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
@@ -2387,16 +2144,16 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.GremlinRoleDefinitionResource] = kwargs.pop("cls", None)
+        cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._create_update_gremlin_role_definition_initial(
+            raw_result = await self._update_gremlin_database_throughput_initial(
                 resource_group_name=resource_group_name,
                 account_name=account_name,
-                role_definition_id=role_definition_id,
-                create_update_gremlin_role_definition_parameters=create_update_gremlin_role_definition_parameters,
+                database_name=database_name,
+                update_throughput_parameters=update_throughput_parameters,
                 api_version=api_version,
                 content_type=content_type,
                 cls=lambda x, y, z: x,
@@ -2408,30 +2165,32 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("GremlinRoleDefinitionResource", pipeline_response.http_response)
+            deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response.http_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller[_models.GremlinRoleDefinitionResource].from_continuation_token(
+            return AsyncLROPoller[_models.ThroughputSettingsGetResults].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller[_models.GremlinRoleDefinitionResource](
+        return AsyncLROPoller[_models.ThroughputSettingsGetResults](
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
 
-    async def _delete_gremlin_role_definition_initial(
-        self, resource_group_name: str, account_name: str, role_definition_id: str, **kwargs: Any
+    async def _migrate_gremlin_database_to_autoscale_initial(  # pylint: disable=name-too-long
+        self, resource_group_name: str, account_name: str, database_name: str, **kwargs: Any
     ) -> AsyncIterator[bytes]:
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -2447,10 +2206,10 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
-        _request = build_delete_gremlin_role_definition_request(
+        _request = build_migrate_gremlin_database_to_autoscale_request(
             resource_group_name=resource_group_name,
             account_name=account_name,
-            role_definition_id=role_definition_id,
+            database_name=database_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             headers=_headers,
@@ -2466,24 +2225,21 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
+        if response.status_code not in [200, 202]:
             try:
                 await response.read()  # Load the body in memory and close the socket
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(
-                _models.ErrorResponse,
-                pipeline_response,
-            )
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 202:
-            response_headers["azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("azure-AsyncOperation")
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
             )
-            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -2493,35 +2249,37 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
         return deserialized  # type: ignore
 
     @distributed_trace_async
-    async def begin_delete_gremlin_role_definition(
-        self, resource_group_name: str, account_name: str, role_definition_id: str, **kwargs: Any
-    ) -> AsyncLROPoller[None]:
-        """Deletes an existing Azure Cosmos DB Gremlin Role Definition.
+    async def begin_migrate_gremlin_database_to_autoscale(  # pylint: disable=name-too-long
+        self, resource_group_name: str, account_name: str, database_name: str, **kwargs: Any
+    ) -> AsyncLROPoller[_models.ThroughputSettingsGetResults]:
+        """Migrate an Azure Cosmos DB Gremlin database from manual throughput to autoscale.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param account_name: Cosmos DB database account name. Required.
         :type account_name: str
-        :param role_definition_id: The GUID for the Role Definition. Required.
-        :type role_definition_id: str
-        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :param database_name: Cosmos DB database name. Required.
+        :type database_name: str
+        :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the
+         result of cls(response)
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.ThroughputSettingsGetResults]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[None] = kwargs.pop("cls", None)
+        cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._delete_gremlin_role_definition_initial(
+            raw_result = await self._migrate_gremlin_database_to_autoscale_initial(
                 resource_group_name=resource_group_name,
                 account_name=account_name,
-                role_definition_id=role_definition_id,
+                database_name=database_name,
                 api_version=api_version,
                 cls=lambda x, y, z: x,
                 headers=_headers,
@@ -2531,47 +2289,178 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
             await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
-        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response.http_response)
             if cls:
-                return cls(pipeline_response, None, {})  # type: ignore
+                return cls(pipeline_response, deserialized, {})  # type: ignore
+            return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller[None].from_continuation_token(
+            return AsyncLROPoller[_models.ThroughputSettingsGetResults].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[_models.ThroughputSettingsGetResults](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
-    @distributed_trace
-    def list_gremlin_role_definitions(
-        self, resource_group_name: str, account_name: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.GremlinRoleDefinitionResource"]:
-        """Retrieves the list of all Azure Cosmos DB Gremlin Role Definitions.
+    async def _migrate_gremlin_database_to_manual_throughput_initial(  # pylint: disable=name-too-long
+        self, resource_group_name: str, account_name: str, database_name: str, **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        _request = build_migrate_gremlin_database_to_manual_throughput_request(
+            resource_group_name=resource_group_name,
+            account_name=account_name,
+            database_name=database_name,
+            subscription_id=self._config.subscription_id,
+            api_version=api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _decompress = kwargs.pop("decompress", True)
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
+            )
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
+        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @distributed_trace_async
+    async def begin_migrate_gremlin_database_to_manual_throughput(  # pylint: disable=name-too-long
+        self, resource_group_name: str, account_name: str, database_name: str, **kwargs: Any
+    ) -> AsyncLROPoller[_models.ThroughputSettingsGetResults]:
+        """Migrate an Azure Cosmos DB Gremlin database from autoscale to manual throughput.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param account_name: Cosmos DB database account name. Required.
         :type account_name: str
-        :return: An iterator like instance of either GremlinRoleDefinitionResource or the result of
-         cls(response)
+        :param database_name: Cosmos DB database name. Required.
+        :type database_name: str
+        :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the
+         result of cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.cosmosdb.models.GremlinRoleDefinitionResource]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.ThroughputSettingsGetResults]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.GremlinRoleDefinitionListResult] = kwargs.pop("cls", None)
+        cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._migrate_gremlin_database_to_manual_throughput_initial(
+                resource_group_name=resource_group_name,
+                account_name=account_name,
+                database_name=database_name,
+                api_version=api_version,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response.http_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})  # type: ignore
+            return deserialized
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[_models.ThroughputSettingsGetResults].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[_models.ThroughputSettingsGetResults](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
+
+    @distributed_trace
+    def list_gremlin_role_assignments(
+        self, resource_group_name: str, account_name: str, **kwargs: Any
+    ) -> AsyncItemPaged["_models.GremlinRoleAssignmentResource"]:
+        """Retrieves the list of all Azure Cosmos DB Gremlin Role Assignments.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param account_name: Cosmos DB database account name. Required.
+        :type account_name: str
+        :return: An iterator like instance of either GremlinRoleAssignmentResource or the result of
+         cls(response)
+        :rtype:
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.cosmosdb.models.GremlinRoleAssignmentResource]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        cls: ClsType[_models.GremlinRoleAssignmentListResult] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -2584,7 +2473,7 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_list_gremlin_role_definitions_request(
+                _request = build_list_gremlin_role_assignments_request(
                     resource_group_name=resource_group_name,
                     account_name=account_name,
                     subscription_id=self._config.subscription_id,
@@ -2612,11 +2501,11 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
             return _request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize("GremlinRoleDefinitionListResult", pipeline_response)
+            deserialized = self._deserialize("GremlinRoleAssignmentListResult", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return None, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             _request = prepare_request(next_link)
@@ -2773,10 +2662,11 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
 
         response_headers = {}
         if response.status_code == 202:
-            response_headers["azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("azure-AsyncOperation")
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
             )
-            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -2913,7 +2803,9 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -2979,10 +2871,10 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
 
         response_headers = {}
         if response.status_code == 202:
-            response_headers["azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("azure-AsyncOperation")
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
             )
-            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -3035,7 +2927,9 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
                 return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -3050,27 +2944,27 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
         return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     @distributed_trace
-    def list_gremlin_role_assignments(
+    def list_gremlin_role_definitions(
         self, resource_group_name: str, account_name: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.GremlinRoleAssignmentResource"]:
-        """Retrieves the list of all Azure Cosmos DB Gremlin Role Assignments.
+    ) -> AsyncItemPaged["_models.GremlinRoleDefinitionResource"]:
+        """Retrieves the list of all Azure Cosmos DB Gremlin Role Definitions.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param account_name: Cosmos DB database account name. Required.
         :type account_name: str
-        :return: An iterator like instance of either GremlinRoleAssignmentResource or the result of
+        :return: An iterator like instance of either GremlinRoleDefinitionResource or the result of
          cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.cosmosdb.models.GremlinRoleAssignmentResource]
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.cosmosdb.models.GremlinRoleDefinitionResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.GremlinRoleAssignmentListResult] = kwargs.pop("cls", None)
+        cls: ClsType[_models.GremlinRoleDefinitionListResult] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -3083,7 +2977,7 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_list_gremlin_role_assignments_request(
+                _request = build_list_gremlin_role_definitions_request(
                     resource_group_name=resource_group_name,
                     account_name=account_name,
                     subscription_id=self._config.subscription_id,
@@ -3111,11 +3005,11 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
             return _request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize("GremlinRoleAssignmentListResult", pipeline_response)
+            deserialized = self._deserialize("GremlinRoleDefinitionListResult", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return None, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             _request = prepare_request(next_link)
@@ -3138,13 +3032,77 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
 
         return AsyncItemPaged(get_next, extract_data)
 
-    async def _retrieve_continuous_backup_information_initial(  # pylint: disable=name-too-long
+    @distributed_trace_async
+    async def get_gremlin_role_definition(
+        self, resource_group_name: str, account_name: str, role_definition_id: str, **kwargs: Any
+    ) -> _models.GremlinRoleDefinitionResource:
+        """Retrieves the properties of an existing Azure Cosmos DB Gremlin Role Definition with the given
+        Id.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param account_name: Cosmos DB database account name. Required.
+        :type account_name: str
+        :param role_definition_id: The GUID for the Role Definition. Required.
+        :type role_definition_id: str
+        :return: GremlinRoleDefinitionResource or the result of cls(response)
+        :rtype: ~azure.mgmt.cosmosdb.models.GremlinRoleDefinitionResource
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        cls: ClsType[_models.GremlinRoleDefinitionResource] = kwargs.pop("cls", None)
+
+        _request = build_get_gremlin_role_definition_request(
+            resource_group_name=resource_group_name,
+            account_name=account_name,
+            role_definition_id=role_definition_id,
+            subscription_id=self._config.subscription_id,
+            api_version=api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize("GremlinRoleDefinitionResource", pipeline_response.http_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})  # type: ignore
+
+        return deserialized  # type: ignore
+
+    async def _create_update_gremlin_role_definition_initial(  # pylint: disable=name-too-long
         self,
         resource_group_name: str,
         account_name: str,
-        database_name: str,
-        graph_name: str,
-        location: Union[_models.ContinuousBackupRestoreLocation, IO[bytes]],
+        role_definition_id: str,
+        create_update_gremlin_role_definition_parameters: Union[_models.GremlinRoleDefinitionResource, IO[bytes]],
         **kwargs: Any
     ) -> AsyncIterator[bytes]:
         error_map: MutableMapping = {
@@ -3165,16 +3123,17 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
         content_type = content_type or "application/json"
         _json = None
         _content = None
-        if isinstance(location, (IOBase, bytes)):
-            _content = location
+        if isinstance(create_update_gremlin_role_definition_parameters, (IOBase, bytes)):
+            _content = create_update_gremlin_role_definition_parameters
         else:
-            _json = self._serialize.body(location, "ContinuousBackupRestoreLocation")
+            _json = self._serialize.body(
+                create_update_gremlin_role_definition_parameters, "GremlinRoleDefinitionResource"
+            )
 
-        _request = build_retrieve_continuous_backup_information_request(
+        _request = build_create_update_gremlin_role_definition_request(
             resource_group_name=resource_group_name,
             account_name=account_name,
-            database_name=database_name,
-            graph_name=graph_name,
+            role_definition_id=role_definition_id,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             content_type=content_type,
@@ -3199,110 +3158,121 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
+            )
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})  # type: ignore
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
 
         return deserialized  # type: ignore
 
     @overload
-    async def begin_retrieve_continuous_backup_information(  # pylint: disable=name-too-long
+    async def begin_create_update_gremlin_role_definition(  # pylint: disable=name-too-long
         self,
         resource_group_name: str,
         account_name: str,
-        database_name: str,
-        graph_name: str,
-        location: _models.ContinuousBackupRestoreLocation,
+        role_definition_id: str,
+        create_update_gremlin_role_definition_parameters: _models.GremlinRoleDefinitionResource,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.BackupInformation]:
-        """Retrieves continuous backup information for a gremlin graph.
+    ) -> AsyncLROPoller[_models.GremlinRoleDefinitionResource]:
+        """Creates or updates an Azure Cosmos DB Gremlin Role Definition.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param account_name: Cosmos DB database account name. Required.
         :type account_name: str
-        :param database_name: Cosmos DB database name. Required.
-        :type database_name: str
-        :param graph_name: Cosmos DB graph name. Required.
-        :type graph_name: str
-        :param location: The name of the continuous backup restore location. Required.
-        :type location: ~azure.mgmt.cosmosdb.models.ContinuousBackupRestoreLocation
+        :param role_definition_id: The GUID for the Role Definition. Required.
+        :type role_definition_id: str
+        :param create_update_gremlin_role_definition_parameters: The properties required to create or
+         update a Role Definition. Required.
+        :type create_update_gremlin_role_definition_parameters:
+         ~azure.mgmt.cosmosdb.models.GremlinRoleDefinitionResource
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns either BackupInformation or the result of
-         cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.BackupInformation]
+        :return: An instance of AsyncLROPoller that returns either GremlinRoleDefinitionResource or the
+         result of cls(response)
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.GremlinRoleDefinitionResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
     @overload
-    async def begin_retrieve_continuous_backup_information(  # pylint: disable=name-too-long
+    async def begin_create_update_gremlin_role_definition(  # pylint: disable=name-too-long
         self,
         resource_group_name: str,
         account_name: str,
-        database_name: str,
-        graph_name: str,
-        location: IO[bytes],
+        role_definition_id: str,
+        create_update_gremlin_role_definition_parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.BackupInformation]:
-        """Retrieves continuous backup information for a gremlin graph.
+    ) -> AsyncLROPoller[_models.GremlinRoleDefinitionResource]:
+        """Creates or updates an Azure Cosmos DB Gremlin Role Definition.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param account_name: Cosmos DB database account name. Required.
         :type account_name: str
-        :param database_name: Cosmos DB database name. Required.
-        :type database_name: str
-        :param graph_name: Cosmos DB graph name. Required.
-        :type graph_name: str
-        :param location: The name of the continuous backup restore location. Required.
-        :type location: IO[bytes]
+        :param role_definition_id: The GUID for the Role Definition. Required.
+        :type role_definition_id: str
+        :param create_update_gremlin_role_definition_parameters: The properties required to create or
+         update a Role Definition. Required.
+        :type create_update_gremlin_role_definition_parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns either BackupInformation or the result of
-         cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.BackupInformation]
+        :return: An instance of AsyncLROPoller that returns either GremlinRoleDefinitionResource or the
+         result of cls(response)
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.GremlinRoleDefinitionResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
     @distributed_trace_async
-    async def begin_retrieve_continuous_backup_information(  # pylint: disable=name-too-long
+    async def begin_create_update_gremlin_role_definition(  # pylint: disable=name-too-long
         self,
         resource_group_name: str,
         account_name: str,
-        database_name: str,
-        graph_name: str,
-        location: Union[_models.ContinuousBackupRestoreLocation, IO[bytes]],
+        role_definition_id: str,
+        create_update_gremlin_role_definition_parameters: Union[_models.GremlinRoleDefinitionResource, IO[bytes]],
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.BackupInformation]:
-        """Retrieves continuous backup information for a gremlin graph.
+    ) -> AsyncLROPoller[_models.GremlinRoleDefinitionResource]:
+        """Creates or updates an Azure Cosmos DB Gremlin Role Definition.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param account_name: Cosmos DB database account name. Required.
         :type account_name: str
-        :param database_name: Cosmos DB database name. Required.
-        :type database_name: str
-        :param graph_name: Cosmos DB graph name. Required.
-        :type graph_name: str
-        :param location: The name of the continuous backup restore location. Is either a
-         ContinuousBackupRestoreLocation type or a IO[bytes] type. Required.
-        :type location: ~azure.mgmt.cosmosdb.models.ContinuousBackupRestoreLocation or IO[bytes]
-        :return: An instance of AsyncLROPoller that returns either BackupInformation or the result of
-         cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.BackupInformation]
+        :param role_definition_id: The GUID for the Role Definition. Required.
+        :type role_definition_id: str
+        :param create_update_gremlin_role_definition_parameters: The properties required to create or
+         update a Role Definition. Is either a GremlinRoleDefinitionResource type or a IO[bytes] type.
+         Required.
+        :type create_update_gremlin_role_definition_parameters:
+         ~azure.mgmt.cosmosdb.models.GremlinRoleDefinitionResource or IO[bytes]
+        :return: An instance of AsyncLROPoller that returns either GremlinRoleDefinitionResource or the
+         result of cls(response)
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.GremlinRoleDefinitionResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
@@ -3310,17 +3280,16 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.BackupInformation] = kwargs.pop("cls", None)
+        cls: ClsType[_models.GremlinRoleDefinitionResource] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._retrieve_continuous_backup_information_initial(
+            raw_result = await self._create_update_gremlin_role_definition_initial(
                 resource_group_name=resource_group_name,
                 account_name=account_name,
-                database_name=database_name,
-                graph_name=graph_name,
-                location=location,
+                role_definition_id=role_definition_id,
+                create_update_gremlin_role_definition_parameters=create_update_gremlin_role_definition_parameters,
                 api_version=api_version,
                 content_type=content_type,
                 cls=lambda x, y, z: x,
@@ -3332,7 +3301,7 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("BackupInformation", pipeline_response.http_response)
+            deserialized = self._deserialize("GremlinRoleDefinitionResource", pipeline_response.http_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
@@ -3346,12 +3315,134 @@ class GremlinResourcesOperations:  # pylint: disable=too-many-public-methods
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller[_models.BackupInformation].from_continuation_token(
+            return AsyncLROPoller[_models.GremlinRoleDefinitionResource].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller[_models.BackupInformation](
+        return AsyncLROPoller[_models.GremlinRoleDefinitionResource](
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
+
+    async def _delete_gremlin_role_definition_initial(
+        self, resource_group_name: str, account_name: str, role_definition_id: str, **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        _request = build_delete_gremlin_role_definition_request(
+            resource_group_name=resource_group_name,
+            account_name=account_name,
+            role_definition_id=role_definition_id,
+            subscription_id=self._config.subscription_id,
+            api_version=api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _decompress = kwargs.pop("decompress", True)
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202, 204]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
+            )
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+
+        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @distributed_trace_async
+    async def begin_delete_gremlin_role_definition(
+        self, resource_group_name: str, account_name: str, role_definition_id: str, **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Deletes an existing Azure Cosmos DB Gremlin Role Definition.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param account_name: Cosmos DB database account name. Required.
+        :type account_name: str
+        :param role_definition_id: The GUID for the Role Definition. Required.
+        :type role_definition_id: str
+        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._delete_gremlin_role_definition_initial(
+                resource_group_name=resource_group_name,
+                account_name=account_name,
+                role_definition_id=role_definition_id,
+                api_version=api_version,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
+            if cls:
+                return cls(pipeline_response, None, {})  # type: ignore
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[None].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore

@@ -44,7 +44,7 @@ class Cosmosdb_previewmongoMIRbacAssignmentScenarioTest(ScenarioTest):
 
         #setup
         self.cmd(
-            'az cosmosdb create -n {acc} -g {rg} --kind MongoDB')            
+            'az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --kind MongoDB')            
         self.cmd(
             'az cosmosdb show --name {acc} --resource-group {rg}')
         self.cmd(

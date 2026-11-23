@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Show details of the provided Network Interface resource
 
     :example: Show the Network Interface
-        az networkfabric interface show -g "example-rg" --network-device-name "example-device" --resource-name "example-interface"
+        az networkfabric interface show --resource-group "example-rg" --network-device-name "example-device" --resource-name "example-interface"
     """
 
     _aaz_info = {

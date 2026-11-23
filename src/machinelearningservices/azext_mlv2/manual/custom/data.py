@@ -131,7 +131,7 @@ def ml_data_import(
     type: Optional[str] = None,  # pylint: disable=redefined-builtin
     path: Optional[str] = None,
     datastore: Optional[str] = None,
-    **kwargs,
+    **kwargs,  # pylint: disable=unused-argument
 ):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name

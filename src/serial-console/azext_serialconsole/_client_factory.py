@@ -6,13 +6,6 @@
 from azure.cli.core.profiles import ResourceType
 
 
-def _compute_client_factory(cli_ctx, **kwargs):
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_COMPUTE,
-                                   subscription_id=kwargs.get('subscription_id'),
-                                   aux_subscriptions=kwargs.get('aux_subscriptions'))
-
-
 def cf_serialconsole(cli_ctx, **kwargs):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_serialconsole.vendored_sdks.serialconsole import MicrosoftSerialConsoleClient

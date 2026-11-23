@@ -26,9 +26,9 @@ class ListVersions(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-08-01-preview",
+        "version": "2026-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.applink/locations/{}/availableversions", "2025-08-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.applink/locations/{}/availableversions", "2026-08-01-preview"],
         ]
     }
 
@@ -123,7 +123,7 @@ class ListVersions(AAZCommand):
                     "kubernetesVersion", self.ctx.args.kubernetes_version,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2025-08-01-preview",
+                    "api-version", "2026-08-01-preview",
                     required=True,
                 ),
             }

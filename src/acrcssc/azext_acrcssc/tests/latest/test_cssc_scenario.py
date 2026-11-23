@@ -24,7 +24,10 @@ class AcrcsscScenarioTest(ScenarioTest):
         self.cmd('acr create -n {registry_name} -g {rg} --sku Standard --location {location}',
                  checks=[self.check('name', '{registry_name}'),
                          self.check('provisioningState', 'Succeeded')])
-        
+
+        self.cmd('acr supply-chain workflow create -r {registry_name} -g {rg} -t {workflow_type} '
+                 '--config "{config}" --schedule {schedule} --dry-run')
+
         self.cmd('acr supply-chain workflow create -r {registry_name} -g {rg} -t {workflow_type} --config "{config}" --schedule {schedule}')
 
         self.cmd('acr supply-chain workflow list -r {registry_name} -g {rg} -t {workflow_type}')

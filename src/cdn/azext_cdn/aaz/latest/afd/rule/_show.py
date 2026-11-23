@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Get an existing delivery rule within a rule set.
 
-    :example: show details of the delivery rule with name rule1.
-        az afd rule show -g group --rule-set-name ruleSetName --profile-name profile --rule-name rule1
+    :example: Rules_Get
+        az afd rule show --resource-group RG --profile-name profile1 --rule-set-name ruleSet1 --rule-name rule1
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/rulesets/{}/rules/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/rulesets/{}/rules/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -145,7 +145,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }

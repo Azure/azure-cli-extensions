@@ -1,0 +1,98 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - migrate runbook show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --project-name -n
+      User-Agent:
+      - python/3.12.10 (Windows-11-10.0.26100-SP0) AZURECLI/2.88.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/BP_AE_Can/providers/Microsoft.Migrate/migrateProjects/BP-AE-Can-Proj/runbooks/testrunbook1?api-version=2020-06-01-preview
+  response:
+    body:
+      string: '{"properties":{"scope":{"ScopeType":"Wave","scopeType":"Wave","waveId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/bp_ae_can/providers/microsoft.migrate/migrateprojects/bp-ae-can-proj/waves/wave66"},"artifactId":"rb-testrunbook1","state":"ExecutionSucceeded","provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/BP_AE_Can/providers/Microsoft.Migrate/MigrateProjects/BP-AE-Can-Proj/Runbooks/testrunbook1","name":"testrunbook1","type":"Microsoft.Migrate/MigrateProjects/Runbooks","location":"","eTag":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '581'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 17 Jul 2026 12:59:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=92634de3-03f6-4092-b41b-20616b11a464/australiaeast/949f8bc7-0670-49f8-b169-38c414445645
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: BEF09BF87170414D8B447BE86681E59F Ref B: MAA211070113031 Ref C: 2026-07-17T12:59:16Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - migrate runbook list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --project-name
+      User-Agent:
+      - python/3.12.10 (Windows-11-10.0.26100-SP0) AZURECLI/2.88.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/BP_AE_Can/providers/Microsoft.Migrate/migrateProjects/BP-AE-Can-Proj/runbooks?api-version=2020-06-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"scope":{"ScopeType":"Wave","scopeType":"Wave","waveId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/bp_ae_can/providers/microsoft.migrate/migrateprojects/bp-ae-can-proj/waves/wave66"},"artifactId":"rb-testrunbook1","state":"ExecutionSucceeded","provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/BP_AE_Can/providers/Microsoft.Migrate/MigrateProjects/BP-AE-Can-Proj/Runbooks/testrunbook1","name":"testrunbook1","type":"Microsoft.Migrate/MigrateProjects/Runbooks","location":"","eTag":null}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '593'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 17 Jul 2026 12:59:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=92634de3-03f6-4092-b41b-20616b11a464/australiaeast/0cd37251-8846-462a-9b05-1914819ff3e2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 0EAA51D6728E49589A758C63707E3BC2 Ref B: MAA211070116025 Ref C: 2026-07-17T12:59:22Z'
+    status:
+      code: 200
+      message: OK
+version: 1

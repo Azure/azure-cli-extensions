@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-01-01",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/firewallpolicies/{}", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/firewallpolicies/{}", "2025-09-01"],
         ]
     }
 
@@ -62,7 +62,6 @@ class Update(AAZCommand):
         _args_schema.sql = AAZBoolArg(
             options=["--sql"],
             help="A flag to indicate if SQL Redirect traffic filtering is enabled.",
-            is_preview=True,
             nullable=True,
         )
         _args_schema.threat_intel_mode = AAZStrArg(
@@ -146,7 +145,7 @@ class Update(AAZCommand):
         )
         explicit_proxy.pac_file = AAZStrArg(
             options=["pac-file"],
-            help="URL for PAC file.",
+            help="SAS URL for PAC file.",
             nullable=True,
         )
         explicit_proxy.pac_file_port = AAZIntArg(
@@ -305,12 +304,12 @@ class Update(AAZCommand):
             enum={"Alert": "Alert", "Deny": "Deny", "Off": "Off"},
         )
 
-        # define Arg Group "Intrusion Detection"
+        # define Arg Group "Intrustion Detection"
 
         _args_schema = cls._args_schema
         _args_schema.idps_mode = AAZStrArg(
             options=["--idps-mode"],
-            arg_group="Intrusion Detection",
+            arg_group="Intrustion Detection",
             help="IDPS mode.",
             nullable=True,
             enum={"Alert": "Alert", "Deny": "Deny", "Off": "Off"},
@@ -319,11 +318,11 @@ class Update(AAZCommand):
         _args_schema.idps_profile = AAZStrArg(
             options=["--idps-profile"],
             arg_group="Intrusion Detection",
-            help="IDPS mode.",
-            is_preview=True,
+            help="IDPS profile name. When attached to a parent policy, the firewall's effective profile is the profile name of the parent policy.",
             nullable=True,
             enum={"Off": "Off", "Emerging": "Emerging", "Core": "Core", "Extended": "Extended"},
         )
+
         # define Arg Group "Parameters"
 
         # define Arg Group "Properties"
@@ -357,14 +356,12 @@ class Update(AAZCommand):
             options=["--key-vault-secret-id"],
             arg_group="TLS Inspection",
             help="Secret Id of (base-64 encoded unencrypted pfx) Secret or Certificate object stored in KeyVault.",
-            is_preview=True,
             nullable=True,
         )
         _args_schema.cert_name = AAZStrArg(
             options=["--cert-name"],
             arg_group="TLS Inspection",
             help="Name of the CA certificate.",
-            is_preview=True,
             nullable=True,
         )
 
@@ -494,7 +491,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -593,7 +590,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -651,7 +648,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("identity", AAZObjectType)
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
@@ -840,7 +837,7 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         firewall_policy_read.id = AAZStrType()
-        firewall_policy_read.identity = AAZObjectType()
+        firewall_policy_read.identity = AAZIdentityObjectType()
         firewall_policy_read.location = AAZStrType()
         firewall_policy_read.name = AAZStrType(
             flags={"read_only": True},
@@ -881,6 +878,10 @@ class _UpdateHelper:
         )
 
         properties = _schema_firewall_policy_read.properties
+        properties.afc_managed = AAZBoolType(
+            serialized_name="afcManaged",
+            flags={"read_only": True},
+        )
         properties.base_policy = AAZObjectType(
             serialized_name="basePolicy",
         )
@@ -902,12 +903,19 @@ class _UpdateHelper:
         properties.intrusion_detection = AAZObjectType(
             serialized_name="intrusionDetection",
         )
+        properties.kube_selector_groups = AAZListType(
+            serialized_name="kubeSelectorGroups",
+            flags={"read_only": True},
+        )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
         properties.rule_collection_groups = AAZListType(
             serialized_name="ruleCollectionGroups",
+            flags={"read_only": True},
+        )
+        properties.size = AAZStrType(
             flags={"read_only": True},
         )
         properties.sku = AAZObjectType()
@@ -1057,6 +1065,10 @@ class _UpdateHelper:
         _element = _schema_firewall_policy_read.properties.intrusion_detection.configuration.signature_overrides.Element
         _element.id = AAZStrType()
         _element.mode = AAZStrType()
+
+        kube_selector_groups = _schema_firewall_policy_read.properties.kube_selector_groups
+        kube_selector_groups.Element = AAZObjectType()
+        cls._build_schema_sub_resource_read(kube_selector_groups.Element)
 
         rule_collection_groups = _schema_firewall_policy_read.properties.rule_collection_groups
         rule_collection_groups.Element = AAZObjectType()

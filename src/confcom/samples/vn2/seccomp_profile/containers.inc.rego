@@ -166,6 +166,10 @@
       "-c",
       "echo hello"
     ],
-    "seccomp_profile_sha256": "c2efb9a618661d9debbcb299daa768ffcd28db287d9750ca075e4e2b713402a7"
+    "seccomp_profile_sha256": "c2efb9a618661d9debbcb299daa768ffcd28db287d9750ca075e4e2b713402a7",
+    "signals": [
+      9,
+      15
+    ]
   }
 ]

@@ -5,6 +5,7 @@
 from azure.cli.testsdk import ResourceGroupPreparer, JMESPathCheck
 from azure.cli.testsdk import ScenarioTest, record_only
 from .afdx_scenario_mixin import CdnAfdScenarioMixin
+import json
 
 from azure.cli.core.azclierror import (InvalidArgumentValueError)
 
@@ -12,6 +13,48 @@ from azext_cdn.vendored_sdks.models import SkuName
 
 from collections import namedtuple
 from azure.core.exceptions import HttpResponseError
+
+
+def _json_arg(value):
+    return "'{}'".format(json.dumps(value, separators=(',', ':')))
+
+
+def _camel_to_kebab(value):
+    return ''.join(['-' + c.lower() if c.isupper() and idx else c.lower() for idx, c in enumerate(value)])
+
+
+def _condition_json(condition):
+    parameters = {
+        'match-values': condition.MatchValues,
+        'operator': condition.Operator,
+        'negate-condition': condition.IsNegative,
+    }
+    if condition.Transforms:
+        parameters['transforms'] = condition.Transforms
+    if condition.Selector:
+        parameters['selector'] = condition.Selector
+    return {_camel_to_kebab(condition.MatchVariable): {'parameters': parameters}}
+
+
+def _conditions_option(condition):
+    return f'--conditions {_json_arg([_condition_json(condition)])}'
+
+
+def _route_override_actions_option():
+    return "--actions '[{\"route-configuration-override\":{\"parameters\":{\"cache-configuration\":{\"cache-behavior\":\"HonorOrigin\",\"query-string-caching-behavior\":\"UseQueryString\",\"is-compression-enabled\":\"Disabled\"}}}}]'"
+
+
+def _client_response_edge_action(subscription_id):
+    # Existing shared fixture: reference only, never update or delete the EdgeAction.
+    edge_action_id = (
+        f'/subscriptions/{subscription_id}/resourceGroups/FDQuickstart-zf'
+        '/providers/Microsoft.Cdn/edgeActions/EdgeActionTest'
+    )
+    return {'edge-action': {'parameters': {
+        'edge-action-reference': {'id': edge_action_id},
+        'invocation-point': 'ClientResponse',
+    }}}
+
 
 class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer(additional_tags={'owner': 'jingnanxu'})
@@ -24,12 +67,37 @@ class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
         self.afd_rule_set_list_cmd(resource_group, profile_name, checks=list_checks)
 
         rule_set_name = self.create_random_name(prefix='ruleset', length=16)
-        self.afd_rule_set_add_cmd(resource_group, rule_set_name, profile_name)
+        batch_rules = [{
+            'rule-name': 'r0',
+            'order': 0,
+            'match-processing-behavior': 'Continue',
+            'conditions': [],
+            'actions': [{
+                'route-configuration-override': {
+                    'parameters': {
+                        'cache-configuration': {
+                            'cache-behavior': 'HonorOrigin',
+                            'query-string-caching-behavior': 'UseQueryString',
+                            'is-compression-enabled': 'Disabled'
+                        }
+                    }
+                }
+            }]
+        }]
+        self.afd_rule_set_add_cmd(resource_group, rule_set_name, profile_name,
+                                  batch_mode='true',
+                                  rules=batch_rules)
 
         list_checks = [JMESPathCheck('length(@)', 1)]
         self.afd_rule_set_list_cmd(resource_group, profile_name, checks=list_checks)
 
         show_checks = [JMESPathCheck('name', rule_set_name),
+                       JMESPathCheck('batchMode', True),
+                       JMESPathCheck('length(rules)', 1),
+                       JMESPathCheck('rules[0].ruleName', 'r0'),
+                       JMESPathCheck('rules[0].order', 0),
+                       JMESPathCheck('rules[0].actions[0].name', 'RouteConfigurationOverride'),
+                       JMESPathCheck('rules[0].actions[0].parameters.cacheConfiguration.cacheBehavior', 'HonorOrigin'),
                        JMESPathCheck('provisioningState', 'Succeeded')]
         self.afd_rule_set_show_cmd(resource_group, rule_set_name, profile_name, checks=show_checks)
 
@@ -39,6 +107,67 @@ class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
 
         list_checks = [JMESPathCheck('length(@)', 0)]
         self.afd_rule_set_list_cmd(resource_group, profile_name, checks=list_checks)
+
+    @ResourceGroupPreparer(additional_tags={'owner': 'zhefeng'})
+    def test_afd_rule_client_response(self, resource_group):
+        profile_name = self.create_random_name(prefix='profile', length=16)
+        self.afd_nonproduction_profile_create_cmd(resource_group, profile_name)
+        rule_set_name = self.create_random_name(prefix='ruleset', length=16)
+        self.afd_rule_set_add_cmd(resource_group, rule_set_name, profile_name)
+        rule_name = self.create_random_name(prefix='response', length=16)
+        edge_action = _client_response_edge_action(self.get_subscription_id())
+        edge_parameters = edge_action['edge-action']['parameters']
+        edge_action_id = edge_parameters['edge-action-reference']['id']
+        rule_checks = [
+            JMESPathCheck('name', rule_name),
+            JMESPathCheck('order', 1),
+            JMESPathCheck('length(conditions)', 0),
+            JMESPathCheck('length(actions)', 1),
+            JMESPathCheck('actions[0].name', 'EdgeAction'),
+            JMESPathCheck('actions[0].parameters.edgeActionReference.id', edge_action_id),
+            JMESPathCheck('actions[0].parameters.invocationPoint', 'ClientResponse'),
+        ]
+        self.afd_rule_add_cmd(
+            resource_group, rule_set_name, rule_name, profile_name,
+            options=f'--order 1 --actions {_json_arg([edge_action])}',
+            checks=rule_checks)
+        self.afd_rule_show_cmd(resource_group, rule_set_name, rule_name, profile_name, checks=rule_checks)
+        rule_args = (f'-g {resource_group} --profile-name {profile_name} '
+                     f'--rule-set-name {rule_set_name} --rule-name {rule_name}')
+        update_checks = rule_checks + [JMESPathCheck('matchProcessingBehavior', 'Stop')]
+        self.cmd(f'afd rule update {rule_args} --match-processing-behavior Stop', checks=update_checks)
+        self.afd_rule_show_cmd(resource_group, rule_set_name, rule_name, profile_name, checks=update_checks)
+
+        action_args = f'{rule_args} --action-name EdgeAction'
+        action_checks = [
+            JMESPathCheck('name', 'EdgeAction'),
+            JMESPathCheck('parameters.edgeActionReference.id', edge_action_id),
+            JMESPathCheck('parameters.invocationPoint', 'ClientResponse'),
+        ]
+        self.cmd(f'afd rule action list {rule_args}', checks=[
+            JMESPathCheck('length(@)', 1),
+            JMESPathCheck('[0].name', 'EdgeAction'),
+            JMESPathCheck('[0].parameters.edgeActionReference.id', edge_action_id),
+            JMESPathCheck('[0].parameters.invocationPoint', 'ClientResponse'),
+        ])
+        self.cmd(f'afd rule action show {action_args}', checks=action_checks)
+        for invocation_point in ('ClientRequest', 'ClientResponse'):
+            parameters = dict(edge_parameters, **{'invocation-point': invocation_point})
+            self.cmd(
+                f'afd rule action update {action_args} '
+                f'--edge-action {_json_arg({"parameters": parameters})}',
+                checks=[
+                    JMESPathCheck('name', 'EdgeAction'),
+                    JMESPathCheck('parameters.edgeActionReference.id', edge_action_id),
+                    JMESPathCheck('parameters.invocationPoint', invocation_point),
+                ])
+            self.cmd(f'afd rule action show {action_args}', checks=[
+                JMESPathCheck('parameters.edgeActionReference.id', edge_action_id),
+                JMESPathCheck('parameters.invocationPoint', invocation_point),
+            ])
+        self.afd_rule_show_cmd(resource_group, rule_set_name, rule_name, profile_name, checks=update_checks)
+        self.afd_rule_delete_cmd(resource_group, rule_set_name, rule_name, profile_name)
+        self.afd_rule_set_delete_cmd(resource_group, rule_set_name, profile_name)
 
     @ResourceGroupPreparer(additional_tags={'owner': 'jingnanxu'})
     def test_afd_rule_crud(self, resource_group):
@@ -56,18 +185,18 @@ class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                        JMESPathCheck('name', rule_name),
                        JMESPathCheck('matchProcessingBehavior', "Stop"),
                        JMESPathCheck('length(conditions)', 0),
-                       JMESPathCheck('length(actions)', 1),
-                       JMESPathCheck('actions[0].name', "RouteConfigurationOverride"),
                        JMESPathCheck('actions[0].parameters.cacheConfiguration.queryStringCachingBehavior', 'UseQueryString'),
                        JMESPathCheck('actions[0].parameters.cacheConfiguration.cacheBehavior', 'HonorOrigin'),
                        JMESPathCheck('actions[0].parameters.cacheConfiguration.isCompressionEnabled', 'Disabled'),
                        JMESPathCheck('actions[0].parameters.originGroupOverride', None)]
 
+        route_override_actions = "--actions '[{\"route-configuration-override\":{\"parameters\":{\"cache-configuration\":{\"cache-behavior\":\"HonorOrigin\",\"query-string-caching-behavior\":\"UseQueryString\",\"is-compression-enabled\":\"Disabled\"}}}}]'"
         self.afd_rule_add_cmd(resource_group,
                               rule_set_name,
                               rule_name,
                               profile_name,
-                              options='--match-processing-behavior Stop --action-name RouteConfigurationOverride --enable-caching True --enable-compression False --query-string-caching-behavior UseQueryString --cache-behavior HonorOrigin --order 1')
+                              options=f'--match-processing-behavior Stop --order 1 '
+                                      f'{route_override_actions}')
 
         self.afd_rule_show_cmd(resource_group,
                                rule_set_name,
@@ -95,11 +224,14 @@ class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                        JMESPathCheck('actions[0].parameters.cacheConfiguration.isCompressionEnabled', 'Disabled'),
                        JMESPathCheck('actions[0].parameters.originGroupOverride', None)]
 
+        remote_address_th_conditions = "--conditions '[{\"remote-address\":{\"parameters\":{\"match-values\":[\"TH\"],\"operator\":\"GeoMatch\"}}}]'"
         self.afd_rule_add_cmd(resource_group,
                               rule_set_name,
                               rule_name,
                               profile_name,
-                              options='--match-processing-behavior Stop --match-variable RemoteAddress --operator GeoMatch --match-values "TH" --action-name RouteConfigurationOverride --enable-caching True --enable-compression False --query-string-caching-behavior UseQueryString --cache-behavior HonorOrigin --order 1')
+                      options=f'--match-processing-behavior Stop --order 1 '
+                  f'{remote_address_th_conditions} '
+                  f'{route_override_actions}')
 
         self.afd_rule_show_cmd(resource_group,
                                rule_set_name,
@@ -117,11 +249,14 @@ class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                        JMESPathCheck('actions[0].name', "UrlRedirect"),
                        JMESPathCheck('actions[0].parameters.redirectType', "Moved"),
                        JMESPathCheck('actions[0].parameters.destinationProtocol', 'Https')]
+        request_scheme_http_conditions = "--conditions '[{\"request-scheme\":{\"parameters\":{\"match-values\":[\"HTTP\"],\"operator\":\"Equal\"}}}]'"
+        url_redirect_actions = "--actions '[{\"url-redirect\":{\"parameters\":{\"redirect-type\":\"Moved\",\"destination-protocol\":\"Https\"}}}]'"
         self.afd_rule_add_cmd(resource_group,
                               rule_set_name,
                               rule_name1,
                               profile_name,
-                              options='--match-variable RequestScheme --match-values "HTTP" --action-name UrlRedirect --redirect-protocol Https --redirect-type Moved --order 2')
+                      options=f'--order 2 {request_scheme_http_conditions} '
+                          f'{url_redirect_actions}')
 
         self.afd_rule_show_cmd(resource_group,
                                rule_set_name,
@@ -149,12 +284,12 @@ class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                        JMESPathCheck('actions[0].parameters.cacheConfiguration.cacheBehavior', 'HonorOrigin'),
                        JMESPathCheck('actions[0].parameters.cacheConfiguration.isCompressionEnabled', 'Disabled'),
                        JMESPathCheck('actions[0].parameters.originGroupOverride', None)]
+        remote_address_th_us_condition = "--condition-name RemoteAddress --remote-address '{\"parameters\":{\"match-values\":[\"TH\",\"US\"],\"operator\":\"GeoMatch\"}}'"
         self.afd_rule_add_condition_cmd(resource_group,
                                         rule_set_name,
                                         rule_name,
                                         profile_name,
-                                        options='--match-variable RemoteAddress '
-                                                '--operator GeoMatch --match-values "TH" "US"')
+                        options=remote_address_th_us_condition)
 
         self.afd_rule_show_cmd(resource_group,
                                rule_set_name,
@@ -178,12 +313,12 @@ class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                        JMESPathCheck('actions[1].name', "UrlRewrite"),
                        JMESPathCheck('actions[1].parameters.sourcePattern', '/abc'),
                        JMESPathCheck('actions[1].parameters.destination', '/def')]
+        url_rewrite_action = "--action-name UrlRewrite --url-rewrite '{\"parameters\":{\"source-pattern\":\"/abc\",\"destination\":\"/def\"}}'"
         self.afd_rule_add_action_cmd(resource_group,
                                      rule_set_name,
                                      rule_name,
                                      profile_name,
-                                     options='--action-name "UrlRewrite" '
-                                             '--source-pattern "/abc" --destination "/def"')
+                         options=url_rewrite_action)
 
         self.afd_rule_show_cmd(resource_group,
                                rule_set_name,
@@ -241,7 +376,7 @@ class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
         self.afd_origin_group_create_cmd(resource_group,
                                          profile_name,
                                          origin_group_name,
-                                         "--probe-request-type GET --probe-protocol Http --probe-interval-in-seconds 120 --probe-path /test1/azure.txt " +
+                                         "--probe-request-type GET --probe-protocol Http --probe-interval-in-seconds 120 --probe-path /test1/azure.txt "
                                          "--sample-size 4 --successful-samples-required 3 --additional-latency-in-milliseconds 50")
 
         origin_name1 = self.create_random_name(prefix='origin', length=16)
@@ -273,16 +408,12 @@ class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                        JMESPathCheck('actions[0].name', "UrlRewrite"),
                        JMESPathCheck('actions[0].parameters.sourcePattern', '/abc'),
                        JMESPathCheck('actions[0].parameters.destination', '/def')]
+        route_override_action = f"--action-name RouteConfigurationOverride --route-configuration-override '{{\"parameters\":{{\"cache-configuration\":{{\"cache-behavior\":\"OverrideAlways\",\"cache-duration\":\"01:00:00\",\"query-string-caching-behavior\":\"IncludeSpecifiedQueryStrings\",\"query-parameters\":\"x,y,z\",\"is-compression-enabled\":\"Enabled\"}},\"origin-group-override\":{{\"origin-group\":{{\"id\":\"{origin_group_id}\"}},\"forwarding-protocol\":\"MatchRequest\"}}}}}}'"
         self.afd_rule_add_action_cmd(resource_group,
                                      rule_set_name,
                                      rule_name,
                                      profile_name,
-                                     options='--action-name "RouteConfigurationOverride" '
-                                             f'--origin-group {origin_group_name} --forwarding-protocol MatchRequest '
-                                             '--enable-compression True --enable-caching True '
-                                             '--cache-behavior OverrideAlways --cache-duration 01:00:00 '
-                                             '--query-string-caching-behavior IncludeSpecifiedQueryStrings '
-                                             '--query-parameters x y z')
+                         options=route_override_action)
 
         self.afd_rule_show_cmd(resource_group,
                                rule_set_name,
@@ -355,14 +486,9 @@ class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                 for ii, transform in enumerate(condition.Transforms):
                     rule_checks.append(JMESPathCheck(f'conditions[0].parameters.transforms[{ii}]', transform))
 
-            matchValues = ' '.join(condition.MatchValues)
-            options = f'--match-variable {condition.MatchVariable} --operator {condition.Operator} --negate-condition {condition.IsNegative} --match-values {matchValues} --action-name RouteConfigurationOverride --enable-caching True --enable-compression False --query-string-caching-behavior UseQueryString --cache-behavior HonorOrigin --order {idx}'
-            
-            if condition.Transforms is not None and len(condition.Transforms) > 0:
-                options += " --transforms " + ' '.join(condition.Transforms)
-
-            if condition.Selector is not None:
-                options += f" --selector {condition.Selector}"
+            options = f'--order {idx} ' \
+                      f'{_conditions_option(condition)} ' \
+                      f'{_route_override_actions_option()}'
 
             self.afd_rule_add_cmd(resource_group,
                                 rule_set_name,
@@ -416,14 +542,9 @@ class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
         for idx, condition in enumerate(conditions):           
             rule_name = self.create_random_name(prefix='rule', length=16)
 
-            matchValues = ' '.join(condition.MatchValues)
-            options = f'--match-variable {condition.MatchVariable} --operator {condition.Operator} --negate-condition {condition.IsNegative} --match-values {matchValues} --action-name RouteConfigurationOverride --enable-caching True --enable-compression False --query-string-caching-behavior UseQueryString --cache-behavior HonorOrigin --order {idx}'
-            
-            if condition.Transforms is not None and len(condition.Transforms) > 0:
-                options += " --transforms " + ' '.join(condition.Transforms)
-
-            if condition.Selector is not None:
-                options += f" --selector {condition.Selector}"
+            options = f'--order {idx} ' \
+                      f'{_conditions_option(condition)} ' \
+                      f'{_route_override_actions_option()}'
 
             with self.assertRaises(HttpResponseError):
                 self.afd_rule_add_cmd(resource_group,
@@ -458,14 +579,9 @@ class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
         for idx, condition in enumerate(conditions):           
             rule_name = self.create_random_name(prefix='rule', length=16)
 
-            matchValues = ' '.join(condition.MatchValues)
-            options = f'--match-variable {condition.MatchVariable} --operator {condition.Operator} --negate-condition {condition.IsNegative} --match-values {matchValues} --action-name RouteConfigurationOverride --enable-caching True --enable-compression False --query-string-caching-behavior UseQueryString --cache-behavior HonorOrigin --order {idx}'
-            
-            if condition.Transforms is not None and len(condition.Transforms) > 0:
-                options += " --transforms " + ' '.join(condition.Transforms)
-
-            if condition.Selector is not None:
-                options += f" --selector {condition.Selector}"
+            options = f'--order {idx} ' \
+                      f'{_conditions_option(condition)} ' \
+                      f'{_route_override_actions_option()}'
 
             with self.assertRaises(HttpResponseError):
                 self.afd_rule_add_cmd(resource_group,
@@ -496,7 +612,7 @@ class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
         self.afd_origin_group_create_cmd(resource_group,
                                          profile_name,
                                          origin_group_name,
-                                         "--probe-request-type GET --probe-protocol Http --probe-interval-in-seconds 120 --probe-path /test1/azure.txt " +
+                                         "--probe-request-type GET --probe-protocol Http --probe-interval-in-seconds 120 --probe-path /test1/azure.txt "
                                          "--sample-size 4 --successful-samples-required 3 --additional-latency-in-milliseconds 50")
 
         origin_name1 = self.create_random_name(prefix='origin', length=16)
@@ -530,9 +646,9 @@ class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                               rule_set_name,
                               rule_name,
                               profile_name,
-                              options=f'--match-processing-behavior Stop --match-variable RemoteAddress --operator GeoMatch --match-values "TH" "US" '
-                                      f'--action-name RouteConfigurationOverride --enable-caching True --enable-compression False --query-string-caching-behavior UseQueryString '
-                                      f'--cache-behavior HonorOrigin --order 1 --origin-group {origin_group_name} --forwarding-protocol MatchRequest')
+                      options=f'--match-processing-behavior Stop --order 1 '
+                              f'--conditions \'[{{"remote-address":{{"parameters":{{"match-values":["TH","US"],"operator":"GeoMatch"}}}}}}]\' '
+                              f'--actions \'[{{"route-configuration-override":{{"parameters":{{"cache-configuration":{{"cache-behavior":"HonorOrigin","query-string-caching-behavior":"UseQueryString","is-compression-enabled":"Disabled"}},"origin-group-override":{{"origin-group":{{"id":"{origin_group_id}"}},"forwarding-protocol":"MatchRequest"}}}}}}}}]\'')
         self.afd_rule_show_cmd(resource_group,
                                 rule_set_name,
                                 rule_name,
@@ -561,9 +677,9 @@ class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                               rule_set_name,
                               rule_name,
                               profile_name,
-                              options='--match-variable UrlFileExtension --operator Contains --match-values exe apk '
-                                      '--action-name UrlRedirect --redirect-protocol Https --redirect-type Moved --order 2 '
-                                      '--custom-hostname "www.contoso.com" --custom-path "/path1" --custom-querystring "a=b" --custom-fragment fg1')
+                      options=f'--order 2 '
+                              f'--conditions \'[{{"url-file-extension":{{"parameters":{{"match-values":["exe","apk"],"operator":"Contains"}}}}}}]\' '
+                              f'--actions \'[{{"url-redirect":{{"parameters":{{"redirect-type":"Moved","destination-protocol":"Https","custom-hostname":"www.contoso.com","custom-path":"/path1","custom-querystring":"a=b","custom-fragment":"fg1"}}}}}}]\'')
         self.afd_rule_show_cmd(resource_group,
                                 rule_set_name,
                                 rule_name,
@@ -587,8 +703,9 @@ class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                               rule_set_name,
                               rule_name,
                               profile_name,
-                              options='--order 3 --match-variable RequestScheme --match-values "HTTP" '
-                                      '--action-name UrlRewrite --source-pattern "/abc" --destination "/def" --preserve-unmatched-path true')
+                      options=f'--order 3 '
+                              f'--conditions \'[{{"request-scheme":{{"parameters":{{"match-values":["HTTP"],"operator":"Equal"}}}}}}]\' '
+                              f'--actions \'[{{"url-rewrite":{{"parameters":{{"source-pattern":"/abc","destination":"/def","preserve-unmatched-path":true}}}}}}]\'')
         self.afd_rule_show_cmd(resource_group,
                                 rule_set_name,
                                 rule_name,
@@ -612,8 +729,9 @@ class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                               rule_set_name,
                               rule_name,
                               profile_name,
-                              options='--order 4 --match-variable ServerPort --operator Equal --match-values 443 '
-                                      '--action-name ModifyRequestHeader --header-action Append --header-name header1 --header-value value1')
+                      options=f'--order 4 '
+                              f'--conditions \'[{{"server-port":{{"parameters":{{"match-values":["443"],"operator":"Equal"}}}}}}]\' '
+                              f'--actions \'[{{"modify-request-header":{{"parameters":{{"header-action":"Append","header-name":"header1","value":"value1"}}}}}}]\'')
         self.afd_rule_show_cmd(resource_group,
                                 rule_set_name,
                                 rule_name,
@@ -637,8 +755,9 @@ class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                               rule_set_name,
                               rule_name,
                               profile_name,
-                              options='--order 5 --match-variable ClientPort --operator Equal --match-values 8888 '
-                                      '--action-name ModifyResponseHeader --header-action Overwrite --header-name header1 --header-value value1')
+                      options=f'--order 5 '
+                              f'--conditions \'[{{"client-port":{{"parameters":{{"match-values":["8888"],"operator":"Equal"}}}}}}]\' '
+                              f'--actions \'[{{"modify-response-header":{{"parameters":{{"header-action":"Overwrite","header-name":"header1","value":"value1"}}}}}}]\'')
         self.afd_rule_show_cmd(resource_group,
                                 rule_set_name,
                                 rule_name,

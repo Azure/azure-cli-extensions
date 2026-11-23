@@ -17,17 +17,14 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a new origin within the specified origin group.
 
-    :example: Create an regular origin
-        az afd origin create -g group --host-name example.contoso.com --profile-name profile --origin-group-name originGroup --origin-name origin1 --origin-host-header example.contoso.com --priority 1 --weight 500 --enabled-state Enabled --http-port 80 --https-port 443 - name: Create a private link origin
-
-    :example: Create a private link origin
-        az afd origin create -g group --host-name example.contoso.com --profile-name profile --origin-group-name originGroup --origin-name origin1 --origin-host-header example.contoso.com --priority 1 --weight 500 --enabled-state Enabled --http-port 80 --https-port 443 --private-link-resource /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group/providers/Microsoft.Storage/storageAccounts/plstest --private-link-location EastUS --private-link-request-message 'Please approve this request' --private-link-sub-resource-type table
+    :example: AFDOrigins_Create
+        az afd origin create --resource-group RG --profile-name profile1 --origin-group-name origingroup1 --origin-name origin1 --enabled-state Enabled --host-name host1.blob.core.windows.net --http-port 80 --https-port 443 --origin-host-header host1.foo.com
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}/origins/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}/origins/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -75,10 +72,25 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.certificate_name_check_validation_mode = AAZStrArg(
+            options=["--cert-name-check-mode", "--certificate-name-check-validation-mode"],
+            arg_group="Properties",
+            help="The validation mode for certificate name check. Only applicable when enforceCertificateNameCheck is true.",
+            enum={"CustomCertificateSubject": "CustomCertificateSubject", "IncomingHostHeader": "IncomingHostHeader", "OriginHostname": "OriginHostname"},
+        )
+        _args_schema.custom_certificate_subjects = AAZListArg(
+            options=["--cert-subjects", "--custom-certificate-subjects"],
+            arg_group="Properties",
+            help="The list of custom certificate subjects to validate against. Only applicable when certificateNameCheckValidationMode is 'CustomCertificateSubject'. Must contain 1 or 2 entries.",
+            fmt=AAZListArgFormat(
+                max_length=2,
+                min_length=1,
+            ),
+        )
         _args_schema.enabled_state = AAZStrArg(
             options=["--enabled-state"],
             arg_group="Properties",
-            help="Whether to enable health probes to be made against backends defined under backendPools. Health probes can only be disabled if there is a single enabled backend in single enabled backend pool. When an origin is disabled, both routing and health probes to the origin are also disabled.",
+            help="Whether to enable health probes to be made against backends defined under backendPools. Health probes can only be disabled if there is a single enabled backend in single enabled backend pool.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.enforce_certificate_name_check = AAZBoolArg(
@@ -140,6 +152,9 @@ class Create(AAZCommand):
                 minimum=1,
             ),
         )
+
+        custom_certificate_subjects = cls._args_schema.custom_certificate_subjects
+        custom_certificate_subjects.Element = AAZStrArg()
 
         shared_private_link_resource = cls._args_schema.shared_private_link_resource
         shared_private_link_resource.group_id = AAZStrArg(
@@ -273,7 +288,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -302,15 +317,21 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("certificateNameCheckValidationMode", AAZStrType, ".certificate_name_check_validation_mode")
+                properties.set_prop("customCertificateSubjects", AAZListType, ".custom_certificate_subjects")
                 properties.set_prop("enabledState", AAZStrType, ".enabled_state")
                 properties.set_prop("enforceCertificateNameCheck", AAZBoolType, ".enforce_certificate_name_check")
-                properties.set_prop("hostName", AAZStrType, ".host_name", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("hostName", AAZStrType, ".host_name")
                 properties.set_prop("httpPort", AAZIntType, ".http_port")
                 properties.set_prop("httpsPort", AAZIntType, ".https_port")
                 properties.set_prop("originHostHeader", AAZStrType, ".origin_host_header")
                 properties.set_prop("priority", AAZIntType, ".priority")
                 properties.set_prop("sharedPrivateLinkResource", AAZObjectType, ".shared_private_link_resource")
                 properties.set_prop("weight", AAZIntType, ".weight")
+
+            custom_certificate_subjects = _builder.get(".properties.customCertificateSubjects")
+            if custom_certificate_subjects is not None:
+                custom_certificate_subjects.set_elements(AAZStrType, ".")
 
             shared_private_link_resource = _builder.get(".properties.sharedPrivateLinkResource")
             if shared_private_link_resource is not None:
@@ -389,6 +410,12 @@ class _CreateHelper:
             serialized_name="azureOrigin",
         )
         cls._build_schema_resource_reference_read(properties.azure_origin)
+        properties.certificate_name_check_validation_mode = AAZStrType(
+            serialized_name="certificateNameCheckValidationMode",
+        )
+        properties.custom_certificate_subjects = AAZListType(
+            serialized_name="customCertificateSubjects",
+        )
         properties.deployment_status = AAZStrType(
             serialized_name="deploymentStatus",
             flags={"read_only": True},
@@ -401,7 +428,6 @@ class _CreateHelper:
         )
         properties.host_name = AAZStrType(
             serialized_name="hostName",
-            flags={"required": True},
         )
         properties.http_port = AAZIntType(
             serialized_name="httpPort",
@@ -425,6 +451,9 @@ class _CreateHelper:
             serialized_name="sharedPrivateLinkResource",
         )
         properties.weight = AAZIntType()
+
+        custom_certificate_subjects = _schema_afd_origin_read.properties.custom_certificate_subjects
+        custom_certificate_subjects.Element = AAZStrType()
 
         shared_private_link_resource = _schema_afd_origin_read.properties.shared_private_link_resource
         shared_private_link_resource.group_id = AAZStrType(

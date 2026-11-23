@@ -207,23 +207,31 @@ helps['fleet updaterun create'] = """
             az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type Full --kubernetes-version 1.25.0 --node-image-selection Latest --stages ./test/stages.json
 
                 The following JSON structure represents example contents of the parameter '--stages ./test/stages.json'.
-                A stages array is composed of one or more stages, each containing one or more groups.
+                A stages array is composed of one or more stages, each containing one or more groups and/or a memberSelector.
                 Each group contains the 'name' property, which represents the group to which a cluster belongs (see 'az fleet member create --help').
+                Stages and groups can optionally include a 'memberSelector' to filter members by label. A 'memberSelector' contains a 'byLabel' property with a Kubernetes-style label selector string (e.g., "env=production"). When set on a group, it overrides name-based matching.
+                Stage memberSelector: pre-filters members for the entire stage. Only matching members are candidates for group-level matching.
+                Group memberSelector: selects members by label instead of matching by FleetMember.Group name. When set, overrides name-based matching.
                 Stages have an optional 'afterStageWaitInSeconds' integer property, acting as a delay between stage execution.
                 Stages and groups have an optional 'maxConcurrency' string property that sets the maximum number of concurrent upgrades allowed. It acts as a ceiling (not a quota)—actual concurrency may be lower due to other limits or member conditions. Minimum is 1.
                 Stage maxConcurrency: applies across all groups in the stage (total concurrent upgrades for the whole stage).
                 Group maxConcurrency: applies within a single group, and is additionally constrained by the stage limit (effective max is min(group cluster count, stage maxConcurrency)). Minimum is 1.
+                Stages and groups also have an optional 'maxAllowedFailures' string property.
+                Stage maxAllowedFailures: The maximum number of member (cluster) upgrade failures tolerated in this stage. Accepts a non-negative integer (e.g. '3') or a percentage (e.g. '25%'). Defaults to 0 if unset, meaning any failure fails the stage.
+                Group maxAllowedFailures: The maximum number of member (cluster) upgrade failures tolerated in this group. Accepts a non-negative integer (e.g. '3') or a percentage (e.g. '25%'). Defaults to 0 if unset, meaning any failure fails the group.
                 Value formats:
                   Fixed count (e.g., 3)
-                  Percentage (e.g., 25%, 1–100) of the relevant cluster total (stage total for stage, group total for group). Percentages are rounded down, with a minimum of 1 enforced.
-                  Examples: 3, 25%, 100%
+                  Percentage (e.g., 25%, 1–100) of the relevant cluster total (stage total for stage, group total for group).
+                  Examples: 0, 3, 25%, 100%
 
-                Example stages JSON, with optional properties maxConcurrency and before/after gates:
+                Example stages JSON, with optional properties maxConcurrency, maxAllowedFailures and before/after gates:
                {
                   "stages": [
                     {
                       "name": "stage1",
+                      "memberSelector": { "byLabel": "env=staging" },
                       "maxConcurrency": "7%",
+                      "maxAllowedFailures": "50%",
                       "beforeGates": [
                         {
                           "displayName": "stage before gate",
@@ -239,7 +247,9 @@ helps['fleet updaterun create'] = """
                       "groups": [
                         {
                           "name": "group-a1",
+                          "memberSelector": { "byLabel": "tier=frontend" },
                           "maxConcurrency": "100%",
+                          "maxAllowedFailures": "5",
                           "beforeGates": [
                             {
                               "displayName": "group before gate",
@@ -255,7 +265,9 @@ helps['fleet updaterun create'] = """
                         },
                         {
                           "name": "group-a2",
+                          "memberSelector": { "byLabel": "tier=backend" },
                           "maxConcurrency": "1",
+                          "maxAllowedFailures": "25%",
                           "beforeGates": [
                             {
                               "displayName": "group before gate",
@@ -290,6 +302,18 @@ helps['fleet updaterun create'] = """
                     },
                     {
                       "name": "stage2",
+                      "memberSelector": { "byLabel": "env=production" },
+                      "beforeGates": [
+                        {
+                          "displayName": "Wait until Friday evening",
+                          "type": "ScheduledStart",
+                          "scheduledStartConfiguration": {
+                            "startDay": "Friday",
+                            "startTime": "18:00",
+                            "utcOffset": "-05:00"
+                          }
+                        }
+                      ],
                       "groups": [
                         {
                           "name": "group-b1"
@@ -477,6 +501,10 @@ helps['fleet gate list'] = """
           text: az fleet gate list -g MyFleetResourceGroup --fleet-name MyFleetName
         - name: List all gates, filtering on gate state. Valid values are ('Pending', 'Skipped', 'Completed').
           text: az fleet gate list -g MyFleetResourceGroup --fleet-name MyFleetName --state Pending
+        - name: List all gates, filtering on gate type. Valid values are ('Approval', 'ScheduledStart').
+          text: az fleet gate list -g MyFleetResourceGroup --fleet-name MyFleetName --gate-type ScheduledStart
+        - name: List pending ScheduledStart gates.
+          text: az fleet gate list -g MyFleetResourceGroup --fleet-name MyFleetName --gate-type ScheduledStart --state Pending
 """
 
 helps['fleet gate show'] = """
@@ -520,16 +548,26 @@ helps['fleet namespace create'] = """
           text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --annotations key=value --labels key=value --cpu-requests 1m --cpu-limits 4m --memory-requests 1Mi --memory-limits 4Mi --ingress-policy AllowAll --egress-policy DenyAll --delete-policy Keep --adoption-policy Never
         - name: Create a fleet managed namespace on specific member clusters.
           text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names team-01 team-02 team-03 team-04
+        - name: Create a fleet managed namespace with a rollout update strategy.
+          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names team-01 team-02 --rollout-update-strategy MyUpdateStrategy
 """
 
 helps['fleet namespace update'] = """
     type: command
     short-summary: Updates a fleet managed namespace.
     examples:
-        - name: Updates a fleet managed namespace.
-          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace
         - name: Update tags for a fleet managed namespace.
           text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --tags environment=production
+        - name: Update labels and annotations.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --labels "env=production team=devops" --annotations "owner=team-a"
+        - name: Update resource quotas.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --cpu-requests 1m --cpu-limits 4m --memory-requests 1Mi --memory-limits 4Mi
+        - name: Update network and lifecycle policies.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --ingress-policy AllowAll --egress-policy DenyAll --adoption-policy IfIdentical --delete-policy Delete
+        - name: Update member cluster placement.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names team-01 team-02 team-03
+        - name: Update with a rollout update strategy.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --rollout-update-strategy my-update-strategy
 """
 
 helps['fleet namespace list'] = """
@@ -661,4 +699,105 @@ helps['fleet clustermeshprofile wait'] = """
           text: az fleet clustermeshprofile wait -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --custom "properties.status.state=='Connected'"
         - name: Wait for the cluster mesh profile to be created.
           text: az fleet clustermeshprofile wait -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --created
+"""
+
+helps['fleet identitybindingprofile'] = """
+    type: group
+    short-summary: Commands to manage identity binding profiles.
+"""
+
+helps['fleet identitybindingprofile create'] = """
+    type: command
+    short-summary: Create or update an identity binding profile.
+    long-summary: |
+        Running create against an existing profile replaces the whole profile. Any optional
+        argument that is omitted is cleared, including --allowed-subjects-from-file, which
+        removes existing subject restrictions. Pass every setting you want to keep.
+    parameters:
+        - name: --member-selector --selector -s
+          type: string
+          short-summary: "Kubernetes-style label selector for selecting Fleet members, e.g. 'env=production'."
+        - name: --managed-identity-resource-id
+          type: string
+          short-summary: The resource ID of the managed identity to use.
+        - name: --allowed-subjects-from-file
+          type: string
+          short-summary: Path to a JSON file with the list of subjects authorized to use this identity binding for token exchange.
+          long-summary: |
+              The file must contain a JSON array (max 100 entries). Each entry has a required
+              'namespaceSelector' and an optional 'serviceAccountSelector', each a Kubernetes label
+              selector supporting 'matchLabels' (an array of "key=value" strings) and/or
+              'matchExpressions'. Use the built-in 'kubernetes.io/metadata.name' label to target
+              specific namespaces by name. When omitted, authorization falls back to
+              ClusterRole/ClusterRoleBinding evaluation on the member clusters, and any subjects
+              already set on an existing profile are removed.
+    examples:
+        - name: Create an identity binding profile for members labelled env=production.
+          text: |-
+              az fleet identitybindingprofile create -g MyFleetResourceGroup -f MyFleetName -n MyIdentityBindingProfile \\
+                --selector "env=production" \\
+                --managed-identity-resource-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyIdentity"
+        - name: Create an identity binding profile restricted to specific subjects.
+          text: |-
+              az fleet identitybindingprofile create -g MyFleetResourceGroup -f MyFleetName -n MyIdentityBindingProfile \\
+                --selector "env=production" \\
+                --managed-identity-resource-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyIdentity" \\
+                --allowed-subjects-from-file allowed-subjects.json
+"""
+
+helps['fleet identitybindingprofile show'] = """
+    type: command
+    short-summary: Get an identity binding profile.
+    examples:
+        - name: Show the details of an identity binding profile.
+          text: az fleet identitybindingprofile show -g MyFleetResourceGroup -f MyFleetName -n MyIdentityBindingProfile
+"""
+
+helps['fleet identitybindingprofile list'] = """
+    type: command
+    short-summary: List all identity binding profiles for a fleet.
+    examples:
+        - name: List the identity binding profiles of a fleet.
+          text: az fleet identitybindingprofile list -g MyFleetResourceGroup -f MyFleetName
+"""
+
+helps['fleet identitybindingprofile delete'] = """
+    type: command
+    short-summary: Delete an identity binding profile. The identity binding must be removed from all members before the profile can be deleted.
+    examples:
+        - name: Delete an identity binding profile.
+          text: az fleet identitybindingprofile delete -g MyFleetResourceGroup -f MyFleetName -n MyIdentityBindingProfile
+"""
+
+helps['fleet identitybindingprofile apply'] = """
+    type: command
+    short-summary: Apply the identity binding profile to selected fleet members.
+    examples:
+        - name: Apply an identity binding profile.
+          text: az fleet identitybindingprofile apply -g MyFleetResourceGroup -f MyFleetName -n MyIdentityBindingProfile
+        - name: Preview what changes would be made without actually applying.
+          text: az fleet identitybindingprofile apply -g MyFleetResourceGroup -f MyFleetName -n MyIdentityBindingProfile --what-if --output table
+"""
+
+helps['fleet identitybindingprofile list-members'] = """
+    type: command
+    short-summary: List fleet members for an identity binding profile.
+    long-summary: |
+        Without --selector, lists members the profile is currently applied to.
+        With --selector, lists members that would match the profile's label selector (i.e. candidates for the next apply).
+    examples:
+        - name: List members the profile is currently applied to.
+          text: az fleet identitybindingprofile list-members -g MyFleetResourceGroup -f MyFleetName -n MyIdentityBindingProfile
+        - name: List members that would match the profile's selector.
+          text: az fleet identitybindingprofile list-members -g MyFleetResourceGroup -f MyFleetName -n MyIdentityBindingProfile --selector
+"""
+
+helps['fleet identitybindingprofile wait'] = """
+    type: command
+    short-summary: Wait for an identity binding profile to reach a desired state.
+    examples:
+        - name: Wait for the identity binding profile to finish applying.
+          text: az fleet identitybindingprofile wait -g MyFleetResourceGroup -f MyFleetName -n MyIdentityBindingProfile --custom "properties.provisioningState=='Succeeded'"
+        - name: Wait for the identity binding profile to be created.
+          text: az fleet identitybindingprofile wait -g MyFleetResourceGroup -f MyFleetName -n MyIdentityBindingProfile --created
 """

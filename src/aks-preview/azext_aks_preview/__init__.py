@@ -9,13 +9,19 @@ from azure.cli.core.profiles import register_resource_type
 
 # pylint: disable=unused-import
 import azext_aks_preview._help
-from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
+from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW, CUSTOM_MGMT_AKS_PIS_PREVIEW
 
 
 def register_aks_preview_resource_type():
     register_resource_type(
         "latest",
         CUSTOM_MGMT_AKS_PREVIEW,
+        None,
+    )
+
+    register_resource_type(
+        "latest",
+        CUSTOM_MGMT_AKS_PIS_PREVIEW,
         None,
     )
 

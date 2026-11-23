@@ -28,7 +28,7 @@ class CdnAfdLogAnalyticScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
 
         start_time = datetime.datetime.now().astimezone().replace(microsecond=0)
         if self.is_playback_mode():
-            start_time = datetime.datetime(2026, 4, 20, 12, 23, 40, tzinfo=datetime.timezone.utc)
+            start_time = datetime.datetime(2026, 10, 21, 8, 54, 38, tzinfo=datetime.timezone.utc)
 
         end_time = start_time + datetime.timedelta(seconds=300)
 
@@ -64,7 +64,7 @@ class CdnAfdLogAnalyticScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
 
         start_time = datetime.datetime.now().astimezone().replace(microsecond=0)
         if self.is_playback_mode():
-            start_time = datetime.datetime(2026, 4, 20, 12, 26, 48, tzinfo=datetime.timezone.utc)
+            start_time = datetime.datetime(2026, 10, 21, 8, 6, 46, tzinfo=datetime.timezone.utc)
 
         end_time = start_time + datetime.timedelta(seconds=300)
 

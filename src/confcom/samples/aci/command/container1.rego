@@ -73,5 +73,9 @@
         }
     ],
     "name": "container1",
-    "command": ["/bin/sh","-c","while true; do echo hello; sleep 10; done"]
+    "command": ["/bin/sh","-c","while true; do echo hello; sleep 10; done"],
+    "signals": [
+        9,
+        15
+    ]
 }

@@ -2,9 +2,10 @@ files_check:
   - files:
       - "src/.*/HISTORY.rst"
       - "src/.*/setup.py"
+      - "src/.*/pyproject.toml"
     comment: |
       Please write the description of changes which can be perceived by customers into HISTORY.rst.
-      If you want to release a new extension version, please update the version in setup.py as well.
+      If you want to release a new extension version, please update the version in pyproject.toml (or setup.py, if the extension has not migrated yet) as well.
     is_regex: true
     type: necessary
 allowed_branches:

@@ -49,7 +49,7 @@ def build_list_graphs_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-11-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-04-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -84,7 +84,7 @@ def build_get_graph_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-11-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-04-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -120,7 +120,7 @@ def build_create_update_graph_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-11-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-04-01-preview"))
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
@@ -156,9 +156,12 @@ def build_create_update_graph_request(
 def build_delete_graph_resource_request(
     resource_group_name: str, account_name: str, graph_name: str, subscription_id: str, **kwargs: Any
 ) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-11-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-04-01-preview"))
+    accept = _headers.pop("Accept", "application/json")
+
     # Construct URL
     _url = kwargs.pop(
         "template_url",
@@ -180,7 +183,10 @@ def build_delete_graph_resource_request(
     # Construct parameters
     _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
-    return HttpRequest(method="DELETE", url=_url, params=_params, **kwargs)
+    # Construct headers
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="DELETE", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 class GraphResourcesOperations:
@@ -267,7 +273,7 @@ class GraphResourcesOperations:
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return None, iter(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
 
         def get_next(next_link=None):
             _request = prepare_request(next_link)
@@ -280,7 +286,11 @@ class GraphResourcesOperations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -338,7 +348,11 @@ class GraphResourcesOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("GraphResourceGetResults", pipeline_response.http_response)
 
@@ -406,14 +420,19 @@ class GraphResourcesOperations:
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 202:
-            response_headers["azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("azure-AsyncOperation")
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
             )
-            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -546,7 +565,9 @@ class GraphResourcesOperations:
             return deserialized
 
         if polling is True:
-            polling_method: PollingMethod = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))
+            polling_method: PollingMethod = cast(
+                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(PollingMethod, NoPolling())
         else:
@@ -604,14 +625,18 @@ class GraphResourcesOperations:
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 202:
-            response_headers["azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("azure-AsyncOperation")
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
             )
-            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -664,7 +689,9 @@ class GraphResourcesOperations:
                 return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
-            polling_method: PollingMethod = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))
+            polling_method: PollingMethod = cast(
+                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(PollingMethod, NoPolling())
         else:

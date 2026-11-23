@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "cloudhsm show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Show details of a Cloud HSM
@@ -22,9 +23,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-03-31",
+        "version": "2025-12-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hardwaresecuritymodules/cloudhsmclusters/{}", "2025-03-31"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hardwaresecuritymodules/cloudhsmclusters/{}", "2025-12-01-preview"],
         ]
     }
 
@@ -125,7 +126,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-31",
+                    "api-version", "2025-12-01-preview",
                     required=True,
                 ),
             }

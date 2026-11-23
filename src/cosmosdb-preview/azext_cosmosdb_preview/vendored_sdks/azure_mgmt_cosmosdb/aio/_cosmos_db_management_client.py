@@ -67,6 +67,9 @@ from .operations import (
     RestorableTableResourcesOperations,
     RestorableTablesOperations,
     ServiceOperations,
+    SoftDeletedDatabaseAccountsOperations,
+    SoftDeletedSqlContainersOperations,
+    SoftDeletedSqlDatabasesOperations,
     SqlResourcesOperations,
     TableResourcesOperations,
     ThroughputPoolAccountOperations,
@@ -81,127 +84,136 @@ if TYPE_CHECKING:
 
 
 class CosmosDBManagementClient:  # pylint: disable=too-many-instance-attributes
-    """Azure Cosmos DB Role Based Access Control Resource Provider REST API.
+    """Azure Cosmos DB Throughput Pool REST API.
 
+    :ivar database_accounts: DatabaseAccountsOperations operations
+    :vartype database_accounts: azure.mgmt.cosmosdb.aio.operations.DatabaseAccountsOperations
+    :ivar operations: Operations operations
+    :vartype operations: azure.mgmt.cosmosdb.aio.operations.Operations
+    :ivar cassandra_clusters: CassandraClustersOperations operations
+    :vartype cassandra_clusters: azure.mgmt.cosmosdb.aio.operations.CassandraClustersOperations
+    :ivar fleet: FleetOperations operations
+    :vartype fleet: azure.mgmt.cosmosdb.aio.operations.FleetOperations
+    :ivar garnet_clusters: GarnetClustersOperations operations
+    :vartype garnet_clusters: azure.mgmt.cosmosdb.aio.operations.GarnetClustersOperations
+    :ivar locations: LocationsOperations operations
+    :vartype locations: azure.mgmt.cosmosdb.aio.operations.LocationsOperations
+    :ivar restorable_database_accounts: RestorableDatabaseAccountsOperations operations
+    :vartype restorable_database_accounts:
+     azure.mgmt.cosmosdb.aio.operations.RestorableDatabaseAccountsOperations
+    :ivar restorable_gremlin_graphs: RestorableGremlinGraphsOperations operations
+    :vartype restorable_gremlin_graphs:
+     azure.mgmt.cosmosdb.aio.operations.RestorableGremlinGraphsOperations
+    :ivar restorable_gremlin_databases: RestorableGremlinDatabasesOperations operations
+    :vartype restorable_gremlin_databases:
+     azure.mgmt.cosmosdb.aio.operations.RestorableGremlinDatabasesOperations
+    :ivar restorable_gremlin_resources: RestorableGremlinResourcesOperations operations
+    :vartype restorable_gremlin_resources:
+     azure.mgmt.cosmosdb.aio.operations.RestorableGremlinResourcesOperations
+    :ivar restorable_mongodb_collections: RestorableMongodbCollectionsOperations operations
+    :vartype restorable_mongodb_collections:
+     azure.mgmt.cosmosdb.aio.operations.RestorableMongodbCollectionsOperations
+    :ivar restorable_mongodb_databases: RestorableMongodbDatabasesOperations operations
+    :vartype restorable_mongodb_databases:
+     azure.mgmt.cosmosdb.aio.operations.RestorableMongodbDatabasesOperations
+    :ivar restorable_mongodb_resources: RestorableMongodbResourcesOperations operations
+    :vartype restorable_mongodb_resources:
+     azure.mgmt.cosmosdb.aio.operations.RestorableMongodbResourcesOperations
+    :ivar restorable_sql_containers: RestorableSqlContainersOperations operations
+    :vartype restorable_sql_containers:
+     azure.mgmt.cosmosdb.aio.operations.RestorableSqlContainersOperations
+    :ivar restorable_sql_databases: RestorableSqlDatabasesOperations operations
+    :vartype restorable_sql_databases:
+     azure.mgmt.cosmosdb.aio.operations.RestorableSqlDatabasesOperations
+    :ivar restorable_sql_resources: RestorableSqlResourcesOperations operations
+    :vartype restorable_sql_resources:
+     azure.mgmt.cosmosdb.aio.operations.RestorableSqlResourcesOperations
+    :ivar restorable_table_resources: RestorableTableResourcesOperations operations
+    :vartype restorable_table_resources:
+     azure.mgmt.cosmosdb.aio.operations.RestorableTableResourcesOperations
+    :ivar restorable_tables: RestorableTablesOperations operations
+    :vartype restorable_tables: azure.mgmt.cosmosdb.aio.operations.RestorableTablesOperations
+    :ivar soft_deleted_database_accounts: SoftDeletedDatabaseAccountsOperations operations
+    :vartype soft_deleted_database_accounts:
+     azure.mgmt.cosmosdb.aio.operations.SoftDeletedDatabaseAccountsOperations
+    :ivar throughput_pools: ThroughputPoolsOperations operations
+    :vartype throughput_pools: azure.mgmt.cosmosdb.aio.operations.ThroughputPoolsOperations
+    :ivar cassandra_data_centers: CassandraDataCentersOperations operations
+    :vartype cassandra_data_centers:
+     azure.mgmt.cosmosdb.aio.operations.CassandraDataCentersOperations
     :ivar cassandra_resources: CassandraResourcesOperations operations
     :vartype cassandra_resources: azure.mgmt.cosmosdb.aio.operations.CassandraResourcesOperations
     :ivar chaos_fault: ChaosFaultOperations operations
     :vartype chaos_fault: azure.mgmt.cosmosdb.aio.operations.ChaosFaultOperations
     :ivar copy_jobs: CopyJobsOperations operations
     :vartype copy_jobs: azure.mgmt.cosmosdb.aio.operations.CopyJobsOperations
-    :ivar database_accounts: DatabaseAccountsOperations operations
-    :vartype database_accounts: azure.mgmt.cosmosdb.aio.operations.DatabaseAccountsOperations
-    :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.cosmosdb.aio.operations.Operations
-    :ivar database: DatabaseOperations operations
-    :vartype database: azure.mgmt.cosmosdb.aio.operations.DatabaseOperations
+    :ivar data_transfer_jobs: DataTransferJobsOperations operations
+    :vartype data_transfer_jobs: azure.mgmt.cosmosdb.aio.operations.DataTransferJobsOperations
     :ivar collection: CollectionOperations operations
     :vartype collection: azure.mgmt.cosmosdb.aio.operations.CollectionOperations
-    :ivar collection_region: CollectionRegionOperations operations
-    :vartype collection_region: azure.mgmt.cosmosdb.aio.operations.CollectionRegionOperations
-    :ivar database_account_region: DatabaseAccountRegionOperations operations
-    :vartype database_account_region:
-     azure.mgmt.cosmosdb.aio.operations.DatabaseAccountRegionOperations
-    :ivar percentile_source_target: PercentileSourceTargetOperations operations
-    :vartype percentile_source_target:
-     azure.mgmt.cosmosdb.aio.operations.PercentileSourceTargetOperations
-    :ivar percentile_target: PercentileTargetOperations operations
-    :vartype percentile_target: azure.mgmt.cosmosdb.aio.operations.PercentileTargetOperations
-    :ivar percentile: PercentileOperations operations
-    :vartype percentile: azure.mgmt.cosmosdb.aio.operations.PercentileOperations
-    :ivar collection_partition_region: CollectionPartitionRegionOperations operations
-    :vartype collection_partition_region:
-     azure.mgmt.cosmosdb.aio.operations.CollectionPartitionRegionOperations
-    :ivar collection_partition: CollectionPartitionOperations operations
-    :vartype collection_partition: azure.mgmt.cosmosdb.aio.operations.CollectionPartitionOperations
     :ivar partition_key_range_id: PartitionKeyRangeIdOperations operations
     :vartype partition_key_range_id:
      azure.mgmt.cosmosdb.aio.operations.PartitionKeyRangeIdOperations
-    :ivar partition_key_range_id_region: PartitionKeyRangeIdRegionOperations operations
-    :vartype partition_key_range_id_region:
-     azure.mgmt.cosmosdb.aio.operations.PartitionKeyRangeIdRegionOperations
+    :ivar collection_partition: CollectionPartitionOperations operations
+    :vartype collection_partition: azure.mgmt.cosmosdb.aio.operations.CollectionPartitionOperations
+    :ivar database: DatabaseOperations operations
+    :vartype database: azure.mgmt.cosmosdb.aio.operations.DatabaseOperations
     :ivar graph_resources: GraphResourcesOperations operations
     :vartype graph_resources: azure.mgmt.cosmosdb.aio.operations.GraphResourcesOperations
-    :ivar sql_resources: SqlResourcesOperations operations
-    :vartype sql_resources: azure.mgmt.cosmosdb.aio.operations.SqlResourcesOperations
-    :ivar mongo_db_resources: MongoDBResourcesOperations operations
-    :vartype mongo_db_resources: azure.mgmt.cosmosdb.aio.operations.MongoDBResourcesOperations
-    :ivar table_resources: TableResourcesOperations operations
-    :vartype table_resources: azure.mgmt.cosmosdb.aio.operations.TableResourcesOperations
     :ivar gremlin_resources: GremlinResourcesOperations operations
     :vartype gremlin_resources: azure.mgmt.cosmosdb.aio.operations.GremlinResourcesOperations
-    :ivar locations: LocationsOperations operations
-    :vartype locations: azure.mgmt.cosmosdb.aio.operations.LocationsOperations
-    :ivar data_transfer_jobs: DataTransferJobsOperations operations
-    :vartype data_transfer_jobs: azure.mgmt.cosmosdb.aio.operations.DataTransferJobsOperations
-    :ivar fleet: FleetOperations operations
-    :vartype fleet: azure.mgmt.cosmosdb.aio.operations.FleetOperations
-    :ivar fleet_analytics: FleetAnalyticsOperations operations
-    :vartype fleet_analytics: azure.mgmt.cosmosdb.aio.operations.FleetAnalyticsOperations
-    :ivar fleetspace: FleetspaceOperations operations
-    :vartype fleetspace: azure.mgmt.cosmosdb.aio.operations.FleetspaceOperations
-    :ivar fleetspace_account: FleetspaceAccountOperations operations
-    :vartype fleetspace_account: azure.mgmt.cosmosdb.aio.operations.FleetspaceAccountOperations
-    :ivar garnet_clusters: GarnetClustersOperations operations
-    :vartype garnet_clusters: azure.mgmt.cosmosdb.aio.operations.GarnetClustersOperations
-    :ivar cassandra_clusters: CassandraClustersOperations operations
-    :vartype cassandra_clusters: azure.mgmt.cosmosdb.aio.operations.CassandraClustersOperations
-    :ivar cassandra_data_centers: CassandraDataCentersOperations operations
-    :vartype cassandra_data_centers:
-     azure.mgmt.cosmosdb.aio.operations.CassandraDataCentersOperations
     :ivar mongo_mi_resources: MongoMIResourcesOperations operations
     :vartype mongo_mi_resources: azure.mgmt.cosmosdb.aio.operations.MongoMIResourcesOperations
+    :ivar mongo_db_resources: MongoDBResourcesOperations operations
+    :vartype mongo_db_resources: azure.mgmt.cosmosdb.aio.operations.MongoDBResourcesOperations
     :ivar network_security_perimeter_configurations:
      NetworkSecurityPerimeterConfigurationsOperations operations
     :vartype network_security_perimeter_configurations:
      azure.mgmt.cosmosdb.aio.operations.NetworkSecurityPerimeterConfigurationsOperations
     :ivar notebook_workspaces: NotebookWorkspacesOperations operations
     :vartype notebook_workspaces: azure.mgmt.cosmosdb.aio.operations.NotebookWorkspacesOperations
+    :ivar percentile: PercentileOperations operations
+    :vartype percentile: azure.mgmt.cosmosdb.aio.operations.PercentileOperations
     :ivar private_endpoint_connections: PrivateEndpointConnectionsOperations operations
     :vartype private_endpoint_connections:
      azure.mgmt.cosmosdb.aio.operations.PrivateEndpointConnectionsOperations
     :ivar private_link_resources: PrivateLinkResourcesOperations operations
     :vartype private_link_resources:
      azure.mgmt.cosmosdb.aio.operations.PrivateLinkResourcesOperations
-    :ivar restorable_database_accounts: RestorableDatabaseAccountsOperations operations
-    :vartype restorable_database_accounts:
-     azure.mgmt.cosmosdb.aio.operations.RestorableDatabaseAccountsOperations
-    :ivar restorable_sql_databases: RestorableSqlDatabasesOperations operations
-    :vartype restorable_sql_databases:
-     azure.mgmt.cosmosdb.aio.operations.RestorableSqlDatabasesOperations
-    :ivar restorable_sql_containers: RestorableSqlContainersOperations operations
-    :vartype restorable_sql_containers:
-     azure.mgmt.cosmosdb.aio.operations.RestorableSqlContainersOperations
-    :ivar restorable_sql_resources: RestorableSqlResourcesOperations operations
-    :vartype restorable_sql_resources:
-     azure.mgmt.cosmosdb.aio.operations.RestorableSqlResourcesOperations
-    :ivar restorable_mongodb_databases: RestorableMongodbDatabasesOperations operations
-    :vartype restorable_mongodb_databases:
-     azure.mgmt.cosmosdb.aio.operations.RestorableMongodbDatabasesOperations
-    :ivar restorable_mongodb_collections: RestorableMongodbCollectionsOperations operations
-    :vartype restorable_mongodb_collections:
-     azure.mgmt.cosmosdb.aio.operations.RestorableMongodbCollectionsOperations
-    :ivar restorable_mongodb_resources: RestorableMongodbResourcesOperations operations
-    :vartype restorable_mongodb_resources:
-     azure.mgmt.cosmosdb.aio.operations.RestorableMongodbResourcesOperations
-    :ivar restorable_gremlin_databases: RestorableGremlinDatabasesOperations operations
-    :vartype restorable_gremlin_databases:
-     azure.mgmt.cosmosdb.aio.operations.RestorableGremlinDatabasesOperations
-    :ivar restorable_gremlin_graphs: RestorableGremlinGraphsOperations operations
-    :vartype restorable_gremlin_graphs:
-     azure.mgmt.cosmosdb.aio.operations.RestorableGremlinGraphsOperations
-    :ivar restorable_gremlin_resources: RestorableGremlinResourcesOperations operations
-    :vartype restorable_gremlin_resources:
-     azure.mgmt.cosmosdb.aio.operations.RestorableGremlinResourcesOperations
-    :ivar restorable_tables: RestorableTablesOperations operations
-    :vartype restorable_tables: azure.mgmt.cosmosdb.aio.operations.RestorableTablesOperations
-    :ivar restorable_table_resources: RestorableTableResourcesOperations operations
-    :vartype restorable_table_resources:
-     azure.mgmt.cosmosdb.aio.operations.RestorableTableResourcesOperations
+    :ivar collection_region: CollectionRegionOperations operations
+    :vartype collection_region: azure.mgmt.cosmosdb.aio.operations.CollectionRegionOperations
+    :ivar partition_key_range_id_region: PartitionKeyRangeIdRegionOperations operations
+    :vartype partition_key_range_id_region:
+     azure.mgmt.cosmosdb.aio.operations.PartitionKeyRangeIdRegionOperations
+    :ivar collection_partition_region: CollectionPartitionRegionOperations operations
+    :vartype collection_partition_region:
+     azure.mgmt.cosmosdb.aio.operations.CollectionPartitionRegionOperations
+    :ivar database_account_region: DatabaseAccountRegionOperations operations
+    :vartype database_account_region:
+     azure.mgmt.cosmosdb.aio.operations.DatabaseAccountRegionOperations
     :ivar service: ServiceOperations operations
     :vartype service: azure.mgmt.cosmosdb.aio.operations.ServiceOperations
-    :ivar throughput_pools: ThroughputPoolsOperations operations
-    :vartype throughput_pools: azure.mgmt.cosmosdb.aio.operations.ThroughputPoolsOperations
+    :ivar percentile_source_target: PercentileSourceTargetOperations operations
+    :vartype percentile_source_target:
+     azure.mgmt.cosmosdb.aio.operations.PercentileSourceTargetOperations
+    :ivar sql_resources: SqlResourcesOperations operations
+    :vartype sql_resources: azure.mgmt.cosmosdb.aio.operations.SqlResourcesOperations
+    :ivar table_resources: TableResourcesOperations operations
+    :vartype table_resources: azure.mgmt.cosmosdb.aio.operations.TableResourcesOperations
+    :ivar percentile_target: PercentileTargetOperations operations
+    :vartype percentile_target: azure.mgmt.cosmosdb.aio.operations.PercentileTargetOperations
+    :ivar fleet_analytics: FleetAnalyticsOperations operations
+    :vartype fleet_analytics: azure.mgmt.cosmosdb.aio.operations.FleetAnalyticsOperations
+    :ivar fleetspace: FleetspaceOperations operations
+    :vartype fleetspace: azure.mgmt.cosmosdb.aio.operations.FleetspaceOperations
+    :ivar fleetspace_account: FleetspaceAccountOperations operations
+    :vartype fleetspace_account: azure.mgmt.cosmosdb.aio.operations.FleetspaceAccountOperations
+    :ivar soft_deleted_sql_databases: SoftDeletedSqlDatabasesOperations operations
+    :vartype soft_deleted_sql_databases:
+     azure.mgmt.cosmosdb.aio.operations.SoftDeletedSqlDatabasesOperations
+    :ivar soft_deleted_sql_containers: SoftDeletedSqlContainersOperations operations
+    :vartype soft_deleted_sql_containers:
+     azure.mgmt.cosmosdb.aio.operations.SoftDeletedSqlContainersOperations
     :ivar throughput_pool: ThroughputPoolOperations operations
     :vartype throughput_pool: azure.mgmt.cosmosdb.aio.operations.ThroughputPoolOperations
     :ivar throughput_pool_accounts: ThroughputPoolAccountsOperations operations
@@ -219,7 +231,7 @@ class CosmosDBManagementClient:  # pylint: disable=too-many-instance-attributes
     :keyword cloud_setting: The cloud setting for which to get the ARM endpoint. Default value is
      None.
     :paramtype cloud_setting: ~azure.core.AzureClouds
-    :keyword api_version: Api Version. Default value is "2025-11-01-preview". Note that overriding
+    :keyword api_version: Api Version. Default value is "2026-04-01-preview". Note that overriding
      this default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
@@ -274,69 +286,85 @@ class CosmosDBManagementClient:  # pylint: disable=too-many-instance-attributes
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
-        self.cassandra_resources = CassandraResourcesOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.chaos_fault = ChaosFaultOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.copy_jobs = CopyJobsOperations(self._client, self._config, self._serialize, self._deserialize)
         self.database_accounts = DatabaseAccountsOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
         self.operations = Operations(self._client, self._config, self._serialize, self._deserialize)
-        self.database = DatabaseOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.collection = CollectionOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.collection_region = CollectionRegionOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.database_account_region = DatabaseAccountRegionOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.percentile_source_target = PercentileSourceTargetOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.percentile_target = PercentileTargetOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.percentile = PercentileOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.collection_partition_region = CollectionPartitionRegionOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.collection_partition = CollectionPartitionOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.partition_key_range_id = PartitionKeyRangeIdOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.partition_key_range_id_region = PartitionKeyRangeIdRegionOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.graph_resources = GraphResourcesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.sql_resources = SqlResourcesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.mongo_db_resources = MongoDBResourcesOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.table_resources = TableResourcesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.gremlin_resources = GremlinResourcesOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.locations = LocationsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.data_transfer_jobs = DataTransferJobsOperations(
+        self.cassandra_clusters = CassandraClustersOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
         self.fleet = FleetOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.fleet_analytics = FleetAnalyticsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.fleetspace = FleetspaceOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.fleetspace_account = FleetspaceAccountOperations(
+        self.garnet_clusters = GarnetClustersOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.locations = LocationsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.restorable_database_accounts = RestorableDatabaseAccountsOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
-        self.garnet_clusters = GarnetClustersOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.cassandra_clusters = CassandraClustersOperations(
+        self.restorable_gremlin_graphs = RestorableGremlinGraphsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_gremlin_databases = RestorableGremlinDatabasesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_gremlin_resources = RestorableGremlinResourcesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_mongodb_collections = RestorableMongodbCollectionsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_mongodb_databases = RestorableMongodbDatabasesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_mongodb_resources = RestorableMongodbResourcesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_sql_containers = RestorableSqlContainersOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_sql_databases = RestorableSqlDatabasesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_sql_resources = RestorableSqlResourcesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_table_resources = RestorableTableResourcesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_tables = RestorableTablesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.soft_deleted_database_accounts = SoftDeletedDatabaseAccountsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.throughput_pools = ThroughputPoolsOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
         self.cassandra_data_centers = CassandraDataCentersOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
+        self.cassandra_resources = CassandraResourcesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.chaos_fault = ChaosFaultOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.copy_jobs = CopyJobsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.data_transfer_jobs = DataTransferJobsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.collection = CollectionOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.partition_key_range_id = PartitionKeyRangeIdOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.collection_partition = CollectionPartitionOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.database = DatabaseOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.graph_resources = GraphResourcesOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.gremlin_resources = GremlinResourcesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
         self.mongo_mi_resources = MongoMIResourcesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.mongo_db_resources = MongoDBResourcesOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
         self.network_security_perimeter_configurations = NetworkSecurityPerimeterConfigurationsOperations(
@@ -345,50 +373,43 @@ class CosmosDBManagementClient:  # pylint: disable=too-many-instance-attributes
         self.notebook_workspaces = NotebookWorkspacesOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
+        self.percentile = PercentileOperations(self._client, self._config, self._serialize, self._deserialize)
         self.private_endpoint_connections = PrivateEndpointConnectionsOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
         self.private_link_resources = PrivateLinkResourcesOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
-        self.restorable_database_accounts = RestorableDatabaseAccountsOperations(
+        self.collection_region = CollectionRegionOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
-        self.restorable_sql_databases = RestorableSqlDatabasesOperations(
+        self.partition_key_range_id_region = PartitionKeyRangeIdRegionOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
-        self.restorable_sql_containers = RestorableSqlContainersOperations(
+        self.collection_partition_region = CollectionPartitionRegionOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
-        self.restorable_sql_resources = RestorableSqlResourcesOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.restorable_mongodb_databases = RestorableMongodbDatabasesOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.restorable_mongodb_collections = RestorableMongodbCollectionsOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.restorable_mongodb_resources = RestorableMongodbResourcesOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.restorable_gremlin_databases = RestorableGremlinDatabasesOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.restorable_gremlin_graphs = RestorableGremlinGraphsOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.restorable_gremlin_resources = RestorableGremlinResourcesOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.restorable_tables = RestorableTablesOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.restorable_table_resources = RestorableTableResourcesOperations(
+        self.database_account_region = DatabaseAccountRegionOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
         self.service = ServiceOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.throughput_pools = ThroughputPoolsOperations(
+        self.percentile_source_target = PercentileSourceTargetOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.sql_resources = SqlResourcesOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.table_resources = TableResourcesOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.percentile_target = PercentileTargetOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.fleet_analytics = FleetAnalyticsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.fleetspace = FleetspaceOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.fleetspace_account = FleetspaceAccountOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.soft_deleted_sql_databases = SoftDeletedSqlDatabasesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.soft_deleted_sql_containers = SoftDeletedSqlContainersOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
         self.throughput_pool = ThroughputPoolOperations(self._client, self._config, self._serialize, self._deserialize)

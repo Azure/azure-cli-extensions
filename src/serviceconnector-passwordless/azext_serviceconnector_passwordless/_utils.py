@@ -8,7 +8,7 @@ import time
 import os
 from knack.prompting import prompt, prompt_y_n, NoTTYException
 from knack.log import get_logger
-from azure.cli.core import telemetry
+from azure.cli.core import telemetry, get_default_cli
 from azure.cli.core.azclierror import (
     AzureConnectionError,
     CLIInternalError,
@@ -17,7 +17,6 @@ from azure.cli.command_modules.serviceconnector._utils import (
     should_load_source as should_load_source_base
 )
 from ._resource_config import PASSWORDLESS_SOURCE_RESOURCES
-from azure.cli.core import get_default_cli
 
 logger = get_logger(__name__)
 
@@ -63,7 +62,7 @@ def run_cli_cmd_base(cmd, retry=0, interval=0, should_retry_func=None):
             time.sleep(interval)
             return run_cli_cmd(cmd, retry - 1, interval)
         raise CLIInternalError('Command execution failed, command is: '
-                               '{}, error message is: \n {}'.format(cmd, output.error))
+                               f'{cmd}, error message is: \n {output.error}')
     return output.result
 
 
@@ -74,7 +73,8 @@ def _in_process_execute(command):
         command = command[3:]
 
     cli = get_default_cli()
-    cli.invoke(shlex.split(command), out_file=open(os.devnull, 'w'))  # Don't print output
+    with open(os.devnull, 'w', encoding='utf-8') as devnull:
+        cli.invoke(shlex.split(command), out_file=devnull)  # Don't print output
     return cli.result
 
 

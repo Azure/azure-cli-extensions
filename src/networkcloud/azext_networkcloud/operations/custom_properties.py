@@ -11,17 +11,118 @@
 Helper class for all POST commands that return extra properties back to the customer
 """
 
+import gzip
+import hashlib
+import hmac
 import os
-import subprocess
+import re
 import tarfile
+import tempfile
 import time
-import urllib
+import urllib.error
+import urllib.parse
+import urllib.request
+from email.utils import formatdate
 
+from azure.cli.core._profile import Profile
 from azure.cli.core.aaz import has_value
-from azure.cli.core.azclierror import AzureInternalError
+from azure.cli.core.azclierror import AzureInternalError, InvalidArgumentValueError
 from knack.log import get_logger
 
 logger = get_logger(__name__)
+
+MAX_ARCHIVE_BYTES = 1024 * 1024 * 1024
+MAX_ARCHIVE_MEMBERS = 10000
+COPY_CHUNK_BYTES = 1024 * 1024
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, *args, **kwargs):
+        raise ValueError("Archive download redirects are not permitted")
+
+
+def _validate_download_inputs(url, expected_host, expected_sha256=None):
+    if not isinstance(expected_host, str) or not re.fullmatch(
+        r"[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?", expected_host
+    ):
+        raise InvalidArgumentValueError(
+            "--expected-storage-host must be an exact storage hostname"
+        )
+    if expected_sha256 is not None and (
+        not isinstance(expected_sha256, str)
+        or not re.fullmatch(r"[A-Fa-f0-9]{64}", expected_sha256)
+    ):
+        raise InvalidArgumentValueError(
+            "--expected-sha256 must be a trusted 64-character SHA-256 digest"
+        )
+    parsed = urllib.parse.urlsplit(url)
+    invalid_origin = (
+        parsed.scheme != "https"
+        or parsed.hostname != expected_host.lower()
+        or parsed.port not in (None, 443)
+    )
+    unsafe_components = (
+        parsed.username is not None
+        or parsed.password is not None
+        or parsed.fragment
+        or any(character.isspace() or ord(character) < 32 for character in url)
+        or "\\" in url
+    )
+    if invalid_origin or unsafe_components:
+        raise InvalidArgumentValueError(
+            "Archive URL must use HTTPS on the exact expected storage host, "
+            "without credentials, fragments, or a nonstandard port"
+        )
+
+
+def _copy_bounded(source, destination, digest=None):
+    total = 0
+    while True:
+        chunk = source.read(min(COPY_CHUNK_BYTES, MAX_ARCHIVE_BYTES - total + 1))
+        if not chunk:
+            return
+        total += len(chunk)
+        if total > MAX_ARCHIVE_BYTES:
+            raise ValueError("Archive exceeds the 1 GiB size limit")
+        if digest is not None:
+            digest.update(chunk)
+        destination.write(chunk)
+
+
+def _download_and_extract(
+    url, output_directory, expected_host, expected_sha256=None, cli_ctx=None
+):
+    _validate_download_inputs(url, expected_host, expected_sha256)
+    headers = {}
+    if cli_ctx is not None:
+        token, _, _ = Profile(cli_ctx=cli_ctx).get_raw_token(
+            resource="https://storage.azure.com/"
+        )
+        headers["Authorization"] = f"Bearer {token[1]}"
+        headers["x-ms-version"] = "2023-11-03"
+        headers["x-ms-date"] = formatdate(usegmt=True)
+    request = urllib.request.Request(url, headers=headers)
+    opener = urllib.request.build_opener(_NoRedirect())
+    with tempfile.TemporaryFile() as downloaded:
+        digest = hashlib.sha256() if expected_sha256 is not None else None
+        with opener.open(request, timeout=60) as response:
+            _copy_bounded(response, downloaded, digest)
+        if digest is not None and not hmac.compare_digest(
+            digest.hexdigest(), expected_sha256.lower()
+        ):
+            raise ValueError(
+                "Archive SHA-256 checksum does not match the expected digest"
+            )
+        downloaded.seek(0)
+        with tempfile.TemporaryFile() as decompressed:
+            try:
+                with gzip.GzipFile(fileobj=downloaded, mode="rb") as compressed:
+                    _copy_bounded(compressed, decompressed)
+            except EOFError as ex:
+                raise tarfile.ReadError("Incomplete gzip result archive") from ex
+            decompressed.seek(0)
+            with tarfile.open(fileobj=decompressed, mode="r:") as archive:
+                CustomActionProperties.safe_extract(archive, output_directory)
 
 
 def _safe_remove_file(file_path, max_retries=3, delay=0.1):
@@ -92,24 +193,42 @@ class CustomActionProperties:
         """
         Ensure the target path is within the intended directory
         """
-        abs_directory = os.path.abspath(directory)
-        abs_target = os.path.abspath(target)
-        return os.path.commonpath([abs_directory]) == os.path.commonpath(
-            [abs_directory, abs_target]
-        )
+        abs_directory = os.path.realpath(directory)
+        abs_target = os.path.realpath(target)
+        try:
+            return os.path.commonpath([abs_directory, abs_target]) == abs_directory
+        except ValueError:
+            return False
 
     @staticmethod
     def safe_extract(tar, path="."):
         """
-        Validates each file's path before extraction to prevent malicious files from escaping the target directory
+        Validate bounded archive contents before extracting with the data filter when available.
         """
-        for member in tar.getmembers():
+        members = []
+        total_size = 0
+        data_filter = getattr(tarfile, "data_filter", None)
+        for member in tar:
+            if len(members) >= MAX_ARCHIVE_MEMBERS:
+                raise ValueError("Archive exceeds the 10,000 member limit")
+            total_size += member.size
+            if member.size < 0 or total_size > MAX_ARCHIVE_BYTES:
+                raise ValueError("Archive exceeds the 1 GiB extracted size limit")
             member_path = os.path.join(path, member.name)
             if not CustomActionProperties.is_within_directory(path, member_path):
                 raise ValueError(
                     f"Path traversal detected: {member_path} is outside target directory {path}"
                 )
-        tar.extractall(path)
+            # tarfile can copy link targets when link creation fails.
+            if not (member.isfile() or member.isdir()):
+                raise ValueError("Archive links and special entries are not permitted")
+            if data_filter is not None:
+                data_filter(member, path)
+            members.append(member)
+        if data_filter is not None:
+            tar.extractall(path, members=members, filter="data")
+        else:
+            tar.extractall(path, members=members)
 
     # Custom handling of response will display the output head and the result_URL/result_ref
     # it will also save files into output directory if provided
@@ -142,14 +261,21 @@ class CustomActionProperties:
                 )
 
                 try:
-                    with urllib.request.urlopen(result_url) as result:
-                        with tarfile.open(fileobj=result, mode="r:gz") as tar:
-                            CustomActionProperties.safe_extract(tar, output_directory)
-                            logger.warning(
-                                "Extracted results are available in directory: %s",
-                                output_directory,
-                            )
-                except Exception as excep:
+                    _download_and_extract(
+                        result_url,
+                        output_directory,
+                        args.expected_storage_host.to_serialized_data(),
+                        (
+                            args.expected_sha256.to_serialized_data()
+                            if has_value(args.expected_sha256)
+                            else None
+                        ),
+                    )
+                    logger.warning(
+                        "Extracted results are available in directory: %s",
+                        output_directory,
+                    )
+                except (OSError, ValueError, tarfile.TarError) as excep:
                     raise AzureInternalError(
                         f"failed to retrieve output, error {excep}"
                     ) from excep
@@ -158,17 +284,9 @@ class CustomActionProperties:
             and properties.resultRef.to_serialized_data() != ""
         ):
             result_ref = properties.resultRef.to_serialized_data()
-            # parse the resultRef to get .gz filename
-            try:
-                parsed_url = urllib.parse.urlparse(result_ref)
-                path = parsed_url.path
-                downloaded_blob_name = path.split("/")[-1]
-            except Exception as ex:
-                error_message = (
-                    f"failed to parse resultRef URL for download. Error: {str(ex)}"
-                )
-                logger.error(error_message)
-                raise AzureInternalError(error_message) from ex
+            downloaded_blob_name = os.path.basename(
+                urllib.parse.urlsplit(result_ref).path
+            )
 
             logger.warning(
                 "Script execution result can be downloaded from storage account using the "
@@ -183,49 +301,26 @@ class CustomActionProperties:
                     if isinstance(args.output, str)
                     else args.output.to_serialized_data()
                 )
-                # Get the appropriate az command for this platform
-                az_command = _get_az_command()
-
-                # download the blob using "az storage blob download --blob-url %s --auth-mode login"
-                download_command = [
-                    az_command,
-                    "storage",
-                    "blob",
-                    "download",
-                    "--blob-url",
-                    result_ref,
-                    "--file",
-                    downloaded_blob_name,
-                    "--auth-mode",
-                    "login",
-                ]
                 try:
-                    result = subprocess.run(
-                        download_command, check=True, capture_output=True, text=True
+                    _download_and_extract(
+                        result_ref,
+                        output_directory,
+                        args.expected_storage_host.to_serialized_data(),
+                        (
+                            args.expected_sha256.to_serialized_data()
+                            if has_value(args.expected_sha256)
+                            else None
+                        ),
+                        cli_ctx=parent_cmd.cli_ctx,
                     )
-                    logger.info("Blob downloaded successfully.")
-                except subprocess.CalledProcessError as e:
-                    error_message = (
-                        f"Failed to download blob. Error: {e.stderr.strip()}"
+                    logger.warning(
+                        "Extracted results are available in directory: %s",
+                        output_directory,
                     )
+                except (OSError, ValueError, tarfile.TarError) as e:
+                    error_message = f"Failed to retrieve output. Error: {str(e)}"
                     logger.error(error_message)
                     raise AzureInternalError(error_message) from e
-
-                try:
-                    # Extract the downloaded blob
-                    with tarfile.open(downloaded_blob_name, mode="r:gz") as tar:
-                        CustomActionProperties.safe_extract(tar, output_directory)
-                        logger.warning(
-                            "Extracted results are available in directory: %s",
-                            output_directory,
-                        )
-                except tarfile.TarError as e:
-                    error_message = f"Failed to extract blob. Error: {str(e)}"
-                    logger.error(error_message)
-                    raise AzureInternalError(error_message) from e
-                finally:
-                    # Clean up the downloaded file with retry logic for Windows
-                    _safe_remove_file(downloaded_blob_name)
         else:
             result = parent_cmd.deserialize_output(
                 parent_cmd.ctx.vars.instance, client_flatten=True

@@ -9,7 +9,7 @@ from abc import ABC
 from pathlib import Path
 
 from azure.cli.core.aaz import AAZStrArg, AAZStrArgFormat, has_value
-from azure.cli.core.azclierror import FileOperationError
+from azure.cli.core.azclierror import FileOperationError, RequiredArgumentMissingError
 
 
 class RunCommandOptions(ABC):
@@ -22,6 +22,10 @@ class RunCommandOptions(ABC):
         args = self.ctx.args
         output_directory = args.output
         if has_value(args.output):
+            if not has_value(args.expected_storage_host):
+                raise RequiredArgumentMissingError(
+                    "--output-directory requires --expected-storage-host"
+                )
             try:
                 Path(f"{output_directory}").mkdir(parents=True, exist_ok=True)
             except OSError as ex:
@@ -40,5 +44,17 @@ class RunCommandOptions(ABC):
             + "downloaded to from storage blob. Accepts relative or qualified directory path.",
             required=False,
             fmt=AAZStrArgFormat(pattern=r"^(.+)([^\/]*)$"),
+        )
+        args_schema.expected_storage_host = AAZStrArg(
+            options=["--expected-storage-host"],
+            arg_group=arg_group,
+            help="Exact trusted storage hostname. Required with --output-directory.",
+        )
+        args_schema.expected_sha256 = AAZStrArg(
+            options=["--expected-sha256"],
+            arg_group=arg_group,
+            help="Optional trusted SHA-256 digest of the compressed result archive. "
+            "Verified before extraction when provided.",
+            fmt=AAZStrArgFormat(pattern=r"^[A-Fa-f0-9]{64}$"),
         )
         return args_schema

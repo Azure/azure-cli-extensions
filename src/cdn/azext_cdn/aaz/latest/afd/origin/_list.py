@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all of the existing origins within an origin group.
+
+    :example: AFDOrigins_ListByOriginGroup
+        az afd origin list --resource-group RG --profile-name profile1 --origin-group-name origingroup1
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}/origins", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}/origins", "2026-09-01-preview"],
         ]
     }
 
@@ -132,7 +135,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -169,7 +172,7 @@ class List(AAZCommand):
                 serialized_name="nextLink",
             )
             _schema_on_200.value = AAZListType(
-                flags={"read_only": True},
+                flags={"required": True},
             )
 
             value = cls._schema_on_200.value
@@ -198,6 +201,12 @@ class List(AAZCommand):
                 serialized_name="azureOrigin",
             )
             _ListHelper._build_schema_resource_reference_read(properties.azure_origin)
+            properties.certificate_name_check_validation_mode = AAZStrType(
+                serialized_name="certificateNameCheckValidationMode",
+            )
+            properties.custom_certificate_subjects = AAZListType(
+                serialized_name="customCertificateSubjects",
+            )
             properties.deployment_status = AAZStrType(
                 serialized_name="deploymentStatus",
                 flags={"read_only": True},
@@ -210,7 +219,6 @@ class List(AAZCommand):
             )
             properties.host_name = AAZStrType(
                 serialized_name="hostName",
-                flags={"required": True},
             )
             properties.http_port = AAZIntType(
                 serialized_name="httpPort",
@@ -234,6 +242,9 @@ class List(AAZCommand):
                 serialized_name="sharedPrivateLinkResource",
             )
             properties.weight = AAZIntType()
+
+            custom_certificate_subjects = cls._schema_on_200.value.Element.properties.custom_certificate_subjects
+            custom_certificate_subjects.Element = AAZStrType()
 
             shared_private_link_resource = cls._schema_on_200.value.Element.properties.shared_private_link_resource
             shared_private_link_resource.group_id = AAZStrType(

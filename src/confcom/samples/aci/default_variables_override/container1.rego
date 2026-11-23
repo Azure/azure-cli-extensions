@@ -88,5 +88,9 @@
         }
     ],
     "name": "container1",
-    "working_dir": "/app"
+    "working_dir": "/app",
+    "signals": [
+        9,
+        15
+    ]
 }

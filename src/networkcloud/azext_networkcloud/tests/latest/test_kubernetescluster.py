@@ -12,10 +12,13 @@
 Kubernetescluster tests scenarios
 """
 
+import json
+
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -31,12 +34,56 @@ def cleanup_scenario1(test):
 def call_scenario1a(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_create_scenario1(test)
-    step_update(test)
-    step_show(test)
+    step_create_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+            test.check("kubernetesVersion", attr(test, "kubernetesVersionCreate")),
+        ],
+    )
+    step_update(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check(
+                "controlPlaneNodeConfiguration.count", attr(test, "countUpdate")
+            ),
+        ],
+    )
+    step_show(
+        test,
+        checks=[
+            test.exists("name"),
+            test.exists("id"),
+            test.check(
+                "controlPlaneNodeConfiguration.administratorConfiguration.adminUsername",
+                attr(test, "cpAdminUsername"),
+            ),
+            test.check("initialAgentPoolConfigurations[0].count", attr(test, "count")),
+            test.check(
+                "initialAgentPoolConfigurations[0].vmSkuName",
+                attr(test, "initialVmSkuName"),
+            ),
+            test.check("kubernetesVersion", attr(test, "kubernetesVersion")),
+            test.check(
+                "networkConfiguration.cloudServicesNetworkId", attr(test, "csnId")
+            ),
+            test.check("networkConfiguration.cniNetworkId", attr(test, "cniId")),
+            test.check("networkConfiguration.dnsServiceIp", attr(test, "dnsServiceIp")),
+            test.check(
+                "networkConfiguration.bgpServiceLoadBalancerConfiguration.fabricPeeringEnabled",
+                attr(test, "fabricPeeringEnabled"),
+            ),
+        ],
+    )
     step_list(test)
     step_list_subscription(test)
-    step_restart_node(test)
+    step_restart_node(
+        test, checks=[test.check("status", attr(test, "operationStatus"))]
+    )
     step_delete(test)
     cleanup_scenario1(test)
 
@@ -44,7 +91,14 @@ def call_scenario1a(test):
 def call_scenario1b(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_create_scenario2(test)
+    step_create_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+            test.check("kubernetesVersion", attr(test, "kubernetesVersionCreate")),
+        ],
+    )
     cleanup_scenario1(test)
 
 
@@ -61,15 +115,33 @@ def cleanup_scenario2(test):
 def call_scenario2a(test):
     """# Testcase: scenario2"""
     setup_scenario2(test)
-    step_update_admin_cred(test)
-    step_update_control_plane_ssh_key_scenario1(test)
+    step_update_admin_cred(
+        test,
+        checks=[
+            test.check("name", attr(test, "nameUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
+    step_update_control_plane_ssh_key_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "nameUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
     cleanup_scenario2(test)
 
 
 def call_scenario2b(test):
     """# Testcase: scenario2"""
     setup_scenario2(test)
-    step_update_control_plane_ssh_key_scenario2(test)
+    step_update_control_plane_ssh_key_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "nameUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
     cleanup_scenario2(test)
 
 
@@ -88,7 +160,8 @@ def step_create_scenario1(test, checks=None):
         "--network-configuration cloud-services-network-id={csnId} cni-network-id={cniId} pod-cidrs={podCidrs} service-cidrs={serviceCidrs} dns-service-ip={dnsServiceIp} "
         "bgp-service-load-balancer-configuration.fabric-peering-enabled={fabricPeeringEnabled} "
         "bgp-service-load-balancer-configuration.ip-address-pools={ipAddressPools} "
-        "--tags {tags} --mrg name={mrgGroupName} location={mrgGroupLocation}"
+        "--tags {tags} --mrg name={mrgGroupName} location={mrgGroupLocation}",
+        checks=checks,
     )
 
 
@@ -107,7 +180,8 @@ def step_create_scenario2(test, checks=None):
         "--network-configuration cloud-services-network-id={csnId} cni-network-id={cniId} pod-cidrs={podCidrs} service-cidrs={serviceCidrs} dns-service-ip={dnsServiceIp} "
         "bgp-service-load-balancer-configuration.fabric-peering-enabled={fabricPeeringEnabled} "
         "bgp-service-load-balancer-configuration.ip-address-pools={ipAddressPools} "
-        "--tags {tags} --managed-resource-group-configuration name={mrgGroupName} location={mrgGroupLocation}"
+        "--tags {tags} --managed-resource-group-configuration name={mrgGroupName} location={mrgGroupLocation}",
+        checks=checks,
     )
 
 
@@ -117,7 +191,8 @@ def step_update(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud kubernetescluster update --name {name} --kubernetes-version {kubernetesVersion} "
-        "--control-plane-node-configuration count={countUpdate} --resource-group {rg} --tags {tagsUpdate}"
+        "--control-plane-node-configuration count={countUpdate} --resource-group {rg} --tags {tagsUpdate}",
+        checks=checks,
     )
 
 
@@ -126,7 +201,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud kubernetescluster show --name {name} --resource-group {rg}"
+        "az networkcloud kubernetescluster show --name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -134,14 +210,16 @@ def step_list(test, checks=None):
     """Kubernetescluster list operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud kubernetescluster list ")
+    test.cmd("az networkcloud kubernetescluster list ", checks=checks)
 
 
 def step_list_subscription(test, checks=None):
     """Kubernetescluster list in subscription operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud kubernetescluster list --resource-group {rg}")
+    test.cmd(
+        "az networkcloud kubernetescluster list --resource-group {rg}", checks=checks
+    )
 
 
 def step_restart_node(test, checks=None):
@@ -150,7 +228,8 @@ def step_restart_node(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud kubernetescluster restart-node --node-name {nodeName} "
-        "--kubernetes-cluster-name {kubernetesClusterName} --resource-group {resourceGroup}"
+        "--kubernetes-cluster-name {kubernetesClusterName} --resource-group {resourceGroup}",
+        checks=checks,
     )
 
 
@@ -159,7 +238,8 @@ def step_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud kubernetescluster delete --name {name} --resource-group {rg} -y"
+        "az networkcloud kubernetescluster delete --name {name} --resource-group {rg} --yes",
+        checks=checks,
     )
 
 
@@ -168,7 +248,8 @@ def step_update_admin_cred(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud kubernetescluster update --name {nameUpdate} --resource-group {rgUpdate} --ssh-key-values {sshKeyUpdate}"
+        "az networkcloud kubernetescluster update --name {nameUpdate} --resource-group {rgUpdate} --ssh-key-values {sshKeyUpdate}",
+        checks=checks,
     )
 
 
@@ -177,7 +258,8 @@ def step_update_control_plane_ssh_key_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud kubernetescluster update --kubernetes-cluster-name {nameUpdate} --resource-group {rgUpdate} --cp-node-config ssh-key-values={cpSshKeyListUpdate}"
+        "az networkcloud kubernetescluster update --kubernetes-cluster-name {nameUpdate} --resource-group {rgUpdate} --cp-node-config ssh-key-values={cpSshKeyListUpdate}",
+        checks=checks,
     )
 
 
@@ -186,7 +268,8 @@ def step_update_control_plane_ssh_key_scenario2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud kubernetescluster update --kubernetes-cluster-name {nameUpdate} --resource-group {rgUpdate} --cp-node-config ssh-key-values={cpSshKeyListUpdate}"
+        "az networkcloud kubernetescluster update --kubernetes-cluster-name {nameUpdate} --resource-group {rgUpdate} --cp-node-config ssh-key-values={cpSshKeyListUpdate}",
+        checks=checks,
     )
 
 
@@ -199,6 +282,9 @@ class KubernetesClusterScenarioTest(ScenarioTest):
             {
                 "name": self.create_random_name(prefix="cli-test-naks-", length=24),
                 "location": CONFIG.get("KUBERNETESCLUSTER", "location"),
+                "kubernetesVersionCreate": CONFIG.get(
+                    "KUBERNETESCLUSTER", "kubernetes_version_create"
+                ),
                 "rg": CONFIG.get("KUBERNETESCLUSTER", "resource_group"),
                 "extendedLocation": CONFIG.get(
                     "KUBERNETESCLUSTER", "extended_location"
@@ -230,6 +316,9 @@ class KubernetesClusterScenarioTest(ScenarioTest):
                 ),
                 "countUpdate": CONFIG.get("KUBERNETESCLUSTER", "count_update"),
                 "vmSkuName": CONFIG.get("KUBERNETESCLUSTER", "vm_sku_name"),
+                "initialVmSkuName": CONFIG.get(
+                    "KUBERNETESCLUSTER", "initial_vm_sku_name"
+                ),
                 "count": CONFIG.get("KUBERNETESCLUSTER", "count"),
                 "nodeName": CONFIG.get("KUBERNETESCLUSTER_NODE", "node_name"),
                 "kubernetesClusterName": CONFIG.get(
@@ -247,6 +336,10 @@ class KubernetesClusterScenarioTest(ScenarioTest):
                 ),
                 "mrgGroupName": CONFIG.get("KUBERNETESCLUSTER", "mrg_name"),
                 "mrgGroupLocation": CONFIG.get("KUBERNETESCLUSTER", "mrg_location"),
+                "operationStatus": CONFIG.get("KUBERNETESCLUSTER", "operation_status"),
+                "provisioningState": CONFIG.get(
+                    "KUBERNETESCLUSTER", "provisioning_state"
+                ),
             }
         )
 

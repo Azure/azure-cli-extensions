@@ -16,16 +16,13 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Deletes a Job Definition resource.
-
-    :example: job-definition delete
-        az storage-mover job-definition delete -g {rg} -n {job_definition} --project-name {project_name} --storage-mover-name {mover_name}
+    """Delete a Job Definition resource.
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2026-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}/jobdefinitions/{}", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}/jobdefinitions/{}", "2026-05-01"],
         ]
     }
 
@@ -51,12 +48,18 @@ class Delete(AAZCommand):
             help="The name of the Job Definition resource.",
             required=True,
             id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project-name"],
             help="The name of the Project resource.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -66,6 +69,9 @@ class Delete(AAZCommand):
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
         return cls._args_schema
 
@@ -163,7 +169,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-05-01",
                     required=True,
                 ),
             }

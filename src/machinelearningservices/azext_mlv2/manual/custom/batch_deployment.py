@@ -16,6 +16,7 @@ from azure.ai.ml._utils._endpoint_utils import get_duration
 from azure.ai.ml.entities._deployment.batch_deployment import BatchDeployment
 from azure.ai.ml.entities._deployment.model_batch_deployment import ModelBatchDeployment
 from azure.ai.ml.entities._deployment.pipeline_component_batch_deployment import PipelineComponentBatchDeployment
+from azure.ai.ml.entities._component.pipeline_component import PipelineComponent
 from azure.ai.ml.entities._load_functions import (
     load_batch_deployment, _try_load_yaml_dict, load_pipeline_component_batch_deployment,
     load_model_batch_deployment
@@ -40,8 +41,9 @@ def ml_batch_deployment_create(
     set_default=False,
     params_override=None,
     skip_script_validation: bool = False,
-    **kwargs,  # pylint: disable=unused-argument
+    **kwargs,
 ):
+    # pylint: disable=unused-argument
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
     )
@@ -59,6 +61,12 @@ def ml_batch_deployment_create(
             deployment = load_pipeline_component_batch_deployment(source=file, params_override=params_override)
         else:
             deployment = load_batch_deployment(source=file, params_override=params_override)
+
+        if isinstance(deployment, PipelineComponentBatchDeployment) and isinstance(
+            deployment.component, PipelineComponent
+        ):
+            registered_component = ml_client.components.create_or_update(deployment.component)
+            deployment.component = registered_component.id
 
         deployment_result = ml_client.begin_create_or_update(
             entity=deployment, skip_script_validation=skip_script_validation

@@ -13,15 +13,16 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "redisenterprise database show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Get information about a database in a RedisEnterprise cluster.
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2026-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}", "2026-10-01-preview"],
         ]
     }
 
@@ -134,7 +135,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-10-01-preview",
                     required=True,
                 ),
             }
@@ -204,6 +205,9 @@ class Show(AAZCommand):
                 serialized_name="geoReplication",
             )
             properties.modules = AAZListType()
+            properties.notify_keyspace_events = AAZStrType(
+                serialized_name="notifyKeyspaceEvents",
+            )
             properties.persistence = AAZObjectType()
             properties.port = AAZIntType()
             properties.provisioning_state = AAZStrType(

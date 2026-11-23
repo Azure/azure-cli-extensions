@@ -1,0 +1,1987 @@
+interactions:
+- request:
+    body: '{"extendedLocation": {"name": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CM-simdev-2419515-syolgoayu23tq/providers/Microsoft.ExtendedLocation/customLocations/sim-cluster-mgr-syolgoayu23tq-cl",
+      "type": "CustomLocation"}, "identity": {"type": "None"}, "location": "uksouth",
+      "properties": {"aggregatorOrSingleRackDefinition": {"availabilityZone": "1",
+      "bareMetalMachineConfigurationData": [{"bmcCredentials": {"password": "password",
+      "username": "root"}, "bmcMacAddress": "AA:BB:CC:DD:E7:08", "bootMacAddress":
+      "AA:BB:CC:F8:71:2E", "machineName": "lab00r750wkr1", "rackSlot": 2, "serialNumber":
+      "5HS7PK3"}, {"bmcCredentials": {"password": "password", "username": "root"},
+      "bmcMacAddress": "B0:7B:25:FD:E6:CC", "bootMacAddress": "B0:7B:25:F8:78:C0",
+      "machineName": "lab00r750wkr2", "rackSlot": 3, "serialNumber": "4HS7PK3"}, {"bmcCredentials":
+      {"password": "password", "username": "root"}, "bmcMacAddress": "B0:7B:25:FD:D8:A4",
+      "bootMacAddress": "B0:7B:25:F8:50:C6", "machineName": "lab00r750wkr3", "rackSlot":
+      4, "serialNumber": "FM56PK3"}, {"bmcCredentials": {"password": "password",
+      "username": "root"}, "bmcMacAddress": "B0:7B:25:FE:82:4E", "bootMacAddress":
+      "B0:7B:25:F8:5B:C8", "machineName": "lab00r750wkr4", "rackSlot": 5, "serialNumber":
+      "7M56PK3"}, {"bmcCredentials": {"password": "password", "username": "root"},
+      "bmcMacAddress": "B0:7B:25:EF:5E:B8", "bootMacAddress": "B0:7B:25:DE:7F:F4",
+      "machineName": "lab00r750mgr1", "rackSlot": 6, "serialNumber": "6P56PK3"}, {"bmcCredentials":
+      {"password": "password", "username": "root"}, "bmcMacAddress": "B0:7B:25:EF:60:20",
+      "bootMacAddress": "B0:7B:25:DE:79:FC", "machineName": "lab00r750mgr2", "rackSlot":
+      7, "serialNumber": "7P56PK3"}, {"bmcCredentials": {"password": "password",
+      "username": "root"}, "bmcMacAddress": "B0:7B:25:FD:E9:4E", "bootMacAddress":
+      "B0:7B:25:F8:5B:12", "machineName": "lab00r750wkr5", "rackSlot": 8, "serialNumber":
+      "8HS7PK3"}, {"bmcCredentials": {"password": "password", "username": "root"},
+      "bmcMacAddress": "B0:7B:25:FD:E8:52", "bootMacAddress": "B0:7B:25:F8:76:A6",
+      "machineName": "lab00r750wkr6", "rackSlot": 9, "serialNumber": "2N56PK3"}, {"bmcCredentials":
+      {"password": "password", "username": "root"}, "bmcMacAddress": "B0:7B:25:FD:E8:40",
+      "bootMacAddress": "B0:7B:25:F8:60:4C", "machineName": "lab00r750wkr7", "rackSlot":
+      10, "serialNumber": "GM56PK3"}, {"bmcCredentials": {"password": "password",
+      "username": "root"}, "bmcMacAddress": "B0:7B:25:FD:DC:76", "bootMacAddress":
+      "B0:7B:25:F8:50:CA", "machineName": "lab00r750wkr8", "rackSlot": 11, "serialNumber":
+      "9M56PK3"}], "networkRackId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.Network/virtualNetworks/vNet/subnets/Subnet",
+      "rackLocation": "b99m99r1", "rackSerialNumber": "b99m99r1", "rackSkuId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/rackSkus/V1_5_4_Single_DellR750_8C2M_x70r3_9_labonly",
+      "storageApplianceConfigurationData": [{"adminCredentials": {"password": "password",
+      "username": "admin"}, "rackSlot": 1, "serialNumber": "serial", "storageApplianceName":
+      "name"}]}, "analyticsWorkspaceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.OperationalInsights/workspaces/simdev-2419515-law",
+      "clusterLocation": "Foo Datacenter, Floor 3, Aisle 9, Rack 2", "clusterServicePrincipal":
+      {"applicationId": "00000000-0000-0000-0000-a3a8ee437933", "password": "password",
+      "principalId": "00000000-0000-0000-0000-907feeed497c", "tenantId": "00000000-0000-0000-0000-03ec7497283b"},
+      "clusterType": "SingleRack", "clusterVersion": "3.13.0", "computeDeploymentThreshold":
+      {"grouping": "PerCluster", "type": "PercentSuccess", "value": 90}, "networkFabricId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/CM_Subnet"},
+      "tags": {"tag1": "tag1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '4045'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --extended-location --location
+        --cluster-location --cluster-service-principal --cluster-type --cluster-version
+        --compute-deployment-threshold --network-fabric-id --aggregator-or-single-rack-definition
+        --tags
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001?api-version=2026-08-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","name":"cli-test-cluster-000001","type":"microsoft.networkcloud/clusters","location":"uksouth","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CM-simdev-2419515-syolgoayu23tq/providers/Microsoft.ExtendedLocation/customLocations/sim-cluster-mgr-syolgoayu23tq-cl","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-08-08T19:29:38.9135486Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-08-08T19:29:38.9135486Z"},"identity":{"type":"None"},"properties":{"aggregatorOrSingleRackDefinition":{"availabilityZone":"1","bareMetalMachineConfigurationData":[{"bmcCredentials":{"username":"root"},"bmcMacAddress":"AA:BB:CC:DD:E7:08","bootMacAddress":"AA:BB:CC:F8:71:2E","machineName":"lab00r750wkr1","rackSlot":2,"serialNumber":"5HS7PK3"},{"bmcCredentials":{"username":"root"},"bmcMacAddress":"B0:7B:25:FD:E6:CC","bootMacAddress":"B0:7B:25:F8:78:C0","machineName":"lab00r750wkr2","rackSlot":3,"serialNumber":"4HS7PK3"},{"bmcCredentials":{"username":"root"},"bmcMacAddress":"B0:7B:25:FD:D8:A4","bootMacAddress":"B0:7B:25:F8:50:C6","machineName":"lab00r750wkr3","rackSlot":4,"serialNumber":"FM56PK3"},{"bmcCredentials":{"username":"root"},"bmcMacAddress":"B0:7B:25:FE:82:4E","bootMacAddress":"B0:7B:25:F8:5B:C8","machineName":"lab00r750wkr4","rackSlot":5,"serialNumber":"7M56PK3"},{"bmcCredentials":{"username":"root"},"bmcMacAddress":"B0:7B:25:EF:5E:B8","bootMacAddress":"B0:7B:25:DE:7F:F4","machineName":"lab00r750mgr1","rackSlot":6,"serialNumber":"6P56PK3"},{"bmcCredentials":{"username":"root"},"bmcMacAddress":"B0:7B:25:EF:60:20","bootMacAddress":"B0:7B:25:DE:79:FC","machineName":"lab00r750mgr2","rackSlot":7,"serialNumber":"7P56PK3"},{"bmcCredentials":{"username":"root"},"bmcMacAddress":"B0:7B:25:FD:E9:4E","bootMacAddress":"B0:7B:25:F8:5B:12","machineName":"lab00r750wkr5","rackSlot":8,"serialNumber":"8HS7PK3"},{"bmcCredentials":{"username":"root"},"bmcMacAddress":"B0:7B:25:FD:E8:52","bootMacAddress":"B0:7B:25:F8:76:A6","machineName":"lab00r750wkr6","rackSlot":9,"serialNumber":"2N56PK3"},{"bmcCredentials":{"username":"root"},"bmcMacAddress":"B0:7B:25:FD:E8:40","bootMacAddress":"B0:7B:25:F8:60:4C","machineName":"lab00r750wkr7","rackSlot":10,"serialNumber":"GM56PK3"},{"bmcCredentials":{"username":"root"},"bmcMacAddress":"B0:7B:25:FD:DC:76","bootMacAddress":"B0:7B:25:F8:50:CA","machineName":"lab00r750wkr8","rackSlot":11,"serialNumber":"9M56PK3"}],"networkRackId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.Network/virtualNetworks/vNet/subnets/Subnet","rackLocation":"b99m99r1","rackSerialNumber":"b99m99r1","rackSkuId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/rackSkus/V1_5_4_Single_DellR750_8C2M_x70r3_9_labonly","storageApplianceConfigurationData":[{"adminCredentials":{"username":"admin"},"rackSlot":1,"serialNumber":"serial","storageApplianceName":"name"}]},"analyticsWorkspaceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.OperationalInsights/workspaces/simdev-2419515-law","clusterLocation":"Foo
+        Datacenter, Floor 3, Aisle 9, Rack 2","clusterServicePrincipal":{"applicationId":"00000000-0000-0000-0000-a3a8ee437933","principalId":"00000000-0000-0000-0000-907feeed497c","tenantId":"00000000-0000-0000-0000-03ec7497283b"},"clusterType":"SingleRack","clusterVersion":"3.13.0","computeDeploymentThreshold":{"grouping":"PerCluster","type":"PercentSuccess","value":90},"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/CM_Subnet","managedResourceGroupConfiguration":{"location":"uksouth","name":"cli-test-cluster-000001-HostedResources-6A7C7D3C"},"provisioningState":"Accepted"}}'
+    headers:
+      accept-ranges:
+      - bytes
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-0e85aa32f86c*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587421794604359&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4150'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:29:38 GMT
+      etag:
+      - '"00000000-0000-0000-0000-9b182e3fdaf5"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-d3eb8a441fa1
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20240808T192939Z-1548b9d4c5b8xn9nwf0v0cm4m800000003wg0000000000aa
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: D2962E26BA994AA3BCBAFBFCA59E9878 Ref B: SN4AA2022305023 Ref C: 2024-08-08T19:29:38Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --extended-location --location
+        --cluster-location --cluster-service-principal --cluster-type --cluster-version
+        --compute-deployment-threshold --network-fabric-id --aggregator-or-single-rack-definition
+        --tags
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-0e85aa32f86c*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587421794604359&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-0e85aa32f86c*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-0e85aa32f86c*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Accepted","startTime":"2024-08-08T19:29:39.0695246Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '567'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:29:38 GMT
+      etag:
+      - '"00000000-0000-0000-0000-1d3a1cbf2b14"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: FB13A7C5D2E240AF84E53EA0BAF82F9E Ref B: SN4AA2022305031 Ref C: 2024-08-08T19:29:39Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --extended-location --location
+        --cluster-location --cluster-service-principal --cluster-type --cluster-version
+        --compute-deployment-threshold --network-fabric-id --aggregator-or-single-rack-definition
+        --tags
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-0e85aa32f86c*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587421794604359&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-0e85aa32f86c*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-0e85aa32f86c*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Accepted","startTime":"2024-08-08T19:29:39.0695246Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '567'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:30:09 GMT
+      etag:
+      - '"00000000-0000-0000-0000-1d3a1cbf2b14"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 50E79336D2EC4E2AB9DA8E4B318C9673 Ref B: SN4AA2022302035 Ref C: 2024-08-08T19:30:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --extended-location --location
+        --cluster-location --cluster-service-principal --cluster-type --cluster-version
+        --compute-deployment-threshold --network-fabric-id --aggregator-or-single-rack-definition
+        --tags
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-0e85aa32f86c*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587421794604359&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-0e85aa32f86c*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-0e85aa32f86c*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Accepted","startTime":"2024-08-08T19:29:39.0695246Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '567'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:30:39 GMT
+      etag:
+      - '"00000000-0000-0000-0000-1d3a1cbf2b14"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 7CDE669B471B474D8ADF9A8FF6C70C13 Ref B: SN4AA2022304029 Ref C: 2024-08-08T19:30:39Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --extended-location --location
+        --cluster-location --cluster-service-principal --cluster-type --cluster-version
+        --compute-deployment-threshold --network-fabric-id --aggregator-or-single-rack-definition
+        --tags
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-0e85aa32f86c*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587421794604359&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-0e85aa32f86c*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-0e85aa32f86c*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Accepted","startTime":"2024-08-08T19:29:39.0695246Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '567'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:31:10 GMT
+      etag:
+      - '"00000000-0000-0000-0000-1d3a1cbf2b14"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: EB6EC5BAA86A4B77AD08C83A09D79AC4 Ref B: SN4AA2022303051 Ref C: 2024-08-08T19:31:10Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --extended-location --location
+        --cluster-location --cluster-service-principal --cluster-type --cluster-version
+        --compute-deployment-threshold --network-fabric-id --aggregator-or-single-rack-definition
+        --tags
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-0e85aa32f86c*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587421794604359&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-0e85aa32f86c*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-0e85aa32f86c*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Accepted","startTime":"2024-08-08T19:29:39.0695246Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '567'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:31:40 GMT
+      etag:
+      - '"00000000-0000-0000-0000-1d3a1cbf2b14"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: FF383CAFC9D449978C10261D6C10E7AD Ref B: SN4AA2022305011 Ref C: 2024-08-08T19:31:40Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --extended-location --location
+        --cluster-location --cluster-service-principal --cluster-type --cluster-version
+        --compute-deployment-threshold --network-fabric-id --aggregator-or-single-rack-definition
+        --tags
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-0e85aa32f86c*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587421794604359&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-0e85aa32f86c*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-0e85aa32f86c*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Succeeded","startTime":"2024-08-08T19:29:39.0695246Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '586'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:32:10 GMT
+      etag:
+      - '"00000000-0000-0000-0000-23c4c55c0e5a"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 8475F02625144E30AE41B25C9A7A2CB1 Ref B: SN4AA2022303027 Ref C: 2024-08-08T19:32:11Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --extended-location --location
+        --cluster-location --cluster-service-principal --cluster-type --cluster-version
+        --compute-deployment-threshold --network-fabric-id --aggregator-or-single-rack-definition
+        --tags
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001?api-version=2026-08-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","name":"cli-test-cluster-000001","type":"microsoft.networkcloud/clusters","location":"uksouth","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CM-simdev-2419515-syolgoayu23tq/providers/Microsoft.ExtendedLocation/customLocations/sim-cluster-mgr-syolgoayu23tq-cl","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-08-08T19:29:38.9135486Z","lastModifiedBy":"00000000-0000-0000-0000-2a55b425ebfc","lastModifiedByType":"Application","lastModifiedAt":"2024-08-08T19:31:08.3435591Z"},"identity":{"type":"None"},"properties":{"aggregatorOrSingleRackDefinition":{"availabilityZone":"1","bareMetalMachineConfigurationData":[{"rackSlot":2,"bootMacAddress":"AA:BB:CC:F8:71:2E","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr1","bmcMacAddress":"AA:BB:CC:DD:E7:08","serialNumber":"5HS7PK3"},{"rackSlot":3,"bootMacAddress":"B0:7B:25:F8:78:C0","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr2","bmcMacAddress":"B0:7B:25:FD:E6:CC","serialNumber":"4HS7PK3"},{"rackSlot":4,"bootMacAddress":"B0:7B:25:F8:50:C6","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr3","bmcMacAddress":"B0:7B:25:FD:D8:A4","serialNumber":"FM56PK3"},{"rackSlot":5,"bootMacAddress":"B0:7B:25:F8:5B:C8","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr4","bmcMacAddress":"B0:7B:25:FE:82:4E","serialNumber":"7M56PK3"},{"rackSlot":6,"bootMacAddress":"B0:7B:25:DE:7F:F4","bmcCredentials":{"username":"root"},"machineName":"lab00r750mgr1","bmcMacAddress":"B0:7B:25:EF:5E:B8","serialNumber":"6P56PK3"},{"rackSlot":7,"bootMacAddress":"B0:7B:25:DE:79:FC","bmcCredentials":{"username":"root"},"machineName":"lab00r750mgr2","bmcMacAddress":"B0:7B:25:EF:60:20","serialNumber":"7P56PK3"},{"rackSlot":8,"bootMacAddress":"B0:7B:25:F8:5B:12","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr5","bmcMacAddress":"B0:7B:25:FD:E9:4E","serialNumber":"8HS7PK3"},{"rackSlot":9,"bootMacAddress":"B0:7B:25:F8:76:A6","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr6","bmcMacAddress":"B0:7B:25:FD:E8:52","serialNumber":"2N56PK3"},{"rackSlot":10,"bootMacAddress":"B0:7B:25:F8:60:4C","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr7","bmcMacAddress":"B0:7B:25:FD:E8:40","serialNumber":"GM56PK3"},{"rackSlot":11,"bootMacAddress":"B0:7B:25:F8:50:CA","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr8","bmcMacAddress":"B0:7B:25:FD:DC:76","serialNumber":"9M56PK3"}],"networkRackId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.Network/virtualNetworks/vNet/subnets/Subnet","rackLocation":"b99m99r1","rackSerialNumber":"b99m99r1","rackSkuId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/rackSkus/V1_5_4_Single_DellR750_8C2M_x70r3_9_labonly","storageApplianceConfigurationData":[{"rackSlot":1,"adminCredentials":{"username":"admin"},"storageApplianceName":"name","serialNumber":"serial"}]},"analyticsWorkspaceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.OperationalInsights/workspaces/simdev-2419515-law","clusterLocation":"Foo
+        Datacenter, Floor 3, Aisle 9, Rack 2","clusterServicePrincipal":{"applicationId":"00000000-0000-0000-0000-a3a8ee437933","principalId":"00000000-0000-0000-0000-907feeed497c","tenantId":"00000000-0000-0000-0000-03ec7497283b"},"clusterType":"SingleRack","clusterVersion":"3.13.0","computeDeploymentThreshold":{"grouping":"PerCluster","type":"PercentSuccess","value":90},"managedResourceGroupConfiguration":{"location":"uksouth","name":"cli-test-cluster-000001-HostedResources-6A7C7D3C"},"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/CM_Subnet","provisioningState":"Succeeded","computeRackDefinitions":[],"updateStrategy":{"maxUnavailable":32767,"strategyType":"Rack","thresholdType":"PercentSuccess","thresholdValue":80,"waitTimeMinutes":15},"runtimeProtectionConfiguration":{"enforcementLevel":"Disabled"},"clusterManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.NetworkCloud/clusterManagers/sim-cluster-mgr-syolgoayu23tq","availableUpgradeVersions":[],"detailedStatus":"PendingDeployment","detailedStatusMessage":"Cluster
+        is pending deployment.","workloadResourceIds":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4752'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:32:11 GMT
+      etag:
+      - '"00000000-0000-0000-0000-19793bfdef66"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: E1EE0C06738444689C45D72F68B09278 Ref B: SN4AA2022305049 Ref C: 2024-08-08T19:32:11Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"clusterLocation": "Foo Datacenter, Floor 3, Aisle 9, Rack
+      2"}, "tags": {"tag1": "tag1", "tag2": "tag2update"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '127'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --cluster-location --tags --resource-group --analytics-output-settings
+        --command-output-settings
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001?api-version=2026-08-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-e2f561131fb4*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587423330469957&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:32:12 GMT
+      etag:
+      - '"00000000-0000-0000-0000-d2bd7adc28ca"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-e2f561131fb4*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587423330626184&c=REDACTED&s=REDACTED&h=REDACTED
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-9a6c10256b12
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20240808T193212Z-17cc7bff758djdsfkbzs17szgw0000000mg0000000007aaw
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 466A393BBCC14ECC8BAB64F537A4F388 Ref B: SN4AA2022302011 Ref C: 2024-08-08T19:32:11Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --cluster-location --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-e2f561131fb4*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587423330469957&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-e2f561131fb4*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-e2f561131fb4*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Accepted","startTime":"2024-08-08T19:32:12.410134Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '566'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:32:13 GMT
+      etag:
+      - '"00000000-0000-0000-0000-9366a1392288"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: CC52A20521864923912FE743D211A10F Ref B: SN4AA2022303017 Ref C: 2024-08-08T19:32:13Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --cluster-location --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-e2f561131fb4*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587423330469957&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-e2f561131fb4*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-e2f561131fb4*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Succeeded","startTime":"2024-08-08T19:32:12.410134Z","endTime":"2024-08-08T19:32:17.1510292Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '626'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:32:43 GMT
+      etag:
+      - '"00000000-0000-0000-0000-c22d8e7b6d88"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 78FCD63788E6425EA2D2EF2ED16B607E Ref B: SN4AA2022304031 Ref C: 2024-08-08T19:32:43Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --cluster-location --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001?api-version=2026-08-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","name":"cli-test-cluster-000001","type":"microsoft.networkcloud/clusters","location":"uksouth","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CM-simdev-2419515-syolgoayu23tq/providers/Microsoft.ExtendedLocation/customLocations/sim-cluster-mgr-syolgoayu23tq-cl","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-08-08T19:29:38.9135486Z","lastModifiedBy":"00000000-0000-0000-0000-2a55b425ebfc","lastModifiedByType":"Application","lastModifiedAt":"2024-08-08T19:32:18.458788Z"},"properties":{"aggregatorOrSingleRackDefinition":{"availabilityZone":"1","bareMetalMachineConfigurationData":[{"rackSlot":2,"bootMacAddress":"AA:BB:CC:F8:71:2E","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr1","bmcMacAddress":"AA:BB:CC:DD:E7:08","serialNumber":"5HS7PK3"},{"rackSlot":3,"bootMacAddress":"B0:7B:25:F8:78:C0","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr2","bmcMacAddress":"B0:7B:25:FD:E6:CC","serialNumber":"4HS7PK3"},{"rackSlot":4,"bootMacAddress":"B0:7B:25:F8:50:C6","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr3","bmcMacAddress":"B0:7B:25:FD:D8:A4","serialNumber":"FM56PK3"},{"rackSlot":5,"bootMacAddress":"B0:7B:25:F8:5B:C8","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr4","bmcMacAddress":"B0:7B:25:FE:82:4E","serialNumber":"7M56PK3"},{"rackSlot":6,"bootMacAddress":"B0:7B:25:DE:7F:F4","bmcCredentials":{"username":"root"},"machineName":"lab00r750mgr1","bmcMacAddress":"B0:7B:25:EF:5E:B8","serialNumber":"6P56PK3"},{"rackSlot":7,"bootMacAddress":"B0:7B:25:DE:79:FC","bmcCredentials":{"username":"root"},"machineName":"lab00r750mgr2","bmcMacAddress":"B0:7B:25:EF:60:20","serialNumber":"7P56PK3"},{"rackSlot":8,"bootMacAddress":"B0:7B:25:F8:5B:12","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr5","bmcMacAddress":"B0:7B:25:FD:E9:4E","serialNumber":"8HS7PK3"},{"rackSlot":9,"bootMacAddress":"B0:7B:25:F8:76:A6","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr6","bmcMacAddress":"B0:7B:25:FD:E8:52","serialNumber":"2N56PK3"},{"rackSlot":10,"bootMacAddress":"B0:7B:25:F8:60:4C","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr7","bmcMacAddress":"B0:7B:25:FD:E8:40","serialNumber":"GM56PK3"},{"rackSlot":11,"bootMacAddress":"B0:7B:25:F8:50:CA","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr8","bmcMacAddress":"B0:7B:25:FD:DC:76","serialNumber":"9M56PK3"}],"networkRackId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.Network/virtualNetworks/vNet/subnets/Subnet","rackLocation":"b99m99r1","rackSerialNumber":"b99m99r1","rackSkuId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/rackSkus/V1_5_4_Single_DellR750_8C2M_x70r3_9_labonly","storageApplianceConfigurationData":[{"rackSlot":1,"adminCredentials":{"username":"admin"},"storageApplianceName":"name","serialNumber":"serial"}]},"analyticsWorkspaceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.OperationalInsights/workspaces/simdev-2419515-law","availableUpgradeVersions":[],"clusterLocation":"Foo
+        Datacenter, Floor 3, Aisle 9, Rack 2","clusterManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.NetworkCloud/clusterManagers/sim-cluster-mgr-syolgoayu23tq","clusterServicePrincipal":{"applicationId":"00000000-0000-0000-0000-a3a8ee437933","principalId":"00000000-0000-0000-0000-907feeed497c","tenantId":"00000000-0000-0000-0000-03ec7497283b"},"clusterType":"SingleRack","clusterVersion":"3.13.0","computeDeploymentThreshold":{"grouping":"PerCluster","type":"PercentSuccess","value":90},"computeRackDefinitions":[],"detailedStatus":"PendingDeployment","detailedStatusMessage":"Cluster
+        is pending deployment.","managedResourceGroupConfiguration":{"location":"uksouth","name":"cli-test-cluster-000001-HostedResources-6A7C7D3C"},"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/CM_Subnet","runtimeProtectionConfiguration":{"enforcementLevel":"Disabled"},"updateStrategy":{"maxUnavailable":32767,"strategyType":"Rack","thresholdType":"PercentSuccess","thresholdValue":80,"waitTimeMinutes":15},"workloadResourceIds":[],"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4744'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:32:43 GMT
+      etag:
+      - '"00000000-0000-0000-0000-212b55c749d4"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: A9C297FCDA3843749F216AEF8DE91248 Ref B: SN4AA2022305035 Ref C: 2024-08-08T19:32:43Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"runtimeProtectionConfiguration": {"enforcementLevel":
+      "OnDemand"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '84'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --runtime-protection
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001?api-version=2026-08-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-7d4468aed69d*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587423645473144&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:32:44 GMT
+      etag:
+      - '"00000000-0000-0000-0000-3bf790dfe18a"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-7d4468aed69d*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587423645473144&c=REDACTED&s=REDACTED&h=REDACTED
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-c4da33ff3c1c
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20240808T193244Z-154b59dbc6db9q2zypc6zpd1c800000000c000000000q0tx
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: D77C5A432F9D41CD9F9D2EF99F719CD9 Ref B: SN4AA2022304047 Ref C: 2024-08-08T19:32:43Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --runtime-protection
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-7d4468aed69d*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587423645473144&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-7d4468aed69d*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-7d4468aed69d*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Accepted","startTime":"2024-08-08T19:32:44.2470189Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '567'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:32:43 GMT
+      etag:
+      - '"00000000-0000-0000-0000-e0dbea9ecc8c"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 9919327320E442F882E0C6B26867ABB6 Ref B: SN4AA2022303053 Ref C: 2024-08-08T19:32:44Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --runtime-protection
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-7d4468aed69d*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587423645473144&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-7d4468aed69d*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-7d4468aed69d*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Succeeded","startTime":"2024-08-08T19:32:44.2470189Z","endTime":"2024-08-08T19:32:47.6350117Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '627'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:33:14 GMT
+      etag:
+      - '"00000000-0000-0000-0000-794638743c6a"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: DD83F306F56C4D94B9DC9AAB5F1477FC Ref B: SN4AA2022305011 Ref C: 2024-08-08T19:33:14Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --runtime-protection
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001?api-version=2026-08-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","name":"cli-test-cluster-000001","type":"microsoft.networkcloud/clusters","location":"uksouth","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CM-simdev-2419515-syolgoayu23tq/providers/Microsoft.ExtendedLocation/customLocations/sim-cluster-mgr-syolgoayu23tq-cl","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-08-08T19:29:38.9135486Z","lastModifiedBy":"00000000-0000-0000-0000-2a55b425ebfc","lastModifiedByType":"Application","lastModifiedAt":"2024-08-08T19:32:48.7675136Z"},"properties":{"aggregatorOrSingleRackDefinition":{"availabilityZone":"1","bareMetalMachineConfigurationData":[{"rackSlot":2,"bootMacAddress":"AA:BB:CC:F8:71:2E","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr1","bmcMacAddress":"AA:BB:CC:DD:E7:08","serialNumber":"5HS7PK3"},{"rackSlot":3,"bootMacAddress":"B0:7B:25:F8:78:C0","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr2","bmcMacAddress":"B0:7B:25:FD:E6:CC","serialNumber":"4HS7PK3"},{"rackSlot":4,"bootMacAddress":"B0:7B:25:F8:50:C6","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr3","bmcMacAddress":"B0:7B:25:FD:D8:A4","serialNumber":"FM56PK3"},{"rackSlot":5,"bootMacAddress":"B0:7B:25:F8:5B:C8","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr4","bmcMacAddress":"B0:7B:25:FE:82:4E","serialNumber":"7M56PK3"},{"rackSlot":6,"bootMacAddress":"B0:7B:25:DE:7F:F4","bmcCredentials":{"username":"root"},"machineName":"lab00r750mgr1","bmcMacAddress":"B0:7B:25:EF:5E:B8","serialNumber":"6P56PK3"},{"rackSlot":7,"bootMacAddress":"B0:7B:25:DE:79:FC","bmcCredentials":{"username":"root"},"machineName":"lab00r750mgr2","bmcMacAddress":"B0:7B:25:EF:60:20","serialNumber":"7P56PK3"},{"rackSlot":8,"bootMacAddress":"B0:7B:25:F8:5B:12","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr5","bmcMacAddress":"B0:7B:25:FD:E9:4E","serialNumber":"8HS7PK3"},{"rackSlot":9,"bootMacAddress":"B0:7B:25:F8:76:A6","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr6","bmcMacAddress":"B0:7B:25:FD:E8:52","serialNumber":"2N56PK3"},{"rackSlot":10,"bootMacAddress":"B0:7B:25:F8:60:4C","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr7","bmcMacAddress":"B0:7B:25:FD:E8:40","serialNumber":"GM56PK3"},{"rackSlot":11,"bootMacAddress":"B0:7B:25:F8:50:CA","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr8","bmcMacAddress":"B0:7B:25:FD:DC:76","serialNumber":"9M56PK3"}],"networkRackId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.Network/virtualNetworks/vNet/subnets/Subnet","rackLocation":"b99m99r1","rackSerialNumber":"b99m99r1","rackSkuId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/rackSkus/V1_5_4_Single_DellR750_8C2M_x70r3_9_labonly","storageApplianceConfigurationData":[{"rackSlot":1,"adminCredentials":{"username":"admin"},"storageApplianceName":"name","serialNumber":"serial"}]},"analyticsWorkspaceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.OperationalInsights/workspaces/simdev-2419515-law","availableUpgradeVersions":[],"clusterLocation":"Foo
+        Datacenter, Floor 3, Aisle 9, Rack 2","clusterManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.NetworkCloud/clusterManagers/sim-cluster-mgr-syolgoayu23tq","clusterServicePrincipal":{"applicationId":"00000000-0000-0000-0000-a3a8ee437933","principalId":"00000000-0000-0000-0000-907feeed497c","tenantId":"00000000-0000-0000-0000-03ec7497283b"},"clusterType":"SingleRack","clusterVersion":"3.13.0","computeDeploymentThreshold":{"grouping":"PerCluster","type":"PercentSuccess","value":90},"computeRackDefinitions":[],"detailedStatus":"PendingDeployment","detailedStatusMessage":"Cluster
+        is pending deployment.","managedResourceGroupConfiguration":{"location":"uksouth","name":"cli-test-cluster-000001-HostedResources-6A7C7D3C"},"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/CM_Subnet","runtimeProtectionConfiguration":{"enforcementLevel":"OnDemand"},"updateStrategy":{"maxUnavailable":32767,"strategyType":"Rack","thresholdType":"PercentSuccess","thresholdValue":80,"waitTimeMinutes":15},"workloadResourceIds":[],"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4745'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:33:15 GMT
+      etag:
+      - '"00000000-0000-0000-0000-67b215aef43b"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: F0B3A274B4764F849D6AF42944BE36EE Ref B: SN4AA2022305045 Ref C: 2024-08-08T19:33:15Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"secretArchiveSettings": {"associatedIdentity": {"identityType":
+      "UserAssignedIdentity", "userAssignedIdentityResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/CM-simdev-2444489-5ortjre5carf2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sim-cluster-mgr-5ortjre5carf2-aks-cp"},
+      "encryptionPublicKey": "somepublickey", "vaultUri": "https://myaccount.blob.core.windows.net/mycontainer?restype=container",
+      "providerConfiguration": {"provider": "CyberArk", "applicationId": "EdgeCredentials",
+      "safeName": "Azure-Local-Credentials"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '590'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --sa-settings
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001?api-version=2026-08-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-4f3ee2259e63*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587423963850335&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:33:15 GMT
+      etag:
+      - '"00000000-0000-0000-0000-b78a86c095cf"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-4f3ee2259e63*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587423963850335&c=REDACTED&s=REDACTED&h=REDACTED
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-0f7b5a544736
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20240808T193316Z-154b59dbc6dlngw99sacfdyvhn00000000ug00000000xmrd
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 9566B9AC33CB4E6F83CF3D6DD1CF812A Ref B: SN4AA2022304039 Ref C: 2024-08-08T19:33:15Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --sa-settings
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-4f3ee2259e63*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587423963850335&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-4f3ee2259e63*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-4f3ee2259e63*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Accepted","startTime":"2024-08-08T19:33:15.995944Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '566'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:33:15 GMT
+      etag:
+      - '"00000000-0000-0000-0000-7066f6f3e79d"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: BCDB5CFC74714FF1BA695FF0DF28D899 Ref B: SN4AA2022304039 Ref C: 2024-08-08T19:33:16Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --sa-settings
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-4f3ee2259e63*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587423963850335&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-4f3ee2259e63*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-4f3ee2259e63*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Succeeded","startTime":"2024-08-08T19:33:15.995944Z","endTime":"2024-08-08T19:33:18.9665818Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '626'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:33:46 GMT
+      etag:
+      - '"00000000-0000-0000-0000-9b9d9add1bf7"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 2F6EB18B28F544E68CB089752CBC5DE4 Ref B: SN4AA2022303023 Ref C: 2024-08-08T19:33:46Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --sa-settings
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001?api-version=2026-08-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","name":"cli-test-cluster-000001","type":"microsoft.networkcloud/clusters","location":"uksouth","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CM-simdev-2419515-syolgoayu23tq/providers/Microsoft.ExtendedLocation/customLocations/sim-cluster-mgr-syolgoayu23tq-cl","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-08-08T19:29:38.9135486Z","lastModifiedBy":"00000000-0000-0000-0000-2a55b425ebfc","lastModifiedByType":"Application","lastModifiedAt":"2024-08-08T19:33:21.0254136Z"},"properties":{"aggregatorOrSingleRackDefinition":{"availabilityZone":"1","bareMetalMachineConfigurationData":[{"rackSlot":2,"bootMacAddress":"AA:BB:CC:F8:71:2E","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr1","bmcMacAddress":"AA:BB:CC:DD:E7:08","serialNumber":"5HS7PK3"},{"rackSlot":3,"bootMacAddress":"B0:7B:25:F8:78:C0","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr2","bmcMacAddress":"B0:7B:25:FD:E6:CC","serialNumber":"4HS7PK3"},{"rackSlot":4,"bootMacAddress":"B0:7B:25:F8:50:C6","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr3","bmcMacAddress":"B0:7B:25:FD:D8:A4","serialNumber":"FM56PK3"},{"rackSlot":5,"bootMacAddress":"B0:7B:25:F8:5B:C8","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr4","bmcMacAddress":"B0:7B:25:FE:82:4E","serialNumber":"7M56PK3"},{"rackSlot":6,"bootMacAddress":"B0:7B:25:DE:7F:F4","bmcCredentials":{"username":"root"},"machineName":"lab00r750mgr1","bmcMacAddress":"B0:7B:25:EF:5E:B8","serialNumber":"6P56PK3"},{"rackSlot":7,"bootMacAddress":"B0:7B:25:DE:79:FC","bmcCredentials":{"username":"root"},"machineName":"lab00r750mgr2","bmcMacAddress":"B0:7B:25:EF:60:20","serialNumber":"7P56PK3"},{"rackSlot":8,"bootMacAddress":"B0:7B:25:F8:5B:12","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr5","bmcMacAddress":"B0:7B:25:FD:E9:4E","serialNumber":"8HS7PK3"},{"rackSlot":9,"bootMacAddress":"B0:7B:25:F8:76:A6","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr6","bmcMacAddress":"B0:7B:25:FD:E8:52","serialNumber":"2N56PK3"},{"rackSlot":10,"bootMacAddress":"B0:7B:25:F8:60:4C","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr7","bmcMacAddress":"B0:7B:25:FD:E8:40","serialNumber":"GM56PK3"},{"rackSlot":11,"bootMacAddress":"B0:7B:25:F8:50:CA","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr8","bmcMacAddress":"B0:7B:25:FD:DC:76","serialNumber":"9M56PK3"}],"networkRackId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.Network/virtualNetworks/vNet/subnets/Subnet","rackLocation":"b99m99r1","rackSerialNumber":"b99m99r1","rackSkuId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/rackSkus/V1_5_4_Single_DellR750_8C2M_x70r3_9_labonly","storageApplianceConfigurationData":[{"rackSlot":1,"adminCredentials":{"username":"admin"},"storageApplianceName":"name","serialNumber":"serial"}]},"analyticsWorkspaceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.OperationalInsights/workspaces/simdev-2419515-law","availableUpgradeVersions":[],"clusterLocation":"Foo
+        Datacenter, Floor 3, Aisle 9, Rack 2","clusterManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.NetworkCloud/clusterManagers/sim-cluster-mgr-syolgoayu23tq","clusterServicePrincipal":{"applicationId":"00000000-0000-0000-0000-a3a8ee437933","principalId":"00000000-0000-0000-0000-907feeed497c","tenantId":"00000000-0000-0000-0000-03ec7497283b"},"clusterType":"SingleRack","clusterVersion":"3.13.0","computeDeploymentThreshold":{"grouping":"PerCluster","type":"PercentSuccess","value":90},"computeRackDefinitions":[],"detailedStatus":"PendingDeployment","detailedStatusMessage":"Cluster
+        is pending deployment.","managedResourceGroupConfiguration":{"location":"uksouth","name":"cli-test-cluster-000001-HostedResources-6A7C7D3C"},"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/CM_Subnet","runtimeProtectionConfiguration":{"enforcementLevel":"OnDemand"},"updateStrategy":{"maxUnavailable":32767,"strategyType":"Rack","thresholdType":"PercentSuccess","thresholdValue":80,"waitTimeMinutes":15},"workloadResourceIds":[],"secretArchive":{"keyVaultId":"TestKeyVaultId","useKeyVault":"True"},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4814'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:33:46 GMT
+      etag:
+      - '"00000000-0000-0000-0000-5b9db38c1ac0"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: D5B0EAE8D00242F1A00404A50BED0649 Ref B: SN4AA2022305009 Ref C: 2024-08-08T19:33:46Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"secretArchiveSettings": {"associatedIdentity": {"identityType":
+      "UserAssignedIdentity", "userAssignedIdentityResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/CM-simdev-2444489-5ortjre5carf2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sim-cluster-mgr-5ortjre5carf2-aks-cp"},
+      "encryptionPublicKey": "somepublickey", "vaultUri": "https://myaccount.blob.core.windows.net/mycontainer?restype=container",
+      "providerConfiguration": {"provider": "CyberArk", "applicationId": "EdgeCredentials",
+      "folderName": "Root", "objectNameTemplate": "{namespace}-{name}", "safeName":
+      "Azure-Local-Credentials"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '656'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --sa-settings
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001?api-version=2026-08-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-d2477d62f3de*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587424288297109&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:33:48 GMT
+      etag:
+      - '"00000000-0000-0000-0000-43e7414fdd58"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-d2477d62f3de*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587424288765878&c=REDACTED&s=REDACTED&h=REDACTED
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-1c9791a9e5b6
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20240808T193348Z-154b59dbc6dwlvkrn6be436zes0000000cbg00000001hpbp
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: A9F02224449245719E338BF79AC1E9CF Ref B: SN4AA2022305021 Ref C: 2024-08-08T19:33:47Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --sa-settings
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-d2477d62f3de*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587424288297109&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-d2477d62f3de*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-d2477d62f3de*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Accepted","startTime":"2024-08-08T19:33:48.599647Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '566'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:33:49 GMT
+      etag:
+      - '"00000000-0000-0000-0000-87b090f54716"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: BDBE41CC0DCD4F44888A61F77654C077 Ref B: SN4AA2022305039 Ref C: 2024-08-08T19:33:48Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --sa-settings
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-d2477d62f3de*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587424288297109&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-d2477d62f3de*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-d2477d62f3de*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Succeeded","startTime":"2024-08-08T19:33:48.599647Z","endTime":"2024-08-08T19:33:52.0618183Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '626'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:34:18 GMT
+      etag:
+      - '"00000000-0000-0000-0000-ca6d87122a2f"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: CC869258D060442484BFA61BAB68E6D7 Ref B: SN4AA2022305023 Ref C: 2024-08-08T19:34:19Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --sa-settings
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001?api-version=2026-08-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","name":"cli-test-cluster-000001","type":"microsoft.networkcloud/clusters","location":"uksouth","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CM-simdev-2419515-syolgoayu23tq/providers/Microsoft.ExtendedLocation/customLocations/sim-cluster-mgr-syolgoayu23tq-cl","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-08-08T19:29:38.9135486Z","lastModifiedBy":"00000000-0000-0000-0000-2a55b425ebfc","lastModifiedByType":"Application","lastModifiedAt":"2024-08-08T19:33:53.1331321Z"},"properties":{"aggregatorOrSingleRackDefinition":{"availabilityZone":"1","bareMetalMachineConfigurationData":[{"rackSlot":2,"bootMacAddress":"AA:BB:CC:F8:71:2E","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr1","bmcMacAddress":"AA:BB:CC:DD:E7:08","serialNumber":"5HS7PK3"},{"rackSlot":3,"bootMacAddress":"B0:7B:25:F8:78:C0","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr2","bmcMacAddress":"B0:7B:25:FD:E6:CC","serialNumber":"4HS7PK3"},{"rackSlot":4,"bootMacAddress":"B0:7B:25:F8:50:C6","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr3","bmcMacAddress":"B0:7B:25:FD:D8:A4","serialNumber":"FM56PK3"},{"rackSlot":5,"bootMacAddress":"B0:7B:25:F8:5B:C8","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr4","bmcMacAddress":"B0:7B:25:FE:82:4E","serialNumber":"7M56PK3"},{"rackSlot":6,"bootMacAddress":"B0:7B:25:DE:7F:F4","bmcCredentials":{"username":"root"},"machineName":"lab00r750mgr1","bmcMacAddress":"B0:7B:25:EF:5E:B8","serialNumber":"6P56PK3"},{"rackSlot":7,"bootMacAddress":"B0:7B:25:DE:79:FC","bmcCredentials":{"username":"root"},"machineName":"lab00r750mgr2","bmcMacAddress":"B0:7B:25:EF:60:20","serialNumber":"7P56PK3"},{"rackSlot":8,"bootMacAddress":"B0:7B:25:F8:5B:12","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr5","bmcMacAddress":"B0:7B:25:FD:E9:4E","serialNumber":"8HS7PK3"},{"rackSlot":9,"bootMacAddress":"B0:7B:25:F8:76:A6","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr6","bmcMacAddress":"B0:7B:25:FD:E8:52","serialNumber":"2N56PK3"},{"rackSlot":10,"bootMacAddress":"B0:7B:25:F8:60:4C","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr7","bmcMacAddress":"B0:7B:25:FD:E8:40","serialNumber":"GM56PK3"},{"rackSlot":11,"bootMacAddress":"B0:7B:25:F8:50:CA","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr8","bmcMacAddress":"B0:7B:25:FD:DC:76","serialNumber":"9M56PK3"}],"networkRackId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.Network/virtualNetworks/vNet/subnets/Subnet","rackLocation":"b99m99r1","rackSerialNumber":"b99m99r1","rackSkuId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/rackSkus/V1_5_4_Single_DellR750_8C2M_x70r3_9_labonly","storageApplianceConfigurationData":[{"rackSlot":1,"adminCredentials":{"username":"admin"},"storageApplianceName":"name","serialNumber":"serial"}]},"analyticsWorkspaceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.OperationalInsights/workspaces/simdev-2419515-law","availableUpgradeVersions":[],"clusterLocation":"Foo
+        Datacenter, Floor 3, Aisle 9, Rack 2","clusterManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.NetworkCloud/clusterManagers/sim-cluster-mgr-syolgoayu23tq","clusterServicePrincipal":{"applicationId":"00000000-0000-0000-0000-a3a8ee437933","principalId":"00000000-0000-0000-0000-907feeed497c","tenantId":"00000000-0000-0000-0000-03ec7497283b"},"clusterType":"SingleRack","clusterVersion":"3.13.0","computeDeploymentThreshold":{"grouping":"PerCluster","type":"PercentSuccess","value":90},"computeRackDefinitions":[],"detailedStatus":"PendingDeployment","detailedStatusMessage":"Cluster
+        is pending deployment.","managedResourceGroupConfiguration":{"location":"uksouth","name":"cli-test-cluster-000001-HostedResources-6A7C7D3C"},"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/CM_Subnet","runtimeProtectionConfiguration":{"enforcementLevel":"OnDemand"},"updateStrategy":{"maxUnavailable":4,"strategyType":"Rack","thresholdType":"CountSuccess","thresholdValue":4,"waitTimeMinutes":10},"workloadResourceIds":[],"secretArchive":{"keyVaultId":"TestKeyVaultId","useKeyVault":"True"},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4807'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:34:19 GMT
+      etag:
+      - '"00000000-0000-0000-0000-dc41fbfd167a"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 803826706BB64A369D2A4A31D49A6F7F Ref B: SN4AA2022305025 Ref C: 2024-08-08T19:34:19Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CM-simdev-2419515-syolgoayu23tq/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sim-cluster-mgr-syolgoayu23tq-aks-cp":
+      {}}}, "tags": {"tag1": "tag1", "tag2": "tag2update"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '316'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --mi-user-assigned --tags
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001?api-version=2026-08-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-a59b8ec8f4be*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587424631620226&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:34:22 GMT
+      etag:
+      - '"00000000-0000-0000-0000-772b70fa7cdd"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-a59b8ec8f4be*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587424631776518&c=REDACTED&s=REDACTED&h=REDACTED
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-86e35babdf7f
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20240808T193422Z-154b59dbc6dlngw99sacfdyvhn00000000ug00000000xy4b
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: F3184F5C24D54871BD75A85D4AE0A4B1 Ref B: SN4AA2022303039 Ref C: 2024-08-08T19:34:20Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --mi-user-assigned --tags
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-a59b8ec8f4be*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587424631620226&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-a59b8ec8f4be*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-a59b8ec8f4be*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Accepted","startTime":"2024-08-08T19:34:21.2666219Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '567'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:34:22 GMT
+      etag:
+      - '"00000000-0000-0000-0000-092147aaa3db"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 0470F6BEC02245CFACDCD5D6ECD25AE0 Ref B: SN4AA2022305029 Ref C: 2024-08-08T19:34:23Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --mi-user-assigned --tags
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-a59b8ec8f4be*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587424631620226&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-a59b8ec8f4be*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-a59b8ec8f4be*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Succeeded","startTime":"2024-08-08T19:34:21.2666219Z","endTime":"2024-08-08T19:34:25.3137685Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '627'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:34:52 GMT
+      etag:
+      - '"00000000-0000-0000-0000-11ec7e6b43e4"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 8262F2149B2B4DE681F9188D4EE17489 Ref B: SN4AA2022303021 Ref C: 2024-08-08T19:34:53Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --mi-user-assigned --tags
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001?api-version=2026-08-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","name":"cli-test-cluster-000001","type":"microsoft.networkcloud/clusters","location":"uksouth","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CM-simdev-2419515-syolgoayu23tq/providers/Microsoft.ExtendedLocation/customLocations/sim-cluster-mgr-syolgoayu23tq-cl","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-08-08T19:29:38.9135486Z","lastModifiedBy":"00000000-0000-0000-0000-2a55b425ebfc","lastModifiedByType":"Application","lastModifiedAt":"2024-08-08T19:34:26.9007027Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/CM-simdev-2419515-syolgoayu23tq/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sim-cluster-mgr-syolgoayu23tq-aks-cp":{"clientId":"00000000-0000-0000-0000-db3a7f1b1b62","principalId":"00000000-0000-0000-0000-3cebcdf546e8"}}},"properties":{"aggregatorOrSingleRackDefinition":{"availabilityZone":"1","bareMetalMachineConfigurationData":[{"rackSlot":2,"bootMacAddress":"AA:BB:CC:F8:71:2E","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr1","bmcMacAddress":"AA:BB:CC:DD:E7:08","serialNumber":"5HS7PK3"},{"rackSlot":3,"bootMacAddress":"B0:7B:25:F8:78:C0","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr2","bmcMacAddress":"B0:7B:25:FD:E6:CC","serialNumber":"4HS7PK3"},{"rackSlot":4,"bootMacAddress":"B0:7B:25:F8:50:C6","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr3","bmcMacAddress":"B0:7B:25:FD:D8:A4","serialNumber":"FM56PK3"},{"rackSlot":5,"bootMacAddress":"B0:7B:25:F8:5B:C8","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr4","bmcMacAddress":"B0:7B:25:FE:82:4E","serialNumber":"7M56PK3"},{"rackSlot":6,"bootMacAddress":"B0:7B:25:DE:7F:F4","bmcCredentials":{"username":"root"},"machineName":"lab00r750mgr1","bmcMacAddress":"B0:7B:25:EF:5E:B8","serialNumber":"6P56PK3"},{"rackSlot":7,"bootMacAddress":"B0:7B:25:DE:79:FC","bmcCredentials":{"username":"root"},"machineName":"lab00r750mgr2","bmcMacAddress":"B0:7B:25:EF:60:20","serialNumber":"7P56PK3"},{"rackSlot":8,"bootMacAddress":"B0:7B:25:F8:5B:12","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr5","bmcMacAddress":"B0:7B:25:FD:E9:4E","serialNumber":"8HS7PK3"},{"rackSlot":9,"bootMacAddress":"B0:7B:25:F8:76:A6","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr6","bmcMacAddress":"B0:7B:25:FD:E8:52","serialNumber":"2N56PK3"},{"rackSlot":10,"bootMacAddress":"B0:7B:25:F8:60:4C","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr7","bmcMacAddress":"B0:7B:25:FD:E8:40","serialNumber":"GM56PK3"},{"rackSlot":11,"bootMacAddress":"B0:7B:25:F8:50:CA","bmcCredentials":{"username":"root"},"machineName":"lab00r750wkr8","bmcMacAddress":"B0:7B:25:FD:DC:76","serialNumber":"9M56PK3"}],"networkRackId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.Network/virtualNetworks/vNet/subnets/Subnet","rackLocation":"b99m99r1","rackSerialNumber":"b99m99r1","rackSkuId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/rackSkus/V1_5_4_Single_DellR750_8C2M_x70r3_9_labonly","storageApplianceConfigurationData":[{"rackSlot":1,"adminCredentials":{"username":"admin"},"storageApplianceName":"name","serialNumber":"serial"}]},"analyticsWorkspaceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.OperationalInsights/workspaces/simdev-2419515-law","availableUpgradeVersions":[],"clusterLocation":"Foo
+        Datacenter, Floor 3, Aisle 9, Rack 2","clusterManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.NetworkCloud/clusterManagers/sim-cluster-mgr-syolgoayu23tq","clusterServicePrincipal":{"applicationId":"00000000-0000-0000-0000-a3a8ee437933","principalId":"00000000-0000-0000-0000-907feeed497c","tenantId":"00000000-0000-0000-0000-03ec7497283b"},"clusterType":"SingleRack","clusterVersion":"3.13.0","computeDeploymentThreshold":{"grouping":"PerCluster","type":"PercentSuccess","value":90},"computeRackDefinitions":[],"detailedStatus":"PendingDeployment","detailedStatusMessage":"Cluster
+        is pending deployment.","managedResourceGroupConfiguration":{"location":"uksouth","name":"cli-test-cluster-000001-HostedResources-6A7C7D3C"},"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2419515/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/CM_Subnet","runtimeProtectionConfiguration":{"enforcementLevel":"OnDemand"},"secretArchive":{"keyVaultId":"TestKeyVaultId","useKeyVault":"True"},"updateStrategy":{"maxUnavailable":4,"strategyType":"Rack","thresholdType":"CountSuccess","thresholdValue":4,"waitTimeMinutes":10},"workloadResourceIds":[],"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5171'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:34:53 GMT
+      etag:
+      - '"00000000-0000-0000-0000-64979dbe160b"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: C1AD8D39BFF64583BD022CF22BE54A09 Ref B: SN4AA2022305051 Ref C: 2024-08-08T19:34:53Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001?api-version=2026-08-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587424950265388&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:34:54 GMT
+      etag:
+      - '"00000000-0000-0000-0000-73cdebf78028"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587424950265388&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-msedge-ref:
+      - 'Ref A: F1A481A26BB14B26867D9A4A32AC6335 Ref B: SN4AA2022305051 Ref C: 2024-08-08T19:34:54Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587424950265388&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Deleting","startTime":"2024-08-08T19:34:54.8694289Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/uksouth/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587424953167875&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '567'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:34:55 GMT
+      etag:
+      - '"00000000-0000-0000-0000-e484c3cc912b"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/uksouth/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587424953480394&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: FBB855E10D5A4B828E9CB3AEA1DB3C9F Ref B: SN4AA2022305049 Ref C: 2024-08-08T19:34:55Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587424950265388&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Deleting","startTime":"2024-08-08T19:34:54.8694289Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/uksouth/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587425255724688&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '567'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:35:24 GMT
+      etag:
+      - '"00000000-0000-0000-0000-e484c3cc912b"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/uksouth/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587425255724688&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 2F00E16D9D4946D1BDF8464A541E11EC Ref B: SN4AA2022304037 Ref C: 2024-08-08T19:35:25Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587424950265388&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Deleting","startTime":"2024-08-08T19:34:54.8694289Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/uksouth/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587425558528600&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '567'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:35:55 GMT
+      etag:
+      - '"00000000-0000-0000-0000-e484c3cc912b"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/uksouth/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587425558528600&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 6F3E7AE5949A48A181C9BA6D28A6660F Ref B: SN4AA2022304019 Ref C: 2024-08-08T19:35:55Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587424950265388&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Deleting","startTime":"2024-08-08T19:34:54.8694289Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/uksouth/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587425861295496&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '567'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:36:25 GMT
+      etag:
+      - '"00000000-0000-0000-0000-e484c3cc912b"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/uksouth/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587425861451101&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: C086AEFB49AB4154A7346A5D96E5BFE6 Ref B: SN4AA2022305021 Ref C: 2024-08-08T19:36:25Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587424950265388&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Deleting","startTime":"2024-08-08T19:34:54.8694289Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/uksouth/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587426164308729&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '567'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:36:56 GMT
+      etag:
+      - '"00000000-0000-0000-0000-e484c3cc912b"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/uksouth/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587426164777492&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 1B424338A666435893B82206B6B7C993 Ref B: SN4AA2022304009 Ref C: 2024-08-08T19:36:56Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587424950265388&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Deleting","startTime":"2024-08-08T19:34:54.8694289Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/uksouth/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587426467827743&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '567'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:37:26 GMT
+      etag:
+      - '"00000000-0000-0000-0000-e484c3cc912b"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/uksouth/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587426467827743&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: CFFD976AFAFA4F26B029390413308626 Ref B: SN4AA2022302035 Ref C: 2024-08-08T19:37:26Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587424950265388&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Deleting","startTime":"2024-08-08T19:34:54.8694289Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/uksouth/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587426770286302&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '567'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:37:56 GMT
+      etag:
+      - '"00000000-0000-0000-0000-e484c3cc912b"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/uksouth/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587426770286302&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: D4A706A9F417407FAB7C4BF70A543C29 Ref B: SN4AA2022304027 Ref C: 2024-08-08T19:37:56Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587424950265388&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Succeeded","startTime":"2024-08-08T19:34:54.8694289Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '586'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:38:26 GMT
+      etag:
+      - '"00000000-0000-0000-0000-45581f858e3b"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 2F9348AA53EC432184FBEF0E13DBBD34 Ref B: SN4AA2022302039 Ref C: 2024-08-08T19:38:27Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-08-01-preview&t=638587424950265388&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-660c42cce05b*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/clusters/cli-test-cluster-000001","status":"Succeeded","startTime":"2024-08-08T19:34:54.8694289Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '586'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Aug 2024 19:38:27 GMT
+      etag:
+      - '"00000000-0000-0000-0000-45581f858e3b"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: B4387727D7814194B36114BB4B92E380 Ref B: SN4AA2022303047 Ref C: 2024-08-08T19:38:27Z'
+    status:
+      code: 200
+      message: OK
+version: 1

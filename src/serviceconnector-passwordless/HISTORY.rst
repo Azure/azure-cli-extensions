@@ -2,6 +2,11 @@
 
 Release History
 ===============
+3.3.7
+++++++
+* Update internal argument for `az postgres flexible-server db show` command from `--database-name` to `--name`.
+* Update minCliCoreVersion requirement from 2.60.0 to 2.87.0.
+
 3.3.6
 ++++++
 * Some improvements.

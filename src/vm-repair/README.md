@@ -23,3 +23,102 @@ Restore the now fixed copied OS disk from the repair VM to the original VM
 ```
 az vm repair restore -g MyResourceGroup -n myVM --verbose
 ```
+
+### Platform-migration scenarios ###
+Moving a VM to a size that uses an NVMe disk controller requires the guest OS to be able to boot from
+that controller. When it cannot, the VM stops booting after the size change: `INACCESSIBLE_BOOT_DEVICE`
+(`0x7B`) on Windows, or a dracut emergency shell on Linux. The fault is inside the guest OS disk, so it
+is inspected, and repaired where a repair exists, by attaching that disk to a repair VM.
+
+The table below lists only what is available today. Combinations that are not listed are not supported.
+
+| Scenario | OS | Run ID | Status |
+|---|---|---|---|
+| NVMe boot readiness detection (read-only) | Windows | `win-detect-nvme-readiness` | Available |
+| NVMe boot readiness detection (read-only) | Linux | `linux-detect-nvme-readiness` | Available |
+| NVMe boot-driver recovery | Windows | `win-enable-nvme-boot-driver` | Available for Generation 2 offline recovery |
+| NVMe boot-driver recovery | Linux | — | Not available yet |
+
+The detectors and Windows recovery script run against the source VM's OS disk attached to a repair VM,
+so they require `--run-on-repair`. The detectors do not modify the attached source OS disk. They write a
+log and an evidence bundle on the repair VM itself, under the Public desktop on Windows and under `/tmp`
+on Linux.
+
+```powershell
+az vm repair create -g MyResourceGroup -n MyBrokenVM --verbose
+
+# Detect readiness and generation. Stop unless the signature is NVME_REPAIR_APPLICABLE.
+az vm repair run -g MyResourceGroup -n MyBrokenVM --run-id win-detect-nvme-readiness --run-on-repair --verbose
+
+# Report the exact recovery changes without writing.
+az vm repair run -g MyResourceGroup -n MyBrokenVM --run-id win-enable-nvme-boot-driver --run-on-repair --verbose
+
+# Apply the recovery after reviewing the detector evidence and report.
+az vm repair run -g MyResourceGroup -n MyBrokenVM --run-id win-enable-nvme-boot-driver --run-on-repair --parameters Mode=Repair --verbose
+```
+
+`Mode=Report` is the recovery default, makes no configuration changes, and creates no recovery evidence
+or backup directory. Continue to `Mode=Repair` only when the Windows detector returns
+`NVME_REPAIR_APPLICABLE` for a Generation 2 guest. Stop when it
+returns `GEN1_TO_GEN2_CONVERSION_REQUIRED`, `STORNVME_DRIVER_MISSING`, or evidence that cannot identify
+the target safely. `GEN1_TO_GEN2_CONVERSION_REQUIRED` requires a separate in-guest disk conversion
+followed by an Azure Trusted Launch upgrade; it is not performed by a repair-library run ID. Repair
+creates a timestamped registry-backup directory and prints the full backup path only when values need
+changing; `NoChangeNeeded` creates no backup. If rollback is needed, run the same script with
+`--parameters Mode=Rollback BackupFile=<full-path-emitted-by-Repair>`. Use `--no-cleanup` when restoring
+the source VM if the repair VM and its detector evidence or rollback files must be retained.
+
+When the source VM uses the NVMe disk controller, `az vm repair create` pins the repair VM to SCSI if
+the repair VM size supports it, so that repair scripts which select disks by the SCSI model string can
+still see the attached OS disk. For any other source VM the platform default for the repair VM size is
+used. `--disk-controller-type` overrides the selection in both cases.
+
+### Reset-NIC telemetry preparation ###
+
+`az vm repair reset-nic` includes the following Application Insights event properties on both
+success and failure. This prepares a schema for MANA migration diagnostics; it does not yet perform
+AN detection, guest-driver probing, or post-reset health verification.
+
+| Property | Current value | Meaning |
+|---|---|---|
+| `sourceAN` | `unknown` | Original accelerated-networking state has not been measured. |
+| `sourceVfVendor` | `unknown` | The bound guest virtual-function driver has not been measured. |
+| `guestManaPresent` | `unknown` | MANA driver availability has not been measured. |
+| `resetNicMode` | `legacy` | The existing private-IP swap/revert path was selected. |
+| `postResetHealthy` | `unknown` | Guest connectivity has not been verified. |
+
+`unknown` is an explicit string, not `false`. A successful reset command does not imply a healthy
+guest, and these unmeasured fields must not be used to claim MANA-attributable failures. Other command
+events and the reset command's output, network operations, and parameters are unchanged. The new
+properties contain no resource identities or guest output.
+
+Use this query to check marker coverage after deployment; older events without the new schema remain
+visible in the `withSchema = false` group. Production delivery must be verified separately from local
+tests.
+
+```kusto
+customEvents
+| where timestamp > ago(7d)
+| where name == "vm repair reset-nic"
+| extend withSchema = isnotempty(tostring(customDimensions.sourceAN))
+    and isnotempty(tostring(customDimensions.sourceVfVendor))
+    and isnotempty(tostring(customDimensions.guestManaPresent))
+    and isnotempty(tostring(customDimensions.resetNicMode))
+    and isnotempty(tostring(customDimensions.postResetHealthy))
+| summarize invocations = count() by withSchema, version = tostring(application_Version)
+```
+
+#### Internal guest MANA probe (not yet used by any command) ####
+
+The extension ships two read-only probe scripts, `scripts/linux-mana-driver-probe.sh` and
+`scripts/win-mana-driver-probe.ps1`, and an internal helper that runs the OS-appropriate one through Run
+Command. No command calls it yet, and it adds no parameters. It reports:
+
+| Field | Values | Linux check | Windows check |
+|---|---|---|---|
+| `hardware` | `mana`, `mellanox`, `none`, `unknown` | PCI vendor/device `1414:00ba` is MANA; vendor `15b3` is Mellanox. `none` only if every PCI entry was read; an unreadable entry gives `unknown` unless MANA was found. | Present PCI device `VEN_1414&DEV_00BA` is MANA; `VEN_15B3` is Mellanox. |
+| `driver` | `present`, `missing`, `unknown` | `mana` module loaded, built in, or present as a module file for the running kernel. `missing` only if the built-in list and module tree were both read without error. | On MANA hardware only: a `Microsoft Azure Network Adapter` network adapter exists. Otherwise `unknown`. |
+
+Any failure to run the probe or read its output returns `unknown`, never `missing`. Run Command needs a
+ready VM agent and outbound guest connectivity to return results, so the probe is least reliable when
+guest networking is broken; it is therefore not used to gate `az vm repair reset-nic`.

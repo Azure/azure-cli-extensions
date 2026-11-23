@@ -17,17 +17,17 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a new delivery rule within the specified rule set.
 
-    :example: Create a rule to append a response header for requests from Thailand.
-        az afd rule create -g group --rule-set-name ruleset1 --profile-name profile --order 2 --match-variable RemoteAddress --operator GeoMatch --match-values TH --rule-name disablecaching --action-name ModifyResponseHeader --header-action Append --header-name X-CDN --header-value AFDX
+    :example: Rules_Create
+        az afd rule create --resource-group RG --profile-name profile1 --rule-set-name ruleSet1 --rule-name rule1 --actions "[{parameters:{headerAction:Overwrite,headerName:X-CDN,typeName:DeliveryRuleHeaderActionParameters,value:MSFT},modify-response-header:{parameters:{headerAction:Overwrite,headerName:X-CDN,typeName:DeliveryRuleHeaderActionParameters,value:MSFT}}}]" --conditions "[{parameters:{matchValues:[GET],negateCondition:False,operator:Equal,typeName:DeliveryRuleRequestMethodConditionParameters},request-method:{parameters:{typeName:DeliveryRuleRequestMethodConditionParameters,match-values:[GET],negate-condition:False,operator:Equal}}}]" --order 1
 
-    :example: Create a rule for http to https redirect
-        az afd rule create -g group --rule-set-name ruleset1 --profile-name profile --order 1 --rule-name "redirect" --match-variable RequestScheme --operator Equal --match-values HTTP --action-name "UrlRedirect" --redirect-protocol Https --redirect-type Moved
+    :example: Rules_Create_AfdUrlSigningAction
+        az afd rule create --resource-group RG --profile-name profile1 --rule-set-name ruleSet1 --rule-name rule1 --actions "[{parameters:{headerAction:Overwrite,headerName:X-CDN,typeName:DeliveryRuleHeaderActionParameters,value:MSFT},modify-response-header:{parameters:{headerAction:Overwrite,headerName:X-CDN,typeName:DeliveryRuleHeaderActionParameters,value:MSFT}}}]" --conditions "[{parameters:{matchValues:[GET],negateCondition:False,operator:Equal,typeName:DeliveryRuleRequestMethodConditionParameters},request-method:{parameters:{typeName:DeliveryRuleRequestMethodConditionParameters,match-values:[GET],negate-condition:False,operator:Equal}}}]" --order 1 --resource-group RG --profile-name profile1 --rule-set-name ruleSet1 --rule-name rule1 --actions "[{parameters:{algorithm:SHA256,keyGroupReference:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.Cdn/profiles/profile1/keygroups/kg1},parameterNameOverride:[{paramIndicator:Expires,paramName:Expiration-Date},{paramIndicator:Signature,paramName:Sig-Hash}],typeName:DeliveryRuleAfdUrlSigningActionParameters},afd-url-signing:{parameters:{algorithm:SHA256,key-group-reference:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.Cdn/profiles/profile1/keygroups/kg1},parameter-name-override:[{paramIndicator:Expires,paramName:Expiration-Date},{paramIndicator:Signature,paramName:Sig-Hash}],type-name:DeliveryRuleAfdUrlSigningActionParameters}}}]" --conditions "[{parameters:{matchValues:[GET],negateCondition:False,operator:Equal,typeName:DeliveryRuleRequestMethodConditionParameters},request-method:{parameters:{typeName:DeliveryRuleRequestMethodConditionParameters,match-values:[GET],negate-condition:False,operator:Equal}}}]" --order 1
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/rulesets/{}/rules/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/rulesets/{}/rules/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -233,7 +233,7 @@ class Create(AAZCommand):
             options=["invocation-point"],
             help="Defines at which point in the request processing pipeline the edge action will be invoked.",
             required=True,
-            enum={"ClientRequest": "ClientRequest", "OriginRequest": "OriginRequest"},
+            enum={"ClientRequest": "ClientRequest", "ClientResponse": "ClientResponse", "OriginRequest": "OriginRequest"},
         )
 
         modify_request_header = cls._args_schema.actions.Element.modify_request_header
@@ -1336,7 +1336,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }

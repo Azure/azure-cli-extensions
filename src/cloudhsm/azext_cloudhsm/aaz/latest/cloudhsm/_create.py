@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "cloudhsm create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a Cloud HSM
@@ -22,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-03-31",
+        "version": "2025-12-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hardwaresecuritymodules/cloudhsmclusters/{}", "2025-03-31"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hardwaresecuritymodules/cloudhsmclusters/{}", "2025-12-01-preview"],
         ]
     }
 
@@ -117,7 +118,7 @@ class Create(AAZCommand):
             arg_group="Sku",
             help="Sku name of the Cloud HSM Cluster",
             default="Standard_B1",
-            enum={"Standard B10": "Standard B10", "Standard_B1": "Standard_B1"},
+            enum={"Standard B10": "Standard B10", "Standard_B1": "Standard_B1", "Standard_B10v2": "Standard_B10v2", "Standard_B15v2": "Standard_B15v2", "Standard_B1v2": "Standard_B1v2", "Standard_B20v2": "Standard_B20v2", "Standard_B5v2": "Standard_B5v2"},
         )
         return cls._args_schema
 
@@ -202,7 +203,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-31",
+                    "api-version", "2025-12-01-preview",
                     required=True,
                 ),
             }

@@ -1,0 +1,269 @@
+interactions:
+- request:
+    body: '{"resourceIds": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/Fab3LabNF-5-1/providers/microsoft.managednetworkfabric/networkfabrics/nffab3-5-1"],
+      "state": "Disable"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric bootstrapinterface update-admin-state
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '220'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-name --resource-group --bootstrap-device --state --resource-ids
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.13 (Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device/networkBootstrapInterfaces/example-interface/updateAdministrativeState?api-version=2026-01-15-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/SOUTHCENTRALUS/operationStatuses/7132cb1b-b53c-4092-a3b4-97ef04913911*9AE071134DE6387DB697D2F2920D53EDEE44646EA0D4BB689ED6E8B979F115FC?api-version=2026-01-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 19:22:27 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/SOUTHCENTRALUS/operationStatuses/7132cb1b-b53c-4092-a3b4-97ef04913911*9AE071134DE6387DB697D2F2920D53EDEE44646EA0D4BB689ED6E8B979F115FC?api-version=2026-01-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20261111T192227Z-168bf8fc54bsxmcrhC1SN1texs0000002u80000000003ed7
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: EB9B53EF219141FCA7FE231CF39C1510 Ref B: BN1AA2051014047 Ref C: 2026-11-11T19:22:27Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric bootstrapinterface update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group --bootstrap-device --state --resource-ids
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.13 (Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/SOUTHCENTRALUS/operationStatuses/7132cb1b-b53c-4092-a3b4-97ef04913911*9AE071134DE6387DB697D2F2920D53EDEE44646EA0D4BB689ED6E8B979F115FC?api-version=2026-01-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/SOUTHCENTRALUS/operationStatuses/7132cb1b-b53c-4092-a3b4-97ef04913911*9AE071134DE6387DB697D2F2920D53EDEE44646EA0D4BB689ED6E8B979F115FC","name":"7132cb1b-b53c-4092-a3b4-97ef04913911*9AE071134DE6387DB697D2F2920D53EDEE44646EA0D4BB689ED6E8B979F115FC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device/networkBootstrapInterfaces/example-interface","status":"Updating","startTime":"2026-11-11T19:22:27.4844896Z"}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/southcentralus/operationStatuses/7132cb1b-b53c-4092-a3b4-97ef04913911*9AE071134DE6387DB697D2F2920D53EDEE44646EA0D4BB689ED6E8B979F115FC?api-version=2026-01-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '668'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 19:22:28 GMT
+      etag:
+      - '"b9008aed-0000-0500-0000-6af4c0740000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/southcentralus/operationStatuses/7132cb1b-b53c-4092-a3b4-97ef04913911*9AE071134DE6387DB697D2F2920D53EDEE44646EA0D4BB689ED6E8B979F115FC?api-version=2026-01-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: BDF173D849FB449D8EC2D7F687B9EAB6 Ref B: BN1AA2051013023 Ref C: 2026-11-11T19:22:28Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric bootstrapinterface update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group --bootstrap-device --state --resource-ids
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.13 (Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/SOUTHCENTRALUS/operationStatuses/7132cb1b-b53c-4092-a3b4-97ef04913911*9AE071134DE6387DB697D2F2920D53EDEE44646EA0D4BB689ED6E8B979F115FC?api-version=2026-01-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/SOUTHCENTRALUS/operationStatuses/7132cb1b-b53c-4092-a3b4-97ef04913911*9AE071134DE6387DB697D2F2920D53EDEE44646EA0D4BB689ED6E8B979F115FC","name":"7132cb1b-b53c-4092-a3b4-97ef04913911*9AE071134DE6387DB697D2F2920D53EDEE44646EA0D4BB689ED6E8B979F115FC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device/networkBootstrapInterfaces/example-interface","status":"Succeeded","startTime":"2026-11-11T19:22:27.4844896Z","endTime":"2026-11-11T19:22:42.5593894Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '728'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 19:23:00 GMT
+      etag:
+      - '"b900abef-0000-0500-0000-6af4c0820000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 2D2DA7DCD34E49C19C96B838461F0C9C Ref B: BN1AA2051015045 Ref C: 2026-11-11T19:23:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric bootstrapinterface update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group --bootstrap-device --state --resource-ids
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.13 (Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/SOUTHCENTRALUS/operationStatuses/7132cb1b-b53c-4092-a3b4-97ef04913911*9AE071134DE6387DB697D2F2920D53EDEE44646EA0D4BB689ED6E8B979F115FC?api-version=2026-01-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/SOUTHCENTRALUS/operationStatuses/7132cb1b-b53c-4092-a3b4-97ef04913911*9AE071134DE6387DB697D2F2920D53EDEE44646EA0D4BB689ED6E8B979F115FC","name":"7132cb1b-b53c-4092-a3b4-97ef04913911*9AE071134DE6387DB697D2F2920D53EDEE44646EA0D4BB689ED6E8B979F115FC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device/networkBootstrapInterfaces/example-interface","status":"Succeeded","startTime":"2026-11-11T19:22:27.4844896Z","endTime":"2026-11-11T19:22:42.5593894Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '728'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 19:23:00 GMT
+      etag:
+      - '"b900abef-0000-0500-0000-6af4c0820000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 1B8F5C839D1A4E7CA2B3E04D7E3ACF05 Ref B: BN1AA2051013051 Ref C: 2026-11-11T19:23:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric bootstrapinterface show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group --bootstrap-device
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.13 (Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device/networkBootstrapInterfaces/example-interface?api-version=2026-01-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device/networkBootstrapInterfaces/example-interface","name":"example-interface","type":"microsoft.managednetworkfabric/networkbootstrapdevices/networkbootstrapinterfaces","systemData":{"createdBy":"REDACTED","createdByType":"Application","createdAt":"2026-11-11T13:34:47.0605568Z","lastModifiedBy":"REDACTED","lastModifiedByType":"Application","lastModifiedAt":"2026-11-11T19:22:42.2677587Z"},"properties":{"administrativeState":"Disabled","interfaceType":"Management","provisioningState":"Succeeded","configurationState":"Succeeded","physicalIdentifier":"Ethernet","connectedTo":"ManagementSwitch","ipv4Address":"10.35.2.62"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '802'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 19:25:56 GMT
+      etag:
+      - '"2e014c6b-0000-0500-0000-6af4c0820000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F6911F1B926547B599BF892975F9E762 Ref B: BN1AA2051014011 Ref C: 2026-11-11T19:25:56Z'
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -5,7 +5,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - providerhub custom-rollout show
       Connection:
@@ -13,21 +13,21 @@ interactions:
       ParameterSetName:
       - --provider-namespace --rollout-name
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/customRollouts/canaryTesting01?api-version=2024-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/customRollouts/canaryTesting01?api-version=2026-02-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["EastUS2EUAP","centraluseuap"]},"refreshSubscriptionRegistration":false,"skipReleaseScopeValidation":false},"status":{"completedRegions":["centraluseuap","EastUS2EUAP"],"failedOrSkippedRegions":{}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/customRollouts/canaryTesting01","type":"Microsoft.ProviderHub/providerRegistrations/customRollouts","name":"canaryTesting01","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-06-03T21:56:21.0990587Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-03T21:56:21.0990587Z"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["EASTUS2EUAP","CENTRALUSEUAP"]},"releaseScopes":[],"refreshSubscriptionRegistration":false,"skipReleaseScopeValidation":false},"status":{"completedRegions":["EASTUS2EUAP","CENTRALUSEUAP"],"completedRegionsInfo":[{"region":"EASTUS2EUAP","manifestAppliedAt":"2026-09-16T22:43:18.4166438Z","previousCommitId":"104e4f1274c010ed740601e8574c111063accc79","appliedCommitId":"104e4f1274c010ed740601e8574c111063accc79"},{"region":"CENTRALUSEUAP","manifestAppliedAt":"2026-09-16T22:43:18.4024066Z","previousCommitId":"104e4f1274c010ed740601e8574c111063accc79","appliedCommitId":"104e4f1274c010ed740601e8574c111063accc79"}],"failedOrSkippedRegions":{}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/customRollouts/canaryTesting01","type":"Microsoft.ProviderHub/providerRegistrations/customRollouts","name":"canaryTesting01","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-16T22:42:57.7270735Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-16T22:42:57.7270735Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '778'
+      - '1204'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 20:34:55 GMT
+      - Wed, 16 Sep 2026 22:44:51 GMT
       expires:
       - '-1'
       pragma:
@@ -39,9 +39,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/3d290846-7867-476f-980b-173c683d2dac
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a8b084de-bd0c-4bcd-a642-71b9016ddd0a/southcentralus/e12fde71-83ce-43fd-8ce4-f81ad217cb8e
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 0BD530E8A40848B983A4416B058060E4 Ref B: CH1AA2020610039 Ref C: 2024-06-04T20:34:54Z'
+      - 'Ref A: D7F05B517AED4AABABF5050B1D89F4DE Ref B: SN4AA2022303033 Ref C: 2026-09-16T22:44:51Z'
     status:
       code: 200
       message: OK

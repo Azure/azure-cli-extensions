@@ -119,3 +119,16 @@ def cf_fleetspace_account(cli_ctx, _):
 
 def cf_fleet_analytics(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).fleet_analytics
+
+
+# soft-deleted resources
+def cf_softdeleted_database_accounts(cli_ctx, _):
+    return cf_cosmosdb_preview(cli_ctx).soft_deleted_database_accounts
+
+
+def cf_softdeleted_sql_databases(cli_ctx, _):
+    return cf_cosmosdb_preview(cli_ctx).soft_deleted_sql_databases
+
+
+def cf_softdeleted_sql_containers(cli_ctx, _):
+    return cf_cosmosdb_preview(cli_ctx).soft_deleted_sql_containers

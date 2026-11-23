@@ -1,0 +1,2715 @@
+interactions:
+- request:
+    body: '{"location": "eastus2", "properties": {"networkManagerScopeAccesses": ["Connectivity"],
+      "networkManagerScopes": {"subscriptions": ["/subscriptions/00000000-0000-0000-0000-000000000000"]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '188'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --scope-accesses --network-manager-scopes --location
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002?api-version=2023-09-01
+  response:
+    body:
+      string: '{"name":"manager-000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002","location":"eastus2","type":"Microsoft.Network/networkManagers","tags":{},"etag":"","properties":{"description":"","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"crossTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["Connectivity"],"resourceGuid":"6081c8f9-0cab-4dde-8b97-75353d430179"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-16T01:58:38.0412762Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:58:38.0412762Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '823'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:58:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/southeastasia/dad5cc7d-5acc-44b1-8d49-941d51587922
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: EAFDD78813594C6D9F346652B63E9FA4 Ref B: SG2AA1070306040 Ref C: 2026-11-16T01:58:35Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "properties": {"addressPrefixes": ["10.0.0.0/16"],
+      "maxAllocationSize": "256", "minAllocationSize": "16"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '130'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --manager-name --resource-group --location --address-prefixes --min-allocation-size
+        --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"16","maxAllocationSize":"256"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da004006-0000-0200-0000-6afa63590000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:58:47.7328847+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '780'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:58:49 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+      mise-correlation-id:
+      - c031cad1-427e-443c-a0c4-575c7ff2c00a
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/southeastasia/fd1642be-aa9e-4e67-92d9-6bb1793ab9de
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 59BFD8A6A18144F9A257623D7CD7D37D Ref B: SG2AA1040518052 Ref C: 2026-11-16T01:58:43Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --location --address-prefixes --min-allocation-size
+        --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"16","maxAllocationSize":"256"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da004006-0000-0200-0000-6afa63590000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:58:47.7328847+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '780'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:58:51 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 9881b6b9-6951-4cb3-9bd1-0207ecc6e72f
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 376E53BEA2684B92A473222BE1AC9462 Ref B: SG2AA1040513052 Ref C: 2026-11-16T01:58:50Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"16","maxAllocationSize":"256"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da004006-0000-0200-0000-6afa63590000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:58:47.7328847+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '780'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:58:54 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 501dba22-a784-41e4-8830-979e6fb51df1
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 6ED65DCC2C4743DF9F35A17E75A98C65 Ref B: SG2AA1040512040 Ref C: 2026-11-16T01:58:53Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --manager-name --resource-group
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools?skip=0&top=50&api-version=2026-01-01
+  response:
+    body:
+      string: '{"value":[{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"16","maxAllocationSize":"256"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da004006-0000-0200-0000-6afa63590000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:58:47.7328847+00:00"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '792'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:58:56 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 0db7826f-7131-4f63-9888-af5a6a6fa78b
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - ''
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 863DF8DCBAEE4F66A7E14133BC04B3DC Ref B: SG2AA1070306025 Ref C: 2026-11-16T01:58:56Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --address-prefixes --parent-pool-name
+        --min-allocation-size --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"16","maxAllocationSize":"256"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da004006-0000-0200-0000-6afa63590000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:58:47.7328847+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '780'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:58:59 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 7a4e0fa6-57e6-49d1-85d5-cdc2ddf6e93a
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 730BF21FFDD44D709F4376FBB4CEF02C Ref B: SG2AA1070302054 Ref C: 2026-11-16T01:58:59Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "properties": {"addressPrefixes": ["10.0.0.0/16",
+      "10.1.0.0/16"], "description": "", "displayName": "", "maxAllocationSize": "512",
+      "minAllocationSize": "32", "parentPoolName": ""}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '205'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --manager-name --resource-group --address-prefixes --parent-pool-name
+        --min-allocation-size --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16"],"provisioningState":"Updating","minAllocationSize":"16","maxAllocationSize":"256"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00b006-0000-0200-0000-6afa63640000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:58:47.7328847+00:00"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-E472AA49BEFCE3B9A0BEE04A431BB5F9-EC516CE5F581CA6C-01+POOL-BNWIBIO+UPDATE?api-version=2026-01-01&t=639303911411749378&c=MIIHxDCCBqygAwIBAgIRAOgKAtAarWn0hRMfuWiMdV8wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MTAyOTE1NTgwNloXDTI3MDEyNDIxNTgwNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDPsncSu96bMq_jC4DLkPbjNOdAbKjz4j8QajCLBCmHsJOBay_9KtDtycyd_SLwTBTPMPbGTJ8T_7vfrgv0j9JJF0GcgyPReCPUPEEWYfAA6UOgaKqh2V8Z9tCI2iYw3TXSnMGhEE-kSfURKModVQXtIg2AF134ZLYTPUqaM_Fpq8ADfkRKr8bsOgYkCdoQbkQtHOFqkK6ng4YbbZqVH1Q89ol1S9D3joMlEzarIgIW7rpKxAn8BpVHZwITy_Vjw-C__o_OwxyZzdHEIPL802OrtAz1GjdYOJR96J7s8g0iXNzfCOmv9CJl4m4xGgyIS6OV7_e9LnJhNOMI33tPGz_VAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT0j6RFtwWhLpzIckIHa5LI9lqdpDAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzEwL2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS8xMC9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBP607MX5QUesA0mfBtgchEjmOYrhTgzXiSaxQoXJJNhPPq3c65ujljtffM8QqSpFMeu2pOKYqNEi620kuh3xiubaaXmOllNdqBZc66KMpTtKs1jLO3IS7ROLPjgTslb0-TVBgBWYR2voYUDgNqcUVO8ievayxn6mSuVWRF0nhLAqFN8X7QFGi12XhaAYPVqXH_5Ppw5zQWehu_QATv4Vn6Kh-mfRmdO4xPbmckwr03gTpWQ4tZ7uWoXz1ygEjpRNPSd1wS_kOm9w8gyLbzDQtlC9gTDz_lUdJIBLWJPoJbylJNu9rkcw8LVX71wWxqLskpLU4KRUZy2ly1oP4Ynt4Z&s=H0dGBPahnVZLqsonCbbPaucruSp_h45DRrMjh5Ur1CHOzhrPadZrIy2sBJ0LQ5pL-aTwe9gWBII6yHe-vTysToxPh5U7TlFmgxv3TGfWmZYCS4atifa-u-87ADo5C2ojUIAjx0jO3aBk2dwB4yFYsXb7PFzlVMQneMplZVRtMHmfK5wVSuzJjpb6IkkOZ0D5P5ASjBvCvUaasXIc2vnsV5noGFL_ZdXtpLolE9YN8PuJc1wtiyLBJOUtr6nKMorLsG6tAu-VP2eysSWY7__llOiQVIwFvcm8c5W_doh3H5Yw6JBxsoEOsZcPUYgt6z-qsN-E8A1Vojx-Le0GhjmaBQ&h=mSpDljLxFg8jj2mJkWXY5yOZsp_RM3eKPc0XLsKyfLc
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:00 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - da34941c-2603-4289-b61b-0e9c87dab067
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/4992a623-5096-4cfe-8a14-f1fdb4289429
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: D7425645105E4489B2FF7FB15A96523A Ref B: SG2AA1070304060 Ref C: 2026-11-16T01:59:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --address-prefixes --parent-pool-name
+        --min-allocation-size --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-E472AA49BEFCE3B9A0BEE04A431BB5F9-EC516CE5F581CA6C-01+POOL-BNWIBIO+UPDATE?api-version=2026-01-01&t=639303911411749378&c=MIIHxDCCBqygAwIBAgIRAOgKAtAarWn0hRMfuWiMdV8wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MTAyOTE1NTgwNloXDTI3MDEyNDIxNTgwNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDPsncSu96bMq_jC4DLkPbjNOdAbKjz4j8QajCLBCmHsJOBay_9KtDtycyd_SLwTBTPMPbGTJ8T_7vfrgv0j9JJF0GcgyPReCPUPEEWYfAA6UOgaKqh2V8Z9tCI2iYw3TXSnMGhEE-kSfURKModVQXtIg2AF134ZLYTPUqaM_Fpq8ADfkRKr8bsOgYkCdoQbkQtHOFqkK6ng4YbbZqVH1Q89ol1S9D3joMlEzarIgIW7rpKxAn8BpVHZwITy_Vjw-C__o_OwxyZzdHEIPL802OrtAz1GjdYOJR96J7s8g0iXNzfCOmv9CJl4m4xGgyIS6OV7_e9LnJhNOMI33tPGz_VAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT0j6RFtwWhLpzIckIHa5LI9lqdpDAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzEwL2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS8xMC9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBP607MX5QUesA0mfBtgchEjmOYrhTgzXiSaxQoXJJNhPPq3c65ujljtffM8QqSpFMeu2pOKYqNEi620kuh3xiubaaXmOllNdqBZc66KMpTtKs1jLO3IS7ROLPjgTslb0-TVBgBWYR2voYUDgNqcUVO8ievayxn6mSuVWRF0nhLAqFN8X7QFGi12XhaAYPVqXH_5Ppw5zQWehu_QATv4Vn6Kh-mfRmdO4xPbmckwr03gTpWQ4tZ7uWoXz1ygEjpRNPSd1wS_kOm9w8gyLbzDQtlC9gTDz_lUdJIBLWJPoJbylJNu9rkcw8LVX71wWxqLskpLU4KRUZy2ly1oP4Ynt4Z&s=H0dGBPahnVZLqsonCbbPaucruSp_h45DRrMjh5Ur1CHOzhrPadZrIy2sBJ0LQ5pL-aTwe9gWBII6yHe-vTysToxPh5U7TlFmgxv3TGfWmZYCS4atifa-u-87ADo5C2ojUIAjx0jO3aBk2dwB4yFYsXb7PFzlVMQneMplZVRtMHmfK5wVSuzJjpb6IkkOZ0D5P5ASjBvCvUaasXIc2vnsV5noGFL_ZdXtpLolE9YN8PuJc1wtiyLBJOUtr6nKMorLsG6tAu-VP2eysSWY7__llOiQVIwFvcm8c5W_doh3H5Yw6JBxsoEOsZcPUYgt6z-qsN-E8A1Vojx-Le0GhjmaBQ&h=mSpDljLxFg8jj2mJkWXY5yOZsp_RM3eKPc0XLsKyfLc
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-E472AA49BEFCE3B9A0BEE04A431BB5F9-EC516CE5F581CA6C-01+POOL-BNWIBIO+UPDATE","name":"6081C8F9-0CAB-4DDE-8B97-75353D430179+00-E472AA49BEFCE3B9A0BEE04A431BB5F9-EC516CE5F581CA6C-01+POOL-BNWIBIO+UPDATE","status":"Succeeded","startTime":null,"endTime":null,"percentComplete":null,"error":null,"properties":{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"32","maxAllocationSize":"512"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00b006-0000-0200-0000-6afa63640000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:00.3936848+00:00"}},"operations":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1346'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:01 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 91551b57-883a-4ce2-bb1b-59a83b1b43ca
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/3ec226ec-176f-464b-8219-a3bafb458474
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 31DEB93335F44974A1E80E7C9515AEC4 Ref B: SG2AA1070305040 Ref C: 2026-11-16T01:59:01Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --address-prefixes --parent-pool-name
+        --min-allocation-size --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"32","maxAllocationSize":"512"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00b206-0000-0200-0000-6afa63650000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:00.3936848+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '794'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:02 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - a2f84d02-e8a7-4573-bfe9-8d160ff7a387
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 9EF62B7122084060B0C6CDC8A8F55F36 Ref B: SG2AA1040517054 Ref C: 2026-11-16T01:59:02Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"32","maxAllocationSize":"512"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00b206-0000-0200-0000-6afa63650000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:00.3936848+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '794'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:05 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 03489f19-bfbb-4e1e-8807-a55085c6cc49
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 36D8E579DA09480283981F282386A89E Ref B: SG2AA1040520040 Ref C: 2026-11-16T01:59:05Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "properties": {"addressPrefixes": ["10.0.0.0/16",
+      "10.1.0.0/16"], "description": "", "displayName": "", "maxAllocationSize": "512",
+      "minAllocationSize": "64", "parentPoolName": ""}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '205'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Updating","minAllocationSize":"32","maxAllocationSize":"512"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da000807-0000-0200-0000-6afa636b0000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:00.3936848+00:00"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-E0553252B76F101D1631E399C51C7EFE-7E641D0F9DF5664B-01+POOL-BNWIBIO+UPDATE?api-version=2026-01-01&t=639303911484449665&c=MIIHxDCCBqygAwIBAgIRAOgKAtAarWn0hRMfuWiMdV8wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MTAyOTE1NTgwNloXDTI3MDEyNDIxNTgwNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDPsncSu96bMq_jC4DLkPbjNOdAbKjz4j8QajCLBCmHsJOBay_9KtDtycyd_SLwTBTPMPbGTJ8T_7vfrgv0j9JJF0GcgyPReCPUPEEWYfAA6UOgaKqh2V8Z9tCI2iYw3TXSnMGhEE-kSfURKModVQXtIg2AF134ZLYTPUqaM_Fpq8ADfkRKr8bsOgYkCdoQbkQtHOFqkK6ng4YbbZqVH1Q89ol1S9D3joMlEzarIgIW7rpKxAn8BpVHZwITy_Vjw-C__o_OwxyZzdHEIPL802OrtAz1GjdYOJR96J7s8g0iXNzfCOmv9CJl4m4xGgyIS6OV7_e9LnJhNOMI33tPGz_VAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT0j6RFtwWhLpzIckIHa5LI9lqdpDAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzEwL2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS8xMC9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBP607MX5QUesA0mfBtgchEjmOYrhTgzXiSaxQoXJJNhPPq3c65ujljtffM8QqSpFMeu2pOKYqNEi620kuh3xiubaaXmOllNdqBZc66KMpTtKs1jLO3IS7ROLPjgTslb0-TVBgBWYR2voYUDgNqcUVO8ievayxn6mSuVWRF0nhLAqFN8X7QFGi12XhaAYPVqXH_5Ppw5zQWehu_QATv4Vn6Kh-mfRmdO4xPbmckwr03gTpWQ4tZ7uWoXz1ygEjpRNPSd1wS_kOm9w8gyLbzDQtlC9gTDz_lUdJIBLWJPoJbylJNu9rkcw8LVX71wWxqLskpLU4KRUZy2ly1oP4Ynt4Z&s=Gc65kcwOSDI30Q5Lv1MI3ciA0c24M9t6dRrnTFlxJx08DXP-9nhxTm2CoPxdOT7xX4YYtPZWpVP1fOH2aNDxK9a0o4T9VGzlv1xomgdydq3z3DU47nCw8LGm2XsCP_R1xtvl7EouyUb4ldHfRdOcbOgMEQbdYI_04OehdnPY-WUBBY8iLX70BS4afh1B5z8-GTu7XZ12uH8aZvjl5cBeua7SEunhWxziFZj7v1egUYhX0GMucOCFuIxQUh7vdVI3Qm8LJPwErmNm9ST-JYk5w3KfyPJtFAp1uW_AockptQsqGMs1yfN6OVic7H2OM5Okk_CY0mQ017GNgda81d2L0g&h=sdt67TkTlsWcev1CPqVq34OtVekb54PcC5DRbl3-GYM
+      cache-control:
+      - no-cache
+      content-length:
+      - '793'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:07 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - d7823b59-de52-4e44-853e-1df5d234f3f5
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/7ed94a0e-f5cd-4897-b928-c0aff0397fc9
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: B4A97A0DD4B145D79F9E34EF01CC04DC Ref B: SG2AA1070304042 Ref C: 2026-11-16T01:59:06Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-E0553252B76F101D1631E399C51C7EFE-7E641D0F9DF5664B-01+POOL-BNWIBIO+UPDATE?api-version=2026-01-01&t=639303911484449665&c=MIIHxDCCBqygAwIBAgIRAOgKAtAarWn0hRMfuWiMdV8wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MTAyOTE1NTgwNloXDTI3MDEyNDIxNTgwNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDPsncSu96bMq_jC4DLkPbjNOdAbKjz4j8QajCLBCmHsJOBay_9KtDtycyd_SLwTBTPMPbGTJ8T_7vfrgv0j9JJF0GcgyPReCPUPEEWYfAA6UOgaKqh2V8Z9tCI2iYw3TXSnMGhEE-kSfURKModVQXtIg2AF134ZLYTPUqaM_Fpq8ADfkRKr8bsOgYkCdoQbkQtHOFqkK6ng4YbbZqVH1Q89ol1S9D3joMlEzarIgIW7rpKxAn8BpVHZwITy_Vjw-C__o_OwxyZzdHEIPL802OrtAz1GjdYOJR96J7s8g0iXNzfCOmv9CJl4m4xGgyIS6OV7_e9LnJhNOMI33tPGz_VAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT0j6RFtwWhLpzIckIHa5LI9lqdpDAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzEwL2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS8xMC9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBP607MX5QUesA0mfBtgchEjmOYrhTgzXiSaxQoXJJNhPPq3c65ujljtffM8QqSpFMeu2pOKYqNEi620kuh3xiubaaXmOllNdqBZc66KMpTtKs1jLO3IS7ROLPjgTslb0-TVBgBWYR2voYUDgNqcUVO8ievayxn6mSuVWRF0nhLAqFN8X7QFGi12XhaAYPVqXH_5Ppw5zQWehu_QATv4Vn6Kh-mfRmdO4xPbmckwr03gTpWQ4tZ7uWoXz1ygEjpRNPSd1wS_kOm9w8gyLbzDQtlC9gTDz_lUdJIBLWJPoJbylJNu9rkcw8LVX71wWxqLskpLU4KRUZy2ly1oP4Ynt4Z&s=Gc65kcwOSDI30Q5Lv1MI3ciA0c24M9t6dRrnTFlxJx08DXP-9nhxTm2CoPxdOT7xX4YYtPZWpVP1fOH2aNDxK9a0o4T9VGzlv1xomgdydq3z3DU47nCw8LGm2XsCP_R1xtvl7EouyUb4ldHfRdOcbOgMEQbdYI_04OehdnPY-WUBBY8iLX70BS4afh1B5z8-GTu7XZ12uH8aZvjl5cBeua7SEunhWxziFZj7v1egUYhX0GMucOCFuIxQUh7vdVI3Qm8LJPwErmNm9ST-JYk5w3KfyPJtFAp1uW_AockptQsqGMs1yfN6OVic7H2OM5Okk_CY0mQ017GNgda81d2L0g&h=sdt67TkTlsWcev1CPqVq34OtVekb54PcC5DRbl3-GYM
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-E0553252B76F101D1631E399C51C7EFE-7E641D0F9DF5664B-01+POOL-BNWIBIO+UPDATE","name":"6081C8F9-0CAB-4DDE-8B97-75353D430179+00-E0553252B76F101D1631E399C51C7EFE-7E641D0F9DF5664B-01+POOL-BNWIBIO+UPDATE","status":"Succeeded","startTime":null,"endTime":null,"percentComplete":null,"error":null,"properties":{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"64","maxAllocationSize":"512"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da000807-0000-0200-0000-6afa636b0000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:06.5543461+00:00"}},"operations":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1346'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:09 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - c7947c08-28bf-4272-a32f-fe6728e5905f
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/southeastasia/4c163c55-e007-4e08-83d8-94a5f5315cd4
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: B0640F9CB95B4A51B9CAF64FF8B102A7 Ref B: SG2AA1040515060 Ref C: 2026-11-16T01:59:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"64","maxAllocationSize":"512"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da001507-0000-0200-0000-6afa636c0000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:06.5543461+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '794'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:10 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 5f55d9bb-546d-42d1-859c-c4a83666c36c
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 13D9BD7ED7E14B688B314522015BAC99 Ref B: SG2AA1040513052 Ref C: 2026-11-16T01:59:10Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --description
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"64","maxAllocationSize":"512"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da001507-0000-0200-0000-6afa636c0000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:06.5543461+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '794'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:14 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 7705f423-3851-48f7-865a-8c15ffb4039d
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 1828D207FAF14E369E9AAA8DF0D5EEE2 Ref B: SG2AA1040520062 Ref C: 2026-11-16T01:59:13Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "properties": {"addressPrefixes": ["10.0.0.0/16",
+      "10.1.0.0/16"], "description": "Keep allocation bounds", "displayName": "",
+      "maxAllocationSize": "512", "minAllocationSize": "64", "parentPoolName": ""}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '227'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --manager-name --resource-group --description
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Updating","minAllocationSize":"64","maxAllocationSize":"512"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da008307-0000-0200-0000-6afa63740000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:06.5543461+00:00"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-C357F1F7A2772C5863ED2D812FA5779E-B92452A0E5F0A590-01+POOL-BNWIBIO+UPDATE?api-version=2026-01-01&t=639303911560986272&c=MIIHxDCCBqygAwIBAgIRAOgKAtAarWn0hRMfuWiMdV8wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MTAyOTE1NTgwNloXDTI3MDEyNDIxNTgwNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDPsncSu96bMq_jC4DLkPbjNOdAbKjz4j8QajCLBCmHsJOBay_9KtDtycyd_SLwTBTPMPbGTJ8T_7vfrgv0j9JJF0GcgyPReCPUPEEWYfAA6UOgaKqh2V8Z9tCI2iYw3TXSnMGhEE-kSfURKModVQXtIg2AF134ZLYTPUqaM_Fpq8ADfkRKr8bsOgYkCdoQbkQtHOFqkK6ng4YbbZqVH1Q89ol1S9D3joMlEzarIgIW7rpKxAn8BpVHZwITy_Vjw-C__o_OwxyZzdHEIPL802OrtAz1GjdYOJR96J7s8g0iXNzfCOmv9CJl4m4xGgyIS6OV7_e9LnJhNOMI33tPGz_VAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT0j6RFtwWhLpzIckIHa5LI9lqdpDAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzEwL2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS8xMC9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBP607MX5QUesA0mfBtgchEjmOYrhTgzXiSaxQoXJJNhPPq3c65ujljtffM8QqSpFMeu2pOKYqNEi620kuh3xiubaaXmOllNdqBZc66KMpTtKs1jLO3IS7ROLPjgTslb0-TVBgBWYR2voYUDgNqcUVO8ievayxn6mSuVWRF0nhLAqFN8X7QFGi12XhaAYPVqXH_5Ppw5zQWehu_QATv4Vn6Kh-mfRmdO4xPbmckwr03gTpWQ4tZ7uWoXz1ygEjpRNPSd1wS_kOm9w8gyLbzDQtlC9gTDz_lUdJIBLWJPoJbylJNu9rkcw8LVX71wWxqLskpLU4KRUZy2ly1oP4Ynt4Z&s=Q-HIG5y4f879WxGFaI4qYmWhJ3-XvZHr5_q_lT84Jaqr9Hl9eQMhU8oz_99XG4mPy53UUJCONphVdnwK5Rz5X5uave2ybS9i4Tj6_ejze7cELpLVai2uZtKRtbEN8Bs1RYhuvzqvLtS1CoNELi2-971xobk5e1wRsqZvBzbJk_8BnHS03eefGHsSQhIpoGjiIb5ruDtw9hnLVQ8745cHcR4JI_en0SV__vqUHHSyH3nbpsOQVU_ul2kpEQu9pgtZpEzs0hMUchcMwsgHFX4jPFHfwLjDeA5KdZH_7zCvVCviQFVAcJMwu1U87aGPkGDAZQSZ1kprkoU7XMr65Y_MaA&h=2iXgsnbsOYSNP71VIkIu3LQJEser3adzSlBt4L6lm-I
+      cache-control:
+      - no-cache
+      content-length:
+      - '815'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:16 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 2596e74a-3670-4f18-a3bf-381f6cfaffa8
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/39cb17fd-24b5-4983-91a9-df6a537d5aaf
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 687563B256DD4DE3A4D3ECDA6321E840 Ref B: SG2AA1070306031 Ref C: 2026-11-16T01:59:15Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --description
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-C357F1F7A2772C5863ED2D812FA5779E-B92452A0E5F0A590-01+POOL-BNWIBIO+UPDATE?api-version=2026-01-01&t=639303911560986272&c=MIIHxDCCBqygAwIBAgIRAOgKAtAarWn0hRMfuWiMdV8wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MTAyOTE1NTgwNloXDTI3MDEyNDIxNTgwNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDPsncSu96bMq_jC4DLkPbjNOdAbKjz4j8QajCLBCmHsJOBay_9KtDtycyd_SLwTBTPMPbGTJ8T_7vfrgv0j9JJF0GcgyPReCPUPEEWYfAA6UOgaKqh2V8Z9tCI2iYw3TXSnMGhEE-kSfURKModVQXtIg2AF134ZLYTPUqaM_Fpq8ADfkRKr8bsOgYkCdoQbkQtHOFqkK6ng4YbbZqVH1Q89ol1S9D3joMlEzarIgIW7rpKxAn8BpVHZwITy_Vjw-C__o_OwxyZzdHEIPL802OrtAz1GjdYOJR96J7s8g0iXNzfCOmv9CJl4m4xGgyIS6OV7_e9LnJhNOMI33tPGz_VAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT0j6RFtwWhLpzIckIHa5LI9lqdpDAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzEwL2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS8xMC9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBP607MX5QUesA0mfBtgchEjmOYrhTgzXiSaxQoXJJNhPPq3c65ujljtffM8QqSpFMeu2pOKYqNEi620kuh3xiubaaXmOllNdqBZc66KMpTtKs1jLO3IS7ROLPjgTslb0-TVBgBWYR2voYUDgNqcUVO8ievayxn6mSuVWRF0nhLAqFN8X7QFGi12XhaAYPVqXH_5Ppw5zQWehu_QATv4Vn6Kh-mfRmdO4xPbmckwr03gTpWQ4tZ7uWoXz1ygEjpRNPSd1wS_kOm9w8gyLbzDQtlC9gTDz_lUdJIBLWJPoJbylJNu9rkcw8LVX71wWxqLskpLU4KRUZy2ly1oP4Ynt4Z&s=Q-HIG5y4f879WxGFaI4qYmWhJ3-XvZHr5_q_lT84Jaqr9Hl9eQMhU8oz_99XG4mPy53UUJCONphVdnwK5Rz5X5uave2ybS9i4Tj6_ejze7cELpLVai2uZtKRtbEN8Bs1RYhuvzqvLtS1CoNELi2-971xobk5e1wRsqZvBzbJk_8BnHS03eefGHsSQhIpoGjiIb5ruDtw9hnLVQ8745cHcR4JI_en0SV__vqUHHSyH3nbpsOQVU_ul2kpEQu9pgtZpEzs0hMUchcMwsgHFX4jPFHfwLjDeA5KdZH_7zCvVCviQFVAcJMwu1U87aGPkGDAZQSZ1kprkoU7XMr65Y_MaA&h=2iXgsnbsOYSNP71VIkIu3LQJEser3adzSlBt4L6lm-I
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-C357F1F7A2772C5863ED2D812FA5779E-B92452A0E5F0A590-01+POOL-BNWIBIO+UPDATE","name":"6081C8F9-0CAB-4DDE-8B97-75353D430179+00-C357F1F7A2772C5863ED2D812FA5779E-B92452A0E5F0A590-01+POOL-BNWIBIO+UPDATE","status":"Succeeded","startTime":null,"endTime":null,"percentComplete":null,"error":null,"properties":{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"64","maxAllocationSize":"512"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da008307-0000-0200-0000-6afa63740000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:15.4736277+00:00"}},"operations":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1368'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:16 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 247ff7c6-6cfd-48c0-97fe-e16a1905b660
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/d4ffc5e6-d7da-4c4a-a4a8-431284d6ae55
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: C0FA5E2DE3414E948B533B41593BB510 Ref B: SG2AA1040512034 Ref C: 2026-11-16T01:59:16Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --description
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"64","maxAllocationSize":"512"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da008407-0000-0200-0000-6afa63740000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:15.4736277+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '816'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:17 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - b7a65404-b05d-4a59-bfbf-89507b05f230
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 2630B31B168E4140BB9A279DB0B424B4 Ref B: SG2AA1070303025 Ref C: 2026-11-16T01:59:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"64","maxAllocationSize":"512"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da008407-0000-0200-0000-6afa63740000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:15.4736277+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '816'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:21 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 87bf4ac8-7e8f-4d2b-9ba4-96d96095bf58
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 7A24B4DB8049468694BEC344DD8BDCF4 Ref B: SG2AA1070306029 Ref C: 2026-11-16T01:59:21Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "properties": {"addressPrefixes": ["10.0.0.0/16",
+      "10.1.0.0/16"], "description": "Keep allocation bounds", "displayName": "",
+      "maxAllocationSize": "512", "minAllocationSize": "", "parentPoolName": ""}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '225'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Updating","minAllocationSize":"64","maxAllocationSize":"512"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00fb07-0000-0200-0000-6afa637b0000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:15.4736277+00:00"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-DC9FF99D9F49CA992B0235883A9DE0A2-2EE866B1B82B03C5-01+POOL-BNWIBIO+UPDATE?api-version=2026-01-01&t=639303911639732347&c=MIIHxDCCBqygAwIBAgIRAOgKAtAarWn0hRMfuWiMdV8wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MTAyOTE1NTgwNloXDTI3MDEyNDIxNTgwNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDPsncSu96bMq_jC4DLkPbjNOdAbKjz4j8QajCLBCmHsJOBay_9KtDtycyd_SLwTBTPMPbGTJ8T_7vfrgv0j9JJF0GcgyPReCPUPEEWYfAA6UOgaKqh2V8Z9tCI2iYw3TXSnMGhEE-kSfURKModVQXtIg2AF134ZLYTPUqaM_Fpq8ADfkRKr8bsOgYkCdoQbkQtHOFqkK6ng4YbbZqVH1Q89ol1S9D3joMlEzarIgIW7rpKxAn8BpVHZwITy_Vjw-C__o_OwxyZzdHEIPL802OrtAz1GjdYOJR96J7s8g0iXNzfCOmv9CJl4m4xGgyIS6OV7_e9LnJhNOMI33tPGz_VAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT0j6RFtwWhLpzIckIHa5LI9lqdpDAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzEwL2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS8xMC9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBP607MX5QUesA0mfBtgchEjmOYrhTgzXiSaxQoXJJNhPPq3c65ujljtffM8QqSpFMeu2pOKYqNEi620kuh3xiubaaXmOllNdqBZc66KMpTtKs1jLO3IS7ROLPjgTslb0-TVBgBWYR2voYUDgNqcUVO8ievayxn6mSuVWRF0nhLAqFN8X7QFGi12XhaAYPVqXH_5Ppw5zQWehu_QATv4Vn6Kh-mfRmdO4xPbmckwr03gTpWQ4tZ7uWoXz1ygEjpRNPSd1wS_kOm9w8gyLbzDQtlC9gTDz_lUdJIBLWJPoJbylJNu9rkcw8LVX71wWxqLskpLU4KRUZy2ly1oP4Ynt4Z&s=PhE72p-X3m8MKduJgzAQ1BMNI7HhCmdSqdT23MXntZi8kfeKngOYirhPyUMAA970Af7GlWJUOumWNd4ed5KytR_es0TeGV-7ibTIgIq1OpDCk0i9U0B0tjFpHuJFZRtyiJgJHNRNq9fiERo1wSdi7XikiEmhgyha7-07t4palpEbD_lgzl_KgVSK7Tu5CutMaAFhjhIgritV0u7_sH1TfDXsVnv-bBvRr8R8PwW_Kigueu6nFJAoX-JUB4mz638A1qE7Yl8lpS3JLcex4GuDwIcyk7Y4n2t-RqGWd0lPjLzeS9q_kTO628Vx3oneCCk_8YCzR5fro_8cZOUREpoaiw&h=mefQuj8knF9PlpNs6pLKw37t9sm5el5J45Q06LaZK9o
+      cache-control:
+      - no-cache
+      content-length:
+      - '815'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:23 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 76c1798d-e883-42a7-8e0c-d4cac342a0d4
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/9fadc629-463d-4237-9eb0-8a5bf9a57579
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 457BED3A3C354267A5B69B88FBCE89C7 Ref B: SG2AA1070302060 Ref C: 2026-11-16T01:59:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-DC9FF99D9F49CA992B0235883A9DE0A2-2EE866B1B82B03C5-01+POOL-BNWIBIO+UPDATE?api-version=2026-01-01&t=639303911639732347&c=MIIHxDCCBqygAwIBAgIRAOgKAtAarWn0hRMfuWiMdV8wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MTAyOTE1NTgwNloXDTI3MDEyNDIxNTgwNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDPsncSu96bMq_jC4DLkPbjNOdAbKjz4j8QajCLBCmHsJOBay_9KtDtycyd_SLwTBTPMPbGTJ8T_7vfrgv0j9JJF0GcgyPReCPUPEEWYfAA6UOgaKqh2V8Z9tCI2iYw3TXSnMGhEE-kSfURKModVQXtIg2AF134ZLYTPUqaM_Fpq8ADfkRKr8bsOgYkCdoQbkQtHOFqkK6ng4YbbZqVH1Q89ol1S9D3joMlEzarIgIW7rpKxAn8BpVHZwITy_Vjw-C__o_OwxyZzdHEIPL802OrtAz1GjdYOJR96J7s8g0iXNzfCOmv9CJl4m4xGgyIS6OV7_e9LnJhNOMI33tPGz_VAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT0j6RFtwWhLpzIckIHa5LI9lqdpDAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzEwL2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS8xMC9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBP607MX5QUesA0mfBtgchEjmOYrhTgzXiSaxQoXJJNhPPq3c65ujljtffM8QqSpFMeu2pOKYqNEi620kuh3xiubaaXmOllNdqBZc66KMpTtKs1jLO3IS7ROLPjgTslb0-TVBgBWYR2voYUDgNqcUVO8ievayxn6mSuVWRF0nhLAqFN8X7QFGi12XhaAYPVqXH_5Ppw5zQWehu_QATv4Vn6Kh-mfRmdO4xPbmckwr03gTpWQ4tZ7uWoXz1ygEjpRNPSd1wS_kOm9w8gyLbzDQtlC9gTDz_lUdJIBLWJPoJbylJNu9rkcw8LVX71wWxqLskpLU4KRUZy2ly1oP4Ynt4Z&s=PhE72p-X3m8MKduJgzAQ1BMNI7HhCmdSqdT23MXntZi8kfeKngOYirhPyUMAA970Af7GlWJUOumWNd4ed5KytR_es0TeGV-7ibTIgIq1OpDCk0i9U0B0tjFpHuJFZRtyiJgJHNRNq9fiERo1wSdi7XikiEmhgyha7-07t4palpEbD_lgzl_KgVSK7Tu5CutMaAFhjhIgritV0u7_sH1TfDXsVnv-bBvRr8R8PwW_Kigueu6nFJAoX-JUB4mz638A1qE7Yl8lpS3JLcex4GuDwIcyk7Y4n2t-RqGWd0lPjLzeS9q_kTO628Vx3oneCCk_8YCzR5fro_8cZOUREpoaiw&h=mefQuj8knF9PlpNs6pLKw37t9sm5el5J45Q06LaZK9o
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-DC9FF99D9F49CA992B0235883A9DE0A2-2EE866B1B82B03C5-01+POOL-BNWIBIO+UPDATE","name":"6081C8F9-0CAB-4DDE-8B97-75353D430179+00-DC9FF99D9F49CA992B0235883A9DE0A2-2EE866B1B82B03C5-01+POOL-BNWIBIO+UPDATE","status":"Succeeded","startTime":null,"endTime":null,"percentComplete":null,"error":null,"properties":{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded","maxAllocationSize":"512"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00fb07-0000-0200-0000-6afa637b0000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:23.1451498+00:00"}},"operations":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1343'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:24 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - a572dc3e-f906-4d08-876c-8dce6d47250c
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/d6db9e52-6aa6-44fa-bc91-b34523575d65
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: B3FD118D03E9498CBB0E9329D897B0BB Ref B: SG2AA1070302042 Ref C: 2026-11-16T01:59:25Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded","maxAllocationSize":"512"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00fe07-0000-0200-0000-6afa637b0000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:23.1451498+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '791'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:27 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - d6a2f14c-d58f-48a2-a9b6-0da0c59fadcf
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 15E53A8979DD4CE6ADF2465FBA5C30E1 Ref B: SG2AA1040512060 Ref C: 2026-11-16T01:59:26Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded","maxAllocationSize":"512"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00fe07-0000-0200-0000-6afa637b0000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:23.1451498+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '791'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:31 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - f9b5ea93-354f-446d-8ee2-33041a7290a8
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 37C7D9C28FB14A65AB677E2BC3BFF3E7 Ref B: SG2AA1040519023 Ref C: 2026-11-16T01:59:30Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "properties": {"addressPrefixes": ["10.0.0.0/16",
+      "10.1.0.0/16"], "description": "Keep allocation bounds", "displayName": "",
+      "maxAllocationSize": "", "minAllocationSize": "16", "parentPoolName": ""}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '224'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Updating","maxAllocationSize":"512"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00a208-0000-0200-0000-6afa63840000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:23.1451498+00:00"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-16471AC1D1F316D0E2E538CF6F3EBD39-C7F1D8BE5340BB27-01+POOL-BNWIBIO+UPDATE?api-version=2026-01-01&t=639303911728840626&c=MIIHxDCCBqygAwIBAgIRAOgKAtAarWn0hRMfuWiMdV8wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MTAyOTE1NTgwNloXDTI3MDEyNDIxNTgwNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDPsncSu96bMq_jC4DLkPbjNOdAbKjz4j8QajCLBCmHsJOBay_9KtDtycyd_SLwTBTPMPbGTJ8T_7vfrgv0j9JJF0GcgyPReCPUPEEWYfAA6UOgaKqh2V8Z9tCI2iYw3TXSnMGhEE-kSfURKModVQXtIg2AF134ZLYTPUqaM_Fpq8ADfkRKr8bsOgYkCdoQbkQtHOFqkK6ng4YbbZqVH1Q89ol1S9D3joMlEzarIgIW7rpKxAn8BpVHZwITy_Vjw-C__o_OwxyZzdHEIPL802OrtAz1GjdYOJR96J7s8g0iXNzfCOmv9CJl4m4xGgyIS6OV7_e9LnJhNOMI33tPGz_VAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT0j6RFtwWhLpzIckIHa5LI9lqdpDAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzEwL2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS8xMC9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBP607MX5QUesA0mfBtgchEjmOYrhTgzXiSaxQoXJJNhPPq3c65ujljtffM8QqSpFMeu2pOKYqNEi620kuh3xiubaaXmOllNdqBZc66KMpTtKs1jLO3IS7ROLPjgTslb0-TVBgBWYR2voYUDgNqcUVO8ievayxn6mSuVWRF0nhLAqFN8X7QFGi12XhaAYPVqXH_5Ppw5zQWehu_QATv4Vn6Kh-mfRmdO4xPbmckwr03gTpWQ4tZ7uWoXz1ygEjpRNPSd1wS_kOm9w8gyLbzDQtlC9gTDz_lUdJIBLWJPoJbylJNu9rkcw8LVX71wWxqLskpLU4KRUZy2ly1oP4Ynt4Z&s=pQWgOFtjg7ACYuTPIvrIQR6Xd4ZAmeXzNMS64yJjjVyYU8tD9Rt6BJRqFcOX2hPs0qLnHokzc4nxY8RTz0Fe50WjsCmqtxAv3QzwZBleIo5D7piOAsBv1NQ9oxjlby1VFDVnUtBZep8fAewjNB898QuOT7ouTRGOC-3ZngHcRGArAT0hnwdQvnBDNcVIjc9ERND-_dSaX01e3E1dK-ClI9obD-JHmsj_R82BvNON4bYS-MRlnZ4K-996gs-KMnlTsYDcBo4FpCjml9lqKdXK6G7gRXNYswFSQ9A7kMal_inJK64wkqCz_Kr5iK65Lj7Twc_C5XcVX-0WkqGQsRHTaA&h=85-_2xGvS6EIhgioNN8-U4z8rBljfURuHiWdzDJz7ws
+      cache-control:
+      - no-cache
+      content-length:
+      - '790'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:32 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 4d22470b-9465-4364-9224-b458fd359e47
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/e1ba39ce-3f48-4350-a074-1eee8d985b4b
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: BD586708858D4D0993E1860950BEC328 Ref B: SG2AA1040515062 Ref C: 2026-11-16T01:59:31Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-16471AC1D1F316D0E2E538CF6F3EBD39-C7F1D8BE5340BB27-01+POOL-BNWIBIO+UPDATE?api-version=2026-01-01&t=639303911728840626&c=MIIHxDCCBqygAwIBAgIRAOgKAtAarWn0hRMfuWiMdV8wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MTAyOTE1NTgwNloXDTI3MDEyNDIxNTgwNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDPsncSu96bMq_jC4DLkPbjNOdAbKjz4j8QajCLBCmHsJOBay_9KtDtycyd_SLwTBTPMPbGTJ8T_7vfrgv0j9JJF0GcgyPReCPUPEEWYfAA6UOgaKqh2V8Z9tCI2iYw3TXSnMGhEE-kSfURKModVQXtIg2AF134ZLYTPUqaM_Fpq8ADfkRKr8bsOgYkCdoQbkQtHOFqkK6ng4YbbZqVH1Q89ol1S9D3joMlEzarIgIW7rpKxAn8BpVHZwITy_Vjw-C__o_OwxyZzdHEIPL802OrtAz1GjdYOJR96J7s8g0iXNzfCOmv9CJl4m4xGgyIS6OV7_e9LnJhNOMI33tPGz_VAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT0j6RFtwWhLpzIckIHa5LI9lqdpDAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzEwL2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS8xMC9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBP607MX5QUesA0mfBtgchEjmOYrhTgzXiSaxQoXJJNhPPq3c65ujljtffM8QqSpFMeu2pOKYqNEi620kuh3xiubaaXmOllNdqBZc66KMpTtKs1jLO3IS7ROLPjgTslb0-TVBgBWYR2voYUDgNqcUVO8ievayxn6mSuVWRF0nhLAqFN8X7QFGi12XhaAYPVqXH_5Ppw5zQWehu_QATv4Vn6Kh-mfRmdO4xPbmckwr03gTpWQ4tZ7uWoXz1ygEjpRNPSd1wS_kOm9w8gyLbzDQtlC9gTDz_lUdJIBLWJPoJbylJNu9rkcw8LVX71wWxqLskpLU4KRUZy2ly1oP4Ynt4Z&s=pQWgOFtjg7ACYuTPIvrIQR6Xd4ZAmeXzNMS64yJjjVyYU8tD9Rt6BJRqFcOX2hPs0qLnHokzc4nxY8RTz0Fe50WjsCmqtxAv3QzwZBleIo5D7piOAsBv1NQ9oxjlby1VFDVnUtBZep8fAewjNB898QuOT7ouTRGOC-3ZngHcRGArAT0hnwdQvnBDNcVIjc9ERND-_dSaX01e3E1dK-ClI9obD-JHmsj_R82BvNON4bYS-MRlnZ4K-996gs-KMnlTsYDcBo4FpCjml9lqKdXK6G7gRXNYswFSQ9A7kMal_inJK64wkqCz_Kr5iK65Lj7Twc_C5XcVX-0WkqGQsRHTaA&h=85-_2xGvS6EIhgioNN8-U4z8rBljfURuHiWdzDJz7ws
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-16471AC1D1F316D0E2E538CF6F3EBD39-C7F1D8BE5340BB27-01+POOL-BNWIBIO+UPDATE","name":"6081C8F9-0CAB-4DDE-8B97-75353D430179+00-16471AC1D1F316D0E2E538CF6F3EBD39-C7F1D8BE5340BB27-01+POOL-BNWIBIO+UPDATE","status":"Succeeded","startTime":null,"endTime":null,"percentComplete":null,"error":null,"properties":{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"16"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00a208-0000-0200-0000-6afa63840000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:32.0559361+00:00"}},"operations":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1342'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:33 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 08557f6e-56ac-4d2f-9830-5e8f8fceecf5
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/a715c167-dd35-45c7-ac6a-7b52736e48ec
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 68EE83CF5A544BBC92FC099100EEF0BB Ref B: SG2AA1070302060 Ref C: 2026-11-16T01:59:33Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"16"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00a608-0000-0200-0000-6afa63840000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:32.0559361+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '790'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:34 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 364b3812-906c-485d-b754-b8d544c93300
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: B644608103AF4C63B9E8FB32147D373F Ref B: SG2AA1070305036 Ref C: 2026-11-16T01:59:34Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"16"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00a608-0000-0200-0000-6afa63840000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:32.0559361+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '790'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:37 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - efa17d0d-337b-40aa-b919-f6956b17b124
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 42CC4470DBCA4D43AFCD15E9A13CEFF8 Ref B: SG2AA1070306042 Ref C: 2026-11-16T01:59:38Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "properties": {"addressPrefixes": ["10.0.0.0/16",
+      "10.1.0.0/16"], "description": "Keep allocation bounds", "displayName": "",
+      "maxAllocationSize": "256", "minAllocationSize": "16", "parentPoolName": ""}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '227'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --manager-name --resource-group --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Updating","minAllocationSize":"16"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00f508-0000-0200-0000-6afa638b0000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:32.0559361+00:00"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-90AB54EFCDCF0CC680195FF3D50B95F8-23CDEB0620D7D324-01+POOL-BNWIBIO+UPDATE?api-version=2026-01-01&t=639303911801440992&c=MIIHxDCCBqygAwIBAgIRAOgKAtAarWn0hRMfuWiMdV8wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MTAyOTE1NTgwNloXDTI3MDEyNDIxNTgwNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDPsncSu96bMq_jC4DLkPbjNOdAbKjz4j8QajCLBCmHsJOBay_9KtDtycyd_SLwTBTPMPbGTJ8T_7vfrgv0j9JJF0GcgyPReCPUPEEWYfAA6UOgaKqh2V8Z9tCI2iYw3TXSnMGhEE-kSfURKModVQXtIg2AF134ZLYTPUqaM_Fpq8ADfkRKr8bsOgYkCdoQbkQtHOFqkK6ng4YbbZqVH1Q89ol1S9D3joMlEzarIgIW7rpKxAn8BpVHZwITy_Vjw-C__o_OwxyZzdHEIPL802OrtAz1GjdYOJR96J7s8g0iXNzfCOmv9CJl4m4xGgyIS6OV7_e9LnJhNOMI33tPGz_VAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT0j6RFtwWhLpzIckIHa5LI9lqdpDAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzEwL2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS8xMC9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBP607MX5QUesA0mfBtgchEjmOYrhTgzXiSaxQoXJJNhPPq3c65ujljtffM8QqSpFMeu2pOKYqNEi620kuh3xiubaaXmOllNdqBZc66KMpTtKs1jLO3IS7ROLPjgTslb0-TVBgBWYR2voYUDgNqcUVO8ievayxn6mSuVWRF0nhLAqFN8X7QFGi12XhaAYPVqXH_5Ppw5zQWehu_QATv4Vn6Kh-mfRmdO4xPbmckwr03gTpWQ4tZ7uWoXz1ygEjpRNPSd1wS_kOm9w8gyLbzDQtlC9gTDz_lUdJIBLWJPoJbylJNu9rkcw8LVX71wWxqLskpLU4KRUZy2ly1oP4Ynt4Z&s=sx74fMoAg9H_cZVCRRu3mIncgMvem42fFlQNeY1Ucd8rrs9XOFK3uG8528eCn3vJJsGmXMl3EeGO-pgsrRtxhq3KCTEtyy-yLdOzjSXu2tw1vnZx2cYKZtu1etvNRCf6Z6ucrIM17n-acD6UoM_6dBlhzT7p0Z5AuqNLZiJiMkQlLaViyiFNHIxZqhy-uHwqaK3YVeAOyt5H2Vv4Ooejab79LMd4N0t58Z66yFUnuyxtApUZZwhUiPcsN5oGGP116zVKttZ4DLgLPJ1M972n42gZPHbew9EhzNzZ70RwutLa-ELo0Be7AGd4Qibth_2q6Ra9hPmJeHqs2BU6ra_CJw&h=FVICQfvaxBOSmcTtK6wqC9OZqSGbYZ49vp2OasVqR80
+      cache-control:
+      - no-cache
+      content-length:
+      - '789'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:40 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - e9c4d82d-5325-4c26-b2ac-65938f3674a2
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/61f683de-ed5c-493e-9afd-240ce1f5bfb8
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 19A302A1F1734AC9A6FB5907023F95D8 Ref B: SG2AA1070304034 Ref C: 2026-11-16T01:59:38Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-90AB54EFCDCF0CC680195FF3D50B95F8-23CDEB0620D7D324-01+POOL-BNWIBIO+UPDATE?api-version=2026-01-01&t=639303911801440992&c=MIIHxDCCBqygAwIBAgIRAOgKAtAarWn0hRMfuWiMdV8wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MTAyOTE1NTgwNloXDTI3MDEyNDIxNTgwNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDPsncSu96bMq_jC4DLkPbjNOdAbKjz4j8QajCLBCmHsJOBay_9KtDtycyd_SLwTBTPMPbGTJ8T_7vfrgv0j9JJF0GcgyPReCPUPEEWYfAA6UOgaKqh2V8Z9tCI2iYw3TXSnMGhEE-kSfURKModVQXtIg2AF134ZLYTPUqaM_Fpq8ADfkRKr8bsOgYkCdoQbkQtHOFqkK6ng4YbbZqVH1Q89ol1S9D3joMlEzarIgIW7rpKxAn8BpVHZwITy_Vjw-C__o_OwxyZzdHEIPL802OrtAz1GjdYOJR96J7s8g0iXNzfCOmv9CJl4m4xGgyIS6OV7_e9LnJhNOMI33tPGz_VAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT0j6RFtwWhLpzIckIHa5LI9lqdpDAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzEwL2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS8xMC9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBP607MX5QUesA0mfBtgchEjmOYrhTgzXiSaxQoXJJNhPPq3c65ujljtffM8QqSpFMeu2pOKYqNEi620kuh3xiubaaXmOllNdqBZc66KMpTtKs1jLO3IS7ROLPjgTslb0-TVBgBWYR2voYUDgNqcUVO8ievayxn6mSuVWRF0nhLAqFN8X7QFGi12XhaAYPVqXH_5Ppw5zQWehu_QATv4Vn6Kh-mfRmdO4xPbmckwr03gTpWQ4tZ7uWoXz1ygEjpRNPSd1wS_kOm9w8gyLbzDQtlC9gTDz_lUdJIBLWJPoJbylJNu9rkcw8LVX71wWxqLskpLU4KRUZy2ly1oP4Ynt4Z&s=sx74fMoAg9H_cZVCRRu3mIncgMvem42fFlQNeY1Ucd8rrs9XOFK3uG8528eCn3vJJsGmXMl3EeGO-pgsrRtxhq3KCTEtyy-yLdOzjSXu2tw1vnZx2cYKZtu1etvNRCf6Z6ucrIM17n-acD6UoM_6dBlhzT7p0Z5AuqNLZiJiMkQlLaViyiFNHIxZqhy-uHwqaK3YVeAOyt5H2Vv4Ooejab79LMd4N0t58Z66yFUnuyxtApUZZwhUiPcsN5oGGP116zVKttZ4DLgLPJ1M972n42gZPHbew9EhzNzZ70RwutLa-ELo0Be7AGd4Qibth_2q6Ra9hPmJeHqs2BU6ra_CJw&h=FVICQfvaxBOSmcTtK6wqC9OZqSGbYZ49vp2OasVqR80
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-90AB54EFCDCF0CC680195FF3D50B95F8-23CDEB0620D7D324-01+POOL-BNWIBIO+UPDATE","name":"6081C8F9-0CAB-4DDE-8B97-75353D430179+00-90AB54EFCDCF0CC680195FF3D50B95F8-23CDEB0620D7D324-01+POOL-BNWIBIO+UPDATE","status":"Succeeded","startTime":null,"endTime":null,"percentComplete":null,"error":null,"properties":{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"16","maxAllocationSize":"256"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00f508-0000-0200-0000-6afa638b0000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:39.3159719+00:00"}},"operations":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1368'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:41 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 1cfc1173-bc76-46cb-9ec6-82fce6b62ca5
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/a3264335-be52-416f-a369-77d70e73f66f
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 6FABDBE02C764408B424583D2B47D866 Ref B: SG2AA1070301042 Ref C: 2026-11-16T01:59:41Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"16","maxAllocationSize":"256"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00f608-0000-0200-0000-6afa638c0000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:39.3159719+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '816'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:42 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - d150ad77-141e-430c-9470-daf46d116b24
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 4C4BD6CAFBE84827AA9C8BD63C75241A Ref B: SG2AA1040512031 Ref C: 2026-11-16T01:59:42Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"16","maxAllocationSize":"256"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00f608-0000-0200-0000-6afa638c0000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:39.3159719+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '816'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:45 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 154a417a-1752-41ed-bb25-65607cca01e1
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 2D8D19FC2341409BB6B733D24949EE09 Ref B: SG2AA1040515029 Ref C: 2026-11-16T01:59:45Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "properties": {"addressPrefixes": ["10.0.0.0/16",
+      "10.1.0.0/16"], "description": "Keep allocation bounds", "displayName": "",
+      "maxAllocationSize": "256", "minAllocationSize": "24", "parentPoolName": ""}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '227'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"code":"BadRequest","message":"Property minAllocationSize must be
+        a power of two.","target":null,"details":null,"additionalInfo":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '135'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/ece6c371-37c0-443c-9122-004e4dc541ec
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 02F94575C08741A892B3C9781F5B418A Ref B: SG2AA1040518034 Ref C: 2026-11-16T01:59:46Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"16","maxAllocationSize":"256"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00f608-0000-0200-0000-6afa638c0000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:39.3159719+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '816'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:50 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 4ddc3cd8-e584-4fcc-81ba-d8a7395c7a74
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: F6B01B2D8D024E26A7DA1D6A8C4D2994 Ref B: SG2AA1070302036 Ref C: 2026-11-16T01:59:50Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "properties": {"addressPrefixes": ["10.0.0.0/16",
+      "10.1.0.0/16"], "description": "Keep allocation bounds", "displayName": "",
+      "maxAllocationSize": "256", "minAllocationSize": "512", "parentPoolName": ""}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '228'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"code":"BadRequest","message":"Property minAllocationSize cannot be
+        greater than maxAllocationSize.","target":null,"details":null,"additionalInfo":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '153'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/ebb466e8-de5e-4aa0-8a76-9c0d61cb3000
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 88D778678A9742CAA696540FE3F7A42E Ref B: SG2AA1040513054 Ref C: 2026-11-16T01:59:51Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"16","maxAllocationSize":"256"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00f608-0000-0200-0000-6afa638c0000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:39.3159719+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '816'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:54 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 5a3e9142-d4d3-4d7b-bda4-891b7568e1d6
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: CC0504CED8BA4FC7B665AE327352A6C7 Ref B: SG2AA1070305040 Ref C: 2026-11-16T01:59:54Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "properties": {"addressPrefixes": ["10.0.0.0/16",
+      "10.1.0.0/16"], "description": "Keep allocation bounds", "displayName": "",
+      "maxAllocationSize": "262144", "minAllocationSize": "16", "parentPoolName":
+      ""}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '230'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --manager-name --resource-group --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"code":"BadRequest","message":"Property maxAllocationSize cannot exceed
+        the pool''s total size of 131072 IPs.","target":null,"details":null,"additionalInfo":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '162'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 01:59:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/1c678693-1c7b-444d-89a3-f11e7d3de67f
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 33DAF2F816F244DB85EC88A067990D8D Ref B: SG2AA1070303029 Ref C: 2026-11-16T01:59:55Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded","minAllocationSize":"16","maxAllocationSize":"256"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00f608-0000-0200-0000-6afa638c0000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:39.3159719+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '816'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 02:00:00 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - dc83d162-764f-45b3-a268-d7f81db8054a
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: D6CDE0A52949497CB7B13630B911B1ED Ref B: SG2AA1040515023 Ref C: 2026-11-16T01:59:59Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "properties": {"addressPrefixes": ["10.0.0.0/16",
+      "10.1.0.0/16"], "description": "Keep allocation bounds", "displayName": "",
+      "maxAllocationSize": "", "minAllocationSize": "", "parentPoolName": ""}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '222'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Updating","minAllocationSize":"16","maxAllocationSize":"256"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00300a-0000-0200-0000-6afa63a20000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T01:59:39.3159719+00:00"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-73EA99B011E0B608E2ED0815BD2CF1F7-D89E176258CA8EBB-01+POOL-BNWIBIO+UPDATE?api-version=2026-01-01&t=639303912025348553&c=MIIHxDCCBqygAwIBAgIRAOgKAtAarWn0hRMfuWiMdV8wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MTAyOTE1NTgwNloXDTI3MDEyNDIxNTgwNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDPsncSu96bMq_jC4DLkPbjNOdAbKjz4j8QajCLBCmHsJOBay_9KtDtycyd_SLwTBTPMPbGTJ8T_7vfrgv0j9JJF0GcgyPReCPUPEEWYfAA6UOgaKqh2V8Z9tCI2iYw3TXSnMGhEE-kSfURKModVQXtIg2AF134ZLYTPUqaM_Fpq8ADfkRKr8bsOgYkCdoQbkQtHOFqkK6ng4YbbZqVH1Q89ol1S9D3joMlEzarIgIW7rpKxAn8BpVHZwITy_Vjw-C__o_OwxyZzdHEIPL802OrtAz1GjdYOJR96J7s8g0iXNzfCOmv9CJl4m4xGgyIS6OV7_e9LnJhNOMI33tPGz_VAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT0j6RFtwWhLpzIckIHa5LI9lqdpDAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzEwL2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS8xMC9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBP607MX5QUesA0mfBtgchEjmOYrhTgzXiSaxQoXJJNhPPq3c65ujljtffM8QqSpFMeu2pOKYqNEi620kuh3xiubaaXmOllNdqBZc66KMpTtKs1jLO3IS7ROLPjgTslb0-TVBgBWYR2voYUDgNqcUVO8ievayxn6mSuVWRF0nhLAqFN8X7QFGi12XhaAYPVqXH_5Ppw5zQWehu_QATv4Vn6Kh-mfRmdO4xPbmckwr03gTpWQ4tZ7uWoXz1ygEjpRNPSd1wS_kOm9w8gyLbzDQtlC9gTDz_lUdJIBLWJPoJbylJNu9rkcw8LVX71wWxqLskpLU4KRUZy2ly1oP4Ynt4Z&s=qwSVw6SvhgrIEzbD-Z_8Os0HaEVzyDAYN8Ym-e3-SdgqthqEcKGizsaoqAqal-zWnKZ9OYK6aIPdds2-5qoii4dLmu8cCULIp1OM6z2pWNlFG23cCq8BDd3NBwmofUdqID3PemZI0mQIn6HGNNik-cqJ2rOIxGG2hfg3pn7rD0m-dP5o-J_O2RC7ThLV0bA3fEgz68EPi8xyF2MO5wpg-KSxxkrwPWSIuIYs76DfWMRNIVN1R-d9whxtHvrer9O2ztS1hsDeMcA_RwLdCQMZQkoDN37sQ9X57dqi3WvSwh6PxYS-vijI17wgnLWhmvWJuqh9SjePFhCG0VeSSnqvyQ&h=SQR9VtNuoYk5sTRI-xCrR2a5UTUpLTdxFBCqo0CtCHY
+      cache-control:
+      - no-cache
+      content-length:
+      - '815'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 02:00:02 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - c9bae172-1f4f-4fe4-8781-cb2226ba3f79
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/5605a380-8a22-49e6-a390-fa2b99bf32a2
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 74C1BD1ED5B043F88D1363F2E851388B Ref B: SG2AA1040518011 Ref C: 2026-11-16T02:00:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-73EA99B011E0B608E2ED0815BD2CF1F7-D89E176258CA8EBB-01+POOL-BNWIBIO+UPDATE?api-version=2026-01-01&t=639303912025348553&c=MIIHxDCCBqygAwIBAgIRAOgKAtAarWn0hRMfuWiMdV8wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MTAyOTE1NTgwNloXDTI3MDEyNDIxNTgwNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDPsncSu96bMq_jC4DLkPbjNOdAbKjz4j8QajCLBCmHsJOBay_9KtDtycyd_SLwTBTPMPbGTJ8T_7vfrgv0j9JJF0GcgyPReCPUPEEWYfAA6UOgaKqh2V8Z9tCI2iYw3TXSnMGhEE-kSfURKModVQXtIg2AF134ZLYTPUqaM_Fpq8ADfkRKr8bsOgYkCdoQbkQtHOFqkK6ng4YbbZqVH1Q89ol1S9D3joMlEzarIgIW7rpKxAn8BpVHZwITy_Vjw-C__o_OwxyZzdHEIPL802OrtAz1GjdYOJR96J7s8g0iXNzfCOmv9CJl4m4xGgyIS6OV7_e9LnJhNOMI33tPGz_VAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT0j6RFtwWhLpzIckIHa5LI9lqdpDAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzEwL2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS8xMC9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBP607MX5QUesA0mfBtgchEjmOYrhTgzXiSaxQoXJJNhPPq3c65ujljtffM8QqSpFMeu2pOKYqNEi620kuh3xiubaaXmOllNdqBZc66KMpTtKs1jLO3IS7ROLPjgTslb0-TVBgBWYR2voYUDgNqcUVO8ievayxn6mSuVWRF0nhLAqFN8X7QFGi12XhaAYPVqXH_5Ppw5zQWehu_QATv4Vn6Kh-mfRmdO4xPbmckwr03gTpWQ4tZ7uWoXz1ygEjpRNPSd1wS_kOm9w8gyLbzDQtlC9gTDz_lUdJIBLWJPoJbylJNu9rkcw8LVX71wWxqLskpLU4KRUZy2ly1oP4Ynt4Z&s=qwSVw6SvhgrIEzbD-Z_8Os0HaEVzyDAYN8Ym-e3-SdgqthqEcKGizsaoqAqal-zWnKZ9OYK6aIPdds2-5qoii4dLmu8cCULIp1OM6z2pWNlFG23cCq8BDd3NBwmofUdqID3PemZI0mQIn6HGNNik-cqJ2rOIxGG2hfg3pn7rD0m-dP5o-J_O2RC7ThLV0bA3fEgz68EPi8xyF2MO5wpg-KSxxkrwPWSIuIYs76DfWMRNIVN1R-d9whxtHvrer9O2ztS1hsDeMcA_RwLdCQMZQkoDN37sQ9X57dqi3WvSwh6PxYS-vijI17wgnLWhmvWJuqh9SjePFhCG0VeSSnqvyQ&h=SQR9VtNuoYk5sTRI-xCrR2a5UTUpLTdxFBCqo0CtCHY
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-73EA99B011E0B608E2ED0815BD2CF1F7-D89E176258CA8EBB-01+POOL-BNWIBIO+UPDATE","name":"6081C8F9-0CAB-4DDE-8B97-75353D430179+00-73EA99B011E0B608E2ED0815BD2CF1F7-D89E176258CA8EBB-01+POOL-BNWIBIO+UPDATE","status":"Succeeded","startTime":null,"endTime":null,"percentComplete":null,"error":null,"properties":{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00300a-0000-0200-0000-6afa63a20000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T02:00:01.0973597+00:00"}},"operations":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1317'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 02:00:02 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - b461baed-becd-4bf6-ad05-9db0b2fb9738
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/5b076949-5921-4446-90f9-01caffd53596
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 916064CEB6C34E8CA98425009E563D89 Ref B: SG2AA1070302052 Ref C: 2026-11-16T02:00:03Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00310a-0000-0200-0000-6afa63a20000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T02:00:01.0973597+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '765'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 02:00:03 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 93a4dd1a-cbc1-4cea-801f-c26079e6ee57
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 58C2415F4D584088867DBB82CE895D3E Ref B: SG2AA1070303034 Ref C: 2026-11-16T02:00:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-000003","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"Keep
+        allocation bounds","displayName":"","ipAddressType":["IPv4"],"parentPoolName":"","addressPrefixes":["10.0.0.0/16","10.1.0.0/16"],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003","tags":null,"location":"eastus2","etag":"\"da00310a-0000-0200-0000-6afa63a20000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T01:58:47.7328847+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T02:00:01.0973597+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '765'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 02:00:06 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - e5f5dd2c-cd18-4ded-b89f-8143270c121c
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: FE866E84C9EE4D66885E76FE60C483DB Ref B: SG2AA1040518036 Ref C: 2026-11-16T02:00:07Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "properties": {"addressPrefixes": ["2000::/7"],
+      "maxAllocationSize": "2658455991569831745807614120560689152", "minAllocationSize":
+      "2"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '160'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --manager-name --resource-group --location --address-prefixes --min-allocation-size
+        --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-v6-000004?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-v6-000004","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"","displayName":"","ipAddressType":["IPv6"],"parentPoolName":"","addressPrefixes":["2000::/7"],"provisioningState":"Succeeded","minAllocationSize":"2","maxAllocationSize":"2658455991569831745807614120560689152"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-v6-000004","tags":null,"location":"eastus2","etag":"\"da00850a-0000-0200-0000-6afa63ab0000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T02:00:10.348163+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T02:00:10.348163+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '814'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 02:00:10 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-v6-000004?api-version=2026-01-01
+      mise-correlation-id:
+      - 85c98394-0093-4031-9a36-f0c1a7fa5657
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/3d7103e5-890d-45f8-b619-2a8e7f117948
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 2390E67115AC4F11AB38E49B26A4745D Ref B: SG2AA1070305052 Ref C: 2026-11-16T02:00:10Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --location --address-prefixes --min-allocation-size
+        --max-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-v6-000004?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-v6-000004","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"","displayName":"","ipAddressType":["IPv6"],"parentPoolName":"","addressPrefixes":["2000::/7"],"provisioningState":"Succeeded","minAllocationSize":"2","maxAllocationSize":"2658455991569831745807614120560689152"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-v6-000004","tags":null,"location":"eastus2","etag":"\"da00850a-0000-0200-0000-6afa63ab0000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T02:00:10.348163+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T02:00:10.348163+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '814'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 02:00:12 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 896e6d5b-3ef3-4256-ad5b-a33bfb73d068
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 8492420467844A408EDCAD00B5AA478A Ref B: SG2AA1070301052 Ref C: 2026-11-16T02:00:11Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-v6-000004?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-v6-000004","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"","displayName":"","ipAddressType":["IPv6"],"parentPoolName":"","addressPrefixes":["2000::/7"],"provisioningState":"Succeeded","minAllocationSize":"2","maxAllocationSize":"2658455991569831745807614120560689152"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-v6-000004","tags":null,"location":"eastus2","etag":"\"da00850a-0000-0200-0000-6afa63ab0000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T02:00:10.348163+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T02:00:10.348163+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '814'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 02:00:15 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - daf0048f-2b4f-4ec1-936d-3f98f3e1c18c
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 33AC8F18FCD94994970A5B214C4ACA5E Ref B: SG2AA1070303054 Ref C: 2026-11-16T02:00:15Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "properties": {"addressPrefixes": ["2000::/7"],
+      "description": "", "displayName": "", "maxAllocationSize": "2658455991569831745807614120560689152",
+      "minAllocationSize": "4", "parentPoolName": ""}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '220'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-v6-000004?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-v6-000004","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"","displayName":"","ipAddressType":["IPv6"],"parentPoolName":"","addressPrefixes":["2000::/7"],"provisioningState":"Updating","minAllocationSize":"2","maxAllocationSize":"2658455991569831745807614120560689152"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-v6-000004","tags":null,"location":"eastus2","etag":"\"da00cd0a-0000-0200-0000-6afa63b00000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T02:00:10.348163+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T02:00:10.348163+00:00"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-58E1D033DF5AD1893D83CC4D0C976E5A-6EE2C9A2BD10F27A-01+POOL-V6-ODC3DDXX+UPDATE?api-version=2026-01-01&t=639303912169200499&c=MIIHxDCCBqygAwIBAgIRAOgKAtAarWn0hRMfuWiMdV8wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MTAyOTE1NTgwNloXDTI3MDEyNDIxNTgwNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDPsncSu96bMq_jC4DLkPbjNOdAbKjz4j8QajCLBCmHsJOBay_9KtDtycyd_SLwTBTPMPbGTJ8T_7vfrgv0j9JJF0GcgyPReCPUPEEWYfAA6UOgaKqh2V8Z9tCI2iYw3TXSnMGhEE-kSfURKModVQXtIg2AF134ZLYTPUqaM_Fpq8ADfkRKr8bsOgYkCdoQbkQtHOFqkK6ng4YbbZqVH1Q89ol1S9D3joMlEzarIgIW7rpKxAn8BpVHZwITy_Vjw-C__o_OwxyZzdHEIPL802OrtAz1GjdYOJR96J7s8g0iXNzfCOmv9CJl4m4xGgyIS6OV7_e9LnJhNOMI33tPGz_VAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT0j6RFtwWhLpzIckIHa5LI9lqdpDAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzEwL2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS8xMC9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBP607MX5QUesA0mfBtgchEjmOYrhTgzXiSaxQoXJJNhPPq3c65ujljtffM8QqSpFMeu2pOKYqNEi620kuh3xiubaaXmOllNdqBZc66KMpTtKs1jLO3IS7ROLPjgTslb0-TVBgBWYR2voYUDgNqcUVO8ievayxn6mSuVWRF0nhLAqFN8X7QFGi12XhaAYPVqXH_5Ppw5zQWehu_QATv4Vn6Kh-mfRmdO4xPbmckwr03gTpWQ4tZ7uWoXz1ygEjpRNPSd1wS_kOm9w8gyLbzDQtlC9gTDz_lUdJIBLWJPoJbylJNu9rkcw8LVX71wWxqLskpLU4KRUZy2ly1oP4Ynt4Z&s=pykN5eXubBuhbTrKsQ_5m6n4vM7x3E6ZVwAz9OkT7MPzo9V8-EQWSdSFJH7YxiRB1mYi-KZ9nvsXfrJxmuxzxrAKRMYFwpqWuZBsfAMaFsphEsPxfGBq-YS1jAW6urhbQbwqHo-ALExjtUmuZdyYm4uF2PxIc2hnemNziveRP2Up3JeKZrHVhllwlmJU7886Wzx-JH5hOPMhdtY6CLuFbeU5c4nGobXJfFQ3LvndvfHa3GETU38jPPwMfw3nBQr8aQiH4YtcrYZZlwZuAnw9_f6WEGzJ7tzGDUN5JE1rVS0_-bhIbZ2CB8Y2G2R7yqD_r0l2HFzInwykLKw0V8ebXA&h=MAM6C3R51MEov5EEVFiWr0IXKx7y6yjArqTs4xVf-Yw
+      cache-control:
+      - no-cache
+      content-length:
+      - '813'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 02:00:16 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 60cdbbcf-5de8-4d2e-b980-1d649e7fa27d
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/4952b187-f4f6-49f7-99de-915bac9ce784
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: C0950F0DC0DE4F05B9ACBEDD91533BF4 Ref B: SG2AA1070303034 Ref C: 2026-11-16T02:00:16Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-58E1D033DF5AD1893D83CC4D0C976E5A-6EE2C9A2BD10F27A-01+POOL-V6-ODC3DDXX+UPDATE?api-version=2026-01-01&t=639303912169200499&c=MIIHxDCCBqygAwIBAgIRAOgKAtAarWn0hRMfuWiMdV8wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MTAyOTE1NTgwNloXDTI3MDEyNDIxNTgwNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDPsncSu96bMq_jC4DLkPbjNOdAbKjz4j8QajCLBCmHsJOBay_9KtDtycyd_SLwTBTPMPbGTJ8T_7vfrgv0j9JJF0GcgyPReCPUPEEWYfAA6UOgaKqh2V8Z9tCI2iYw3TXSnMGhEE-kSfURKModVQXtIg2AF134ZLYTPUqaM_Fpq8ADfkRKr8bsOgYkCdoQbkQtHOFqkK6ng4YbbZqVH1Q89ol1S9D3joMlEzarIgIW7rpKxAn8BpVHZwITy_Vjw-C__o_OwxyZzdHEIPL802OrtAz1GjdYOJR96J7s8g0iXNzfCOmv9CJl4m4xGgyIS6OV7_e9LnJhNOMI33tPGz_VAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT0j6RFtwWhLpzIckIHa5LI9lqdpDAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzEwL2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS8xMC9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBP607MX5QUesA0mfBtgchEjmOYrhTgzXiSaxQoXJJNhPPq3c65ujljtffM8QqSpFMeu2pOKYqNEi620kuh3xiubaaXmOllNdqBZc66KMpTtKs1jLO3IS7ROLPjgTslb0-TVBgBWYR2voYUDgNqcUVO8ievayxn6mSuVWRF0nhLAqFN8X7QFGi12XhaAYPVqXH_5Ppw5zQWehu_QATv4Vn6Kh-mfRmdO4xPbmckwr03gTpWQ4tZ7uWoXz1ygEjpRNPSd1wS_kOm9w8gyLbzDQtlC9gTDz_lUdJIBLWJPoJbylJNu9rkcw8LVX71wWxqLskpLU4KRUZy2ly1oP4Ynt4Z&s=pykN5eXubBuhbTrKsQ_5m6n4vM7x3E6ZVwAz9OkT7MPzo9V8-EQWSdSFJH7YxiRB1mYi-KZ9nvsXfrJxmuxzxrAKRMYFwpqWuZBsfAMaFsphEsPxfGBq-YS1jAW6urhbQbwqHo-ALExjtUmuZdyYm4uF2PxIc2hnemNziveRP2Up3JeKZrHVhllwlmJU7886Wzx-JH5hOPMhdtY6CLuFbeU5c4nGobXJfFQ3LvndvfHa3GETU38jPPwMfw3nBQr8aQiH4YtcrYZZlwZuAnw9_f6WEGzJ7tzGDUN5JE1rVS0_-bhIbZ2CB8Y2G2R7yqD_r0l2HFzInwykLKw0V8ebXA&h=MAM6C3R51MEov5EEVFiWr0IXKx7y6yjArqTs4xVf-Yw
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-58E1D033DF5AD1893D83CC4D0C976E5A-6EE2C9A2BD10F27A-01+POOL-V6-ODC3DDXX+UPDATE","name":"6081C8F9-0CAB-4DDE-8B97-75353D430179+00-58E1D033DF5AD1893D83CC4D0C976E5A-6EE2C9A2BD10F27A-01+POOL-V6-ODC3DDXX+UPDATE","status":"Succeeded","startTime":null,"endTime":null,"percentComplete":null,"error":null,"properties":{"name":"pool-v6-000004","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"","displayName":"","ipAddressType":["IPv6"],"parentPoolName":"","addressPrefixes":["2000::/7"],"provisioningState":"Succeeded","minAllocationSize":"4","maxAllocationSize":"2658455991569831745807614120560689152"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-v6-000004","tags":null,"location":"eastus2","etag":"\"da00cd0a-0000-0200-0000-6afa63b00000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T02:00:10.348163+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T02:00:16.1856745+00:00"}},"operations":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1375'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 02:00:18 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 57f97639-cab3-477c-9611-347ad0e4e11f
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/1f15e47f-7654-494b-b2d6-8f34d27e4866
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 1B59AC38DC364312BF5C05C22C416ABD Ref B: SG2AA1070301031 Ref C: 2026-11-16T02:00:18Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --min-allocation-size
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-v6-000004?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"pool-v6-000004","type":"Microsoft.Network/networkManagers/ipamPools","properties":{"description":"","displayName":"","ipAddressType":["IPv6"],"parentPoolName":"","addressPrefixes":["2000::/7"],"provisioningState":"Succeeded","minAllocationSize":"4","maxAllocationSize":"2658455991569831745807614120560689152"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-v6-000004","tags":null,"location":"eastus2","etag":"\"da00ce0a-0000-0200-0000-6afa63b00000\"","systemData":{"createdBy":null,"createdByType":"User","createdAt":"2026-11-16T02:00:10.348163+00:00","lastModifiedBy":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T02:00:16.1856745+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '815'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 02:00:19 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - bf55abfd-eaad-4387-8952-9c938db20402
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 60443A4C97134202926B41B6A5F9271B Ref B: SG2AA1070305034 Ref C: 2026-11-16T02:00:19Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --manager-name --resource-group --yes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-v6-000004?api-version=2026-01-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 16 Nov 2026 02:00:25 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-8C6F2E57F66D01F25CE7DABBDF7CE1EE-68BDFCB73DEAD6AC-01+POOL-V6-ODC3DDXX+DELETE?api-version=2026-01-01&t=639303912257478981&c=MIIHxDCCBqygAwIBAgIRAOgKAtAarWn0hRMfuWiMdV8wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MTAyOTE1NTgwNloXDTI3MDEyNDIxNTgwNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDPsncSu96bMq_jC4DLkPbjNOdAbKjz4j8QajCLBCmHsJOBay_9KtDtycyd_SLwTBTPMPbGTJ8T_7vfrgv0j9JJF0GcgyPReCPUPEEWYfAA6UOgaKqh2V8Z9tCI2iYw3TXSnMGhEE-kSfURKModVQXtIg2AF134ZLYTPUqaM_Fpq8ADfkRKr8bsOgYkCdoQbkQtHOFqkK6ng4YbbZqVH1Q89ol1S9D3joMlEzarIgIW7rpKxAn8BpVHZwITy_Vjw-C__o_OwxyZzdHEIPL802OrtAz1GjdYOJR96J7s8g0iXNzfCOmv9CJl4m4xGgyIS6OV7_e9LnJhNOMI33tPGz_VAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT0j6RFtwWhLpzIckIHa5LI9lqdpDAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzEwL2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS8xMC9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBP607MX5QUesA0mfBtgchEjmOYrhTgzXiSaxQoXJJNhPPq3c65ujljtffM8QqSpFMeu2pOKYqNEi620kuh3xiubaaXmOllNdqBZc66KMpTtKs1jLO3IS7ROLPjgTslb0-TVBgBWYR2voYUDgNqcUVO8ievayxn6mSuVWRF0nhLAqFN8X7QFGi12XhaAYPVqXH_5Ppw5zQWehu_QATv4Vn6Kh-mfRmdO4xPbmckwr03gTpWQ4tZ7uWoXz1ygEjpRNPSd1wS_kOm9w8gyLbzDQtlC9gTDz_lUdJIBLWJPoJbylJNu9rkcw8LVX71wWxqLskpLU4KRUZy2ly1oP4Ynt4Z&s=uKTDesjkmCsiu7AzSB2A-Vv68rNOfPoiGs0b3bggU3ZIZc1QCCasCS_tvQWwEytMNR38Mm6LyvEpE_xap-CeXgADVGbisTiwvZ30ojrBH86D6_AfrpBuOi_nyXy83u8ZafDGOkZD5KUvKsT-iiaDkcF4b5-L32nIvgRNNwSYEZi7KtlcmMrFDO_GwFCCAlaBCVEYKENuZmeoeumdhkcg3KK4XqBL5Lsm8PIDiDgxQKx9381UFzHR5004uYtxqNqRAaQ1pEZoW3f74dhOVGnd8gpJL2CsbaTvf6wyq2YqDI_tXE24qZvs7f19ChRl1QfodSokBLWD8WHwMX5AHWMscg&h=l7ib1cLb_2ly8sZwlvMtEwCehPOzr6z0IkqurY3mtjA
+      mise-correlation-id:
+      - 008c5ae8-89bf-49ab-95cb-98a444da69cf
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/fd67fe74-1875-4df6-a8dc-c0e53351414c
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: 05839F56ED9745B79703B8783A0549B7 Ref B: SG2AA1070304023 Ref C: 2026-11-16T02:00:25Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --yes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-8C6F2E57F66D01F25CE7DABBDF7CE1EE-68BDFCB73DEAD6AC-01+POOL-V6-ODC3DDXX+DELETE?api-version=2026-01-01&t=639303912257478981&c=MIIHxDCCBqygAwIBAgIRAOgKAtAarWn0hRMfuWiMdV8wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MTAyOTE1NTgwNloXDTI3MDEyNDIxNTgwNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDPsncSu96bMq_jC4DLkPbjNOdAbKjz4j8QajCLBCmHsJOBay_9KtDtycyd_SLwTBTPMPbGTJ8T_7vfrgv0j9JJF0GcgyPReCPUPEEWYfAA6UOgaKqh2V8Z9tCI2iYw3TXSnMGhEE-kSfURKModVQXtIg2AF134ZLYTPUqaM_Fpq8ADfkRKr8bsOgYkCdoQbkQtHOFqkK6ng4YbbZqVH1Q89ol1S9D3joMlEzarIgIW7rpKxAn8BpVHZwITy_Vjw-C__o_OwxyZzdHEIPL802OrtAz1GjdYOJR96J7s8g0iXNzfCOmv9CJl4m4xGgyIS6OV7_e9LnJhNOMI33tPGz_VAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT0j6RFtwWhLpzIckIHa5LI9lqdpDAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzEwL2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS8xMC9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBP607MX5QUesA0mfBtgchEjmOYrhTgzXiSaxQoXJJNhPPq3c65ujljtffM8QqSpFMeu2pOKYqNEi620kuh3xiubaaXmOllNdqBZc66KMpTtKs1jLO3IS7ROLPjgTslb0-TVBgBWYR2voYUDgNqcUVO8ievayxn6mSuVWRF0nhLAqFN8X7QFGi12XhaAYPVqXH_5Ppw5zQWehu_QATv4Vn6Kh-mfRmdO4xPbmckwr03gTpWQ4tZ7uWoXz1ygEjpRNPSd1wS_kOm9w8gyLbzDQtlC9gTDz_lUdJIBLWJPoJbylJNu9rkcw8LVX71wWxqLskpLU4KRUZy2ly1oP4Ynt4Z&s=uKTDesjkmCsiu7AzSB2A-Vv68rNOfPoiGs0b3bggU3ZIZc1QCCasCS_tvQWwEytMNR38Mm6LyvEpE_xap-CeXgADVGbisTiwvZ30ojrBH86D6_AfrpBuOi_nyXy83u8ZafDGOkZD5KUvKsT-iiaDkcF4b5-L32nIvgRNNwSYEZi7KtlcmMrFDO_GwFCCAlaBCVEYKENuZmeoeumdhkcg3KK4XqBL5Lsm8PIDiDgxQKx9381UFzHR5004uYtxqNqRAaQ1pEZoW3f74dhOVGnd8gpJL2CsbaTvf6wyq2YqDI_tXE24qZvs7f19ChRl1QfodSokBLWD8WHwMX5AHWMscg&h=l7ib1cLb_2ly8sZwlvMtEwCehPOzr6z0IkqurY3mtjA
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-8C6F2E57F66D01F25CE7DABBDF7CE1EE-68BDFCB73DEAD6AC-01+POOL-V6-ODC3DDXX+DELETE","name":"6081C8F9-0CAB-4DDE-8B97-75353D430179+00-8C6F2E57F66D01F25CE7DABBDF7CE1EE-68BDFCB73DEAD6AC-01+POOL-V6-ODC3DDXX+DELETE","status":"Succeeded","startTime":null,"endTime":null,"percentComplete":null,"error":null,"properties":null,"operations":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '564'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 02:00:27 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - d644e0e0-6bf0-4886-b50b-3d6decc4fadb
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/40c6cafe-2400-4bb8-a554-b7cbfac1ff61
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 729C1DB045894780B9CC88CCD44F0CEE Ref B: SG2AA1040520034 Ref C: 2026-11-16T02:00:26Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --deleted --interval --timeout
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-v6-000004?api-version=2026-01-01
+  response:
+    body:
+      string: '{"code":"NotFound","message":"Ipam pool ''/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-v6-000004''
+        not found.","target":null,"details":null,"additionalInfo":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '306'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 02:00:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: A05ACF7BB2574110A068AE11191B3938 Ref B: SG2AA1040513042 Ref C: 2026-11-16T02:00:30Z'
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --manager-name --resource-group --yes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 16 Nov 2026 02:00:33 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-D197EF9D1A7EBD8DE3BFAF693E6AF44E-610CA334537CACA7-01+POOL-BNWIBIO+DELETE?api-version=2026-01-01&t=639303912337995636&c=MIIHxDCCBqygAwIBAgIRAOgKAtAarWn0hRMfuWiMdV8wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MTAyOTE1NTgwNloXDTI3MDEyNDIxNTgwNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDPsncSu96bMq_jC4DLkPbjNOdAbKjz4j8QajCLBCmHsJOBay_9KtDtycyd_SLwTBTPMPbGTJ8T_7vfrgv0j9JJF0GcgyPReCPUPEEWYfAA6UOgaKqh2V8Z9tCI2iYw3TXSnMGhEE-kSfURKModVQXtIg2AF134ZLYTPUqaM_Fpq8ADfkRKr8bsOgYkCdoQbkQtHOFqkK6ng4YbbZqVH1Q89ol1S9D3joMlEzarIgIW7rpKxAn8BpVHZwITy_Vjw-C__o_OwxyZzdHEIPL802OrtAz1GjdYOJR96J7s8g0iXNzfCOmv9CJl4m4xGgyIS6OV7_e9LnJhNOMI33tPGz_VAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT0j6RFtwWhLpzIckIHa5LI9lqdpDAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzEwL2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS8xMC9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBP607MX5QUesA0mfBtgchEjmOYrhTgzXiSaxQoXJJNhPPq3c65ujljtffM8QqSpFMeu2pOKYqNEi620kuh3xiubaaXmOllNdqBZc66KMpTtKs1jLO3IS7ROLPjgTslb0-TVBgBWYR2voYUDgNqcUVO8ievayxn6mSuVWRF0nhLAqFN8X7QFGi12XhaAYPVqXH_5Ppw5zQWehu_QATv4Vn6Kh-mfRmdO4xPbmckwr03gTpWQ4tZ7uWoXz1ygEjpRNPSd1wS_kOm9w8gyLbzDQtlC9gTDz_lUdJIBLWJPoJbylJNu9rkcw8LVX71wWxqLskpLU4KRUZy2ly1oP4Ynt4Z&s=vbQEb0ycKy6tMu6k173tTfs6WBstrLytMH1NdD5ZcwEBQx-dRX5o9uUtLJljL8p3gcFiZRlttourky30K4syqNs1gLqfIfET59b5i3n0rxRlWXzI6Ae4_utLKGh3bBQ2BbK1hWnWS-MkZywn8hxgEGSXod1Erxw6dAQIoKHLaiJoSy4REF5u7RWBRyp-G2no0L_KdlJnKOINN7ijbcIX9sJdgdV_DEZcBt7TgYYEifyZZwl9MjoJKQAcUpHJzzkbh_OBgHkMwXtuUxyo1Pi_Y-s0H9OBOVf-1k2rKqbrOp8_oTb0Yq8vZ3-rWOjVtuVZ-nYPsv9-TWJymOl5dkB2Eg&h=Mkmzsd9XWC0o0h-dfAfMXK9jVCTJHuMZSTOQ8lHIcOg
+      mise-correlation-id:
+      - c214a084-32e6-468a-9f1b-a6fb958bea0e
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/2116db9f-3430-4dca-9a44-3bec8a30818e
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: C41BCAFA69804153A4DF8497CA12F980 Ref B: SG2AA1070306025 Ref C: 2026-11-16T02:00:33Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --yes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-D197EF9D1A7EBD8DE3BFAF693E6AF44E-610CA334537CACA7-01+POOL-BNWIBIO+DELETE?api-version=2026-01-01&t=639303912337995636&c=MIIHxDCCBqygAwIBAgIRAOgKAtAarWn0hRMfuWiMdV8wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MTAyOTE1NTgwNloXDTI3MDEyNDIxNTgwNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDPsncSu96bMq_jC4DLkPbjNOdAbKjz4j8QajCLBCmHsJOBay_9KtDtycyd_SLwTBTPMPbGTJ8T_7vfrgv0j9JJF0GcgyPReCPUPEEWYfAA6UOgaKqh2V8Z9tCI2iYw3TXSnMGhEE-kSfURKModVQXtIg2AF134ZLYTPUqaM_Fpq8ADfkRKr8bsOgYkCdoQbkQtHOFqkK6ng4YbbZqVH1Q89ol1S9D3joMlEzarIgIW7rpKxAn8BpVHZwITy_Vjw-C__o_OwxyZzdHEIPL802OrtAz1GjdYOJR96J7s8g0iXNzfCOmv9CJl4m4xGgyIS6OV7_e9LnJhNOMI33tPGz_VAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT0j6RFtwWhLpzIckIHa5LI9lqdpDAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzEwL2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvMTAvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS8xMC9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBP607MX5QUesA0mfBtgchEjmOYrhTgzXiSaxQoXJJNhPPq3c65ujljtffM8QqSpFMeu2pOKYqNEi620kuh3xiubaaXmOllNdqBZc66KMpTtKs1jLO3IS7ROLPjgTslb0-TVBgBWYR2voYUDgNqcUVO8ievayxn6mSuVWRF0nhLAqFN8X7QFGi12XhaAYPVqXH_5Ppw5zQWehu_QATv4Vn6Kh-mfRmdO4xPbmckwr03gTpWQ4tZ7uWoXz1ygEjpRNPSd1wS_kOm9w8gyLbzDQtlC9gTDz_lUdJIBLWJPoJbylJNu9rkcw8LVX71wWxqLskpLU4KRUZy2ly1oP4Ynt4Z&s=vbQEb0ycKy6tMu6k173tTfs6WBstrLytMH1NdD5ZcwEBQx-dRX5o9uUtLJljL8p3gcFiZRlttourky30K4syqNs1gLqfIfET59b5i3n0rxRlWXzI6Ae4_utLKGh3bBQ2BbK1hWnWS-MkZywn8hxgEGSXod1Erxw6dAQIoKHLaiJoSy4REF5u7RWBRyp-G2no0L_KdlJnKOINN7ijbcIX9sJdgdV_DEZcBt7TgYYEifyZZwl9MjoJKQAcUpHJzzkbh_OBgHkMwXtuUxyo1Pi_Y-s0H9OBOVf-1k2rKqbrOp8_oTb0Yq8vZ3-rWOjVtuVZ-nYPsv9-TWJymOl5dkB2Eg&h=Mkmzsd9XWC0o0h-dfAfMXK9jVCTJHuMZSTOQ8lHIcOg
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/locations/eastus2/ipamPoolOperationResults/6081C8F9-0CAB-4DDE-8B97-75353D430179+00-D197EF9D1A7EBD8DE3BFAF693E6AF44E-610CA334537CACA7-01+POOL-BNWIBIO+DELETE","name":"6081C8F9-0CAB-4DDE-8B97-75353D430179+00-D197EF9D1A7EBD8DE3BFAF693E6AF44E-610CA334537CACA7-01+POOL-BNWIBIO+DELETE","status":"Succeeded","startTime":null,"endTime":null,"percentComplete":null,"error":null,"properties":null,"operations":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '556'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 02:00:34 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - c05f8929-3a68-4e09-85bf-3ff0538f3c28
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72031ed9-9b48-4bb7-804a-0d1a2a44e7be,objectId=f0b07796-89e6-4b55-a3f3-0472af7e2d87/eastus2/85c28dc4-1a76-4c0a-8449-cb76bf420d83
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 6A248D34ADF44A7C88F732003428E6CB Ref B: SG2AA1070306060 Ref C: 2026-11-16T02:00:34Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager ipam-pool wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --manager-name --resource-group --deleted --interval --timeout
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003?api-version=2026-01-01
+  response:
+    body:
+      string: '{"code":"NotFound","message":"Ipam pool ''/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_ipam_allocation_bounds000001/providers/Microsoft.Network/networkManagers/manager-000002/ipamPools/pool-000003''
+        not found.","target":null,"details":null,"additionalInfo":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '303'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 02:00:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: E9F4171BC09549A6A2B757E0EB816327 Ref B: SG2AA1040512023 Ref C: 2026-11-16T02:00:37Z'
+    status:
+      code: 404
+      message: Not Found
+version: 1

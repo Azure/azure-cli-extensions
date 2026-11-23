@@ -12,6 +12,7 @@ L3Network tests scenarios
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -30,18 +31,29 @@ def call_scenario1(test):
     step_create(
         test,
         checks=[
-            test.check("name", "{name}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
     step_update(
         test,
         checks=[
-            test.check("tags", "{tagsUpdate}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[
+            test.exists("name"),
+            test.exists("id"),
+            test.check("vlan", attr(test, "vlan")),
+            test.check("ipAllocationType", attr(test, "ipAllocationType")),
+            test.check("ipv4ConnectedPrefix", attr(test, "ipv4prefix")),
+            test.check("ipv6ConnectedPrefix", attr(test, "ipv6prefix")),
+            test.check("l3IsolationDomainId", attr(test, "l3IsolationDomainId")),
+        ],
+    )
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
@@ -57,7 +69,7 @@ def step_create(test, checks=None):
         'name={extendedLocation} type="CustomLocation" --location {location} '
         '--interface-name "eth0"  --ip-allocation-type {ipAllocationType} '
         "--ipv4-connected-prefix {ipv4prefix} --ipv6-connected-prefix {ipv6prefix} "
-        "--l3-isolation-domain-id {l3_isolation_domain_id} --vlan {vlan} --tags "
+        "--l3-isolation-domain-id {l3IsolationDomainId} --vlan {vlan} --tags "
         " {tags} --resource-group {rg}",
         checks=checks,
     )
@@ -67,28 +79,34 @@ def step_show(test, checks=None):
     """L3Network show operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud l3network show --name {name} --resource-group {rg}")
+    test.cmd(
+        "az networkcloud l3network show --name {name} --resource-group {rg}",
+        checks=checks,
+    )
 
 
 def step_delete(test, checks=None):
     """L3Network delete operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud l3network delete --name {name} --resource-group {rg} -y")
+    test.cmd(
+        "az networkcloud l3network delete --name {name} --resource-group {rg} --yes",
+        checks=checks,
+    )
 
 
 def step_list_resource_group(test, checks=None):
     """L3Network list by resource group operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud l3network list --resource-group {rg}")
+    test.cmd("az networkcloud l3network list --resource-group {rg}", checks=checks)
 
 
 def step_list_subscription(test, checks=None):
     """L3Network list by subscription operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud l3network list")
+    test.cmd("az networkcloud l3network list", checks=checks)
 
 
 def step_update(test, checks=None):
@@ -96,7 +114,8 @@ def step_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud l3network update --name {name} --tags {tagsUpdate} --resource-group {rg}"
+        "az networkcloud l3network update --name {name} --tags {tagsUpdate} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -107,17 +126,18 @@ class L3NetworkScenarioTest(ScenarioTest):
         super().__init__(*args, **kwargs)
         self.kwargs.update(
             {
-                "name": self.create_random_name(prefix="cli-test-l3-", length=24),
+                "name": CONFIG.get("L3_NETWORK", "name"),
                 "location": CONFIG.get("L3_NETWORK", "location"),
                 "extendedLocation": CONFIG.get("L3_NETWORK", "extended_location"),
                 "tags": CONFIG.get("L3_NETWORK", "tags"),
                 "tagsUpdate": CONFIG.get("L3_NETWORK", "tags_update"),
+                "provisioningState": CONFIG.get("L3_NETWORK", "provisioning_state"),
                 "type": CONFIG.get("L3_NETWORK", "type"),
                 "vlan": CONFIG.get("L3_NETWORK", "vlan"),
                 "ipAllocationType": CONFIG.get("L3_NETWORK", "ip_allocation_type"),
                 "ipv4prefix": CONFIG.get("L3_NETWORK", "ipv4prefix"),
                 "ipv6prefix": CONFIG.get("L3_NETWORK", "ipv6prefix"),
-                "l3_isolation_domain_id": CONFIG.get(
+                "l3IsolationDomainId": CONFIG.get(
                     "L3_NETWORK", "l3_isolation_domain_id"
                 ),
             }

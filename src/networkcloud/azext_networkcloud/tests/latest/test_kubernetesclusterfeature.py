@@ -12,6 +12,7 @@ Kubernetescluster feature tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -27,9 +28,34 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_create_scenario1(test)
-    step_update(test)
-    step_show(test)
+    step_create_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+            test.check("required", attr(test, "required")),
+            test.check("version", attr(test, "version")),
+        ],
+    )
+    step_update(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("required", attr(test, "required")),
+            test.check("version", attr(test, "version")),
+        ],
+    )
+    step_show(
+        test,
+        checks=[
+            test.exists("name"),
+            test.exists("id"),
+            test.check("required", attr(test, "required")),
+            test.check("version", attr(test, "version")),
+        ],
+    )
     step_list(test)
     step_delete(test)
     cleanup_scenario1(test)
@@ -38,7 +64,15 @@ def call_scenario1(test):
 def call_scenario2(test):
     """# Testcase: scenario2"""
     setup_scenario1(test)
-    step_create_scenario2(test)
+    step_create_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+            test.check("required", attr(test, "required")),
+            test.check("version", attr(test, "version")),
+        ],
+    )
     cleanup_scenario1(test)
 
 
@@ -50,7 +84,8 @@ def step_create_scenario1(test, checks=None):
         "az networkcloud kubernetescluster feature create --name {name} "
         "--kubernetes-cluster-name {clusterName} --resource-group {rg} "
         "--location {location} "
-        "--tags {tags}"
+        "--tags {tags}",
+        checks=checks,
     )
 
 
@@ -63,7 +98,8 @@ def step_create_scenario2(test, checks=None):
         "--kc-name {clusterName} --resource-group {rg} "
         "--location {location} "
         "--options {options} "
-        "--tags {tags}"
+        "--tags {tags}",
+        checks=checks,
     )
 
 
@@ -74,7 +110,8 @@ def step_update(test, checks=None):
     test.cmd(
         "az networkcloud kubernetescluster feature update --name {name} "
         "--kubernetes-cluster-name {clusterName} --resource-group {rg} "
-        "--tags {tagsUpdate}"
+        "--tags {tagsUpdate}",
+        checks=checks,
     )
 
 
@@ -84,7 +121,8 @@ def step_show(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud kubernetescluster feature show --name {name} "
-        "--kubernetes-cluster-name {clusterName} --resource-group {rg}"
+        "--kubernetes-cluster-name {clusterName} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -94,7 +132,8 @@ def step_list(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud kubernetescluster feature list "
-        "--kubernetes-cluster-name {clusterName} --resource-group {rg}"
+        "--kubernetes-cluster-name {clusterName} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -104,7 +143,8 @@ def step_delete(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud kubernetescluster feature delete --name {name} "
-        "--kubernetes-cluster-name {clusterName} --resource-group {rg} -y"
+        "--kubernetes-cluster-name {clusterName} --resource-group {rg} --yes",
+        checks=checks,
     )
 
 
@@ -122,6 +162,11 @@ class KubernetesClusterFeatureScenarioTest(ScenarioTest):
                 "tags": CONFIG.get("KUBERNETESCLUSTER_AGENTPOOL", "tags"),
                 "tagsUpdate": CONFIG.get("KUBERNETESCLUSTER_FEATURE", "tags_update"),
                 "options": CONFIG.get("KUBERNETESCLUSTER_FEATURE", "options"),
+                "required": CONFIG.get("KUBERNETESCLUSTER_FEATURE", "required"),
+                "version": CONFIG.get("KUBERNETESCLUSTER_FEATURE", "version"),
+                "provisioningState": CONFIG.get(
+                    "KUBERNETESCLUSTER_FEATURE", "provisioning_state"
+                ),
             }
         )
 

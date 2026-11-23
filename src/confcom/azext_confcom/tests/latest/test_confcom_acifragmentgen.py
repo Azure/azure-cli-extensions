@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 import contextlib
-import io
 import json
 import os
 import subprocess
@@ -13,9 +12,66 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from azext_confcom.custom import acifragmentgen_confcom, fragment_push, fragment_attach
+from azext_confcom.template_util import extract_containers_from_text
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 SAMPLES_DIR = os.path.abspath(os.path.join(TEST_DIR, "..", "..", "..", "samples"))
+
+
+@pytest.mark.parametrize("platform", ["linux/amd64", "windows/amd64"])
+@pytest.mark.parametrize("prerelease_policy_api", [False, True])
+@pytest.mark.parametrize("command", ["acifragmentgen", "acipolicygen"])
+def test_with_containers_platform(command, platform, prerelease_policy_api, capsys, tmp_path):
+    from azext_confcom import custom
+
+    output_path = tmp_path / "fragment.rego"
+    with patch("azext_confcom.custom.get_all_fragment_contents", return_value=[]), \
+         patch("azext_confcom.custom.tar_mapping_validation", return_value=None), \
+         patch("azext_confcom.security_policy.AciPolicy._get_rootfs_proxy"):
+        options = {
+            "image_name": None,
+            "input_path": None,
+            "tar_mapping_location": None,
+            "container_definitions": [{"id": "test-container"}],
+            "platform": platform,
+            "prerelease_policy_api": prerelease_policy_api,
+            "outraw": True,
+        }
+        if command == "acifragmentgen":
+            custom.acifragmentgen_confcom(
+                namespace="test",
+                svn="1",
+                feed="test-feed",
+                key=None,
+                chain=None,
+                minimum_svn=None,
+                output_filename=str(output_path),
+                **options,
+            )
+        else:
+            custom.acipolicygen_confcom(
+                arm_template=None,
+                arm_template_parameters=None,
+                virtual_node_yaml_path=None,
+                infrastructure_svn=None,
+                **options,
+            )
+
+    fragment = capsys.readouterr().out.strip()
+    if command == "acifragmentgen":
+        assert output_path.read_text().strip() == fragment
+    framework_version = "0.5.0" if platform.startswith("windows") or prerelease_policy_api else "0.2.3"
+    assert f'framework_version := "{framework_version}"' in fragment
+    fragments = json.loads(extract_containers_from_text(fragment, "fragments := "))
+    if platform.startswith("windows"):
+        expected_feeds = ["mcr.microsoft.com/aci/aci-cwcow-infra-fragment"] if prerelease_policy_api else []
+    else:
+        expected_feeds = ["mcr.microsoft.com/aci/aci-cc-infra-fragment"]
+    assert [item["feed"] for item in fragments] == expected_feeds
+    containers = json.loads(extract_containers_from_text(fragment, "containers := "))
+    assert any(item.get("id") == "test-container" for item in containers)
+    if command == "acifragmentgen" or platform.startswith("windows"):
+        assert len(containers) == 1
 
 
 @pytest.fixture()
@@ -186,11 +242,12 @@ def test_acifragmentgen_fragment_push(docker_image, cert_chain, capsysbinary):
     )
 
     signed_fragment = capsysbinary.readouterr()[0]
-    signed_fragment_io = io.BytesIO(signed_fragment)
-    signed_fragment_io.name = "<stdin>"
+    with tempfile.NamedTemporaryFile(delete=False) as signed_fragment_file:
+        signed_fragment_file.write(signed_fragment)
+        signed_fragment_path = signed_fragment_file.name
 
     fragment_push(
-        signed_fragment=signed_fragment_io,
+        signed_fragment=signed_fragment_path,
         manifest_tag=fragment_ref,
     )
 
@@ -320,7 +377,7 @@ def test_get_image_platforms_unknown_platform_excluded(mock_fetch):
 # ── Unit tests for oras_attach ─────────────────────────────────────────────
 
 
-@patch("azext_confcom.command.fragment_attach.subprocess.run")
+@patch("azext_confcom.command.fragment_attach.oras_proxy.call_oras_cli")
 @patch(
     "azext_confcom.command.fragment_attach.oras_proxy.get_image_platforms",
     return_value=["linux/amd64", "linux/arm64"],
@@ -331,16 +388,14 @@ def test_oras_attach_multiarch_error(mock_platforms, mock_run):
     # time for the mocks to work, due to reloading in conftest.py run_on_wheel.
     from azext_confcom.command.fragment_attach import oras_attach
 
-    mock_fragment = MagicMock()
-    mock_fragment.name = "/tmp/fragment.cose"
     with pytest.raises(SystemExit):
         oras_attach(
-            signed_fragment=mock_fragment, manifest_tag="myregistry.io/myimage:latest"
+            signed_fragment_path="/tmp/fragment.cose", manifest_tag="myregistry.io/myimage:latest"
         )
     mock_run.assert_not_called()
 
 
-@patch("azext_confcom.command.fragment_attach.subprocess.run")
+@patch("azext_confcom.command.fragment_attach.oras_proxy.call_oras_cli")
 @patch(
     "azext_confcom.command.fragment_attach.oras_proxy.get_image_platforms",
     return_value=[],
@@ -349,26 +404,22 @@ def test_oras_attach_detection_failure_error(mock_platforms, mock_run):
     """oras_attach raises SystemExit when platform detection fails (empty list)."""
     from azext_confcom.command.fragment_attach import oras_attach
 
-    mock_fragment = MagicMock()
-    mock_fragment.name = "/tmp/fragment.cose"
     with pytest.raises(SystemExit):
         oras_attach(
-            signed_fragment=mock_fragment, manifest_tag="myregistry.io/myimage:latest"
+            signed_fragment_path="/tmp/fragment.cose", manifest_tag="myregistry.io/myimage:latest"
         )
     mock_run.assert_not_called()
 
 
-@patch("azext_confcom.command.fragment_attach.subprocess.run")
+@patch("azext_confcom.command.fragment_attach.oras_proxy.call_oras_cli")
 def test_oras_attach_explicit_platform(mock_run):
     """When platform is explicitly supplied, oras attach is called with --platform."""
     from azext_confcom.command.fragment_attach import oras_attach
 
     mock_run.return_value = MagicMock(returncode=0)
-    mock_fragment = MagicMock()
-    mock_fragment.name = "/tmp/fragment.cose"
 
     oras_attach(
-        signed_fragment=mock_fragment,
+        signed_fragment_path="/tmp/fragment.cose",
         manifest_tag="myregistry.io/myimage:latest",
         platform="linux/amd64",
     )
@@ -380,7 +431,7 @@ def test_oras_attach_explicit_platform(mock_run):
     assert "application/cose-x509+rego" in " ".join(cmd)
 
 
-@patch("azext_confcom.command.fragment_attach.subprocess.run")
+@patch("azext_confcom.command.fragment_attach.oras_proxy.call_oras_cli")
 @patch(
     "azext_confcom.command.fragment_attach.oras_proxy.get_image_platforms",
     return_value=["linux/amd64"],
@@ -390,11 +441,9 @@ def test_oras_attach_auto_detected_platform(mock_platforms, mock_run):
     from azext_confcom.command.fragment_attach import oras_attach
 
     mock_run.return_value = MagicMock(returncode=0)
-    mock_fragment = MagicMock()
-    mock_fragment.name = "/tmp/fragment.cose"
 
     oras_attach(
-        signed_fragment=mock_fragment,
+        signed_fragment_path="/tmp/fragment.cose",
         manifest_tag="myregistry.io/myimage:latest",
     )
 
@@ -429,11 +478,12 @@ def test_acifragmentgen_fragment_attach_with_explicit_platform(
     )
 
     signed_fragment = capsysbinary.readouterr()[0]
-    signed_fragment_io = io.BytesIO(signed_fragment)
-    signed_fragment_io.name = "<stdin>"
+    with tempfile.NamedTemporaryFile(delete=False) as signed_fragment_file:
+        signed_fragment_file.write(signed_fragment)
+        signed_fragment_path = signed_fragment_file.name
 
     fragment_attach(
-        signed_fragment=signed_fragment_io,
+        signed_fragment=signed_fragment_path,
         manifest_tag=image_ref,
         platform="linux/amd64",
     )
@@ -575,11 +625,12 @@ def test_acifragmentgen_fragment_attach_without_platform(docker_image, cert_chai
     )
 
     signed_fragment = capsysbinary.readouterr()[0]
-    signed_fragment_io = io.BytesIO(signed_fragment)
-    signed_fragment_io.name = "<stdin>"
+    with tempfile.NamedTemporaryFile(delete=False) as signed_fragment_file:
+        signed_fragment_file.write(signed_fragment)
+        signed_fragment_path = signed_fragment_file.name
 
     fragment_attach(
-        signed_fragment=signed_fragment_io,
+        signed_fragment=signed_fragment_path,
         manifest_tag=image_ref,
     )
 

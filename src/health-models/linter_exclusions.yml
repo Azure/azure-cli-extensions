@@ -1,0 +1,26 @@
+monitor health-models discovery-rule create:
+  parameters:
+    add_recommended_signals:
+      rule_exclusions:
+      - option_length_too_long
+    add_resource_health_signal:
+      rule_exclusions:
+      - option_length_too_long
+monitor health-models discovery-rule update:
+  parameters:
+    add_recommended_signals:
+      rule_exclusions:
+      - option_length_too_long
+    add_resource_health_signal:
+      rule_exclusions:
+      - option_length_too_long
+monitor health-models signal-definition create:
+  parameters:
+    prometheus_metrics_query:
+      rule_exclusions:
+      - option_length_too_long
+monitor health-models signal-definition update:
+  parameters:
+    prometheus_metrics_query:
+      rule_exclusions:
+      - option_length_too_long

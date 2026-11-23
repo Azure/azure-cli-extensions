@@ -1,0 +1,65 @@
+interactions:
+- request:
+    body: '{"disasterRecoveryType": "Adg", "isReplicateAutomaticBackups": false}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - oracle-database autonomous-database change-disaster-recovery-configuration
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '69'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --autonomousdatabasename --disaster-recovery-type --is-replicate-automatic-backups
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.3 (macOS-26.6.2-arm64-arm-64bit-Mach-O)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/autonomousDatabases/DNDAdbsTets/changeDisasterRecoveryConfiguration?api-version=2026-06-01
+  response:
+    body:
+      string: '{"error":{"code":"ResourcePostActionFailed","message":"ResourcePostActionFailed:
+        Conflict"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '92'
+      content-type:
+      - application/json
+      date:
+      - Tue, 22 Sep 2026 05:21:54 GMT
+      expires:
+      - '-1'
+      opc-request-id:
+      - oci-810C4C9B621E074-202609220521/37BD77FC63B2FBA37210B26A494144A0/727633383B34EBAF848FE72D66FD3F3C
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Origin
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-operation-identifier:
+      - tenantId=359af50e-f985-4028-adf5-034a840f32d6,objectId=a9fc9ef3-cabe-4802-90cf-9c9d376bc4e5/eastus/05b4421a-032d-4fd7-acb6-c5ce6e62d0d0
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: A6A2C66B17F04AFCBBA44F1A1CA91040 Ref B: BY1AA1072316040 Ref C: 2026-09-22T05:21:53Z'
+    status:
+      code: 409
+      message: Conflict
+version: 1

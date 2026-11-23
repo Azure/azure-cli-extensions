@@ -12,8 +12,14 @@ from azure.cli.core.commands import CliCommandType
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
+    from .custom import ExecutionFilterUpdate
+    self.command_table['edge-action execution-filter update'] = ExecutionFilterUpdate(loader=self)
+
     edge_action_custom = CliCommandType(
         operations_tmpl='azext_edge_action.custom#{}')
 
     with self.command_group('edge-action version', custom_command_type=edge_action_custom) as g:
+        from .custom import GetVersionCode, SwapDefault
+        self.command_table['edge-action version get-version-code'] = GetVersionCode(loader=self)
+        self.command_table['edge-action version swap-default'] = SwapDefault(loader=self)
         g.custom_command('deploy-from-file', 'deploy_edge_action_version')

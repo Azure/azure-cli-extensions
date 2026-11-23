@@ -43,6 +43,7 @@ CONST_OS_SKU_AZURELINUX3 = "AzureLinux3"
 CONST_OS_SKU_FLATCAR = "Flatcar"
 CONST_OS_SKU_UBUNTU2204 = "Ubuntu2204"
 CONST_OS_SKU_UBUNTU2404 = "Ubuntu2404"
+CONST_OS_SKU_UBUNTU2604 = "Ubuntu2604"
 CONST_OS_SKU_AZURELINUXOSGUARD = "AzureLinuxOSGuard"
 CONST_OS_SKU_AZURELINUX3OSGUARD = "AzureLinux3OSGuard"
 CONST_OS_SKU_AZURECONTAINERLINUX = "AzureContainerLinux"
@@ -51,6 +52,7 @@ CONST_OS_SKU_AZURECONTAINERLINUX = "AzureContainerLinux"
 CONST_VIRTUAL_MACHINE_SCALE_SETS = "VirtualMachineScaleSets"
 CONST_AVAILABILITY_SET = "AvailabilitySet"
 CONST_VIRTUAL_MACHINES = "VirtualMachines"
+CONST_FLEX_NODES = "FlexNodes"
 
 # vm size
 CONST_DEFAULT_NODE_VM_SIZE = ""
@@ -85,6 +87,10 @@ CONST_GPU_MANAGEMENT_MODE_UNMANAGED = "Unmanaged"
 # load balancer sku
 CONST_LOAD_BALANCER_SKU_BASIC = "basic"
 CONST_LOAD_BALANCER_SKU_STANDARD = "standard"
+
+# bastion sku
+CONST_BASTION_SKU_STANDARD = "Standard"
+CONST_BASTION_SKU_PREMIUM = "Premium"
 
 # ManagedClusterSKU Tier
 CONST_MANAGED_CLUSTER_SKU_TIER_FREE = "free"
@@ -181,6 +187,14 @@ CONST_MONITORING_ADDON_NAME = "omsagent"
 CONST_MONITORING_ADDON_NAME_CAMELCASE = "omsAgent"
 CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = "logAnalyticsWorkspaceResourceID"
 CONST_MONITORING_USING_AAD_MSI_AUTH = "useAADAuth"
+
+# container network logs (azureMonitorProfile.containerInsights.containerNetworkLogs)
+CONST_CONTAINER_NETWORK_LOGS_ENABLED = "Enabled"
+CONST_CONTAINER_NETWORK_LOGS_DISABLED = "Disabled"
+# legacy omsagent addon config key, superseded by containerNetworkLogs on the AMP path
+CONST_MONITORING_ENABLE_RETINA_NETWORK_FLAGS = "enableRetinaNetworkFlags"
+# server-side default for azureMonitorProfile.containerInsights.syslogPort
+CONST_CONTAINER_INSIGHTS_DEFAULT_SYSLOG_PORT = 28330
 
 # virtual node
 CONST_VIRTUAL_NODE_ADDON_NAME = "aciConnector"
@@ -294,6 +308,11 @@ CONST_PERISCOPE_NAMESPACE = "aks-periscope"
 CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC = "Public"
 CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE = "Private"
 
+# Encryption at rest of Kubernetes resource objects using service-managed keys (PMK).
+# Starting with API version 2026-07-01/2026-07-02-preview, "Enabled" is the only accepted
+# value, i.e. the feature cannot be turned off once it has been turned on.
+CONST_KMS_INFRASTRUCTURE_ENCRYPTION_ENABLED = "Enabled"
+
 # refer https://api.github.com/repos/Azure/draft/releases/latest
 # tag_name gives latest version released.
 # Moving away from 1:n release to avoid unwanted breaking changes with auto upgrades.
@@ -385,6 +404,10 @@ CONST_OUTBOUND_TYPE_NONE = "none"
 CONST_OUTBOUND_TYPE_BLOCK = "block"
 CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2 = "managedNATGatewayV2"
 
+# NAT Gateway SKU (GA shape: outboundType=managedNATGateway + natGatewayProfile.sku)
+CONST_NAT_GATEWAY_SKU_STANDARD = "Standard"
+CONST_NAT_GATEWAY_SKU_STANDARD_V2 = "StandardV2"
+
 # IMDS restriction consts
 CONST_IMDS_RESTRICTION_ENABLED = "None"
 CONST_IMDS_RESTRICTION_DISABLED = "IMDS"
@@ -403,6 +426,10 @@ CONST_NAMESPACE_DELETE_POLICY_DELETE = "Delete"
 CONST_GPU_DRIVER_TYPE_CUDA = "CUDA"
 CONST_GPU_DRIVER_TYPE_GRID = "GRID"
 
+# Managed GPU Driver Mode Consts
+CONST_MANAGED_GPU_DRIVER_MODE_DRA = "DRA"
+CONST_MANAGED_GPU_DRIVER_MODE_DEVICE_PLUGIN = "DevicePlugin"
+
 # GPU MIG Strategy Consts
 CONST_GPU_MIG_STRATEGY_SINGLE = "Single"
 CONST_GPU_MIG_STRATEGY_MIXED = "Mixed"
@@ -414,3 +441,8 @@ CONST_K8S_EXTENSION_TYPE_CLIENT_FACTORY_MOD_NAME = "azext_k8s_extension_types._c
 CONST_K8S_EXTENSION_NAME = "k8s-extension"
 CONST_K8S_EXTENSION_ACTION_MOD_NAME = "azext_k8s_extension.action"
 CONST_K8S_EXTENSION_FORMAT_MOD_NAME = "azext_k8s_extension._format"
+
+# Node Disruption Policy Consts
+CONST_NODE_DISRUPTION_POLICY_ALLOW = "Allow"
+CONST_NODE_DISRUPTION_POLICY_BLOCK = "Block"
+CONST_NODE_DISRUPTION_POLICY_ALLOW_DURING_MAINTENANCE_WINDOW = "AllowDuringMaintenanceWindow"

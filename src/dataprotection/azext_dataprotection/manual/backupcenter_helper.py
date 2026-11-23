@@ -8,7 +8,11 @@ from azure.cli.core._profile import Profile
 import azext_dataprotection.manual.helpers as helper
 
 
-def get_selected_subscription():
+def get_selected_subscription(cli_ctx=None):
+    # Honor --subscription when a CLI context is available; otherwise use the default subscription.
+    if cli_ctx is not None:
+        from azure.cli.core.commands.client_factory import get_subscription_id
+        return get_subscription_id(cli_ctx)
     return Profile().get_subscription_id()
 
 

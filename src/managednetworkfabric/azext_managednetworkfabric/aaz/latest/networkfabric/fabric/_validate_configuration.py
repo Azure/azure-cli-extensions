@@ -18,7 +18,7 @@ class ValidateConfiguration(AAZCommand):
     """Validates the configuration of the underlying resources in the given Network Fabric instance.
 
     :example: Validate the configuration on the Network Fabric
-        az networkfabric fabric validate-configuration -g "example-rg" --resource-name "example-nf" --validate-action "Cabling"
+        az networkfabric fabric validate-configuration --resource-group "example-rg" --resource-name "example-nf" --validate-action "Cabling"
     """
 
     _aaz_info = {

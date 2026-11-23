@@ -22,12 +22,15 @@ class Create(AAZCommand):
 
     :example: Create a Volume from snapshot.
         az elastic-san volume create -g "rg" -e "san_name" -v "vg_name" -n "volume_name_2" --size-gib 2 --creation-data '{source-id:"snapshot_id",create-source:VolumeSnapshot}'
+
+    :example: Create a volume with Resource Ids.
+        az elastic-san volume create --resource-group resourcegroupname --elastic-san-name elasticsanname --volume-group-name volumegroupname --volume-name volumename --creation-data "{create-source:None,source-id:mdonegivjquite}" --managed-by "[{client-id:pclpkrpkpmvcsegcubrakcoodrubo,version:1,resource-ids:[/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.SomeProvider/someResource/myResource]}]" --size-gib 23
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -90,6 +93,11 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="State of the operation on the resource.",
         )
+        _args_schema.managed_by = AAZListArg(
+            options=["--managed-by"],
+            arg_group="Properties",
+            help="Information about Azure services owning the ElasticSan volume resource.",
+        )
         _args_schema.size_gib = AAZIntArg(
             options=["--size-gib"],
             arg_group="Properties",
@@ -107,6 +115,29 @@ class Create(AAZCommand):
             options=["source-id"],
             help="Fully qualified resource ID for the resource. E.g. \"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}\"",
         )
+
+        managed_by = cls._args_schema.managed_by
+        managed_by.Element = AAZObjectArg()
+
+        _element = cls._args_schema.managed_by.Element
+        _element.client_id = AAZStrArg(
+            options=["client-id"],
+            help="ClientId of the application managing the resource",
+        )
+        _element.resource_ids = AAZListArg(
+            options=["resource-ids"],
+            help="ARM Resource IDs of the resources managing the volume",
+        )
+        _element.version = AAZIntArg(
+            options=["version"],
+            help="Version number to keep track of resources using the Volume",
+            fmt=AAZIntArgFormat(
+                minimum=0,
+            ),
+        )
+
+        resource_ids = cls._args_schema.managed_by.Element.resource_ids
+        resource_ids.Element = AAZResourceIdArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -198,7 +229,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -228,12 +259,27 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("creationData", AAZObjectType, ".creation_data")
+                properties.set_prop("managedBy", AAZListType, ".managed_by")
                 properties.set_prop("sizeGiB", AAZIntType, ".size_gib", typ_kwargs={"flags": {"required": True}})
 
             creation_data = _builder.get(".properties.creationData")
             if creation_data is not None:
                 creation_data.set_prop("createSource", AAZStrType, ".create_source")
                 creation_data.set_prop("sourceId", AAZStrType, ".source_id")
+
+            managed_by = _builder.get(".properties.managedBy")
+            if managed_by is not None:
+                managed_by.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.managedBy[]")
+            if _elements is not None:
+                _elements.set_prop("clientId", AAZStrType, ".client_id")
+                _elements.set_prop("resourceIds", AAZListType, ".resource_ids")
+                _elements.set_prop("version", AAZIntType, ".version")
+
+            resource_ids = _builder.get(".properties.managedBy[].resourceIds")
+            if resource_ids is not None:
+                resource_ids.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -276,7 +322,7 @@ class Create(AAZCommand):
             properties.creation_data = AAZObjectType(
                 serialized_name="creationData",
             )
-            properties.managed_by = AAZObjectType(
+            properties.managed_by = AAZListType(
                 serialized_name="managedBy",
             )
             properties.provisioning_state = AAZStrType(
@@ -305,9 +351,19 @@ class Create(AAZCommand):
             )
 
             managed_by = cls._schema_on_200_201.properties.managed_by
-            managed_by.resource_id = AAZStrType(
-                serialized_name="resourceId",
+            managed_by.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.managed_by.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
             )
+            _element.resource_ids = AAZListType(
+                serialized_name="resourceIds",
+            )
+            _element.version = AAZIntType()
+
+            resource_ids = cls._schema_on_200_201.properties.managed_by.Element.resource_ids
+            resource_ids.Element = AAZStrType()
 
             storage_target = cls._schema_on_200_201.properties.storage_target
             storage_target.provisioning_state = AAZStrType(

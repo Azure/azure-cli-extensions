@@ -1,0 +1,88 @@
+interactions:
+- request:
+    body: '{"properties": {"dnsForwarderIpAddress": "192.0.2.53", "connectionIntent":
+      "Connected", "stampId": "11111111-1111-1111-1111-111111111111", "deviceResourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.Edge/disconnectedOperations/test-device"}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - aldo system-configuration create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '297'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --dns-forwarder-ip --connection-intent --stamp-id --device-resource-id
+      User-Agent:
+      - python/3.14.7 (Windows-11-10.0.26300-SP0) AZURECLI/2.91.0
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/systemConfiguration/default?api-version=2026-06-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/systemConfiguration/default","name":"default","type":"microsoft.edgeoperator/systemconfiguration","systemData":{"createdBy":"admin@demo.asz","createdByType":"User","createdAt":"2026-10-27T01:10:18.2685626Z","lastModifiedBy":"admin@demo.asz","lastModifiedByType":"User","lastModifiedAt":"2026-10-27T01:10:18.2685626Z"},"properties":{"dnsForwarderIpAddress":"192.0.2.53","connectionIntent":"Connected","stampId":"11111111-1111-1111-1111-111111111111","deviceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.Edge/disconnectedOperations/test-device","provisioningState":"Succeeded"}}'
+    headers:
+      content-length:
+      - '730'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 01:10:17 GMT
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '2399'
+      x-ms-response-source:
+      - OperatorRPHost
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - aldo system-configuration show
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python/3.14.7 (Windows-11-10.0.26300-SP0) AZURECLI/2.91.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/systemConfiguration/default?api-version=2026-06-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/systemConfiguration/default","name":"default","type":"Microsoft.EdgeOperator/systemConfiguration","properties":{"externalDomainSuffix":"autonomous.cloud.private","imageVersion":"1.0.0","ingressNicPrefixLength":24,"deviceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.Edge/disconnectedOperations/test-device","connectionIntent":"Connected","stampId":"11111111-1111-1111-1111-111111111111","ingressNicIpAddress":"10.0.50.4","dnsForwarderIpAddress":"192.0.2.53","ingressNicDefaultGateway":"10.0.50.1"}}'
+    headers:
+      content-length:
+      - '652'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 01:10:17 GMT
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-response-source:
+      - OperatorRPHost
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -13,15 +13,16 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "redisenterprise database import",
+    is_preview=True,
 )
 class Import(AAZCommand):
     """Imports database files to target database.
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2026-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/import", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/import", "2026-10-01-preview"],
         ]
     }
 
@@ -76,7 +77,7 @@ class Import(AAZCommand):
         )
 
         sas_uris = cls._args_schema.sas_uris
-        sas_uris.Element = AAZStrArg()
+        sas_uris.Element = AAZPasswordArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -160,7 +161,7 @@ class Import(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-10-01-preview",
                     required=True,
                 ),
             }
@@ -182,7 +183,7 @@ class Import(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("sasUris", AAZListType, ".sas_uris", typ_kwargs={"flags": {"secret": True}})
+            _builder.set_prop("sasUris", AAZListType, ".sas_uris", typ_kwargs={"flags": {"required": True}})
 
             sas_uris = _builder.get(".sasUris")
             if sas_uris is not None:

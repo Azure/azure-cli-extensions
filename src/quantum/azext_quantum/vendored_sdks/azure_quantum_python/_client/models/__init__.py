@@ -20,9 +20,11 @@ from ._models import (  # type: ignore
     ItemDetails,
     JobDetails,
     JobUpdateOptions,
+    JobUpdateResponse,
     ProviderStatus,
     QuantumComputingData,
     Quota,
+    QuotaUsage,
     SasUriResponse,
     SessionDetails,
     TargetStatus,
@@ -42,6 +44,7 @@ from ._enums import (  # type: ignore
     ProviderAvailability,
     SessionJobFailurePolicy,
     SessionStatus,
+    SuiteOfferScope,
     TargetAvailability,
 )
 from ._patch import __all__ as _patch_all
@@ -55,9 +58,11 @@ __all__ = [
     "ItemDetails",
     "JobDetails",
     "JobUpdateOptions",
+    "JobUpdateResponse",
     "ProviderStatus",
     "QuantumComputingData",
     "Quota",
+    "QuotaUsage",
     "SasUriResponse",
     "SessionDetails",
     "TargetStatus",
@@ -74,6 +79,7 @@ __all__ = [
     "ProviderAvailability",
     "SessionJobFailurePolicy",
     "SessionStatus",
+    "SuiteOfferScope",
     "TargetAvailability",
 ]
 __all__.extend([p for p in _patch_all if p not in __all__])  # pyright: ignore

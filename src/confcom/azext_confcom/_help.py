@@ -109,6 +109,14 @@ helps[
           type: string
           short-summary: 'Target platform for policy generation (linux/amd64 or windows/amd64). Defaults to linux/amd64. Docker Desktop must be running in the matching container mode to produce correct layer hashes.'
 
+        - name: --allow-kubeproxy
+          type: boolean
+          short-summary: 'Include the ACI kube-proxy image-attached fragment reference in a Linux VN2 policy'
+
+        - name: --skip-win-ver-check
+          type: boolean
+          short-summary: 'When enabled, skips the host Windows version check in dmverity-vhd while hashing Windows images. Only affects windows/amd64 and is intended for debugging on hosts that do not produce deterministic layer hashes'
+
     examples:
         - name: Input an ARM Template file to inject a base64 encoded Confidential Container Security Policy into the ARM Template
           text: az confcom acipolicygen --template-file "./template.json"
@@ -204,6 +212,10 @@ helps[
         - name: --fragments-json -j
           type: string
           short-summary: 'Path to a JSON file that will store the fragment import information generated when using --generate-import. This file can later be fed into the policy generation command (acipolicygen) to include the fragment in a new or existing policy. If not specified, the import statement will be printed to the console instead of being saved to a file'
+
+        - name: --skip-win-ver-check
+          type: boolean
+          short-summary: 'When enabled, skips the host Windows version check in dmverity-vhd while hashing Windows images. Only affects windows/amd64 and is intended for debugging on hosts that do not produce deterministic layer hashes'
 
     examples:
         - name: Input an image name to generate a simple fragment
@@ -372,3 +384,62 @@ helps[
         - name: Input a VN2 Template and generate container definitions for all containers
           text: az confcom containers from_vn2 vn2.yaml
     """
+
+helps[
+    "confcom containers from_radius"
+] = """
+    type: command
+    short-summary: Create a Security Policy Container Definition based on a Radius Bicep template.
+
+    parameters:
+        - name: --parameters -p
+          type: string
+          short-summary: 'Parameter file(s) for the Radius Bicep template. Can be specified multiple times.'
+
+        - name: --idx
+          type: int
+          short-summary: 'Index of the container definition in the template to use (0-based). Defaults to 0.'
+
+        - name: --platform
+          type: string
+          short-summary: 'The target platform to create the container definition for (aci or vn2). Defaults to aci.'
+
+    examples:
+        - name: Generate a container definition from a Radius Bicep template
+          text: az confcom containers from_radius ./app.bicep
+        - name: Generate a container definition from a Radius Bicep template with parameters
+          text: az confcom containers from_radius ./app.bicep --parameters ./params.bicepparam
+        - name: Generate a container definition for the second container in the template
+          text: az confcom containers from_radius ./app.bicep --idx 1
+"""
+
+helps[
+    "confcom radius"
+] = """
+    type: group
+    short-summary: Commands to manage security policies for Radius Bicep templates.
+"""
+
+helps[
+    "confcom radius policy_insert"
+] = """
+    type: command
+    short-summary: Insert a generated security policy into a Radius Bicep template.
+
+    parameters:
+        - name: --template -t
+          type: string
+          short-summary: 'Path to the Radius Bicep template to update with the policy.'
+
+        - name: --idx
+          type: int
+          short-summary: 'Index of the container in the template to update (0-based). Defaults to 0.'
+
+    examples:
+        - name: Insert a policy file into a Radius Bicep template
+          text: az confcom radius policy_insert ./policy.rego --template ./app.bicep
+        - name: Pipe a generated policy directly into a Radius Bicep template
+          text: az confcom acipolicygen --template-file ./template.json --print-policy --outraw | az confcom radius policy_insert --template ./app.bicep
+        - name: Insert a policy into the second container of a Radius Bicep template
+          text: az confcom radius policy_insert ./policy.rego --template ./app.bicep --idx 1
+"""

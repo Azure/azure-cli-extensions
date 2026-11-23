@@ -13,15 +13,16 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "redisenterprise database list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List all databases in the specified RedisEnterprise cluster.
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2026-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases", "2026-10-01-preview"],
         ]
     }
 
@@ -121,7 +122,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-10-01-preview",
                     required=True,
                 ),
             }
@@ -156,9 +157,10 @@ class List(AAZCommand):
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
-                flags={"read_only": True},
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -201,6 +203,9 @@ class List(AAZCommand):
                 serialized_name="geoReplication",
             )
             properties.modules = AAZListType()
+            properties.notify_keyspace_events = AAZStrType(
+                serialized_name="notifyKeyspaceEvents",
+            )
             properties.persistence = AAZObjectType()
             properties.port = AAZIntType()
             properties.provisioning_state = AAZStrType(

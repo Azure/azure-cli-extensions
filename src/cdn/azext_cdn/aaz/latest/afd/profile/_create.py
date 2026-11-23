@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a new Azure Front Door Standard or Azure Front Door Premium or CDN profile with a profile name under the specified subscription and resource group.
 
-    :example: Create an AFD profile using Standard SKU.
-        az afd profile create -g group --profile-name profile --sku Standard_AzureFrontDoor
+    :example: Profiles_Create
+        az afd profile create --resource-group RG --profile-name profile1 --location global --sku Premium_AzureFrontDoor
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -49,6 +49,11 @@ class Create(AAZCommand):
             options=["-n", "--name", "--profile-name"],
             help="Name of the Azure Front Door Standard or Azure Front Door Premium or CDN profile which is unique within the resource group.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9]+(-*[a-zA-Z0-9])*$",
+                max_length=260,
+                min_length=1,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -66,7 +71,6 @@ class Create(AAZCommand):
             arg_group="Profile",
             help="Resource location.",
             required=True,
-            default="global",
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
             ),
@@ -114,6 +118,12 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.environment_type = AAZStrArg(
+            options=["--environment-type"],
+            arg_group="Properties",
+            help={"short-summary": "Environment type, set only when creating the profile.", "long-summary": "Requires the NonProduction environment preview to be enabled for the subscription. The environment type cannot be changed after creation."},
+            enum={"NonProduction": "NonProduction"},
+        )
         _args_schema.log_scrubbing = AAZObjectArg(
             options=["--log-scrubbing"],
             arg_group="Properties",
@@ -205,7 +215,7 @@ class Create(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200, 201]:
@@ -214,7 +224,7 @@ class Create(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -257,7 +267,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -305,8 +315,13 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("extendedProperties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
                 properties.set_prop("logScrubbing", AAZObjectType, ".log_scrubbing")
                 properties.set_prop("originResponseTimeoutSeconds", AAZIntType, ".origin_response_timeout_seconds")
+
+            extended_properties = _builder.get(".properties.extendedProperties")
+            if extended_properties is not None:
+                extended_properties.set_prop("environmentType", AAZStrType, ".environment_type")
 
             log_scrubbing = _builder.get(".properties.logScrubbing")
             if log_scrubbing is not None:

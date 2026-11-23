@@ -18,4 +18,6 @@ Doc Sections
 
 - [Extension Metadata](https://github.com/Azure/azure-cli/blob/dev/doc/extensions/metadata.md) - How to add additional extension metadata
 
+- [Migrating to pyproject.toml](pyproject-migration.md) - How to move an extension from `setup.py` to a PEP 517 build
+
 - [FAQ](https://github.com/Azure/azure-cli/blob/dev/doc/extensions/faq.md) - Commonly asked questions

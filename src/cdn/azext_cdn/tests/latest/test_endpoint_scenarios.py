@@ -148,7 +148,7 @@ class CdnEndpointScenarioTest(CdnScenarioMixin, ScenarioTest):
 
         self.endpoint_delete_cmd(resource_group, endpoint_name, profile_name)
 
-    @record_only()  # This test relies on existing resources in a specific subscription
+    # @record_only()  # This test relies on existing resources in a specific subscription
     @ResourceGroupPreparer(additional_tags={'owner': 'jingnanxu'})
     def test_private_link(self, resource_group):
         profile_name = 'profile123'

@@ -12,6 +12,7 @@ MetricsConfiguration tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -27,15 +28,25 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_create(test, checks=[test.check("provisioningState", "Succeeded")])
+    step_create(
+        test, checks=[test.check("provisioningState", attr(test, "provisioningState"))]
+    )
     step_update(
         test,
         checks=[
-            test.check("tags", "{tagsUpdate}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[
+            test.exists("name"),
+            test.exists("id"),
+            test.check("collectionInterval", attr(test, "collectionInterval")),
+            test.check("enabledMetrics", [attr(test, "enabledMetrics")]),
+        ],
+    )
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
     cleanup_scenario1(test)
@@ -60,7 +71,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud cluster metricsconfiguration show --cluster-name {clusterName} --resource-group {rg}"
+        "az networkcloud cluster metricsconfiguration show --cluster-name {clusterName} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -69,7 +81,8 @@ def step_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud cluster metricsconfiguration delete --cluster-name {clusterName} --resource-group {rg} -y"
+        "az networkcloud cluster metricsconfiguration delete --cluster-name {clusterName} --resource-group {rg} --yes",
+        checks=checks,
     )
 
 
@@ -79,7 +92,8 @@ def step_list_resource_group(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud cluster metricsconfiguration list "
-        "--cluster-name {clusterName} --resource-group {rg}"
+        "--cluster-name {clusterName} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -91,7 +105,8 @@ def step_update(test, checks=None):
         "az networkcloud cluster metricsconfiguration update "
         "--cluster-name {clusterName} --tags {tagsUpdate} "
         "--enabled-metrics {enabledMetrics} "
-        "--collection-interval {collectionInterval} --resource-group {rg}"
+        "--collection-interval {collectionInterval} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -115,6 +130,9 @@ class MetricsConfigurationScenarioTest(ScenarioTest):
                 ),
                 "enabledMetrics": CONFIG.get("METRICSCONFIGURATION", "enabled_metrics"),
                 "tagsUpdate": CONFIG.get("METRICSCONFIGURATION", "tags_update"),
+                "provisioningState": CONFIG.get(
+                    "METRICSCONFIGURATION", "provisioning_state"
+                ),
                 "clusterName": CONFIG.get("METRICSCONFIGURATION", "cluster_name"),
             }
         )

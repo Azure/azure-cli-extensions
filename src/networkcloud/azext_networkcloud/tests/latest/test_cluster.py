@@ -13,9 +13,65 @@ Cluster tests scenarios
 import os
 
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
+from azure.cli.testsdk.checkers import NoneCheck
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
+from .utils.output_checks import attr
+
+
+def cluster_show_checks(test, *, updated_rack=False):
+    """Build Cluster show checks using the scenario's rack-definition values."""
+    suffix = "Update" if updated_rack else ""
+    return [
+        test.exists("name"),
+        test.exists("id"),
+        test.check("analyticsWorkspaceId", attr(test, "analyticsWorkspaceId")),
+        test.check("clusterLocation", attr(test, "clusterLocation")),
+        test.check("clusterType", attr(test, "clusterType")),
+        test.check("clusterVersion", attr(test, "clusterVersion")),
+        test.check("networkFabricId", attr(test, "networkFabricId")),
+        test.check(
+            "aggregatorOrSingleRackDefinition.networkRackId",
+            attr(
+                test,
+                "networkRackIdUpdate" if updated_rack else "networkRackIdResponse",
+            ),
+        ),
+        test.check(
+            "aggregatorOrSingleRackDefinition.rackSkuId",
+            attr(test, f"rackSkuId{suffix}"),
+        ),
+        test.check(
+            "aggregatorOrSingleRackDefinition.rackSerialNumber",
+            attr(test, f"rackSerialNumber{suffix}"),
+        ),
+        test.check(
+            "aggregatorOrSingleRackDefinition.rackLocation",
+            attr(test, f"rackLocation{suffix}"),
+        ),
+        test.check(
+            "aggregatorOrSingleRackDefinition.availabilityZone",
+            attr(test, f"availabilityZone{suffix}"),
+        ),
+        test.check(
+            "aggregatorOrSingleRackDefinition.storageApplianceConfigurationData[].serialNumber",
+            [
+                item["serialNumber"]
+                for item in attr(test, "storageApplianceConfigurationData")
+            ],
+        ),
+        test.check(
+            "aggregatorOrSingleRackDefinition.bareMetalMachineConfigurationData[].serialNumber",
+            [
+                item["serialNumber"]
+                for item in attr(test, "bareMetalMachineConfigurationData")
+            ],
+        ),
+        test.check(
+            "computeRackDefinitions", attr(test, "computeRackDefinitionsResponse")
+        ),
+    ]
 
 
 def setup_scenario1(test):
@@ -34,12 +90,18 @@ def call_scenario1a(test):
     step_create_scenario1(
         test,
         checks=[
-            test.check("name", "{name}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
-    step_update_aggregatorOrSingleRackDefinition(test, checks=[])
-    step_show(test, checks=[])
+    step_update_aggregatorOrSingleRackDefinition(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
+    step_show(test, checks=cluster_show_checks(test, updated_rack=True))
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
@@ -52,11 +114,19 @@ def call_scenario1b(test):
     step_create_scenario2(
         test,
         checks=[
-            test.check("name", "{name}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
-    step_update_scenario2(test, checks=[])
+    step_update_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("clusterLocation", attr(test, "clusterLocationUpdate")),
+        ],
+    )
     cleanup_scenario1(test)
 
 
@@ -76,12 +146,18 @@ def call_scenario2(test):
     step_json_create(
         test,
         checks=[
-            test.check("name", "{name}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
-    step_update_aggregatorOrSingleRackDefinition_json(test, checks=[])
-    step_show(test, checks=[])
+    step_update_aggregatorOrSingleRackDefinition_json(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
+    step_show(test, checks=cluster_show_checks(test))
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
@@ -104,12 +180,18 @@ def call_scenario3(test):
     step_create_with_uai(
         test,
         checks=[
-            test.check("name", "{name}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
-    step_update_uai(test, checks=[])
-    step_show(test, checks=[])
+    step_update_uai(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
+    step_show(test, checks=cluster_show_checks(test))
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
@@ -129,14 +211,14 @@ def cleanup_scenario4(test):
 def call_scenario4a(test):
     """# Testcase: scenario4 split of cluster deploy operation to work with the already created and deployed simulator"""
     setup_scenario4(test)
-    step_deploy_sim_scenario1(test, checks=[])
+    step_deploy_sim_scenario1(test, checks=[NoneCheck()])
     cleanup_scenario4(test)
 
 
 def call_scenario4b(test):
     """# Testcase: scenario4 split of cluster deploy operation to work with the already created and deployed simulator"""
     setup_scenario4(test)
-    step_deploy_sim_scenario2(test, checks=[])
+    step_deploy_sim_scenario2(test, checks=[NoneCheck()])
     cleanup_scenario4(test)
 
 
@@ -153,7 +235,7 @@ def cleanup_scenario5(test):
 def call_scenario5(test):
     """# Testcase: scenario5 split of cluster update version operation to work with the already created and deployed simulator"""
     setup_scenario5(test)
-    step_update_version_sim(test, checks=[])
+    step_update_version_sim(test, checks=[NoneCheck()])
     cleanup_scenario5(test)
 
 
@@ -170,7 +252,9 @@ def cleanup_scenario6(test):
 def call_scenario6(test):
     """# Testcase: scenario6 split of cluster scan runtime operation to work with the already created and deployed simulator"""
     setup_scenario6(test)
-    step_scan_runtime(test, checks=[])
+    step_scan_runtime(
+        test, checks=[test.check("status", attr(test, "operationStatus"))]
+    )
     cleanup_scenario6(test)
 
 
@@ -190,15 +274,47 @@ def call_scenario7a(test):
     step_create_scenario1(
         test,
         checks=[
-            test.check("name", "{name}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
-    step_update_scenario1(test, checks=[])
-    step_update_runtime_protection(test, checks=[])
-    step_update_secret_archive_settings_scenario1(test, checks=[])
-    step_update_strategy(test, checks=[])
-    step_update_uai(test, checks=[])
+    step_update_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("clusterLocation", attr(test, "clusterLocationUpdate")),
+        ],
+    )
+    step_update_runtime_protection(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
+    step_update_secret_archive_settings_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
+    step_update_strategy(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
+    step_update_uai(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
     step_delete(test, checks=[])
     cleanup_scenario7(test)
 
@@ -206,7 +322,61 @@ def call_scenario7a(test):
 def call_scenario7b(test):
     """# Testcase: scenario7 split of cluster update operation for user assigned identity, runtime protection configuration, secret-archive, strategy to work with the new cluster simulator"""
     setup_scenario7(test)
-    step_update_secret_archive_settings_scenario2(test, checks=[])
+    step_update_secret_archive_settings_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
+    step_update_secret_archive_settings_scenario3_open_bao_required_only(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
+    step_update_secret_archive_settings_scenario3_open_bao_all_params(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
+    step_update_secret_archive_settings_scenario3_hashicorp_required_only(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
+    step_update_secret_archive_settings_scenario3_hashicorp_all_params(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
+    cleanup_scenario7(test)
+
+
+def call_scenario7c(test):
+    """# Testcase: scenario7 split of cluster update operation for user assigned identity, runtime protection configuration, secret-archive, strategy to work with the new cluster simulator"""
+    setup_scenario7(test)
+    step_update_secret_archive_settings_scenario3_cyberark_required_only(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
+    step_update_secret_archive_settings_scenario3_cyberark_all_params(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
     cleanup_scenario7(test)
 
 
@@ -223,14 +393,14 @@ def cleanup_scenario8(test):
 def call_scenario8a(test):
     """# Testcase: scenario8 split of cluster continue update version operation to work with the already created and deployed simulator"""
     setup_scenario7(test)
-    step_continue_update_version_sim_scenario1(test, checks=[])
+    step_continue_update_version_sim_scenario1(test, checks=[NoneCheck()])
     cleanup_scenario8(test)
 
 
 def call_scenario8b(test):
     """# Testcase: scenario8 split of cluster continue update version operation to work with the already created and deployed simulator"""
     setup_scenario7(test)
-    step_continue_update_version_sim_scenario2(test, checks=[])
+    step_continue_update_version_sim_scenario2(test, checks=[NoneCheck()])
     cleanup_scenario8(test)
 
 
@@ -247,14 +417,26 @@ def cleanup_scenario9(test):
 def call_scenario9a(test):
     """# Testcase: scenario9 split of cluster update operation for vulnerability scanning setting to work with the already created and deployed simulator"""
     setup_scenario9(test)
-    step_update_vulnerability_scanning_settings_scenario1(test, checks=[])
+    step_update_vulnerability_scanning_settings_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "nameClusterUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
     cleanup_scenario9(test)
 
 
 def call_scenario9b(test):
     """# Testcase: scenario9 split of cluster update operation for vulnerability scanning setting to work with the already created and deployed simulator"""
     setup_scenario9(test)
-    step_update_vulnerability_scanning_settings_scenario2(test, checks=[])
+    step_update_vulnerability_scanning_settings_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "nameClusterUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
     cleanup_scenario9(test)
 
 
@@ -278,18 +460,47 @@ def cleanup_scenario12(test):
     pass
 
 
+def setup_scenario13(test):
+    """Env setup_scenario13"""
+    pass
+
+
+def cleanup_scenario13(test):
+    """Env cleanup_scenario13"""
+    pass
+
+
+def call_scenario13(test):
+    """# Testcase: scenario13 cluster update with nullable properties set to null"""
+    setup_scenario13(test)
+    step_update_nullable_properties(
+        test,
+        checks=[
+            test.check("name", attr(test, "nameClusterUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
+    cleanup_scenario13(test)
+
+
 def call_scenario10(test):
     """# Testcase: scenario10 separation of cluster creation and update processes with user-assigned identity for compatibility with the new cluster simulator"""
     setup_scenario10(test)
     step_create_with_overrides(
         test,
         checks=[
-            test.check("name", "{name}"),
-            test.check("provisioningState", "Succeeded"),
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
         ],
     )
-    step_update_overrides(test, checks=[])
-    step_show(test, checks=[])
+    step_update_overrides(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
+    step_show(test, checks=cluster_show_checks(test))
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
@@ -309,14 +520,18 @@ def setup_scenario12(test):
 def call_scenario11(test):
     """# Testcase: scenario11 inspect action"""
     setup_scenario11(test)
-    step_update_inspect_secnario1(test, checks=[])
+    step_update_inspect_secnario1(
+        test, checks=[test.check("status", attr(test, "operationStatus"))]
+    )
     cleanup_scenario11(test)
 
 
 def call_scenario12(test):
     """# Testcase: scenario12 rotate credential action"""
     setup_scenario12(test)
-    step_update_rotate_credential_secnario1(test, checks=[])
+    step_update_rotate_credential_secnario1(
+        test, checks=[test.check("status", attr(test, "operationStatus"))]
+    )
     cleanup_scenario12(test)
 
 
@@ -455,28 +670,34 @@ def step_show(test, checks=None):
     """cluster show operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud cluster show --name {name} --resource-group {rg}")
+    test.cmd(
+        "az networkcloud cluster show --name {name} --resource-group {rg}",
+        checks=checks,
+    )
 
 
 def step_delete(test, checks=None):
     """cluster delete operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud cluster delete --name {name} --resource-group {rg} -y")
+    test.cmd(
+        "az networkcloud cluster delete --name {name} --resource-group {rg} --yes",
+        checks=checks,
+    )
 
 
 def step_list_resource_group(test, checks=None):
     """cluster list by resource group operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud cluster list --resource-group {rg}")
+    test.cmd("az networkcloud cluster list --resource-group {rg}", checks=checks)
 
 
 def step_list_subscription(test, checks=None):
     """cluster list by subscription operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud cluster list")
+    test.cmd("az networkcloud cluster list", checks=checks)
 
 
 def step_update_scenario1(test, checks=None):
@@ -485,7 +706,8 @@ def step_update_scenario1(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud cluster update --name {name} --cluster-location {clusterLocationUpdate}"
-        " --tags {tagsUpdate} --resource-group {rg} "
+        " --tags {tagsUpdate} --resource-group {rg} ",
+        checks=checks,
     )
 
 
@@ -496,7 +718,8 @@ def step_update_scenario2(test, checks=None):
     test.cmd(
         "az networkcloud cluster update --name {name} --cluster-location {clusterLocationUpdate}"
         " --tags {tagsUpdate} --resource-group {rg} "
-        "--compute-rack-definitions {computeRackDefinitions} "
+        "--compute-rack-definitions {computeRackDefinitions} ",
+        checks=checks,
     )
 
 
@@ -507,7 +730,8 @@ def step_update_version_sim(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud cluster update-version --cluster-name {nameUpdateVersion} --target-cluster-version {versionUpdateVersion} --resource-group {rgUpdateVersion} --no-wait"
+        "az networkcloud cluster update-version --cluster-name {nameUpdateVersion} --target-cluster-version {versionUpdateVersion} --resource-group {rgUpdateVersion} --no-wait",
+        checks=checks,
     )
 
 
@@ -516,7 +740,8 @@ def step_continue_update_version_sim_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud cluster continue-update-version --name {nameClusterUpdate} --resource-group {rgClusterUpdate} --machine-group-targeting-mode {mgtMode} --no-wait"
+        "az networkcloud cluster continue-update-version --name {nameClusterUpdate} --resource-group {rgClusterUpdate} --machine-group-targeting-mode {mgtMode} --no-wait",
+        checks=checks,
     )
 
 
@@ -525,7 +750,8 @@ def step_continue_update_version_sim_scenario2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud cluster continue-update-version --cluster-name {nameClusterUpdate} --resource-group {rgClusterUpdate} --mode {mgtMode} --no-wait"
+        "az networkcloud cluster continue-update-version --cluster-name {nameClusterUpdate} --resource-group {rgClusterUpdate} --mode {mgtMode} --no-wait",
+        checks=checks,
     )
 
 
@@ -543,7 +769,8 @@ def step_update_aggregatorOrSingleRackDefinition(test, checks=None):
         " storage-appliance-configuration-data={storageApplianceConfigurationData}"
         " bare-metal-machine-configuration-data={bareMetalMachineConfigurationData} "
         "--compute-deployment-threshold type={thresholdType} grouping={thresholdGrouping} value={thresholdValue} "
-        "--tags {tags} "
+        "--tags {tags} ",
+        checks=checks,
     )
 
 
@@ -555,7 +782,8 @@ def step_update_aggregatorOrSingleRackDefinition_json(test, checks=None):
         "az networkcloud cluster update --name {name} --resource-group {rg} "
         "--aggregator-or-single-rack-definition {aggregatorOrSingleRackDefinitionDirectory} "
         "--compute-dt type={thresholdType} grouping={thresholdGrouping} value={thresholdValue} "
-        "--tags {tags} "
+        "--tags {tags} ",
+        checks=checks,
     )
 
 
@@ -564,8 +792,9 @@ def step_update_runtime_protection(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud cluster update --name {name} --resource-group {rg} --runtime-protection enforcement-level={enforcementLevel} --cluster-sp application-id={applicationId} password={password} principal-id={principalId} "
-        "tenant-id={tenantId}"
+        "az networkcloud cluster update --name {name} --resource-group {rg} --runtime-protection enforcement-level={enforcementLevel} "
+        "--cluster-sp application-id={applicationId} password={password} principal-id={principalId} tenant-id={tenantId}",
+        checks=checks,
     )
 
 
@@ -574,8 +803,15 @@ def step_update_secret_archive_settings_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud cluster update --cluster-name {name} --resource-group {rg} --secret-archive-settings identity-resource-id={miUserAssigned} identity-type={identityType} vault-uri={containerUrl} --cluster-service-principal application-id={applicationId} password={password} principal-id={principalId} "
-        "tenant-id={tenantId}"
+        "az networkcloud cluster update --cluster-name {name} --resource-group {rg} "
+        "--secret-archive-settings identity-resource-id={miUserAssigned} "
+        "identity-type={identityType} "
+        "vault-uri={containerUrl} "
+        "--cluster-service-principal application-id={applicationId} "
+        "password={password} "
+        "principal-id={principalId} "
+        "tenant-id={tenantId}",
+        checks=checks,
     )
 
 
@@ -584,7 +820,135 @@ def step_update_secret_archive_settings_scenario2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud cluster update --name {name} --resource-group {rg} --sa-settings identity-resource-id={miUserAssigned} identity-type={identityType} vault-uri={containerUrl}"
+        "az networkcloud cluster update --name {name} --resource-group {rg} "
+        "--sa-settings identity-resource-id={miUserAssigned} "
+        "identity-type={identityType} "
+        "vault-uri={containerUrl}",
+        checks=checks,
+    )
+
+
+def step_update_secret_archive_settings_scenario3_open_bao_required_only(
+    test, checks=None
+):
+    """cluster update secret-archive-settings operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster update --name {name} --resource-group {rg} "
+        "--sa-settings identity-resource-id={miUserAssigned} "
+        "identity-type={identityType} "
+        "vault-uri={containerUrl} "
+        "encryption-public-key='somepublickey' "
+        "provider={secretArchiveProviderOpenBao} "
+        "authentication-method={secretArchiveAuthenticationMethod}",
+        checks=checks,
+    )
+
+
+def step_update_secret_archive_settings_scenario3_open_bao_all_params(
+    test, checks=None
+):
+    """cluster update secret-archive-settings operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster update --name {name} --resource-group {rg} "
+        "--sa-settings identity-resource-id={miUserAssigned} "
+        "identity-type={identityType} "
+        "vault-uri={containerUrl} "
+        "encryption-public-key='somepublickey' "
+        "provider={secretArchiveProviderOpenBao} "
+        "authentication-method={secretArchiveAuthenticationMethod} "
+        "authentication-mount-path={secretArchiveAuthenticationMountPath} "
+        "application-role-id={secretArchiveApplicationRoleId} "
+        "mount-path={secretArchiveOpenBaoMountPath} "
+        "key-value-version={secretArchiveKeyValueVersion} "
+        "namespace={secretArchiveNamespace} "
+        "path-template={secretArchivePathTemplate}",
+        checks=checks,
+    )
+
+
+def step_update_secret_archive_settings_scenario3_hashicorp_required_only(
+    test, checks=None
+):
+    """cluster update secret-archive-settings operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster update --name {name} --resource-group {rg} "
+        "--sa-settings identity-resource-id={miUserAssigned} "
+        "identity-type={identityType} "
+        "vault-uri={containerUrl} "
+        "encryption-public-key='somepublickey' "
+        "provider={secretArchiveProviderHashiCorp} "
+        "authentication-method={secretArchiveAuthenticationMethod}",
+        checks=checks,
+    )
+
+
+def step_update_secret_archive_settings_scenario3_hashicorp_all_params(
+    test, checks=None
+):
+    """cluster update secret-archive-settings operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster update --name {name} --resource-group {rg} "
+        "--sa-settings identity-resource-id={miUserAssigned} "
+        "identity-type={identityType} "
+        "vault-uri={containerUrl} "
+        "encryption-public-key='somepublickey' "
+        "provider={secretArchiveProviderHashiCorp} "
+        "authentication-method={secretArchiveAuthenticationMethod} "
+        "authentication-mount-path={secretArchiveAuthenticationMountPath} "
+        "application-role-id={secretArchiveApplicationRoleId} "
+        "mount-path={secretArchiveHashiCorpMountPath} "
+        "key-value-version={secretArchiveKeyValueVersion} "
+        "namespace={secretArchiveNamespace} "
+        "path-template={secretArchivePathTemplate}",
+        checks=checks,
+    )
+
+
+def step_update_secret_archive_settings_scenario3_cyberark_required_only(
+    test, checks=None
+):
+    """cluster update secret-archive-settings operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster update --name {name} --resource-group {rg} "
+        "--sa-settings identity-resource-id={miUserAssigned} "
+        "identity-type={identityType} "
+        "vault-uri={containerUrl} "
+        "encryption-public-key='somepublickey' "
+        "provider={secretArchiveProviderCyberArk} "
+        "application-id={secretArchiveCyberArkApplicationId} "
+        "safe-name={secretArchiveCyberArkSafeName}",
+        checks=checks,
+    )
+
+
+def step_update_secret_archive_settings_scenario3_cyberark_all_params(
+    test, checks=None
+):
+    """cluster update secret-archive-settings operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster update --name {name} --resource-group {rg} "
+        "--sa-settings identity-resource-id={miUserAssigned} "
+        "identity-type={identityType} "
+        "vault-uri={containerUrl} "
+        "encryption-public-key='somepublickey' "
+        "provider={secretArchiveProviderCyberArk} "
+        "application-id={secretArchiveCyberArkApplicationId} "
+        "safe-name={secretArchiveCyberArkSafeName} "
+        "object-name-template={secretArchiveCyberArkObjectNameTemplate} "
+        "folder-name={secretArchiveCyberArkFolderName}",
+        checks=checks,
     )
 
 
@@ -593,7 +957,8 @@ def step_update_strategy(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud cluster update --name {name} --resource-group {rg} --update-strategy strategy-type={strategyType} threshold-type={strategyThresholdType} threshold-value={strategyThresholdValue} max-unavailable={maxUnavailable} wait-time-minutes={waitTimeMinutes}"
+        "az networkcloud cluster update --name {name} --resource-group {rg} --update-strategy strategy-type={strategyType} threshold-type={strategyThresholdType} threshold-value={strategyThresholdValue} max-unavailable={maxUnavailable} wait-time-minutes={waitTimeMinutes}",
+        checks=checks,
     )
 
 
@@ -605,7 +970,8 @@ def step_update_uai(test, checks=None):
         "az networkcloud cluster update --name {name} --resource-group {rg} "
         "--mi-user-assigned={miUserAssigned} --analytics-output-settings analytics-workspace-id={analyticsWorkspaceId} "
         "identity-resource-id={uaiResourceId} identity-type={identityType} "
-        "--command-output-settings container-url={containerUrl} identity-resource-id={uaiResourceId} identity-type={identityType}"
+        "--command-output-settings container-url={containerUrl} identity-resource-id={uaiResourceId} identity-type={identityType}",
+        checks=checks,
     )
 
 
@@ -623,7 +989,8 @@ def step_update_overrides(test, checks=None):
         " rack-location={rackLocation}"
         " availability-zone={availabilityZone}"
         " storage-appliance-configuration-data={storageApplianceConfigurationData}"
-        " bare-metal-machine-configuration-data={bareMetalMachineConfigurationData}"
+        " bare-metal-machine-configuration-data={bareMetalMachineConfigurationData}",
+        checks=checks,
     )
 
 
@@ -632,7 +999,8 @@ def step_scan_runtime(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud cluster scan-runtime --name {nameScanActivity} --resource-group {rgScanActivity} --scan-activity {scanActivity} "
+        "az networkcloud cluster scan-runtime --name {nameScanActivity} --resource-group {rgScanActivity} --scan-activity {scanActivity} ",
+        checks=checks,
     )
 
 
@@ -641,7 +1009,8 @@ def step_update_vulnerability_scanning_settings_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        'az networkcloud cluster update --name {nameClusterUpdate} --resource-group {rgClusterUpdate} --vulnerability-scanning-settings container-scan="Enabled"  '
+        'az networkcloud cluster update --name {nameClusterUpdate} --resource-group {rgClusterUpdate} --vulnerability-scanning-settings container-scan="Enabled"  ',
+        checks=checks,
     )
 
 
@@ -650,7 +1019,8 @@ def step_update_vulnerability_scanning_settings_scenario2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        'az networkcloud cluster update --name {nameClusterUpdate} --resource-group {rgClusterUpdate} --vs-settings container-scan="Enabled"  '
+        'az networkcloud cluster update --name {nameClusterUpdate} --resource-group {rgClusterUpdate} --vs-settings container-scan="Enabled"  ',
+        checks=checks,
     )
 
 
@@ -662,7 +1032,8 @@ def step_update_inspect_secnario1(test, checks=None):
         "az networkcloud cluster inspect --name {nameClusterUpdate} "
         "--resource-group {rg} "
         "--additional-actions {additionalActions} "
-        "--filter-devices {filterDevices}"
+        "--filter-devices {filterDevices}",
+        checks=checks,
     )
 
 
@@ -672,7 +1043,26 @@ def step_update_rotate_credential_secnario1(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud cluster rotate-credential --name {nameClusterUpdate} "
-        "--resource-group {rg} --credentials {rotateCredential}"
+        "--resource-group {rg} --credentials {rotateCredential}",
+        checks=checks,
+    )
+
+
+def step_update_nullable_properties(test, checks=None):
+    """cluster update with nullable properties set to null"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster update --name {nameClusterUpdate} --resource-group {rgClusterUpdate}"
+        " --analytics-output-settings null"
+        " --cluster-service-principal null"
+        " --command-output-settings null"
+        " --compute-deployment-threshold null"
+        " --runtime-protection null"
+        " --secret-archive-settings null"
+        " --update-strategy null"
+        " --vulnerability-scanning-settings null",
+        checks=checks,
     )
 
 
@@ -684,7 +1074,7 @@ class ClusterScenarioTest(ScenarioTest):
         self.kwargs.update(
             {
                 "kind": CONFIG.get("CLUSTER", "kind"),
-                "name": self.create_random_name(prefix="cli-test-cluster-", length=24),
+                "name": CONFIG.get("CLUSTER", "name"),
                 "extendedLocation": CONFIG.get("CLUSTER", "extended_location"),
                 "extendedLocationType": CONFIG.get("CLUSTER", "extended_location_type"),
                 "rg": CONFIG.get("CLUSTER", "resource_group"),
@@ -706,6 +1096,9 @@ class ClusterScenarioTest(ScenarioTest):
                 "mgtMode": CONFIG.get("CLUSTER", "machine_group_targeting_mode"),
                 "networkFabricId": CONFIG.get("CLUSTER", "network_fabric_id"),
                 "networkRackId": CONFIG.get("CLUSTER", "network_rack_id"),
+                "networkRackIdResponse": CONFIG.get(
+                    "CLUSTER", "network_rack_id_response"
+                ),
                 "rackSkuId": CONFIG.get("CLUSTER", "rack_sku_id"),
                 "rackSerialNumber": CONFIG.get("CLUSTER", "rack_serial_number"),
                 "rackLocation": CONFIG.get("CLUSTER", "rack_location"),
@@ -724,6 +1117,7 @@ class ClusterScenarioTest(ScenarioTest):
                 ),
                 "tags": CONFIG.get("CLUSTER", "tags"),
                 "tagsUpdate": CONFIG.get("CLUSTER", "tags_update"),
+                "provisioningState": CONFIG.get("CLUSTER", "provisioning_state"),
                 "nameUpdateVersion": CONFIG.get("CLUSTER", "name_update_version"),
                 "rgUpdateVersion": CONFIG.get("CLUSTER", "rg_update_version"),
                 "versionUpdateVersion": CONFIG.get("CLUSTER", "version_update_version"),
@@ -771,10 +1165,59 @@ class ClusterScenarioTest(ScenarioTest):
                 "mrgGroupLocation": CONFIG.get("CLUSTER", "mrg_location"),
                 "computeRackDefinitions": os.environ.get("AAZ_EXT_DIR", ".")
                 + CONFIG.get("CLUSTER", "compute_rack_definitions_directory"),
+                "computeRackDefinitionsResponse": CONFIG.get(
+                    "CLUSTER", "compute_rack_definitions_response"
+                ),
                 "clusterTypeMultiRack": CONFIG.get("CLUSTER", "cluster_type_multirack"),
                 "additionalActions": CONFIG.get("CLUSTER", "inspect_actions"),
                 "filterDevices": CONFIG.get("CLUSTER", "filter_devices"),
                 "rotateCredential": CONFIG.get("CLUSTER", "rotate_credential"),
+                "secretArchiveProviderOpenBao": CONFIG.get(
+                    "CLUSTER", "secret_archive_provider_open_bao"
+                ),
+                "secretArchiveProviderHashiCorp": CONFIG.get(
+                    "CLUSTER", "secret_archive_provider_hashi_corp"
+                ),
+                "secretArchiveProviderCyberArk": CONFIG.get(
+                    "CLUSTER", "secret_archive_provider_cyber_ark"
+                ),
+                "secretArchiveAuthenticationMethod": CONFIG.get(
+                    "CLUSTER", "secret_archive_authentication_method"
+                ),
+                "secretArchiveAuthenticationMountPath": CONFIG.get(
+                    "CLUSTER", "secret_archive_authentication_mount_path"
+                ),
+                "secretArchiveApplicationRoleId": CONFIG.get(
+                    "CLUSTER", "secret_archive_application_role_id"
+                ),
+                "secretArchiveOpenBaoMountPath": CONFIG.get(
+                    "CLUSTER", "secret_archive_open_bao_mount_path"
+                ),
+                "secretArchiveHashiCorpMountPath": CONFIG.get(
+                    "CLUSTER", "secret_archive_hashi_corp_mount_path"
+                ),
+                "secretArchiveKeyValueVersion": CONFIG.get(
+                    "CLUSTER", "secret_archive_key_value_version"
+                ),
+                "secretArchiveNamespace": CONFIG.get(
+                    "CLUSTER", "secret_archive_namespace"
+                ),
+                "secretArchivePathTemplate": CONFIG.get(
+                    "CLUSTER", "secret_archive_path_template"
+                ),
+                "secretArchiveCyberArkApplicationId": CONFIG.get(
+                    "CLUSTER", "secret_archive_cyber_ark_application_id"
+                ),
+                "secretArchiveCyberArkSafeName": CONFIG.get(
+                    "CLUSTER", "secret_archive_cyber_ark_safe_name"
+                ),
+                "secretArchiveCyberArkObjectNameTemplate": CONFIG.get(
+                    "CLUSTER", "secret_archive_cyber_ark_object_name_template"
+                ),
+                "secretArchiveCyberArkFolderName": CONFIG.get(
+                    "CLUSTER", "secret_archive_cyber_ark_folder_name"
+                ),
+                "operationStatus": CONFIG.get("CLUSTER", "operation_status"),
             }
         )
 
@@ -854,6 +1297,10 @@ class ClusterScenarioTest(ScenarioTest):
         """test scenario for Cluster update operation for user assigned identity, runtime protection configuration, secret-archive, strategy"""
         call_scenario7b(self)
 
+    def test_cluster_scenario7c(self):
+        """test scenario for Cluster update operation for user assigned identity, runtime protection configuration, secret-archive, strategy"""
+        call_scenario7c(self)
+
     def test_cluster_scenario8a(self):
         """test scenario for Cluster continue update version operation"""
         call_scenario8a(self)
@@ -888,3 +1335,7 @@ class ClusterScenarioTest(ScenarioTest):
     def test_cluster_scenario12(self):
         """test scenario for Cluster Rotate Credential"""
         call_scenario12(self)
+
+    def test_cluster_scenario13(self):
+        """test scenario for Cluster update with nullable properties set to null"""
+        call_scenario13(self)

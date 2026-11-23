@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-04-01-preview",
+        "version": "2026-02-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.providerhub/providerregistrations/{}", "2024-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.providerhub/providerregistrations/{}", "2026-02-01-preview"],
         ]
     }
 
@@ -72,7 +72,7 @@ class Create(AAZCommand):
         _args_schema.canary_manifest_owners = AAZListArg(
             options=["--canary-manifest-owners"],
             arg_group="Management",
-            help="List of manifest owners for canary",
+            help="List of manifest owners for canary.",
         )
         _args_schema.error_response_message_options = AAZObjectArg(
             options=["--message-options", "--error-response-message-options"],
@@ -88,6 +88,16 @@ class Create(AAZCommand):
             options=["--rollout-submitters", "--expedited-rollout-submitters"],
             arg_group="Management",
             help="List of expedited rollout submitters.",
+        )
+        _args_schema.feature_approval_claims = AAZListArg(
+            options=["--feature-claims", "--feature-approval-claims"],
+            arg_group="Management",
+            help="List of claims to approve or reject feature registration.",
+        )
+        _args_schema.feature_management_owners = AAZListArg(
+            options=["--feature-owners", "--feature-management-owners"],
+            arg_group="Management",
+            help="List of feature management owners.",
         )
         _args_schema.incident_contact_email = AAZStrArg(
             options=["--incident-contact-email"],
@@ -171,6 +181,12 @@ class Create(AAZCommand):
         expedited_rollout_submitters = cls._args_schema.expedited_rollout_submitters
         expedited_rollout_submitters.Element = AAZStrArg()
 
+        feature_approval_claims = cls._args_schema.feature_approval_claims
+        feature_approval_claims.Element = AAZStrArg()
+
+        feature_management_owners = cls._args_schema.feature_management_owners
+        feature_management_owners.Element = AAZStrArg()
+
         manifest_owners = cls._args_schema.manifest_owners
         manifest_owners.Element = AAZStrArg()
 
@@ -241,6 +257,11 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The DSTS configuration.",
         )
+        _args_schema.enable_preset_resource_types = AAZBoolArg(
+            options=["--enable-preset-types", "--enable-preset-resource-types"],
+            arg_group="Properties",
+            help="Preset resource types enabled?",
+        )
         _args_schema.enable_tenant_linked_notification = AAZBoolArg(
             options=["--enable-linked-notif", "--enable-tenant-linked-notification"],
             arg_group="Properties",
@@ -262,6 +283,11 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Legacy registrations.",
         )
+        _args_schema.lifecycle_info = AAZObjectArg(
+            options=["--lifecycle-info"],
+            arg_group="Properties",
+            help="Resource provider lifecycle information.",
+        )
         _args_schema.linked_notification_rules = AAZListArg(
             options=["--linked-notif-rules", "--linked-notification-rules"],
             arg_group="Properties",
@@ -272,11 +298,10 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Management groups global notification endpoints.",
         )
-        _args_schema.metadata = AAZFreeFormDictArg(
+        _args_schema.metadata = AAZDictArg(
             options=["--metadata"],
             arg_group="Properties",
             help="The metadata.",
-            blank={},
         )
         _args_schema.namespace = AAZStrArg(
             options=["--namespace"],
@@ -298,6 +323,11 @@ class Create(AAZCommand):
             options=["--notifications"],
             arg_group="Properties",
             help="The notifications object.",
+        )
+        _args_schema.obo_subscription_id = AAZStrArg(
+            options=["--obo-subscription-id"],
+            arg_group="Properties",
+            help="The on behalf of subscription id for the resource provider.",
         )
         _args_schema.optional_features = AAZListArg(
             options=["--optional-features"],
@@ -418,6 +448,30 @@ class Create(AAZCommand):
         legacy_registrations = cls._args_schema.legacy_registrations
         legacy_registrations.Element = AAZStrArg()
 
+        lifecycle_info = cls._args_schema.lifecycle_info
+        lifecycle_info.allowed_subscriptions = AAZListArg(
+            options=["allowed-subscriptions"],
+            help="The list of allowed subscriptions for this resource provider.",
+        )
+        lifecycle_info.isolation_type = AAZStrArg(
+            options=["isolation-type"],
+            help="The isolation type.",
+            enum={"Private": "Private", "Public": "Public"},
+        )
+        lifecycle_info.lifecycle_stage = AAZStrArg(
+            options=["lifecycle-stage"],
+            help="The lifecycle stage.",
+            enum={"GA": "GA", "InDevelopment": "InDevelopment", "PrivatePreview": "PrivatePreview", "PublicPreview": "PublicPreview", "Retired": "Retired"},
+        )
+        lifecycle_info.partner_category = AAZStrArg(
+            options=["partner-category"],
+            help="The partner category.",
+            enum={"FirstParty": "FirstParty", "ThirdParty": "ThirdParty"},
+        )
+
+        allowed_subscriptions = cls._args_schema.lifecycle_info.allowed_subscriptions
+        allowed_subscriptions.Element = AAZStrArg()
+
         linked_notification_rules = cls._args_schema.linked_notification_rules
         linked_notification_rules.Element = AAZObjectArg()
 
@@ -455,6 +509,9 @@ class Create(AAZCommand):
         management_group_global_notification_endpoints = cls._args_schema.management_group_global_notification_endpoints
         management_group_global_notification_endpoints.Element = AAZObjectArg()
         cls._build_args_resource_provider_endpoint_create(management_group_global_notification_endpoints.Element)
+
+        metadata = cls._args_schema.metadata
+        metadata.Element = AAZAnyTypeArg()
 
         notification_settings = cls._args_schema.notification_settings
         notification_settings.subscriber_settings = AAZListArg(
@@ -964,7 +1021,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-01-preview",
+                    "api-version", "2026-02-01-preview",
                     required=True,
                 ),
             }
@@ -998,19 +1055,22 @@ class Create(AAZCommand):
                 properties.set_prop("crossTenantTokenValidation", AAZStrType, ".cross_tenant_token_validation")
                 properties.set_prop("customManifestVersion", AAZStrType, ".custom_manifest_version")
                 properties.set_prop("dstsConfiguration", AAZObjectType, ".dsts_configuration")
+                properties.set_prop("enablePresetResourceTypes", AAZBoolType, ".enable_preset_resource_types")
                 properties.set_prop("enableTenantLinkedNotification", AAZBoolType, ".enable_tenant_linked_notification", typ_kwargs={"nullable": True})
                 properties.set_prop("featuresRule", AAZObjectType)
                 properties.set_prop("globalNotificationEndpoints", AAZListType, ".global_notification_endpoints")
                 properties.set_prop("legacyNamespace", AAZStrType, ".legacy_namespace")
                 properties.set_prop("legacyRegistrations", AAZListType, ".legacy_registrations")
+                properties.set_prop("lifecycleInfo", AAZObjectType, ".lifecycle_info")
                 properties.set_prop("linkedNotificationRules", AAZListType, ".linked_notification_rules")
                 properties.set_prop("management", AAZObjectType)
                 properties.set_prop("managementGroupGlobalNotificationEndpoints", AAZListType, ".management_group_global_notification_endpoints")
-                properties.set_prop("metadata", AAZFreeFormDictType, ".metadata")
+                properties.set_prop("metadata", AAZDictType, ".metadata")
                 properties.set_prop("namespace", AAZStrType, ".namespace")
                 properties.set_prop("notificationOptions", AAZStrType, ".notification_options")
                 properties.set_prop("notificationSettings", AAZObjectType, ".notification_settings")
                 properties.set_prop("notifications", AAZListType, ".notifications")
+                properties.set_prop("oboSubscriptionId", AAZStrType, ".obo_subscription_id")
                 properties.set_prop("optionalFeatures", AAZListType, ".optional_features")
                 properties.set_prop("privateResourceProviderConfiguration", AAZObjectType, ".private_resource_provider_configuration")
                 properties.set_prop("providerAuthentication", AAZObjectType, ".provider_authentication")
@@ -1061,6 +1121,17 @@ class Create(AAZCommand):
             if legacy_registrations is not None:
                 legacy_registrations.set_elements(AAZStrType, ".")
 
+            lifecycle_info = _builder.get(".properties.lifecycleInfo")
+            if lifecycle_info is not None:
+                lifecycle_info.set_prop("allowedSubscriptions", AAZListType, ".allowed_subscriptions")
+                lifecycle_info.set_prop("isolationType", AAZStrType, ".isolation_type")
+                lifecycle_info.set_prop("lifecycleStage", AAZStrType, ".lifecycle_stage")
+                lifecycle_info.set_prop("partnerCategory", AAZStrType, ".partner_category")
+
+            allowed_subscriptions = _builder.get(".properties.lifecycleInfo.allowedSubscriptions")
+            if allowed_subscriptions is not None:
+                allowed_subscriptions.set_elements(AAZStrType, ".")
+
             linked_notification_rules = _builder.get(".properties.linkedNotificationRules")
             if linked_notification_rules is not None:
                 linked_notification_rules.set_elements(AAZObjectType, ".")
@@ -1092,6 +1163,8 @@ class Create(AAZCommand):
                 management.set_prop("errorResponseMessageOptions", AAZObjectType, ".error_response_message_options")
                 management.set_prop("expeditedRolloutMetadata", AAZObjectType, ".expedited_rollout_metadata")
                 management.set_prop("expeditedRolloutSubmitters", AAZListType, ".expedited_rollout_submitters")
+                management.set_prop("featureApprovalClaims", AAZListType, ".feature_approval_claims")
+                management.set_prop("featureManagementOwners", AAZListType, ".feature_management_owners")
                 management.set_prop("incidentContactEmail", AAZStrType, ".incident_contact_email")
                 management.set_prop("incidentRoutingService", AAZStrType, ".incident_routing_service")
                 management.set_prop("incidentRoutingTeam", AAZStrType, ".incident_routing_team")
@@ -1123,6 +1196,14 @@ class Create(AAZCommand):
             expedited_rollout_submitters = _builder.get(".properties.management.expeditedRolloutSubmitters")
             if expedited_rollout_submitters is not None:
                 expedited_rollout_submitters.set_elements(AAZStrType, ".")
+
+            feature_approval_claims = _builder.get(".properties.management.featureApprovalClaims")
+            if feature_approval_claims is not None:
+                feature_approval_claims.set_elements(AAZStrType, ".")
+
+            feature_management_owners = _builder.get(".properties.management.featureManagementOwners")
+            if feature_management_owners is not None:
+                feature_management_owners.set_elements(AAZStrType, ".")
 
             manifest_owners = _builder.get(".properties.management.manifestOwners")
             if manifest_owners is not None:
@@ -1165,7 +1246,7 @@ class Create(AAZCommand):
 
             metadata = _builder.get(".properties.metadata")
             if metadata is not None:
-                metadata.set_anytype_elements(".")
+                metadata.set_elements(AAZAnyType, ".")
 
             notification_settings = _builder.get(".properties.notificationSettings")
             if notification_settings is not None:
@@ -1386,6 +1467,9 @@ class Create(AAZCommand):
             properties.dsts_configuration = AAZObjectType(
                 serialized_name="dstsConfiguration",
             )
+            properties.enable_preset_resource_types = AAZBoolType(
+                serialized_name="enablePresetResourceTypes",
+            )
             properties.enable_tenant_linked_notification = AAZBoolType(
                 serialized_name="enableTenantLinkedNotification",
                 nullable=True,
@@ -1402,6 +1486,9 @@ class Create(AAZCommand):
             properties.legacy_registrations = AAZListType(
                 serialized_name="legacyRegistrations",
             )
+            properties.lifecycle_info = AAZObjectType(
+                serialized_name="lifecycleInfo",
+            )
             properties.linked_notification_rules = AAZListType(
                 serialized_name="linkedNotificationRules",
             )
@@ -1409,7 +1496,7 @@ class Create(AAZCommand):
             properties.management_group_global_notification_endpoints = AAZListType(
                 serialized_name="managementGroupGlobalNotificationEndpoints",
             )
-            properties.metadata = AAZFreeFormDictType()
+            properties.metadata = AAZDictType()
             properties.namespace = AAZStrType()
             properties.notification_options = AAZStrType(
                 serialized_name="notificationOptions",
@@ -1418,6 +1505,9 @@ class Create(AAZCommand):
                 serialized_name="notificationSettings",
             )
             properties.notifications = AAZListType()
+            properties.obo_subscription_id = AAZStrType(
+                serialized_name="oboSubscriptionId",
+            )
             properties.optional_features = AAZListType(
                 serialized_name="optionalFeatures",
             )
@@ -1516,6 +1606,23 @@ class Create(AAZCommand):
             legacy_registrations = cls._schema_on_200_201.properties.legacy_registrations
             legacy_registrations.Element = AAZStrType()
 
+            lifecycle_info = cls._schema_on_200_201.properties.lifecycle_info
+            lifecycle_info.allowed_subscriptions = AAZListType(
+                serialized_name="allowedSubscriptions",
+            )
+            lifecycle_info.isolation_type = AAZStrType(
+                serialized_name="isolationType",
+            )
+            lifecycle_info.lifecycle_stage = AAZStrType(
+                serialized_name="lifecycleStage",
+            )
+            lifecycle_info.partner_category = AAZStrType(
+                serialized_name="partnerCategory",
+            )
+
+            allowed_subscriptions = cls._schema_on_200_201.properties.lifecycle_info.allowed_subscriptions
+            allowed_subscriptions.Element = AAZStrType()
+
             linked_notification_rules = cls._schema_on_200_201.properties.linked_notification_rules
             linked_notification_rules.Element = AAZObjectType()
 
@@ -1561,6 +1668,12 @@ class Create(AAZCommand):
             )
             management.expedited_rollout_submitters = AAZListType(
                 serialized_name="expeditedRolloutSubmitters",
+            )
+            management.feature_approval_claims = AAZListType(
+                serialized_name="featureApprovalClaims",
+            )
+            management.feature_management_owners = AAZListType(
+                serialized_name="featureManagementOwners",
             )
             management.incident_contact_email = AAZStrType(
                 serialized_name="incidentContactEmail",
@@ -1613,6 +1726,12 @@ class Create(AAZCommand):
             expedited_rollout_submitters = cls._schema_on_200_201.properties.management.expedited_rollout_submitters
             expedited_rollout_submitters.Element = AAZStrType()
 
+            feature_approval_claims = cls._schema_on_200_201.properties.management.feature_approval_claims
+            feature_approval_claims.Element = AAZStrType()
+
+            feature_management_owners = cls._schema_on_200_201.properties.management.feature_management_owners
+            feature_management_owners.Element = AAZStrType()
+
             manifest_owners = cls._schema_on_200_201.properties.management.manifest_owners
             manifest_owners.Element = AAZStrType()
 
@@ -1649,6 +1768,9 @@ class Create(AAZCommand):
             management_group_global_notification_endpoints = cls._schema_on_200_201.properties.management_group_global_notification_endpoints
             management_group_global_notification_endpoints.Element = AAZObjectType()
             _CreateHelper._build_schema_resource_provider_endpoint_read(management_group_global_notification_endpoints.Element)
+
+            metadata = cls._schema_on_200_201.properties.metadata
+            metadata.Element = AAZAnyType()
 
             notification_settings = cls._schema_on_200_201.properties.notification_settings
             notification_settings.subscriber_settings = AAZListType(

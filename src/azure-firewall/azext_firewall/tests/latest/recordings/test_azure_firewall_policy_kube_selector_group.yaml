@@ -1,0 +1,734 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_firewall_policy_kube_selector_group000001?api-version=2024-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001","name":"test_azure_firewall_policy_kube_selector_group000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","test":"test_azure_firewall_policy_kube_selector_group","date":"2026-10-01T06:54:23Z","module":"azure-firewall"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '465'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 06:54:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 6FE26A3BB2E842DDA4556E8FFD879701 Ref B: SG2AA1040518029 Ref C: 2026-10-01T06:54:36Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2025-09-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"size\": \"0.001318932 MB\",\r\n    \"sku\":
+        {\r\n      \"tier\": \"Standard\"\r\n    },\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"kubeSelectorGroups\": [],\r\n    \"firewalls\":
+        [],\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"provisioningState\": \"Updating\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy\",\r\n
+        \ \"name\": \"testpolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"e6f3ab16-c4e3-429e-8a01-1a50280d9059\",\r\n  \"location\": \"westus2\"\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/c288404c-1de9-4b65-9d53-3c905cd465ab?api-version=2025-09-01&t=639264344821107378&c=MIIHlTCCBn2gAwIBAgIRAObv0sWV1VDnrj-MruQ0C2swDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV1VTMiBDQSAwMTAeFw0yNjA5MjIwMzExNDlaFw0yNjEyMTcwOTExNDlaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuOGh4IB8lhPUpPCo4-KPP8w1KXYnfIOkPnS5-vhsFzk2FBHysapaXcr4JtVYQOSQ4crzc5tIjAP4tUTQ3JQ92-LrEm2vFoYzvEL9lr295wsMpNUpxHyQnobp5LjIB8ORCotycPxwRPgbOELCYWDjKL2RnZzpmBShT4GPjuGVk6jCo2kZqDcdBUAZBGr8pDajVoGVrgINfzzIMc9qpxywo7tDdK-RVPEmzSqTaYUew4a_q4VCkQySc9uB_tefgHh1pYPUqpzDGAMn16V4hOVEzGjD67fBCSvdkpvWy2smUirQYrdC3TEjvRHH73oIOl0Bj0Lm-fdXA1E748LhCBav9QIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUf3paBn-JUoOQ3qDWty0SmzRtm9kwHwYDVR0jBBgwFoAUrONy-gOyc549lcjvh1uu3Ruh7WgwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzg3L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NybHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS84Ny9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzg3L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZXdlc3R1czJwa2kud2VzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0dXMyaWNhMDEvODcvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY2FjZXJ0cy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAtqUV6EtG3Lbhi_gp7j_eSVHRPF13FDx1EGP88WJa7uPnzW-FabknINa9lcRg6qAfIhUu3bbSGtTcy7EtnSJANG-s0iCdavAca-XmS4HwTuyKyVsgKDTaAfp5JLw9TnJz2HlGny2adUfoD9lx-dXRzOSfwllut6kqsxuGjIVNgbe_JoY1fwssznPswp17zdmXbSEGu1z5CdRdfQK79RGfH4pictbfq4b1R_2emC4OA-3aGijs7-GK7K4pmlv48cs4cfjKCxnfXMqyc9gm7E5tg126H0tEAcMIx14CmpsZZqFfOJLGuRbOJSytbLmeXWXBzdrA-OtASQrU5j3sTO1p9w&s=nHiCQqIoy7AKcf3dLe_II0MbJvVPh4PEA0zQYVFpSRSkWfyteRlrfQqnif0XXOTSoOG5yStZerSv3GlvNP2EMyuSx54xPHXXFSjNgKhXoAejNvzwHocBtcKUgPZr_YmLDxP1i_93ALoqQXuOe5Ar0qm0Cz_mVfqncBwPgZpw2Y0p2-NfFGK1MAMJ7TlQIUQqRbUTtB11I1HHTUzHi8Hjv4gk1OYi00MJZWwBVsTbieQF3cavqhbGgsdRVj8fLA-7bfjKfp7YYhAc12WQBFtZWoszcDfAXb3DxWrhL7EcUyWTBd-vwm8nQj42blcUeH0zYyqG95W7SJgQYrKU3Mw7sw&h=xjZg7C0sjA0EFCi2cR9uUdDSbIlE4R7aQH73rmWgQY0
+      cache-control:
+      - no-cache
+      content-length:
+      - '628'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 06:54:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4f00b3b6-2940-4f2c-b037-94637c180d30,objectId=016c741f-3499-47a6-bdb0-6ef338078ddf/southeastasia/512989c2-4432-4691-9c8f-bbcf856a18e8
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 546D8518EF2D4FC4B727D0938307E833 Ref B: SG2AA1040516042 Ref C: 2026-10-01T06:54:38Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/c288404c-1de9-4b65-9d53-3c905cd465ab?api-version=2025-09-01&t=639264344821107378&c=MIIHlTCCBn2gAwIBAgIRAObv0sWV1VDnrj-MruQ0C2swDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV1VTMiBDQSAwMTAeFw0yNjA5MjIwMzExNDlaFw0yNjEyMTcwOTExNDlaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuOGh4IB8lhPUpPCo4-KPP8w1KXYnfIOkPnS5-vhsFzk2FBHysapaXcr4JtVYQOSQ4crzc5tIjAP4tUTQ3JQ92-LrEm2vFoYzvEL9lr295wsMpNUpxHyQnobp5LjIB8ORCotycPxwRPgbOELCYWDjKL2RnZzpmBShT4GPjuGVk6jCo2kZqDcdBUAZBGr8pDajVoGVrgINfzzIMc9qpxywo7tDdK-RVPEmzSqTaYUew4a_q4VCkQySc9uB_tefgHh1pYPUqpzDGAMn16V4hOVEzGjD67fBCSvdkpvWy2smUirQYrdC3TEjvRHH73oIOl0Bj0Lm-fdXA1E748LhCBav9QIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUf3paBn-JUoOQ3qDWty0SmzRtm9kwHwYDVR0jBBgwFoAUrONy-gOyc549lcjvh1uu3Ruh7WgwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzg3L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NybHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS84Ny9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzg3L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZXdlc3R1czJwa2kud2VzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0dXMyaWNhMDEvODcvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY2FjZXJ0cy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAtqUV6EtG3Lbhi_gp7j_eSVHRPF13FDx1EGP88WJa7uPnzW-FabknINa9lcRg6qAfIhUu3bbSGtTcy7EtnSJANG-s0iCdavAca-XmS4HwTuyKyVsgKDTaAfp5JLw9TnJz2HlGny2adUfoD9lx-dXRzOSfwllut6kqsxuGjIVNgbe_JoY1fwssznPswp17zdmXbSEGu1z5CdRdfQK79RGfH4pictbfq4b1R_2emC4OA-3aGijs7-GK7K4pmlv48cs4cfjKCxnfXMqyc9gm7E5tg126H0tEAcMIx14CmpsZZqFfOJLGuRbOJSytbLmeXWXBzdrA-OtASQrU5j3sTO1p9w&s=nHiCQqIoy7AKcf3dLe_II0MbJvVPh4PEA0zQYVFpSRSkWfyteRlrfQqnif0XXOTSoOG5yStZerSv3GlvNP2EMyuSx54xPHXXFSjNgKhXoAejNvzwHocBtcKUgPZr_YmLDxP1i_93ALoqQXuOe5Ar0qm0Cz_mVfqncBwPgZpw2Y0p2-NfFGK1MAMJ7TlQIUQqRbUTtB11I1HHTUzHi8Hjv4gk1OYi00MJZWwBVsTbieQF3cavqhbGgsdRVj8fLA-7bfjKfp7YYhAc12WQBFtZWoszcDfAXb3DxWrhL7EcUyWTBd-vwm8nQj42blcUeH0zYyqG95W7SJgQYrKU3Mw7sw&h=xjZg7C0sjA0EFCi2cR9uUdDSbIlE4R7aQH73rmWgQY0
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 06:54:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4f00b3b6-2940-4f2c-b037-94637c180d30,objectId=016c741f-3499-47a6-bdb0-6ef338078ddf/southeastasia/7608cb87-bd1d-4ae2-8aae-28298375df6e
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 2CD09A3F06A941049686CEB7349EB73A Ref B: SG2AA1040516042 Ref C: 2026-10-01T06:54:43Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2025-09-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"size\": \"0.001318932 MB\",\r\n    \"sku\":
+        {\r\n      \"tier\": \"Standard\"\r\n    },\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"kubeSelectorGroups\": [],\r\n    \"firewalls\":
+        [],\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"provisioningState\": \"Succeeded\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy\",\r\n
+        \ \"name\": \"testpolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"e6f3ab16-c4e3-429e-8a01-1a50280d9059\",\r\n  \"location\": \"westus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '629'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 06:54:45 GMT
+      etag:
+      - '"e6f3ab16-c4e3-429e-8a01-1a50280d9059"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 230C0470E04B43DD8730AC4431618CB5 Ref B: SG2AA1070302054 Ref C: 2026-10-01T06:54:45Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "testksg", "properties": {"namespaceSelector": {"matchLabels":
+      {"kubernetes.io/metadata.name": "production"}}, "podSelector": {"matchExpressions":
+      [{"key": "tier", "operator": "In", "values": ["frontend", "backend"]}], "matchLabels":
+      {"app": "web"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy kube-selector-group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '260'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --policy-name -n --pod-selector --namespace-selector
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy/kubeSelectorGroups/testksg?api-version=2025-09-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"podSelector\": {\r\n      \"matchLabels\":
+        {\r\n        \"app\": \"web\"\r\n      },\r\n      \"matchExpressions\": [\r\n
+        \       {\r\n          \"key\": \"tier\",\r\n          \"operator\": \"In\",\r\n
+        \         \"values\": [\r\n            \"frontend\",\r\n            \"backend\"\r\n
+        \         ]\r\n        }\r\n      ]\r\n    },\r\n    \"namespaceSelector\":
+        {\r\n      \"matchLabels\": {\r\n        \"kubernetes.io/metadata.name\":
+        \"production\"\r\n      }\r\n    },\r\n    \"lastUpdated\": \"2026-10-01T06:54:49.8320494Z\",\r\n
+        \   \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy/kubeSelectorGroups/testksg\",\r\n
+        \ \"name\": \"testksg\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/KubeSelectorGroups\",\r\n
+        \ \"etag\": \"bcf11366-394f-46db-be44-12075435b015\",\r\n  \"location\": \"westus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '907'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 06:54:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4f00b3b6-2940-4f2c-b037-94637c180d30,objectId=016c741f-3499-47a6-bdb0-6ef338078ddf/westus2/0375fde1-a498-4077-8430-763515b5f371
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 9CE8556E9299452C876FF6CBA73E43F3 Ref B: SG2AA1070303031 Ref C: 2026-10-01T06:54:49Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy kube-selector-group show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name -n
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy/kubeSelectorGroups/testksg?api-version=2025-09-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"podSelector\": {\r\n      \"matchLabels\":
+        {\r\n        \"app\": \"web\"\r\n      },\r\n      \"matchExpressions\": [\r\n
+        \       {\r\n          \"key\": \"tier\",\r\n          \"operator\": \"In\",\r\n
+        \         \"values\": [\r\n            \"frontend\",\r\n            \"backend\"\r\n
+        \         ]\r\n        }\r\n      ]\r\n    },\r\n    \"namespaceSelector\":
+        {\r\n      \"matchLabels\": {\r\n        \"kubernetes.io/metadata.name\":
+        \"production\"\r\n      }\r\n    },\r\n    \"lastUpdated\": \"2026-10-01T06:54:49.8320494Z\",\r\n
+        \   \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy/kubeSelectorGroups/testksg\",\r\n
+        \ \"name\": \"testksg\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/KubeSelectorGroups\",\r\n
+        \ \"etag\": \"bcf11366-394f-46db-be44-12075435b015\",\r\n  \"location\": \"westus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '907'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 06:54:53 GMT
+      etag:
+      - '"bcf11366-394f-46db-be44-12075435b015"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4f00b3b6-2940-4f2c-b037-94637c180d30,objectId=016c741f-3499-47a6-bdb0-6ef338078ddf/westus2/facd200e-9862-41f3-b017-b6f996de26f8
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 65FE709D7FE1447CB3DE5FBE8D55F732 Ref B: SG2AA1040518029 Ref C: 2026-10-01T06:54:52Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy kube-selector-group list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy/kubeSelectorGroups?api-version=2025-09-01
+  response:
+    body:
+      string: "{\r\n  \"value\": [\r\n    {\r\n      \"properties\": {\r\n        \"podSelector\":
+        {\r\n          \"matchLabels\": {\r\n            \"app\": \"web\"\r\n          },\r\n
+        \         \"matchExpressions\": [\r\n            {\r\n              \"key\":
+        \"tier\",\r\n              \"operator\": \"In\",\r\n              \"values\":
+        [\r\n                \"frontend\",\r\n                \"backend\"\r\n              ]\r\n
+        \           }\r\n          ]\r\n        },\r\n        \"namespaceSelector\":
+        {\r\n          \"matchLabels\": {\r\n            \"kubernetes.io/metadata.name\":
+        \"production\"\r\n          }\r\n        },\r\n        \"lastUpdated\": \"2026-10-01T06:54:49.8320494Z\",\r\n
+        \       \"provisioningState\": \"Succeeded\"\r\n      },\r\n      \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy/kubeSelectorGroups/testksg\",\r\n
+        \     \"name\": \"testksg\",\r\n      \"type\": \"Microsoft.Network/FirewallPolicies/KubeSelectorGroups\",\r\n
+        \     \"etag\": \"bcf11366-394f-46db-be44-12075435b015\",\r\n      \"location\":
+        \"westus2\"\r\n    }\r\n  ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1056'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 06:54:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4f00b3b6-2940-4f2c-b037-94637c180d30,objectId=016c741f-3499-47a6-bdb0-6ef338078ddf/westus2/35b250bb-38b3-40f1-8f2b-e394f8d39ff8
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: EFCA6CA68B944C0F80538D8B5F449A15 Ref B: SG2AA1070301040 Ref C: 2026-10-01T06:54:57Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy kube-selector-group update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name -n --pod-selector
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy/kubeSelectorGroups/testksg?api-version=2025-09-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"podSelector\": {\r\n      \"matchLabels\":
+        {\r\n        \"app\": \"web\"\r\n      },\r\n      \"matchExpressions\": [\r\n
+        \       {\r\n          \"key\": \"tier\",\r\n          \"operator\": \"In\",\r\n
+        \         \"values\": [\r\n            \"frontend\",\r\n            \"backend\"\r\n
+        \         ]\r\n        }\r\n      ]\r\n    },\r\n    \"namespaceSelector\":
+        {\r\n      \"matchLabels\": {\r\n        \"kubernetes.io/metadata.name\":
+        \"production\"\r\n      }\r\n    },\r\n    \"lastUpdated\": \"2026-10-01T06:54:49.8320494Z\",\r\n
+        \   \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy/kubeSelectorGroups/testksg\",\r\n
+        \ \"name\": \"testksg\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/KubeSelectorGroups\",\r\n
+        \ \"etag\": \"bcf11366-394f-46db-be44-12075435b015\",\r\n  \"location\": \"westus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '907'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 06:55:01 GMT
+      etag:
+      - '"bcf11366-394f-46db-be44-12075435b015"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4f00b3b6-2940-4f2c-b037-94637c180d30,objectId=016c741f-3499-47a6-bdb0-6ef338078ddf/westus2/f46f0caa-f212-4ab5-85e8-452eee6da51c
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 77AA73D4A5A04E35AC0F61729F98B996 Ref B: SG2AA1070304029 Ref C: 2026-10-01T06:55:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy/kubeSelectorGroups/testksg",
+      "name": "testksg", "properties": {"namespaceSelector": {"matchLabels": {"kubernetes.io/metadata.name":
+      "production"}}, "podSelector": {"matchExpressions": [{"key": "tier", "operator":
+      "Exists"}]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy kube-selector-group update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '410'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --policy-name -n --pod-selector
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy/kubeSelectorGroups/testksg?api-version=2025-09-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"podSelector\": {\r\n      \"matchExpressions\":
+        [\r\n        {\r\n          \"key\": \"tier\",\r\n          \"operator\":
+        \"Exists\"\r\n        }\r\n      ]\r\n    },\r\n    \"namespaceSelector\":
+        {\r\n      \"matchLabels\": {\r\n        \"kubernetes.io/metadata.name\":
+        \"production\"\r\n      }\r\n    },\r\n    \"lastUpdated\": \"2026-10-01T06:55:04.0833961Z\",\r\n
+        \   \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy/kubeSelectorGroups/testksg\",\r\n
+        \ \"name\": \"testksg\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/KubeSelectorGroups\",\r\n
+        \ \"etag\": \"5d42b9eb-7d18-4881-b900-58de04296485\",\r\n  \"location\": \"westus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '770'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 06:55:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4f00b3b6-2940-4f2c-b037-94637c180d30,objectId=016c741f-3499-47a6-bdb0-6ef338078ddf/southeastasia/2ae68e42-64c9-489f-a3bd-65eda129bae5
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 922BA9855ADE4A0C96D9C52A06907A76 Ref B: SG2AA1070304054 Ref C: 2026-10-01T06:55:02Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy kube-selector-group update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name -n --namespace-selector
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy/kubeSelectorGroups/testksg?api-version=2025-09-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"podSelector\": {\r\n      \"matchExpressions\":
+        [\r\n        {\r\n          \"key\": \"tier\",\r\n          \"operator\":
+        \"Exists\"\r\n        }\r\n      ]\r\n    },\r\n    \"namespaceSelector\":
+        {\r\n      \"matchLabels\": {\r\n        \"kubernetes.io/metadata.name\":
+        \"production\"\r\n      }\r\n    },\r\n    \"lastUpdated\": \"2026-10-01T06:55:04.0833961Z\",\r\n
+        \   \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy/kubeSelectorGroups/testksg\",\r\n
+        \ \"name\": \"testksg\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/KubeSelectorGroups\",\r\n
+        \ \"etag\": \"5d42b9eb-7d18-4881-b900-58de04296485\",\r\n  \"location\": \"westus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '770'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 06:55:07 GMT
+      etag:
+      - '"5d42b9eb-7d18-4881-b900-58de04296485"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4f00b3b6-2940-4f2c-b037-94637c180d30,objectId=016c741f-3499-47a6-bdb0-6ef338078ddf/southeastasia/e552f47e-90b8-4a13-b56a-26393c4c3ba8
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 4111219EA3A04A2B81A5429B6AAAEACE Ref B: SG2AA1040520040 Ref C: 2026-10-01T06:55:06Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy/kubeSelectorGroups/testksg",
+      "name": "testksg", "properties": {"podSelector": {"matchExpressions": [{"key":
+      "tier", "operator": "Exists"}]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy kube-selector-group update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '325'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --policy-name -n --namespace-selector
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy/kubeSelectorGroups/testksg?api-version=2025-09-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"podSelector\": {\r\n      \"matchExpressions\":
+        [\r\n        {\r\n          \"key\": \"tier\",\r\n          \"operator\":
+        \"Exists\"\r\n        }\r\n      ]\r\n    },\r\n    \"lastUpdated\": \"2026-10-01T06:55:10.669473Z\",\r\n
+        \   \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy/kubeSelectorGroups/testksg\",\r\n
+        \ \"name\": \"testksg\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/KubeSelectorGroups\",\r\n
+        \ \"etag\": \"6de2c3b2-6d94-4019-bb33-136e15393a18\",\r\n  \"location\": \"westus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '647'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 06:55:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4f00b3b6-2940-4f2c-b037-94637c180d30,objectId=016c741f-3499-47a6-bdb0-6ef338078ddf/southeastasia/9332d492-37a6-4591-941f-02d6a6fb6b72
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: DD52A7221D2A466EB4DC00A671AADD8A Ref B: SG2AA1040512040 Ref C: 2026-10-01T06:55:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy kube-selector-group delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --policy-name -n --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy/kubeSelectorGroups/testksg?api-version=2025-09-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Thu, 01 Oct 2026 06:55:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4f00b3b6-2940-4f2c-b037-94637c180d30,objectId=016c741f-3499-47a6-bdb0-6ef338078ddf/westus2/11b66599-1457-45ae-82b4-5903686aceac
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: 8A0520DDC3414E7980740E8303A31908 Ref B: SG2AA1040516029 Ref C: 2026-10-01T06:55:13Z'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy kube-selector-group list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_kube_selector_group000001/providers/Microsoft.Network/firewallPolicies/testpolicy/kubeSelectorGroups?api-version=2025-09-01
+  response:
+    body:
+      string: "{\r\n  \"value\": []\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '19'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 06:55:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4f00b3b6-2940-4f2c-b037-94637c180d30,objectId=016c741f-3499-47a6-bdb0-6ef338078ddf/westus2/9538440a-3477-4d82-9faf-f232c7af2657
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 88924622449D48B4A523304CBDF46B00 Ref B: SG2AA1070306034 Ref C: 2026-10-01T06:55:17Z'
+    status:
+      code: 200
+      message: OK
+version: 1

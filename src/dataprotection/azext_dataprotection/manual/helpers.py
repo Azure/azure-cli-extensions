@@ -57,7 +57,8 @@ datasource_map = {
     "AzureKubernetesService": "Microsoft.ContainerService/managedClusters",
     "AzureDatabaseForPostgreSQLFlexibleServer": "Microsoft.DBforPostgreSQL/flexibleServers",
     "AzureDatabaseForMySQL": "Microsoft.DBforMySQL/flexibleServers",
-    "AzureCosmosDB": "Microsoft.DocumentDB/databaseAccounts"
+    "AzureCosmosDB": "Microsoft.DocumentDB/databaseAccounts",
+    "AzureElasticSAN": "Microsoft.ElasticSan/elasticSans/volumeGroups"
 }
 
 # This is ideally temporary, as Backup Vault contains secondary region information. But in some cases
@@ -574,6 +575,34 @@ def get_resource_criteria_list(datasource_type, restore_configuration, container
         restore_criteria_list.append(restore_criteria)
         return restore_criteria_list
 
+    if datasource_type == "AzureElasticSAN":
+        if restore_configuration is not None:
+            restore_criteria = restore_configuration
+        else:
+            raise RequiredArgumentMissingError(
+                "Please input parameter restore_configuration for AzureElasticSAN restore.\n"
+                "Use command initialize-restoreconfig for creating the RestoreConfiguration")
+        restore_criteria_list.append(restore_criteria)
+        return restore_criteria_list
+
+    if datasource_type == "AzureCosmosDB":
+        if any(value is not None for value in (container_list, from_prefix_pattern, to_prefix_pattern,
+                                               vaulted_blob_prefix_pattern)):
+            raise InvalidArgumentValueError(
+                "For AzureCosmosDB, --container-list, --from-prefix-pattern, --to-prefix-pattern and "
+                "--vaulted-blob-prefix-pattern are not applicable. Use --restore-configuration.")
+        if restore_configuration is None:
+            raise RequiredArgumentMissingError(
+                "Please input parameter restore_configuration for AzureCosmosDB restore.\n"
+                "Use command initialize-restoreconfig for creating the RestoreConfiguration")
+        if not isinstance(restore_configuration, dict) or \
+                restore_configuration.get("object_type") != "GenericRestoreDatasourceCriteria":
+            raise InvalidArgumentValueError(
+                "For AzureCosmosDB, --restore-configuration must be a GenericRestoreDatasourceCriteria object.\n"
+                "Use command initialize-restoreconfig for creating the RestoreConfiguration")
+        restore_criteria_list.append(restore_configuration)
+        return restore_criteria_list
+
     # implicit else:
     # For non-AKS workloads (blobs (non-vaulted)), we need either a prefix-pattern or a container-list. Accordingly, the restore
     # criteria's min_matching_value and max_matching_value are set. We need to provide one, but can't provide both
@@ -718,11 +747,13 @@ def validate_prefix_patterns(from_prefix_pattern, to_prefix_pattern):
             )
 
         for compareindex in range(index + 1, len(from_prefix_pattern)):
+            # pylint: disable=chained-comparison
             if (from_prefix_pattern[index] <= from_prefix_pattern[compareindex] and to_prefix_pattern[index] >= from_prefix_pattern[compareindex]) or \
                     (from_prefix_pattern[index] >= from_prefix_pattern[compareindex] and from_prefix_pattern[index] <= to_prefix_pattern[compareindex]):
                 raise InvalidArgumentValueError(
                     "overlapping ranges are not allowed."
                 )
+            # pylint: enable=chained-comparison
 
 
 def get_policy_parameters(datasource_id, snapshot_resource_group_name):
@@ -773,8 +804,59 @@ def get_backup_frequency_from_time_interval(repeating_time_intervals):
 
 
 def get_tagging_priority(name):
-    priorityMap = {"Default": 99, "Daily": 25, "Weekly": 20, "Monthly": 15, "Yearly": 10}
+    priorityMap = {"Default": 99, "Default_OperationalStore": 99, "Daily": 25, "Weekly": 20, "Monthly": 15, "Yearly": 10}
     return priorityMap[name]
+
+
+def validate_retention_rule_matches_mapped_store(name, default_retention_mapping, lifecycles, datasource_type):
+    """If `name` is one of the manifest's mapped default rule names (e.g. ``Default_OperationalStore``),
+    every lifecycle in ``lifecycles`` must have a ``sourceDataStore.dataStoreType`` matching the mapped
+    source store for that name. Raises ``InvalidArgumentValueError`` on mismatch.
+
+    Returns the list of mapped default rule names declared by the manifest so callers can also use it
+    for downstream "is this a default rule" checks.
+    """
+    mapped_default_names = list(default_retention_mapping.values()) if default_retention_mapping else []
+    if name in mapped_default_names:
+        for lc in lifecycles:
+            store = lc.get("sourceDataStore", {}).get("dataStoreType")
+            if store is None:
+                continue
+            expected_name = default_retention_mapping.get(store)
+            if expected_name is not None and expected_name != name:
+                reserved_stores = [s for s, n in default_retention_mapping.items() if n == name]
+                reserved_for = ", ".join(reserved_stores)
+                raise InvalidArgumentValueError(
+                    "Retention rule '" + name + "' is reserved for source store '" + reserved_for +
+                    "' on datasource type " + datasource_type + ". For source store '" + store +
+                    "' use --name " + expected_name + "."
+                )
+    return mapped_default_names
+
+
+def validate_exclusive_source_store_assignment(name, manifest, default_retention_mapping, lifecycles, datasource_type):
+    """For each source store declared as exclusive in
+    ``manifest.policySettings.exclusiveSourceDataStores`` (e.g. ``OperationalStore`` on AzureBlob),
+    only the manifest's mapped default rule for that store (e.g. ``Default_OperationalStore``) is
+    allowed to carry a lifecycle whose source store is that exclusive store. Any other rule name
+    paired with that exclusive store raises ``InvalidArgumentValueError``.
+    """
+    policy_settings = manifest.get("policySettings", {}) if manifest else {}
+    exclusive_stores = policy_settings.get("exclusiveSourceDataStores", []) or []
+    if not exclusive_stores:
+        return
+    for lc in lifecycles:
+        store = lc.get("sourceDataStore", {}).get("dataStoreType")
+        if store is None or store not in exclusive_stores:
+            continue
+        expected_name = default_retention_mapping.get(store) if default_retention_mapping else None
+        if expected_name is not None and expected_name != name:
+            raise InvalidArgumentValueError(
+                "Source store '" + store + "' on datasource type " + datasource_type +
+                " is exclusive: only the '" + expected_name + "' retention rule may carry an " +
+                store + " lifecycle. Use --name " + expected_name + " instead of --name " + name +
+                ", or remove the " + store + " lifecycle from --lifecycles."
+            )
 
 
 def truncate_id_using_scope(arm_id, scope):
@@ -953,6 +1035,8 @@ def get_help_word_from_permission_type(permission_type, datasource_type):
             helptext_dsname = "MySQL server"
         if datasource_type == 'AzureCosmosDB':
             helptext_dsname = "Cosmos DB account"
+        if datasource_type == 'AzureElasticSAN':
+            helptext_dsname = "Elastic SAN volume group"
 
         return helptext_dsname
 
@@ -1095,7 +1179,7 @@ def validate_recovery_point_datetime_format(aaz_str):
 
 def get_backup_instance_from_resourcegraph(cmd, resource_group_name, vault_name, backup_instance_name):
     from azext_dataprotection.manual._client_factory import cf_resource_graph_client as client
-    subscription_id = backupcenter_helper.get_selected_subscription()
+    subscription_id = backupcenter_helper.get_selected_subscription(cmd.cli_ctx)
     arg_client = client(cmd.cli_ctx, None)
     backup_instance_list = dataprotection_backup_instance_list_from_resourcegraph(arg_client, None, resource_group_name,
                                                                                   vault_name, [subscription_id, ], None,
@@ -1112,7 +1196,7 @@ def get_backup_instance_from_resourcegraph(cmd, resource_group_name, vault_name,
 
 def get_backup_vault_from_resourcegraph(cmd, resource_group_name, vault_name):
     from azext_dataprotection.manual._client_factory import cf_resource_graph_client as client
-    subscription_id = backupcenter_helper.get_selected_subscription()
+    subscription_id = backupcenter_helper.get_selected_subscription(cmd.cli_ctx)
     arg_client = client(cmd.cli_ctx, None)
 
     backup_vault_list = dataprotection_backup_vault_list_from_resourcegraph(arg_client, resource_group_name,

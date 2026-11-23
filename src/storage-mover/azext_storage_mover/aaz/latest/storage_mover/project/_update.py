@@ -16,15 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a Project resource, which is a logical grouping of related jobs.
-
-    :example: project update
-        az storage-mover project update -g {rg} --storage-mover-name {mover_name} -n {project_name} --description ProjectDesc2
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2026-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}", "2026-05-01"],
         ]
     }
 
@@ -51,6 +48,9 @@ class Update(AAZCommand):
             help="The name of the Project resource.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -60,6 +60,9 @@ class Update(AAZCommand):
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
 
         # define Arg Group "Properties"
@@ -155,7 +158,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-05-01",
                     required=True,
                 ),
             }
@@ -242,7 +245,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-05-01",
                     required=True,
                 ),
             }

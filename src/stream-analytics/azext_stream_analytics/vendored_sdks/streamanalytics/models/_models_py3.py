@@ -830,6 +830,9 @@ class AzureSqlReferenceInputDataSource(ReferenceInputDataSource):
      is used to fetch incremental changes from the SQL database. To use this option, we recommend
      using temporal tables in Azure SQL Database.
     :type delta_snapshot_query: str
+    :param authentication_mode: Authentication Mode. Possible values include: "Msi", "UserToken",
+     "ConnectionString".
+    :type authentication_mode: str or ~stream_analytics_management_client.models.AuthenticationMode
     """
 
     _validation = {
@@ -847,6 +850,7 @@ class AzureSqlReferenceInputDataSource(ReferenceInputDataSource):
         'refresh_rate': {'key': 'properties.refreshRate', 'type': 'str'},
         'full_snapshot_query': {'key': 'properties.fullSnapshotQuery', 'type': 'str'},
         'delta_snapshot_query': {'key': 'properties.deltaSnapshotQuery', 'type': 'str'},
+        'authentication_mode': {'key': 'properties.authenticationMode', 'type': 'str'},
     }
 
     def __init__(
@@ -861,6 +865,7 @@ class AzureSqlReferenceInputDataSource(ReferenceInputDataSource):
         refresh_rate: Optional[str] = None,
         full_snapshot_query: Optional[str] = None,
         delta_snapshot_query: Optional[str] = None,
+        authentication_mode: Optional[Union[str, "AuthenticationMode"]] = None,
         **kwargs
     ):
         super(AzureSqlReferenceInputDataSource, self).__init__(**kwargs)
@@ -874,6 +879,7 @@ class AzureSqlReferenceInputDataSource(ReferenceInputDataSource):
         self.refresh_rate = refresh_rate
         self.full_snapshot_query = full_snapshot_query
         self.delta_snapshot_query = delta_snapshot_query
+        self.authentication_mode = authentication_mode
 
 
 class AzureSynapseDataSourceProperties(msrest.serialization.Model):

@@ -18,14 +18,14 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete an existing delivery rule within a rule set.
 
-    :example: Remove a rule with name rule1.
-        az afd rule delete -g group --rule-set-name ruleSetName --profile-name profile --rule-name rule1
+    :example: Rules_Delete
+        az afd rule delete --resource-group RG --profile-name profile1 --rule-set-name ruleSet1 --rule-name rule1
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/rulesets/{}/rules/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/rulesets/{}/rules/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -168,7 +168,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }

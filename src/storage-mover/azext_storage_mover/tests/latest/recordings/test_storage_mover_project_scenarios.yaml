@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{"location": "eastus2euap", "properties": {"description": "MoverDesc"},
+    body: '{"location": "westcentralus", "properties": {"description": "MoverDesc"},
       "tags": {"key1": "value1"}}'
     headers:
       Accept:
@@ -12,47 +12,49 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '99'
+      - '101'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n -l --tags --description
       User-Agent:
-      - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002?api-version=2025-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002?api-version=2026-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002","name":"storage-mover000002","type":"microsoft.storagemover/storagemovers","location":"eastus2euap","tags":{"key1":"value1"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-06-03T07:42:53.8491006Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-03T07:42:53.8491006Z"},"properties":{"description":"MoverDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002","name":"storage-mover000002","type":"microsoft.storagemover/storagemovers","location":"westcentralus","tags":{"key1":"value1"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-22T10:14:53.1076876Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-22T10:14:53.1076876Z"},"properties":{"description":"MoverDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '597'
+      - '583'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 03 Jun 2024 07:42:54 GMT
+      - Thu, 22 Oct 2026 10:14:53 GMT
       etag:
-      - '"00001078-0000-3400-0000-665d73fe0000"'
+      - '"c20466a5-0000-0600-0000-6ad9e21d0000"'
       expires:
       - '-1'
-      mise-correlation-id:
-      - 0b03cd92-c5d9-490c-a9bb-ec097e06fa63
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/0106360d-14b6-4373-9e80-2465e2a3b0b2
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/centralindia/449bc2c3-64d4-4a19-9554-1fa1319db0ee
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-writes:
-      - '2999'
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '199'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 2E40A84ED6504497A9D4623ED6F524DE Ref B: PNQ231110909042 Ref C: 2026-10-22T10:14:47Z'
     status:
       code: 200
       message: OK
@@ -74,41 +76,43 @@ interactions:
       ParameterSetName:
       - -g --storage-mover-name -n --description
       User-Agent:
-      - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003?api-version=2025-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003?api-version=2026-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003","name":"project000003","type":"microsoft.storagemover/storagemovers/projects","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-06-03T07:42:55.7733467Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-03T07:42:55.7733467Z"},"properties":{"description":"ProjectDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003","name":"project000003","type":"microsoft.storagemover/storagemovers/projects","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-22T10:14:54.5331733Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-22T10:14:54.5331733Z"},"properties":{"description":"ProjectDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '575'
+      - '559'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 03 Jun 2024 07:42:55 GMT
+      - Thu, 22 Oct 2026 10:14:53 GMT
       etag:
-      - '"00002931-0000-3400-0000-665d74000000"'
+      - '"0000a52f-0000-0600-0000-6ad9e21e0000"'
       expires:
       - '-1'
-      mise-correlation-id:
-      - 395d7bb3-2212-49c7-a6f8-27d926067c7f
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/f825e397-a4e2-4813-9e02-e6cf51b9667a
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/b829452d-5d7f-402d-a48d-617348df29df
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-writes:
-      - '2998'
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '198'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 15ADA83A157349998CDD1C8B607D9D96 Ref B: PNQ231110907062 Ref C: 2026-10-22T10:14:54Z'
     status:
       code: 200
       message: OK
@@ -126,37 +130,41 @@ interactions:
       ParameterSetName:
       - -g --storage-mover-name -n
       User-Agent:
-      - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003?api-version=2025-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003?api-version=2026-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003","name":"project000003","type":"microsoft.storagemover/storagemovers/projects","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-06-03T07:42:55.7733467Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-03T07:42:55.7733467Z"},"properties":{"description":"ProjectDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003","name":"project000003","type":"microsoft.storagemover/storagemovers/projects","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-22T10:14:54.5331733Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-22T10:14:54.5331733Z"},"properties":{"description":"ProjectDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '575'
+      - '559'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 03 Jun 2024 07:42:56 GMT
+      - Thu, 22 Oct 2026 10:14:54 GMT
       etag:
-      - '"00002931-0000-3400-0000-665d74000000"'
+      - '"0000a52f-0000-0600-0000-6ad9e21e0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/774627d0-f7a3-4c2b-8dde-4a0ec6cb9a69
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/31d1fe80-8859-4ef7-b03e-9fe92ea41d6b
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '3749'
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 725528BC83EE4D79A9AF21AC5EA62051 Ref B: PNQ231110908023 Ref C: 2026-10-22T10:14:55Z'
     status:
       code: 200
       message: OK
@@ -174,35 +182,39 @@ interactions:
       ParameterSetName:
       - -g --storage-mover-name
       User-Agent:
-      - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects?api-version=2025-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects?api-version=2026-05-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003","name":"project000003","type":"microsoft.storagemover/storagemovers/projects","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-06-03T07:42:55.7733467Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-03T07:42:55.7733467Z"},"properties":{"description":"ProjectDesc","provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003","name":"project000003","type":"microsoft.storagemover/storagemovers/projects","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-22T10:14:54.5331733Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-22T10:14:54.5331733Z"},"properties":{"description":"ProjectDesc","provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '587'
+      - '571'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 03 Jun 2024 07:42:58 GMT
+      - Thu, 22 Oct 2026 10:14:55 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/529e901d-f13b-41e1-bb97-8057a6cb0ac6
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/e2822011-31c7-4415-a544-bc3038e6b9c7
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '3749'
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 852920A7AB6142C58DE658E543CA93AF Ref B: PNQ231110907042 Ref C: 2026-10-22T10:14:55Z'
     status:
       code: 200
       message: OK
@@ -220,37 +232,41 @@ interactions:
       ParameterSetName:
       - -g --storage-mover-name -n --description
       User-Agent:
-      - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003?api-version=2025-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003?api-version=2026-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003","name":"project000003","type":"microsoft.storagemover/storagemovers/projects","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-06-03T07:42:55.7733467Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-03T07:42:55.7733467Z"},"properties":{"description":"ProjectDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003","name":"project000003","type":"microsoft.storagemover/storagemovers/projects","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-22T10:14:54.5331733Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-22T10:14:54.5331733Z"},"properties":{"description":"ProjectDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '575'
+      - '559'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 03 Jun 2024 07:43:00 GMT
+      - Thu, 22 Oct 2026 10:14:56 GMT
       etag:
-      - '"00002931-0000-3400-0000-665d74000000"'
+      - '"0000a52f-0000-0600-0000-6ad9e21e0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/b66e96dd-ffb5-438f-b16d-630699e00b23
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/3028cec7-356f-4a8d-9b18-88dc3ea6b028
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '3749'
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 49B3685967E44D13A19685B5068D9F87 Ref B: PNQ231110906036 Ref C: 2026-10-22T10:14:56Z'
     status:
       code: 200
       message: OK
@@ -272,41 +288,43 @@ interactions:
       ParameterSetName:
       - -g --storage-mover-name -n --description
       User-Agent:
-      - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003?api-version=2025-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003?api-version=2026-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003","name":"project000003","type":"microsoft.storagemover/storagemovers/projects","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-06-03T07:42:55.7733467Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-03T07:43:01.8045415Z"},"properties":{"provisioningState":"Succeeded","description":"ProjectDesc2"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003","name":"project000003","type":"microsoft.storagemover/storagemovers/projects","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-22T10:14:54.5331733Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-22T10:14:57.0149608Z"},"properties":{"description":"ProjectDesc2","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '576'
+      - '560'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 03 Jun 2024 07:43:01 GMT
+      - Thu, 22 Oct 2026 10:14:56 GMT
       etag:
-      - '"00002a31-0000-3400-0000-665d74060000"'
+      - '"0000a62f-0000-0600-0000-6ad9e2210000"'
       expires:
       - '-1'
-      mise-correlation-id:
-      - bfd17bc9-d0ca-4b6f-931a-b68b0ee0dca7
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/66ce9d5d-68ae-4ec4-bb3c-3071514f2f71
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/26229d2c-bad3-4e8c-8b0d-5f960061e928
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-writes:
-      - '2997'
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '197'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 40ED98E08F99426698738C87A02E4F06 Ref B: PNQ231110908025 Ref C: 2026-10-22T10:14:56Z'
     status:
       code: 200
       message: OK
@@ -326,15 +344,17 @@ interactions:
       ParameterSetName:
       - -g --storage-mover-name -n -y
       User-Agent:
-      - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003?api-version=2025-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003?api-version=2026-05-01
   response:
     body:
       string: 'null'
     headers:
+      azure-asyncnotification:
+      - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2EUAP/operationStatuses/928da172-0b7e-4066-b715-ea4d569457ce*10618E2B81286D6C4CB1D451134A42088534F462841AB31B1AE3675D13F9EA3E?api-version=2025-07-01&t=638529973840857739&c=MIIHhjCCBm6gAwIBAgITHgSkDkdoyksh1C2m6AAABKQORzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNTI4MTIzNTIwWhcNMjQwODI2MTIzNTIwWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMgSeni2v5wwgfRLk6n84sOQyIPTBjMsa_z8Ex2NXvonwqGzg9C4XYEuX6JVE4vUf5kkuRJpwd-9npGVPoaO4cYNaJffI-OtXVAZ9m73eHjsyLEChHDJjTuEowF3FEDeWDOcUn3QlD3FbdoJ67MgoZLtAahC2XwLI79Oc5S-DzLpi_G7lgI6tpZpagITKdEzrbeVszoAlNq2Ik061wMKBXJ0ry2doZ5urg0f4QKEqqJJgF_AO1DWeFxVFL_C0f5ZmQS808pSOz0aKa9OU0ybHKMuoSry1ROPULsSIKaKokFttWBDLr-b102PFw6UCLH5kwLqk1dIlc2sZadBAuO_Ip0CAwEAAaOCBHMwggRvMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwIwCgYIKwYBBQUHAwEwPAYJKwYBBAGCNxUHBC8wLQYlKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFgh8fIENbYcQIBZAIBBjCCAcsGCCsGAQUFBwEBBIIBvTCCAbkwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDEuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDQuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwHQYDVR0OBBYEFGKNJ47uAi44ue40s2gk3LxhLZxfMA4GA1UdDwEB_wQEAwIFoDCCASYGA1UdHwSCAR0wggEZMIIBFaCCARGgggENhj9odHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmwwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDATAMBgorBgEEAYI3ewQBMB8GA1UdIwQYMBaAFPFGaMbxw_ArLX2LauGy-b41_NFBMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATANBgkqhkiG9w0BAQsFAAOCAQEANFF6vPwrt0drtuHK8wVpzr6T6GUmQqx_Oe-Yf4OhMqaGkU4ocnJTgxfpjV_PHlrFleVxJvng09NmAQ_3hNxitllz0L_WlztaaaEYqFnCNs3bjoxWGtAZ8rC8mOglTXtk4WzUl_0CZJ_Ufoz4BtSdezGmva4iNvda6kTZD8pa2xtJVwj5lJp2GdC3aH-sYSRLZrQYd_tSVxOoLBRbCvnRI0JKPZp7aVmATdTEcFijXyKDAmfzLWdzj1BPBt0DtVk5l5gcqneKnan6ZQQcEp35vHAGMqrUwnKF1DJOvx9sU39_sVuel97MVgmQklU9JkUpmSidzD1XTgq_HXbgm7AxCA&s=omqH0pC0aMJU8HsY7D-gw6mNAAApOLJNy-YxL21jmRfeSxnYfU7aPq7AmbuwK80_6mbp5k8agfU3qy0grNmhRu9-urtxA6mPK61yM4XhK7ILU6Iu1kLEsjta4a6cpem0gLRvPzMPt0L99wv0ELFXF4CyesdBkVmJZAlJbulG3Uqb4C1g6OYXMQUsfPeBIbYMNjpY_8T7GI0V5Q5SMrjAsf6qm3rQYP9a8Oox1b3vJp0Ws2eVj8zyCmtDWxioNGIT9QtujAgdm1zGmNO1XUrDohefQVYi2SafOxXinWEkvP3Y8nNsYJc0HfzwM-TnatbSC_hu8YK8yWcv5GtXSTbWwA&h=tiR5Y7DYRJA7s7LUpczkcPWSX7U855lip68ltQQ90Rc
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/WESTCENTRALUS/operationStatuses/482c73c3-af46-471a-9591-1158dc657ad0*2573DB16765AD355B397283B803B0AD3D25DB7606D375B202F5872A30E2DAF4F?api-version=2026-05-01&t=639282608980816582&c=MIIHwzCCBqugAwIBAgIQBH6T6G7H5etKogQVSuak2jANBgkqhkiG9w0BAQsFADA1MTMwMQYDVQQDEypDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBDVVMgQ0EgMDEwHhcNMjYwOTE0MDc1MDU2WhcNMjYxMjA5MTM1MDU2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANJa268mStVaFLISi3YvwkhT3Hem8yrsIous3ufc80FcpWKFX1qtzES3yPg_K9bsm1F8bhZRNiVmN7Ra0TKeeG2nDt5Xdn_MfhqcS6dlq3EVlAEL4EkZOhpIhiqdMN-H5NG20cDkC-Mq4PjBNMW7JFTTw_bYSiotWQ6zv6dCUGkKKP1vkxFO5FpoBSsKtdNWSTNzTRkNBWJxnq_WIRFaNrL_GOApmk1XFXjC6k9zQGsmbU0C6imPxJawZH4pN27m1SRSrRflGWk4zF8aOo34lSpAT1lGV31hSlOZ0wCCUic42EABqWbFAyjXYvtbICv2WF_k6-ZHA50X2-M8JAcJCKkCAwEAAaOCBMIwggS-MIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0OBBYEFPR8ccxssxYJk2UVISt542Xv0n7nMB8GA1UdIwQYMBaAFPzkWgovhQ7nRLkHc3jg1EQHohkRMIIBygYDVR0fBIIBwTCCAb0wb6BtoGuGaWh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS83OC9jdXJyZW50LmNybDBxoG-gbYZraHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvNzgvY3VycmVudC5jcmwwYKBeoFyGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS83OC9jdXJyZW50LmNybDB1oHOgcYZvaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxLzc4L2N1cnJlbnQuY3JsMIIBzwYIKwYBBQUHAQEEggHBMIIBvTByBggrBgEFBQcwAoZmaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMHQGCCsGAQUFBzAChmhodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMGwGCCsGAQUFBzAChmBodHRwOi8vY2NtZWNlbnRyYWx1c3BraS5jZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lY2VudHJhbHVzaWNhMDEwDQYJKoZIhvcNAQELBQADggEBAG08MRHUoSZxc1SFEy-1bTB5QfsKrq3KJixUdOQEhccOJOU9n4txkxRYUXF3-F7Lm4KX6vXfHcbjzj8LiEarlhAcePWUoRw8exE0uDxWDGt2KWhVQ29YOvMB6fGGq09Du-z3NdLabfWeW-BdRi6n4mc7LWO0k4WvufXVREk10s7QhBiEuTPLcDpz1heQAlMPpUMdSsuELBwTdafZPrJ7hhFr5XVNbLcyUiohQuABWB4NC5vG9mxU4EzVqUp9MOBxsU4lJB02PxLhREKeGNbo8EIQB2MRlS9MiGh5tqDcVLEeCQcfTZLZvN2mPdnRH8QTnqyAi5JxKw2MKyJQ9Md6Viw&s=bpzBul9yy4zJQV0rkEz1AjVOWSKcIRSeIrVLhD4wiu7WHfHlciNnBMyuRqHaiTRQ8Hz45r5n4Fk7uOOLhPIMLgGkk3340CipbwvTX7MyLoylN4z26w2VdTxo_6rS0gmpmYG5J5GeQmE2gYarysNIfcojDxI30RFMowtMl31R8HWf1BIOoOBtRC_iDZJnRDn75339tRUWuo8whRZf8OaUBs5rLKiw656eYgEwuTLtabtdAZhbbb6pZwnoBTmnEolLRr_6Mk3EutygOveopcbYPm4hnGIkGoTd5PeU6xwTliW8PUusN4SQlcHs2zjEHCIvnfsVLSEFYaQDvU6CWsmTSA&h=6DazFxUrKE-vuAN96swG0ce-uPE85sE8PCYf-Z7gWu0
       cache-control:
       - no-cache
       content-length:
@@ -342,27 +362,33 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 03 Jun 2024 07:43:03 GMT
+      - Thu, 22 Oct 2026 10:14:58 GMT
       etag:
-      - '"00002b31-0000-3400-0000-665d74080000"'
+      - '"0000a72f-0000-0600-0000-6ad9e2220000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2EUAP/operationStatuses/928da172-0b7e-4066-b715-ea4d569457ce*10618E2B81286D6C4CB1D451134A42088534F462841AB31B1AE3675D13F9EA3E?api-version=2025-07-01&t=638529973841013991&c=MIIHhjCCBm6gAwIBAgITHgSkDkdoyksh1C2m6AAABKQORzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNTI4MTIzNTIwWhcNMjQwODI2MTIzNTIwWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMgSeni2v5wwgfRLk6n84sOQyIPTBjMsa_z8Ex2NXvonwqGzg9C4XYEuX6JVE4vUf5kkuRJpwd-9npGVPoaO4cYNaJffI-OtXVAZ9m73eHjsyLEChHDJjTuEowF3FEDeWDOcUn3QlD3FbdoJ67MgoZLtAahC2XwLI79Oc5S-DzLpi_G7lgI6tpZpagITKdEzrbeVszoAlNq2Ik061wMKBXJ0ry2doZ5urg0f4QKEqqJJgF_AO1DWeFxVFL_C0f5ZmQS808pSOz0aKa9OU0ybHKMuoSry1ROPULsSIKaKokFttWBDLr-b102PFw6UCLH5kwLqk1dIlc2sZadBAuO_Ip0CAwEAAaOCBHMwggRvMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwIwCgYIKwYBBQUHAwEwPAYJKwYBBAGCNxUHBC8wLQYlKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFgh8fIENbYcQIBZAIBBjCCAcsGCCsGAQUFBwEBBIIBvTCCAbkwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDEuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDQuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwHQYDVR0OBBYEFGKNJ47uAi44ue40s2gk3LxhLZxfMA4GA1UdDwEB_wQEAwIFoDCCASYGA1UdHwSCAR0wggEZMIIBFaCCARGgggENhj9odHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmwwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDATAMBgorBgEEAYI3ewQBMB8GA1UdIwQYMBaAFPFGaMbxw_ArLX2LauGy-b41_NFBMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATANBgkqhkiG9w0BAQsFAAOCAQEANFF6vPwrt0drtuHK8wVpzr6T6GUmQqx_Oe-Yf4OhMqaGkU4ocnJTgxfpjV_PHlrFleVxJvng09NmAQ_3hNxitllz0L_WlztaaaEYqFnCNs3bjoxWGtAZ8rC8mOglTXtk4WzUl_0CZJ_Ufoz4BtSdezGmva4iNvda6kTZD8pa2xtJVwj5lJp2GdC3aH-sYSRLZrQYd_tSVxOoLBRbCvnRI0JKPZp7aVmATdTEcFijXyKDAmfzLWdzj1BPBt0DtVk5l5gcqneKnan6ZQQcEp35vHAGMqrUwnKF1DJOvx9sU39_sVuel97MVgmQklU9JkUpmSidzD1XTgq_HXbgm7AxCA&s=uNpA7dMx20LBsjVOCWYLDoIQfS38Igv9ZknIIcxlWZrIRhhVPAROsXWJlWwkUXbcZ07sTqHll1y_gLm8e6ToX2sf8bt_j98I5lGMJ0VWTp7enxG2L_KEGfxMeuMZjtUCkk-k8SgL15mi_DiX5ju8EEoph_ygIzs4qXKlKHO_80ncd6d7J-AgRK5BmSGCaoAEZqhRj8kLVVncFo6ZZiQRGjwKReFcSW0vb33Y9_hESKBUawAlVpqRnoPLA1QyNWbL5-4fQM9FFa1c4m-7Aw-L8d5DRUzYo-BP313nHdHdShkH9l4VYIuTD5QhypGoXu9cwSvitdDY21RZl7PcN3qYuw&h=IoXpfKPI_GP9sVUNQ64jv_2p_gb0sd2BlH703942J3s
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/WESTCENTRALUS/operationStatuses/482c73c3-af46-471a-9591-1158dc657ad0*2573DB16765AD355B397283B803B0AD3D25DB7606D375B202F5872A30E2DAF4F?api-version=2026-05-01&t=639282608980816582&c=MIIHwzCCBqugAwIBAgIQBH6T6G7H5etKogQVSuak2jANBgkqhkiG9w0BAQsFADA1MTMwMQYDVQQDEypDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBDVVMgQ0EgMDEwHhcNMjYwOTE0MDc1MDU2WhcNMjYxMjA5MTM1MDU2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANJa268mStVaFLISi3YvwkhT3Hem8yrsIous3ufc80FcpWKFX1qtzES3yPg_K9bsm1F8bhZRNiVmN7Ra0TKeeG2nDt5Xdn_MfhqcS6dlq3EVlAEL4EkZOhpIhiqdMN-H5NG20cDkC-Mq4PjBNMW7JFTTw_bYSiotWQ6zv6dCUGkKKP1vkxFO5FpoBSsKtdNWSTNzTRkNBWJxnq_WIRFaNrL_GOApmk1XFXjC6k9zQGsmbU0C6imPxJawZH4pN27m1SRSrRflGWk4zF8aOo34lSpAT1lGV31hSlOZ0wCCUic42EABqWbFAyjXYvtbICv2WF_k6-ZHA50X2-M8JAcJCKkCAwEAAaOCBMIwggS-MIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0OBBYEFPR8ccxssxYJk2UVISt542Xv0n7nMB8GA1UdIwQYMBaAFPzkWgovhQ7nRLkHc3jg1EQHohkRMIIBygYDVR0fBIIBwTCCAb0wb6BtoGuGaWh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS83OC9jdXJyZW50LmNybDBxoG-gbYZraHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvNzgvY3VycmVudC5jcmwwYKBeoFyGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS83OC9jdXJyZW50LmNybDB1oHOgcYZvaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxLzc4L2N1cnJlbnQuY3JsMIIBzwYIKwYBBQUHAQEEggHBMIIBvTByBggrBgEFBQcwAoZmaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMHQGCCsGAQUFBzAChmhodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMGwGCCsGAQUFBzAChmBodHRwOi8vY2NtZWNlbnRyYWx1c3BraS5jZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lY2VudHJhbHVzaWNhMDEwDQYJKoZIhvcNAQELBQADggEBAG08MRHUoSZxc1SFEy-1bTB5QfsKrq3KJixUdOQEhccOJOU9n4txkxRYUXF3-F7Lm4KX6vXfHcbjzj8LiEarlhAcePWUoRw8exE0uDxWDGt2KWhVQ29YOvMB6fGGq09Du-z3NdLabfWeW-BdRi6n4mc7LWO0k4WvufXVREk10s7QhBiEuTPLcDpz1heQAlMPpUMdSsuELBwTdafZPrJ7hhFr5XVNbLcyUiohQuABWB4NC5vG9mxU4EzVqUp9MOBxsU4lJB02PxLhREKeGNbo8EIQB2MRlS9MiGh5tqDcVLEeCQcfTZLZvN2mPdnRH8QTnqyAi5JxKw2MKyJQ9Md6Viw&s=Qz81UrUmkVw3duYerjWeyQ_FaY7L29Julfkb6w63yXa_8u-beCiqDLz7olMEuWWQ5JjjuqyuTAZV5pazJ0YbHxFTPi6nqhr2dQX3WJx9_sJD7SOuWGTJlDmgzBLhCZXj9NIt4gE3sopHA7_5UqKvsRxxERrXcgAIrWmaKwo6yuwRBjFePJ-0pUSwWP-TaMO2t68np81eFT2l-SaEbcB0LT2MIIZfGQJmE0uP3-bU74yIEvYkW4pMCmTH5y2dU6dKFzaA2O9xXloRgbntMUVNkyGQ-4qQ1p0UqcoeCWHRutbSLDvXSujJkzm5K424NJmWJtkc5Pv_-JDwZoyQP9B9uA&h=6DazFxUrKE-vuAN96swG0ce-uPE85sE8PCYf-Z7gWu0
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/7ef1a4dd-74c0-44ec-af57-166c6034c23f
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/b38718cb-7d2a-4b6a-ad80-053c8341eba4
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '199'
+      - '799'
       x-ms-ratelimit-remaining-subscription-global-deletes:
-      - '2999'
+      - '11999'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: D9485E8CB7DE4619BC89ABC58252EE39 Ref B: PNQ231110909062 Ref C: 2026-10-22T10:14:57Z'
     status:
       code: 202
       message: Accepted
@@ -380,39 +406,47 @@ interactions:
       ParameterSetName:
       - -g --storage-mover-name -n -y
       User-Agent:
-      - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2EUAP/operationStatuses/928da172-0b7e-4066-b715-ea4d569457ce*10618E2B81286D6C4CB1D451134A42088534F462841AB31B1AE3675D13F9EA3E?api-version=2025-07-01&t=638529973840857739&c=MIIHhjCCBm6gAwIBAgITHgSkDkdoyksh1C2m6AAABKQORzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNTI4MTIzNTIwWhcNMjQwODI2MTIzNTIwWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMgSeni2v5wwgfRLk6n84sOQyIPTBjMsa_z8Ex2NXvonwqGzg9C4XYEuX6JVE4vUf5kkuRJpwd-9npGVPoaO4cYNaJffI-OtXVAZ9m73eHjsyLEChHDJjTuEowF3FEDeWDOcUn3QlD3FbdoJ67MgoZLtAahC2XwLI79Oc5S-DzLpi_G7lgI6tpZpagITKdEzrbeVszoAlNq2Ik061wMKBXJ0ry2doZ5urg0f4QKEqqJJgF_AO1DWeFxVFL_C0f5ZmQS808pSOz0aKa9OU0ybHKMuoSry1ROPULsSIKaKokFttWBDLr-b102PFw6UCLH5kwLqk1dIlc2sZadBAuO_Ip0CAwEAAaOCBHMwggRvMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwIwCgYIKwYBBQUHAwEwPAYJKwYBBAGCNxUHBC8wLQYlKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFgh8fIENbYcQIBZAIBBjCCAcsGCCsGAQUFBwEBBIIBvTCCAbkwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDEuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDQuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwHQYDVR0OBBYEFGKNJ47uAi44ue40s2gk3LxhLZxfMA4GA1UdDwEB_wQEAwIFoDCCASYGA1UdHwSCAR0wggEZMIIBFaCCARGgggENhj9odHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmwwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDATAMBgorBgEEAYI3ewQBMB8GA1UdIwQYMBaAFPFGaMbxw_ArLX2LauGy-b41_NFBMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATANBgkqhkiG9w0BAQsFAAOCAQEANFF6vPwrt0drtuHK8wVpzr6T6GUmQqx_Oe-Yf4OhMqaGkU4ocnJTgxfpjV_PHlrFleVxJvng09NmAQ_3hNxitllz0L_WlztaaaEYqFnCNs3bjoxWGtAZ8rC8mOglTXtk4WzUl_0CZJ_Ufoz4BtSdezGmva4iNvda6kTZD8pa2xtJVwj5lJp2GdC3aH-sYSRLZrQYd_tSVxOoLBRbCvnRI0JKPZp7aVmATdTEcFijXyKDAmfzLWdzj1BPBt0DtVk5l5gcqneKnan6ZQQcEp35vHAGMqrUwnKF1DJOvx9sU39_sVuel97MVgmQklU9JkUpmSidzD1XTgq_HXbgm7AxCA&s=omqH0pC0aMJU8HsY7D-gw6mNAAApOLJNy-YxL21jmRfeSxnYfU7aPq7AmbuwK80_6mbp5k8agfU3qy0grNmhRu9-urtxA6mPK61yM4XhK7ILU6Iu1kLEsjta4a6cpem0gLRvPzMPt0L99wv0ELFXF4CyesdBkVmJZAlJbulG3Uqb4C1g6OYXMQUsfPeBIbYMNjpY_8T7GI0V5Q5SMrjAsf6qm3rQYP9a8Oox1b3vJp0Ws2eVj8zyCmtDWxioNGIT9QtujAgdm1zGmNO1XUrDohefQVYi2SafOxXinWEkvP3Y8nNsYJc0HfzwM-TnatbSC_hu8YK8yWcv5GtXSTbWwA&h=tiR5Y7DYRJA7s7LUpczkcPWSX7U855lip68ltQQ90Rc
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/WESTCENTRALUS/operationStatuses/482c73c3-af46-471a-9591-1158dc657ad0*2573DB16765AD355B397283B803B0AD3D25DB7606D375B202F5872A30E2DAF4F?api-version=2026-05-01&t=639282608980816582&c=MIIHwzCCBqugAwIBAgIQBH6T6G7H5etKogQVSuak2jANBgkqhkiG9w0BAQsFADA1MTMwMQYDVQQDEypDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBDVVMgQ0EgMDEwHhcNMjYwOTE0MDc1MDU2WhcNMjYxMjA5MTM1MDU2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANJa268mStVaFLISi3YvwkhT3Hem8yrsIous3ufc80FcpWKFX1qtzES3yPg_K9bsm1F8bhZRNiVmN7Ra0TKeeG2nDt5Xdn_MfhqcS6dlq3EVlAEL4EkZOhpIhiqdMN-H5NG20cDkC-Mq4PjBNMW7JFTTw_bYSiotWQ6zv6dCUGkKKP1vkxFO5FpoBSsKtdNWSTNzTRkNBWJxnq_WIRFaNrL_GOApmk1XFXjC6k9zQGsmbU0C6imPxJawZH4pN27m1SRSrRflGWk4zF8aOo34lSpAT1lGV31hSlOZ0wCCUic42EABqWbFAyjXYvtbICv2WF_k6-ZHA50X2-M8JAcJCKkCAwEAAaOCBMIwggS-MIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0OBBYEFPR8ccxssxYJk2UVISt542Xv0n7nMB8GA1UdIwQYMBaAFPzkWgovhQ7nRLkHc3jg1EQHohkRMIIBygYDVR0fBIIBwTCCAb0wb6BtoGuGaWh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS83OC9jdXJyZW50LmNybDBxoG-gbYZraHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvNzgvY3VycmVudC5jcmwwYKBeoFyGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS83OC9jdXJyZW50LmNybDB1oHOgcYZvaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxLzc4L2N1cnJlbnQuY3JsMIIBzwYIKwYBBQUHAQEEggHBMIIBvTByBggrBgEFBQcwAoZmaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMHQGCCsGAQUFBzAChmhodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMGwGCCsGAQUFBzAChmBodHRwOi8vY2NtZWNlbnRyYWx1c3BraS5jZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lY2VudHJhbHVzaWNhMDEwDQYJKoZIhvcNAQELBQADggEBAG08MRHUoSZxc1SFEy-1bTB5QfsKrq3KJixUdOQEhccOJOU9n4txkxRYUXF3-F7Lm4KX6vXfHcbjzj8LiEarlhAcePWUoRw8exE0uDxWDGt2KWhVQ29YOvMB6fGGq09Du-z3NdLabfWeW-BdRi6n4mc7LWO0k4WvufXVREk10s7QhBiEuTPLcDpz1heQAlMPpUMdSsuELBwTdafZPrJ7hhFr5XVNbLcyUiohQuABWB4NC5vG9mxU4EzVqUp9MOBxsU4lJB02PxLhREKeGNbo8EIQB2MRlS9MiGh5tqDcVLEeCQcfTZLZvN2mPdnRH8QTnqyAi5JxKw2MKyJQ9Md6Viw&s=bpzBul9yy4zJQV0rkEz1AjVOWSKcIRSeIrVLhD4wiu7WHfHlciNnBMyuRqHaiTRQ8Hz45r5n4Fk7uOOLhPIMLgGkk3340CipbwvTX7MyLoylN4z26w2VdTxo_6rS0gmpmYG5J5GeQmE2gYarysNIfcojDxI30RFMowtMl31R8HWf1BIOoOBtRC_iDZJnRDn75339tRUWuo8whRZf8OaUBs5rLKiw656eYgEwuTLtabtdAZhbbb6pZwnoBTmnEolLRr_6Mk3EutygOveopcbYPm4hnGIkGoTd5PeU6xwTliW8PUusN4SQlcHs2zjEHCIvnfsVLSEFYaQDvU6CWsmTSA&h=6DazFxUrKE-vuAN96swG0ce-uPE85sE8PCYf-Z7gWu0
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2EUAP/operationStatuses/928da172-0b7e-4066-b715-ea4d569457ce*10618E2B81286D6C4CB1D451134A42088534F462841AB31B1AE3675D13F9EA3E","name":"928da172-0b7e-4066-b715-ea4d569457ce*10618E2B81286D6C4CB1D451134A42088534F462841AB31B1AE3675D13F9EA3E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003","status":"Deleting","startTime":"2024-06-03T07:43:03.9235233Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/WESTCENTRALUS/operationStatuses/482c73c3-af46-471a-9591-1158dc657ad0*2573DB16765AD355B397283B803B0AD3D25DB7606D375B202F5872A30E2DAF4F","name":"482c73c3-af46-471a-9591-1158dc657ad0*2573DB16765AD355B397283B803B0AD3D25DB7606D375B202F5872A30E2DAF4F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003","status":"Deleting","startTime":"2026-10-22T10:14:57.8296967Z"}'
     headers:
+      azure-asyncnotification:
+      - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/eastus2euap/operationStatuses/928da172-0b7e-4066-b715-ea4d569457ce*10618E2B81286D6C4CB1D451134A42088534F462841AB31B1AE3675D13F9EA3E?api-version=2025-07-01&t=638529973844763944&c=MIIHhjCCBm6gAwIBAgITHgSkDkdoyksh1C2m6AAABKQORzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNTI4MTIzNTIwWhcNMjQwODI2MTIzNTIwWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMgSeni2v5wwgfRLk6n84sOQyIPTBjMsa_z8Ex2NXvonwqGzg9C4XYEuX6JVE4vUf5kkuRJpwd-9npGVPoaO4cYNaJffI-OtXVAZ9m73eHjsyLEChHDJjTuEowF3FEDeWDOcUn3QlD3FbdoJ67MgoZLtAahC2XwLI79Oc5S-DzLpi_G7lgI6tpZpagITKdEzrbeVszoAlNq2Ik061wMKBXJ0ry2doZ5urg0f4QKEqqJJgF_AO1DWeFxVFL_C0f5ZmQS808pSOz0aKa9OU0ybHKMuoSry1ROPULsSIKaKokFttWBDLr-b102PFw6UCLH5kwLqk1dIlc2sZadBAuO_Ip0CAwEAAaOCBHMwggRvMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwIwCgYIKwYBBQUHAwEwPAYJKwYBBAGCNxUHBC8wLQYlKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFgh8fIENbYcQIBZAIBBjCCAcsGCCsGAQUFBwEBBIIBvTCCAbkwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDEuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDQuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwHQYDVR0OBBYEFGKNJ47uAi44ue40s2gk3LxhLZxfMA4GA1UdDwEB_wQEAwIFoDCCASYGA1UdHwSCAR0wggEZMIIBFaCCARGgggENhj9odHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmwwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDATAMBgorBgEEAYI3ewQBMB8GA1UdIwQYMBaAFPFGaMbxw_ArLX2LauGy-b41_NFBMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATANBgkqhkiG9w0BAQsFAAOCAQEANFF6vPwrt0drtuHK8wVpzr6T6GUmQqx_Oe-Yf4OhMqaGkU4ocnJTgxfpjV_PHlrFleVxJvng09NmAQ_3hNxitllz0L_WlztaaaEYqFnCNs3bjoxWGtAZ8rC8mOglTXtk4WzUl_0CZJ_Ufoz4BtSdezGmva4iNvda6kTZD8pa2xtJVwj5lJp2GdC3aH-sYSRLZrQYd_tSVxOoLBRbCvnRI0JKPZp7aVmATdTEcFijXyKDAmfzLWdzj1BPBt0DtVk5l5gcqneKnan6ZQQcEp35vHAGMqrUwnKF1DJOvx9sU39_sVuel97MVgmQklU9JkUpmSidzD1XTgq_HXbgm7AxCA&s=TzKottDlvcTv57moZv_fTPkblId4hpjJWHDiF_uvRX_qZiv91CibagYWacqwOujJpNsYLp0mOlYPv7LNDt6yiJijZzjV7O6RSzmOdv6NW4H0nYZgYBrSeiUnl64rwBQP0aGD1cnQ47nlALLOZ-Ikp6SfnYam5W_cmqvYkuwnArcv4iqQYasDhfJABxva9IqoBlgYXUs2tN2FQ1O6tN9fJejTSimRZVpjODMI80FCB8MnnKIqH6UM3UgH8icMDakG7aBeKI032wEcPHH47eZ6VXP7bcjLxqin0jAtxazA3RLM6vHGfD3YlQDTBzc3q5b3n34ZYwCFQ94Yg7t_JaD0OA&h=vB3cMoPcJlvpOVcR5KezSBfkhCBqSrgK9ZHMBT6TOfI
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/westcentralus/operationStatuses/482c73c3-af46-471a-9591-1158dc657ad0*2573DB16765AD355B397283B803B0AD3D25DB7606D375B202F5872A30E2DAF4F?api-version=2026-05-01&t=639282608992122605&c=MIIIJzCCBw-gAwIBAgIRAIj-jhYgLbfUUbx2jC_SNIowDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV0NVUyBDQSAwMTAeFw0yNjA5MjMwNTA1MjdaFw0yNjEyMTgxMTA1MjdaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyeA8ekCN9dx_H_hpaGg0NqW7Rpf7WElPTivJEXFiEUUmlDxXmilSjXjGSNwDU0ErGMVo0Chf6Fmy72cNUM_kQuAJ3NolMdTWbVSxzJ0bLkgC1JhpgihlZ7PTw21un2NfJugcLOiZe7Kj4RKErCelQjBHkTD6U7w-ceLspcQ6mCRX6luV9c8WVX31YmRIb8GZPdRP_V9JDXRW7c_yDsOqMreuRXF6cf4xlPIvaO7P34tP2C1k1rv1J8qH9if8Mn5WsckL0oLpC0ocM9YaA6z-85bY5baDtaCriWIXdPlrZ890yWcz2NnQ_2rw4WifBW1WvMk321JJpfzXuNkkYpOA9QIDAQABo4IFJDCCBSAwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUVpuFQHfLHlrFfGMCLWc2_DZNu1cwHwYDVR0jBBgwFoAUFNI34PbWfX7djbq6ZasElCXglh0wggH7BgNVHR8EggHyMIIB7jB7oHmgd4Z1aHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzYxL2N1cnJlbnQuY3JsMH2ge6B5hndodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NybHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS82MS9jdXJyZW50LmNybDBsoGqgaIZmaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzYxL2N1cnJlbnQuY3JsMIGBoH-gfYZ7aHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzYxL2N1cnJlbnQuY3JsMIICAAYIKwYBBQUHAQEEggHyMIIB7jB-BggrBgEFBQcwAoZyaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMIGABggrBgEFBQcwAoZ0aHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwbwYIKwYBBQUHMAKGY2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB4BggrBgEFBQcwAoZsaHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBJa_KUCNG-f7XUiiUuDBrvYZS2Z8FofSyp6uKYLKfF9mxmD4Zy0ksWftADl_qfVGCbq-dpyuVfUjgpc2tr6XAn80Z4GKb2k0wYYO4voOJXoWOqPEpYw8SLA6tzu7AhC3bAAVZM3m-LhotavMCbONvJphXH30312kxl4AvbUBnY3wVpwm-kbibwU1os1qVnTsOCPQT_zhENQC_xt5NIu63Vv2qZzhXb7rH10GKhkqHyYSBF99cYRho7mW4CGR-b_vV4wYatAQm1AdLWZ0WH6UMh8HMgnuEVnJ1HOdWVxuk6BK5g016SXjAJk66KjOH36fAl01_LmtwI5nli8nTadkb3&s=tqgHtQUAvdeJ71IrV5FErxhm3I4ndvmt5Vo0N55sC7gsYg8HSojUiKVwC0VTr6m6jNC3paNPY5OQR6eOSGb0BppkQIMBkCuf4g1KkLChAEAmERa_TVkkZILDDp89fmUADSvU6MnYtE4LxsPwRm4DU7dOHAvajGQ_PewI4NFuwYyznzf1thbO7YkU7shJWggSIKcFHSay6G4RIw4BFqFPnaQgB-_itSk97ETagCFXaGNEH5EXeK-uZ4WyXLvhNHMQakqGpTmDzsVZRi-i4PT-PqepBg9LM94MrCTiViQTqWGkN6oatliFzThqzv57CiJaQ1l6TcQ3sSqDdE1qMW-XQw&h=pugXx7XWmeTNybkb8dtXM8ueENEdAVcgqJvy_z3dOt8
       cache-control:
       - no-cache
       content-length:
-      - '598'
+      - '600'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 03 Jun 2024 07:43:03 GMT
+      - Thu, 22 Oct 2026 10:14:58 GMT
       etag:
-      - '"01009d4e-0000-3400-0000-665d74070000"'
+      - '"110147e0-0000-0600-0000-6ad9e2210000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/eastus2euap/operationStatuses/928da172-0b7e-4066-b715-ea4d569457ce*10618E2B81286D6C4CB1D451134A42088534F462841AB31B1AE3675D13F9EA3E?api-version=2025-07-01&t=638529973844763944&c=MIIHhjCCBm6gAwIBAgITHgSkDkdoyksh1C2m6AAABKQORzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNTI4MTIzNTIwWhcNMjQwODI2MTIzNTIwWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMgSeni2v5wwgfRLk6n84sOQyIPTBjMsa_z8Ex2NXvonwqGzg9C4XYEuX6JVE4vUf5kkuRJpwd-9npGVPoaO4cYNaJffI-OtXVAZ9m73eHjsyLEChHDJjTuEowF3FEDeWDOcUn3QlD3FbdoJ67MgoZLtAahC2XwLI79Oc5S-DzLpi_G7lgI6tpZpagITKdEzrbeVszoAlNq2Ik061wMKBXJ0ry2doZ5urg0f4QKEqqJJgF_AO1DWeFxVFL_C0f5ZmQS808pSOz0aKa9OU0ybHKMuoSry1ROPULsSIKaKokFttWBDLr-b102PFw6UCLH5kwLqk1dIlc2sZadBAuO_Ip0CAwEAAaOCBHMwggRvMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwIwCgYIKwYBBQUHAwEwPAYJKwYBBAGCNxUHBC8wLQYlKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFgh8fIENbYcQIBZAIBBjCCAcsGCCsGAQUFBwEBBIIBvTCCAbkwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDEuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDQuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwHQYDVR0OBBYEFGKNJ47uAi44ue40s2gk3LxhLZxfMA4GA1UdDwEB_wQEAwIFoDCCASYGA1UdHwSCAR0wggEZMIIBFaCCARGgggENhj9odHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmwwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDATAMBgorBgEEAYI3ewQBMB8GA1UdIwQYMBaAFPFGaMbxw_ArLX2LauGy-b41_NFBMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATANBgkqhkiG9w0BAQsFAAOCAQEANFF6vPwrt0drtuHK8wVpzr6T6GUmQqx_Oe-Yf4OhMqaGkU4ocnJTgxfpjV_PHlrFleVxJvng09NmAQ_3hNxitllz0L_WlztaaaEYqFnCNs3bjoxWGtAZ8rC8mOglTXtk4WzUl_0CZJ_Ufoz4BtSdezGmva4iNvda6kTZD8pa2xtJVwj5lJp2GdC3aH-sYSRLZrQYd_tSVxOoLBRbCvnRI0JKPZp7aVmATdTEcFijXyKDAmfzLWdzj1BPBt0DtVk5l5gcqneKnan6ZQQcEp35vHAGMqrUwnKF1DJOvx9sU39_sVuel97MVgmQklU9JkUpmSidzD1XTgq_HXbgm7AxCA&s=TzKottDlvcTv57moZv_fTPkblId4hpjJWHDiF_uvRX_qZiv91CibagYWacqwOujJpNsYLp0mOlYPv7LNDt6yiJijZzjV7O6RSzmOdv6NW4H0nYZgYBrSeiUnl64rwBQP0aGD1cnQ47nlALLOZ-Ikp6SfnYam5W_cmqvYkuwnArcv4iqQYasDhfJABxva9IqoBlgYXUs2tN2FQ1O6tN9fJejTSimRZVpjODMI80FCB8MnnKIqH6UM3UgH8icMDakG7aBeKI032wEcPHH47eZ6VXP7bcjLxqin0jAtxazA3RLM6vHGfD3YlQDTBzc3q5b3n34ZYwCFQ94Yg7t_JaD0OA&h=vB3cMoPcJlvpOVcR5KezSBfkhCBqSrgK9ZHMBT6TOfI
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/westcentralus/operationStatuses/482c73c3-af46-471a-9591-1158dc657ad0*2573DB16765AD355B397283B803B0AD3D25DB7606D375B202F5872A30E2DAF4F?api-version=2026-05-01&t=639282608992122605&c=MIIIJzCCBw-gAwIBAgIRAIj-jhYgLbfUUbx2jC_SNIowDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV0NVUyBDQSAwMTAeFw0yNjA5MjMwNTA1MjdaFw0yNjEyMTgxMTA1MjdaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyeA8ekCN9dx_H_hpaGg0NqW7Rpf7WElPTivJEXFiEUUmlDxXmilSjXjGSNwDU0ErGMVo0Chf6Fmy72cNUM_kQuAJ3NolMdTWbVSxzJ0bLkgC1JhpgihlZ7PTw21un2NfJugcLOiZe7Kj4RKErCelQjBHkTD6U7w-ceLspcQ6mCRX6luV9c8WVX31YmRIb8GZPdRP_V9JDXRW7c_yDsOqMreuRXF6cf4xlPIvaO7P34tP2C1k1rv1J8qH9if8Mn5WsckL0oLpC0ocM9YaA6z-85bY5baDtaCriWIXdPlrZ890yWcz2NnQ_2rw4WifBW1WvMk321JJpfzXuNkkYpOA9QIDAQABo4IFJDCCBSAwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUVpuFQHfLHlrFfGMCLWc2_DZNu1cwHwYDVR0jBBgwFoAUFNI34PbWfX7djbq6ZasElCXglh0wggH7BgNVHR8EggHyMIIB7jB7oHmgd4Z1aHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzYxL2N1cnJlbnQuY3JsMH2ge6B5hndodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NybHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS82MS9jdXJyZW50LmNybDBsoGqgaIZmaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzYxL2N1cnJlbnQuY3JsMIGBoH-gfYZ7aHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzYxL2N1cnJlbnQuY3JsMIICAAYIKwYBBQUHAQEEggHyMIIB7jB-BggrBgEFBQcwAoZyaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMIGABggrBgEFBQcwAoZ0aHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwbwYIKwYBBQUHMAKGY2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB4BggrBgEFBQcwAoZsaHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBJa_KUCNG-f7XUiiUuDBrvYZS2Z8FofSyp6uKYLKfF9mxmD4Zy0ksWftADl_qfVGCbq-dpyuVfUjgpc2tr6XAn80Z4GKb2k0wYYO4voOJXoWOqPEpYw8SLA6tzu7AhC3bAAVZM3m-LhotavMCbONvJphXH30312kxl4AvbUBnY3wVpwm-kbibwU1os1qVnTsOCPQT_zhENQC_xt5NIu63Vv2qZzhXb7rH10GKhkqHyYSBF99cYRho7mW4CGR-b_vV4wYatAQm1AdLWZ0WH6UMh8HMgnuEVnJ1HOdWVxuk6BK5g016SXjAJk66KjOH36fAl01_LmtwI5nli8nTadkb3&s=O81qOCtXsQCR6cxeFXKfgJjjWHqd0S69Xidz-cat6J7kn_srOFyMZpN7NCuzX_TyIKXNBno1JTmv22tE_JM-2jwwTMLiu8sC2K4I7UBrfeFqMeGJ-NCxVp-yBQlWoqE4ozxsDKJogtl4K5i0G53bPoTXq5EVZHznJxUQpegdlzKNRqwZqlSmGtC_DmRSTq2FVgx7bZNoudvIsVrgaxcheeM-YEnjirmRe2KIgIE6VQk_Q2sSxWnzGKJWMjVW7_qJGdKkxKeQyAbr0iAxz_VqVTCrrDCyT6USS4m5SV4p6gLPpZWV3zsBJ6A05I5KTHlkWymhSu2IVUkH__a55Rro6A&h=pugXx7XWmeTNybkb8dtXM8ueENEdAVcgqJvy_z3dOt8
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/6a0b0aae-af79-4a02-b730-6883d200c6f2
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westindia/a2241f01-5897-4b88-a6dc-45fd06a31f3e
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '3748'
+      - '16499'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: F79D1A0CDA3B4CD0BDA56E39E116B009 Ref B: PNQ231110908025 Ref C: 2026-10-22T10:14:58Z'
     status:
       code: 202
       message: Accepted
@@ -430,35 +464,39 @@ interactions:
       ParameterSetName:
       - -g --storage-mover-name -n -y
       User-Agent:
-      - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2EUAP/operationStatuses/928da172-0b7e-4066-b715-ea4d569457ce*10618E2B81286D6C4CB1D451134A42088534F462841AB31B1AE3675D13F9EA3E?api-version=2025-07-01&t=638529973840857739&c=MIIHhjCCBm6gAwIBAgITHgSkDkdoyksh1C2m6AAABKQORzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNTI4MTIzNTIwWhcNMjQwODI2MTIzNTIwWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMgSeni2v5wwgfRLk6n84sOQyIPTBjMsa_z8Ex2NXvonwqGzg9C4XYEuX6JVE4vUf5kkuRJpwd-9npGVPoaO4cYNaJffI-OtXVAZ9m73eHjsyLEChHDJjTuEowF3FEDeWDOcUn3QlD3FbdoJ67MgoZLtAahC2XwLI79Oc5S-DzLpi_G7lgI6tpZpagITKdEzrbeVszoAlNq2Ik061wMKBXJ0ry2doZ5urg0f4QKEqqJJgF_AO1DWeFxVFL_C0f5ZmQS808pSOz0aKa9OU0ybHKMuoSry1ROPULsSIKaKokFttWBDLr-b102PFw6UCLH5kwLqk1dIlc2sZadBAuO_Ip0CAwEAAaOCBHMwggRvMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwIwCgYIKwYBBQUHAwEwPAYJKwYBBAGCNxUHBC8wLQYlKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFgh8fIENbYcQIBZAIBBjCCAcsGCCsGAQUFBwEBBIIBvTCCAbkwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDEuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDQuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwHQYDVR0OBBYEFGKNJ47uAi44ue40s2gk3LxhLZxfMA4GA1UdDwEB_wQEAwIFoDCCASYGA1UdHwSCAR0wggEZMIIBFaCCARGgggENhj9odHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmwwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDATAMBgorBgEEAYI3ewQBMB8GA1UdIwQYMBaAFPFGaMbxw_ArLX2LauGy-b41_NFBMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATANBgkqhkiG9w0BAQsFAAOCAQEANFF6vPwrt0drtuHK8wVpzr6T6GUmQqx_Oe-Yf4OhMqaGkU4ocnJTgxfpjV_PHlrFleVxJvng09NmAQ_3hNxitllz0L_WlztaaaEYqFnCNs3bjoxWGtAZ8rC8mOglTXtk4WzUl_0CZJ_Ufoz4BtSdezGmva4iNvda6kTZD8pa2xtJVwj5lJp2GdC3aH-sYSRLZrQYd_tSVxOoLBRbCvnRI0JKPZp7aVmATdTEcFijXyKDAmfzLWdzj1BPBt0DtVk5l5gcqneKnan6ZQQcEp35vHAGMqrUwnKF1DJOvx9sU39_sVuel97MVgmQklU9JkUpmSidzD1XTgq_HXbgm7AxCA&s=omqH0pC0aMJU8HsY7D-gw6mNAAApOLJNy-YxL21jmRfeSxnYfU7aPq7AmbuwK80_6mbp5k8agfU3qy0grNmhRu9-urtxA6mPK61yM4XhK7ILU6Iu1kLEsjta4a6cpem0gLRvPzMPt0L99wv0ELFXF4CyesdBkVmJZAlJbulG3Uqb4C1g6OYXMQUsfPeBIbYMNjpY_8T7GI0V5Q5SMrjAsf6qm3rQYP9a8Oox1b3vJp0Ws2eVj8zyCmtDWxioNGIT9QtujAgdm1zGmNO1XUrDohefQVYi2SafOxXinWEkvP3Y8nNsYJc0HfzwM-TnatbSC_hu8YK8yWcv5GtXSTbWwA&h=tiR5Y7DYRJA7s7LUpczkcPWSX7U855lip68ltQQ90Rc
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/WESTCENTRALUS/operationStatuses/482c73c3-af46-471a-9591-1158dc657ad0*2573DB16765AD355B397283B803B0AD3D25DB7606D375B202F5872A30E2DAF4F?api-version=2026-05-01&t=639282608980816582&c=MIIHwzCCBqugAwIBAgIQBH6T6G7H5etKogQVSuak2jANBgkqhkiG9w0BAQsFADA1MTMwMQYDVQQDEypDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBDVVMgQ0EgMDEwHhcNMjYwOTE0MDc1MDU2WhcNMjYxMjA5MTM1MDU2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANJa268mStVaFLISi3YvwkhT3Hem8yrsIous3ufc80FcpWKFX1qtzES3yPg_K9bsm1F8bhZRNiVmN7Ra0TKeeG2nDt5Xdn_MfhqcS6dlq3EVlAEL4EkZOhpIhiqdMN-H5NG20cDkC-Mq4PjBNMW7JFTTw_bYSiotWQ6zv6dCUGkKKP1vkxFO5FpoBSsKtdNWSTNzTRkNBWJxnq_WIRFaNrL_GOApmk1XFXjC6k9zQGsmbU0C6imPxJawZH4pN27m1SRSrRflGWk4zF8aOo34lSpAT1lGV31hSlOZ0wCCUic42EABqWbFAyjXYvtbICv2WF_k6-ZHA50X2-M8JAcJCKkCAwEAAaOCBMIwggS-MIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0OBBYEFPR8ccxssxYJk2UVISt542Xv0n7nMB8GA1UdIwQYMBaAFPzkWgovhQ7nRLkHc3jg1EQHohkRMIIBygYDVR0fBIIBwTCCAb0wb6BtoGuGaWh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS83OC9jdXJyZW50LmNybDBxoG-gbYZraHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvNzgvY3VycmVudC5jcmwwYKBeoFyGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS83OC9jdXJyZW50LmNybDB1oHOgcYZvaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxLzc4L2N1cnJlbnQuY3JsMIIBzwYIKwYBBQUHAQEEggHBMIIBvTByBggrBgEFBQcwAoZmaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMHQGCCsGAQUFBzAChmhodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMGwGCCsGAQUFBzAChmBodHRwOi8vY2NtZWNlbnRyYWx1c3BraS5jZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lY2VudHJhbHVzaWNhMDEwDQYJKoZIhvcNAQELBQADggEBAG08MRHUoSZxc1SFEy-1bTB5QfsKrq3KJixUdOQEhccOJOU9n4txkxRYUXF3-F7Lm4KX6vXfHcbjzj8LiEarlhAcePWUoRw8exE0uDxWDGt2KWhVQ29YOvMB6fGGq09Du-z3NdLabfWeW-BdRi6n4mc7LWO0k4WvufXVREk10s7QhBiEuTPLcDpz1heQAlMPpUMdSsuELBwTdafZPrJ7hhFr5XVNbLcyUiohQuABWB4NC5vG9mxU4EzVqUp9MOBxsU4lJB02PxLhREKeGNbo8EIQB2MRlS9MiGh5tqDcVLEeCQcfTZLZvN2mPdnRH8QTnqyAi5JxKw2MKyJQ9Md6Viw&s=bpzBul9yy4zJQV0rkEz1AjVOWSKcIRSeIrVLhD4wiu7WHfHlciNnBMyuRqHaiTRQ8Hz45r5n4Fk7uOOLhPIMLgGkk3340CipbwvTX7MyLoylN4z26w2VdTxo_6rS0gmpmYG5J5GeQmE2gYarysNIfcojDxI30RFMowtMl31R8HWf1BIOoOBtRC_iDZJnRDn75339tRUWuo8whRZf8OaUBs5rLKiw656eYgEwuTLtabtdAZhbbb6pZwnoBTmnEolLRr_6Mk3EutygOveopcbYPm4hnGIkGoTd5PeU6xwTliW8PUusN4SQlcHs2zjEHCIvnfsVLSEFYaQDvU6CWsmTSA&h=6DazFxUrKE-vuAN96swG0ce-uPE85sE8PCYf-Z7gWu0
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2EUAP/operationStatuses/928da172-0b7e-4066-b715-ea4d569457ce*10618E2B81286D6C4CB1D451134A42088534F462841AB31B1AE3675D13F9EA3E","name":"928da172-0b7e-4066-b715-ea4d569457ce*10618E2B81286D6C4CB1D451134A42088534F462841AB31B1AE3675D13F9EA3E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003","status":"Succeeded","startTime":"2024-06-03T07:43:03.9235233Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/WESTCENTRALUS/operationStatuses/482c73c3-af46-471a-9591-1158dc657ad0*2573DB16765AD355B397283B803B0AD3D25DB7606D375B202F5872A30E2DAF4F","name":"482c73c3-af46-471a-9591-1158dc657ad0*2573DB16765AD355B397283B803B0AD3D25DB7606D375B202F5872A30E2DAF4F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003","status":"Succeeded","startTime":"2026-10-22T10:14:57.8296967Z","properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '617'
+      - '619'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 03 Jun 2024 07:43:33 GMT
+      - Thu, 22 Oct 2026 10:15:29 GMT
       etag:
-      - '"0100a14e-0000-3400-0000-665d741d0000"'
+      - '"11016be0-0000-0600-0000-6ad9e2360000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/8bdfbc48-112a-490f-a7e3-0f6c6fff6415
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/southindia/2c209389-25a7-4d2a-b172-e84f55912977
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '3748'
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 7409A8C23C734B1EA754D3E580581C98 Ref B: PNQ231110908040 Ref C: 2026-10-22T10:15:29Z'
     status:
       code: 200
       message: OK
@@ -476,35 +514,39 @@ interactions:
       ParameterSetName:
       - -g --storage-mover-name -n -y
       User-Agent:
-      - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2EUAP/operationStatuses/928da172-0b7e-4066-b715-ea4d569457ce*10618E2B81286D6C4CB1D451134A42088534F462841AB31B1AE3675D13F9EA3E?api-version=2025-07-01&t=638529973841013991&c=MIIHhjCCBm6gAwIBAgITHgSkDkdoyksh1C2m6AAABKQORzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNTI4MTIzNTIwWhcNMjQwODI2MTIzNTIwWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMgSeni2v5wwgfRLk6n84sOQyIPTBjMsa_z8Ex2NXvonwqGzg9C4XYEuX6JVE4vUf5kkuRJpwd-9npGVPoaO4cYNaJffI-OtXVAZ9m73eHjsyLEChHDJjTuEowF3FEDeWDOcUn3QlD3FbdoJ67MgoZLtAahC2XwLI79Oc5S-DzLpi_G7lgI6tpZpagITKdEzrbeVszoAlNq2Ik061wMKBXJ0ry2doZ5urg0f4QKEqqJJgF_AO1DWeFxVFL_C0f5ZmQS808pSOz0aKa9OU0ybHKMuoSry1ROPULsSIKaKokFttWBDLr-b102PFw6UCLH5kwLqk1dIlc2sZadBAuO_Ip0CAwEAAaOCBHMwggRvMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwIwCgYIKwYBBQUHAwEwPAYJKwYBBAGCNxUHBC8wLQYlKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFgh8fIENbYcQIBZAIBBjCCAcsGCCsGAQUFBwEBBIIBvTCCAbkwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDEuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDQuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwHQYDVR0OBBYEFGKNJ47uAi44ue40s2gk3LxhLZxfMA4GA1UdDwEB_wQEAwIFoDCCASYGA1UdHwSCAR0wggEZMIIBFaCCARGgggENhj9odHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmyGMWh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcmwwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDATAMBgorBgEEAYI3ewQBMB8GA1UdIwQYMBaAFPFGaMbxw_ArLX2LauGy-b41_NFBMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATANBgkqhkiG9w0BAQsFAAOCAQEANFF6vPwrt0drtuHK8wVpzr6T6GUmQqx_Oe-Yf4OhMqaGkU4ocnJTgxfpjV_PHlrFleVxJvng09NmAQ_3hNxitllz0L_WlztaaaEYqFnCNs3bjoxWGtAZ8rC8mOglTXtk4WzUl_0CZJ_Ufoz4BtSdezGmva4iNvda6kTZD8pa2xtJVwj5lJp2GdC3aH-sYSRLZrQYd_tSVxOoLBRbCvnRI0JKPZp7aVmATdTEcFijXyKDAmfzLWdzj1BPBt0DtVk5l5gcqneKnan6ZQQcEp35vHAGMqrUwnKF1DJOvx9sU39_sVuel97MVgmQklU9JkUpmSidzD1XTgq_HXbgm7AxCA&s=uNpA7dMx20LBsjVOCWYLDoIQfS38Igv9ZknIIcxlWZrIRhhVPAROsXWJlWwkUXbcZ07sTqHll1y_gLm8e6ToX2sf8bt_j98I5lGMJ0VWTp7enxG2L_KEGfxMeuMZjtUCkk-k8SgL15mi_DiX5ju8EEoph_ygIzs4qXKlKHO_80ncd6d7J-AgRK5BmSGCaoAEZqhRj8kLVVncFo6ZZiQRGjwKReFcSW0vb33Y9_hESKBUawAlVpqRnoPLA1QyNWbL5-4fQM9FFa1c4m-7Aw-L8d5DRUzYo-BP313nHdHdShkH9l4VYIuTD5QhypGoXu9cwSvitdDY21RZl7PcN3qYuw&h=IoXpfKPI_GP9sVUNQ64jv_2p_gb0sd2BlH703942J3s
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/WESTCENTRALUS/operationStatuses/482c73c3-af46-471a-9591-1158dc657ad0*2573DB16765AD355B397283B803B0AD3D25DB7606D375B202F5872A30E2DAF4F?api-version=2026-05-01&t=639282608980816582&c=MIIHwzCCBqugAwIBAgIQBH6T6G7H5etKogQVSuak2jANBgkqhkiG9w0BAQsFADA1MTMwMQYDVQQDEypDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBDVVMgQ0EgMDEwHhcNMjYwOTE0MDc1MDU2WhcNMjYxMjA5MTM1MDU2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANJa268mStVaFLISi3YvwkhT3Hem8yrsIous3ufc80FcpWKFX1qtzES3yPg_K9bsm1F8bhZRNiVmN7Ra0TKeeG2nDt5Xdn_MfhqcS6dlq3EVlAEL4EkZOhpIhiqdMN-H5NG20cDkC-Mq4PjBNMW7JFTTw_bYSiotWQ6zv6dCUGkKKP1vkxFO5FpoBSsKtdNWSTNzTRkNBWJxnq_WIRFaNrL_GOApmk1XFXjC6k9zQGsmbU0C6imPxJawZH4pN27m1SRSrRflGWk4zF8aOo34lSpAT1lGV31hSlOZ0wCCUic42EABqWbFAyjXYvtbICv2WF_k6-ZHA50X2-M8JAcJCKkCAwEAAaOCBMIwggS-MIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0OBBYEFPR8ccxssxYJk2UVISt542Xv0n7nMB8GA1UdIwQYMBaAFPzkWgovhQ7nRLkHc3jg1EQHohkRMIIBygYDVR0fBIIBwTCCAb0wb6BtoGuGaWh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS83OC9jdXJyZW50LmNybDBxoG-gbYZraHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvNzgvY3VycmVudC5jcmwwYKBeoFyGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS83OC9jdXJyZW50LmNybDB1oHOgcYZvaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxLzc4L2N1cnJlbnQuY3JsMIIBzwYIKwYBBQUHAQEEggHBMIIBvTByBggrBgEFBQcwAoZmaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMHQGCCsGAQUFBzAChmhodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMGwGCCsGAQUFBzAChmBodHRwOi8vY2NtZWNlbnRyYWx1c3BraS5jZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lY2VudHJhbHVzaWNhMDEwDQYJKoZIhvcNAQELBQADggEBAG08MRHUoSZxc1SFEy-1bTB5QfsKrq3KJixUdOQEhccOJOU9n4txkxRYUXF3-F7Lm4KX6vXfHcbjzj8LiEarlhAcePWUoRw8exE0uDxWDGt2KWhVQ29YOvMB6fGGq09Du-z3NdLabfWeW-BdRi6n4mc7LWO0k4WvufXVREk10s7QhBiEuTPLcDpz1heQAlMPpUMdSsuELBwTdafZPrJ7hhFr5XVNbLcyUiohQuABWB4NC5vG9mxU4EzVqUp9MOBxsU4lJB02PxLhREKeGNbo8EIQB2MRlS9MiGh5tqDcVLEeCQcfTZLZvN2mPdnRH8QTnqyAi5JxKw2MKyJQ9Md6Viw&s=Qz81UrUmkVw3duYerjWeyQ_FaY7L29Julfkb6w63yXa_8u-beCiqDLz7olMEuWWQ5JjjuqyuTAZV5pazJ0YbHxFTPi6nqhr2dQX3WJx9_sJD7SOuWGTJlDmgzBLhCZXj9NIt4gE3sopHA7_5UqKvsRxxERrXcgAIrWmaKwo6yuwRBjFePJ-0pUSwWP-TaMO2t68np81eFT2l-SaEbcB0LT2MIIZfGQJmE0uP3-bU74yIEvYkW4pMCmTH5y2dU6dKFzaA2O9xXloRgbntMUVNkyGQ-4qQ1p0UqcoeCWHRutbSLDvXSujJkzm5K424NJmWJtkc5Pv_-JDwZoyQP9B9uA&h=6DazFxUrKE-vuAN96swG0ce-uPE85sE8PCYf-Z7gWu0
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2EUAP/operationStatuses/928da172-0b7e-4066-b715-ea4d569457ce*10618E2B81286D6C4CB1D451134A42088534F462841AB31B1AE3675D13F9EA3E","name":"928da172-0b7e-4066-b715-ea4d569457ce*10618E2B81286D6C4CB1D451134A42088534F462841AB31B1AE3675D13F9EA3E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003","status":"Succeeded","startTime":"2024-06-03T07:43:03.9235233Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/WESTCENTRALUS/operationStatuses/482c73c3-af46-471a-9591-1158dc657ad0*2573DB16765AD355B397283B803B0AD3D25DB7606D375B202F5872A30E2DAF4F","name":"482c73c3-af46-471a-9591-1158dc657ad0*2573DB16765AD355B397283B803B0AD3D25DB7606D375B202F5872A30E2DAF4F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/project000003","status":"Succeeded","startTime":"2026-10-22T10:14:57.8296967Z","properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '617'
+      - '619'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 03 Jun 2024 07:43:34 GMT
+      - Thu, 22 Oct 2026 10:15:31 GMT
       etag:
-      - '"0100a14e-0000-3400-0000-665d741d0000"'
+      - '"11016be0-0000-0600-0000-6ad9e2360000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/bbc7d257-5a2e-49ea-a11c-2e278ec2d8fe
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westindia/a2b07b38-a378-46d8-9e85-a88ac0fd1b19
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '3747'
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 04887B0CFCC64204B1FCB35227A8BA27 Ref B: PNQ231110908029 Ref C: 2026-10-22T10:15:30Z'
     status:
       code: 200
       message: OK
@@ -522,9 +564,9 @@ interactions:
       ParameterSetName:
       - -g --storage-mover-name
       User-Agent:
-      - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects?api-version=2025-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects?api-version=2026-05-01
   response:
     body:
       string: '{"value":[]}'
@@ -536,21 +578,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 03 Jun 2024 07:43:36 GMT
+      - Thu, 22 Oct 2026 10:15:32 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/0887d40b-aa51-4115-9259-7cf8f237cdb2
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/fffa99ad-07fc-40f8-b3af-8ac74a0a0504
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '3749'
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A7EEF9D379DA408786167A6E91FBA29B Ref B: PNQ231110908062 Ref C: 2026-10-22T10:15:32Z'
     status:
       code: 200
       message: OK

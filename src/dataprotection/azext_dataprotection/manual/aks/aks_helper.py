@@ -5,27 +5,73 @@
 # --------------------------------------------------------------------------------------------
 
 import json
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import InvalidArgumentValueError, ValidationError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.mgmt.core.tools import parse_resource_id
 from knack.log import get_logger
+from knack.prompting import prompt_y_n, NoTTYException
 
 logger = get_logger(__name__)
 
+
+K8S_EXTENSION_NAME = "k8s-extension"
 
 # Tag used to identify storage accounts created for AKS backup
 # Format: AKSAzureBackup: <location>
 AKS_BACKUP_TAG_KEY = "AKSAzureBackup"
 
 
-def _check_and_assign_role(cmd, role, assignee, scope, identity_name="identity", max_retries=3, retry_delay=10):
+def _ensure_k8s_extension(cmd, yes=False):
+    """Ensure the k8s-extension CLI extension is installed and importable.
+
+    If the extension is not installed, prompt the user to install it
+    (or install silently when ``yes`` is True). Raises
+    ``ValidationError`` if the user declines.
+    """
+    from azure.cli.core.extension.operations import add_extension_to_path
+
+    try:
+        add_extension_to_path(K8S_EXTENSION_NAME)
+        from importlib import import_module
+        import_module("azext_k8s_extension.custom")  # verify importable
+        return
+    except (ImportError, Exception):  # pylint: disable=broad-except
+        pass
+
+    install_msg = (
+        f"The '{K8S_EXTENSION_NAME}' CLI extension is required to install "
+        "the data protection extension on the AKS cluster but is not "
+        "installed. Install it now?"
+    )
+    proceed = yes
+    if not proceed:
+        try:
+            proceed = prompt_y_n(install_msg, default="y")
+        except NoTTYException:
+            proceed = False
+    if not proceed:
+        raise ValidationError(
+            f"The '{K8S_EXTENSION_NAME}' CLI extension is required for "
+            "AKS backup operations.\n"
+            f"Run `az extension add --name {K8S_EXTENSION_NAME}` "
+            "and retry, or rerun with --yes to auto-install."
+        )
+
+    logger.warning("Installing CLI extension '%s'...", K8S_EXTENSION_NAME)
+    from azure.cli.core.extension.operations import add_extension
+    add_extension(cmd=cmd, extension_name=K8S_EXTENSION_NAME)
+    add_extension_to_path(K8S_EXTENSION_NAME)
+
+
+def _check_and_assign_role(
+        cmd, role, assignee_object_id, scope, identity_name="identity", max_retries=3, retry_delay=10):
     """
     Check if a role assignment already exists, and create it if not.
 
     Args:
         cmd: CLI command context
         role: Role name (e.g., 'Contributor', 'Reader')
-        assignee: Principal ID of the identity to assign the role to
+        assignee_object_id: Object ID of the managed identity to assign the role to
         scope: Resource ID scope for the role assignment
         identity_name: Friendly name for log messages
         max_retries: Max retries for transient failures
@@ -37,19 +83,31 @@ def _check_and_assign_role(cmd, role, assignee, scope, identity_name="identity",
     import time
     from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
 
+    # AKS backup assigns roles only to managed identities; use their object IDs to avoid Graph lookup.
+    manual_command = (
+        f'az role assignment create --role "{role}" --assignee-object-id "{assignee_object_id}" '
+        f'--assignee-principal-type "ServicePrincipal" --scope "{scope}"'
+    )
+
     # Check if role assignment already exists
     try:
-        if list_role_assignments(cmd, assignee=assignee, role=role, scope=scope, include_inherited=True):
+        if list_role_assignments(
+                cmd, assignee_object_id=assignee_object_id, role=role, scope=scope, include_inherited=True):
             logger.warning("\tRole '%s' already assigned to %s", role, identity_name)
             return True
     except Exception as e:  # pylint: disable=broad-exception-caught
         logger.warning("\tWarning: Could not list role assignments for %s: %s", identity_name, str(e)[:100])
         # Continue to try creating the assignment
 
-    # Try to create with retries for identity propagation delay
+    # Try to create with retries for transient identity propagation errors
     for attempt in range(max_retries):
         try:
-            create_role_assignment(cmd, role=role, assignee=assignee, scope=scope)
+            create_role_assignment(
+                cmd,
+                role=role,
+                assignee_object_id=assignee_object_id,
+                assignee_principal_type="ServicePrincipal",
+                scope=scope)
             logger.warning("\tRole '%s' assigned to %s", role, identity_name)
             return True
         except Exception as e:  # pylint: disable=broad-exception-caught
@@ -76,7 +134,7 @@ def _check_and_assign_role(cmd, role, assignee, scope, identity_name="identity",
                 raise InvalidArgumentValueError(
                     f"Insufficient permissions to assign '{role}' role to {identity_name}.\n"
                     f"Run manually:\n\n"
-                    f"  az role assignment create --role \"{role}\" --assignee \"{assignee}\" --scope \"{scope}\"\n"
+                    f"  {manual_command}\n"
                 )
 
             # Non-retryable error — break and raise
@@ -85,7 +143,7 @@ def _check_and_assign_role(cmd, role, assignee, scope, identity_name="identity",
     raise InvalidArgumentValueError(
         f"Failed to assign '{role}' role to {identity_name}.\n"
         f"Run manually:\n\n"
-        f"  az role assignment create --role \"{role}\" --assignee \"{assignee}\" --scope \"{scope}\"\n"
+        f"  {manual_command}\n"
     )
 
 
@@ -397,7 +455,7 @@ def _setup_resource_group(cmd, resource_client, backup_resource_group_id,
     _check_and_assign_role(
         cmd,
         role="Contributor",
-        assignee=cluster_identity_principal_id,
+        assignee_object_id=cluster_identity_principal_id,
         scope=backup_resource_group.id,
         identity_name="cluster identity")
     logger.warning("[OK] Resource group ready")
@@ -436,6 +494,7 @@ def _setup_storage_account(cmd, cluster_subscription_id, storage_account_id,
                            cluster_resource_group_name, resource_tags):
     """Create or use storage account."""
     from azure.mgmt.storage import StorageManagementClient
+    from azure.mgmt.storage.models import Sku, StorageAccountCreateParameters
 
     storage_client = get_mgmt_service_client(
         cmd.cli_ctx, StorageManagementClient,
@@ -475,14 +534,14 @@ def _setup_storage_account(cmd, cluster_subscription_id, storage_account_id,
             if resource_tags:
                 sa_tags.update(resource_tags)
 
-            storage_params = {
-                "location": cluster_location,
-                "kind": "StorageV2",
-                "sku": {"name": "Standard_LRS"},
-                "allow_blob_public_access": False,
-                "allow_shared_key_access": False,
-                "tags": sa_tags
-            }
+            storage_params = StorageAccountCreateParameters(
+                location=cluster_location,
+                kind="StorageV2",
+                sku=Sku(name="Standard_LRS"),
+                allow_blob_public_access=False,
+                allow_shared_key_access=False,
+                tags=sa_tags,
+            )
             backup_storage_account = storage_client.storage_accounts.begin_create(
                 resource_group_name=backup_resource_group_name,
                 account_name=backup_storage_account_name,
@@ -506,7 +565,7 @@ def _install_backup_extension(cmd, cluster_subscription_id,
                               backup_storage_account_name,
                               backup_storage_account_container_name,
                               backup_resource_group_name,
-                              backup_storage_account):
+                              backup_storage_account, yes=False):
     """Install backup extension on the cluster."""
     backup_extension = _create_backup_extension(
         cmd,
@@ -516,12 +575,13 @@ def _install_backup_extension(cmd, cluster_subscription_id,
         backup_storage_account_name,
         backup_storage_account_container_name,
         backup_resource_group_name,
-        cluster_subscription_id)
+        cluster_subscription_id,
+        yes=yes)
 
     _check_and_assign_role(
         cmd,
         role="Storage Blob Data Contributor",
-        assignee=backup_extension.aks_assigned_identity.principal_id,
+        assignee_object_id=backup_extension.aks_assigned_identity.principal_id,
         scope=backup_storage_account.id,
         identity_name="backup extension identity")
     logger.warning("[OK] Backup extension ready")
@@ -626,11 +686,23 @@ def _get_storage_account_from_extension(cmd, extension, cluster_subscription_id)
         return None, None, None, None
 
 
-def _find_existing_backup_vault(cmd, cluster_subscription_id, cluster_location):
+def _find_existing_backup_vault(
+    cmd, cluster_subscription_id, cluster_location, backup_resource_group_name=None
+):
     """
-    Search for an existing AKS backup vault in the subscription by tag.
+    Search for an existing AKS backup vault by tag, scoped to the explicit
+    backup resource group when one is known.
 
     Looks for backup vaults with tag: AKSAzureBackup = <location>
+
+    Scoping the ``list`` call to ``backup_resource_group_name`` (derived from
+    the caller-supplied ``backupResourceGroupId``, or the per-cluster
+    resource group we just created/validated) is required: without it, every
+    parallel run/test that happens to omit ``backupResourceGroupId`` shares
+    the same subscription-wide, tag-matched vault, so one run's
+    ``aks delete``/vault cleanup can race another run's discovery and lookup
+    (``ResourceGroupBeingDeleted``/404 on the shared vault). Restricting
+    discovery to the caller's own resource group keeps each run isolated.
 
     Returns:
         backup_vault if found, None otherwise
@@ -638,10 +710,10 @@ def _find_existing_backup_vault(cmd, cluster_subscription_id, cluster_location):
     from azext_dataprotection.aaz.latest.dataprotection.backup_vault import List as _BackupVaultList
 
     try:
-        # List all backup vaults in the cluster's subscription
-        vaults = _BackupVaultList(cli_ctx=cmd.cli_ctx)(command_args={
-            "subscription": cluster_subscription_id
-        })
+        list_args = {"subscription": cluster_subscription_id}
+        if backup_resource_group_name:
+            list_args["resource_group"] = backup_resource_group_name
+        vaults = _BackupVaultList(cli_ctx=cmd.cli_ctx)(command_args=list_args)
 
         for vault in vaults:
             if vault.get('tags'):
@@ -653,6 +725,57 @@ def _find_existing_backup_vault(cmd, cluster_subscription_id, cluster_location):
         # If we can't list vaults, we'll create a new one
         pass
     return None
+
+
+def _wait_for_backup_vault_ready(
+    cmd, backup_vault_name, backup_resource_group_name,
+    cluster_subscription_id, retries=30, interval_seconds=10
+):
+    """
+    Poll the backup vault until its service-reported ``provisioningState``
+    reaches a terminal state (or a bounded number of retries is exhausted).
+
+    ``_BackupVaultCreate(...).result()`` returns as soon as the ARM PUT's LRO
+    completes, but the vault's own ``provisioningState`` can briefly lag
+    behind (eventual consistency) before role-assignment/backup-instance
+    operations against it will reliably succeed. This uses precise, bounded
+    polling against the service-visible state rather than a fixed sleep.
+
+    Returns the latest vault payload (refreshed via Show) when available;
+    falls back to whatever was last observed if polling itself fails.
+    """
+    import time
+    from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Show as _BackupVaultShow
+
+    terminal_states = {"succeeded", "failed", "canceled"}
+    latest_vault = None
+    for attempt in range(retries):
+        try:
+            latest_vault = _BackupVaultShow(cli_ctx=cmd.cli_ctx)(command_args={
+                "vault_name": backup_vault_name,
+                "resource_group": backup_resource_group_name,
+                "subscription": cluster_subscription_id,
+            })
+            state = (latest_vault.get("properties", {}) or {}).get("provisioningState", "")
+            if state.lower() in terminal_states:
+                if state.lower() != "succeeded":
+                    raise InvalidArgumentValueError(
+                        f"Backup vault '{backup_vault_name}' reached terminal "
+                        f"provisioning state '{state}' instead of 'Succeeded'."
+                    )
+                return latest_vault
+        except InvalidArgumentValueError:
+            raise
+        except Exception:  # pylint: disable=broad-exception-caught
+            # Transient lookup failure (e.g. RP propagation delay); keep retrying.
+            pass
+        if attempt < retries - 1:
+            time.sleep(interval_seconds)
+    logger.warning(
+        "Backup vault '%s' did not report a terminal provisioning state "
+        "after %d retries; proceeding with the last known state.",
+        backup_vault_name, retries)
+    return latest_vault
 
 
 def _try_create_vault_with_storage_type(
@@ -713,9 +836,14 @@ def _setup_backup_vault(
             "subscription": cluster_subscription_id
         })
     else:
-        # Search for existing backup vault with matching tag
-        logger.warning("Searching for existing AKS backup vault in region %s...", cluster_location)
-        backup_vault = _find_existing_backup_vault(cmd, cluster_subscription_id, cluster_location)
+        # Search for existing backup vault with matching tag, scoped to the
+        # explicit backup resource group so parallel/other runs' vaults are
+        # never picked up (see _find_existing_backup_vault docstring).
+        logger.warning(
+            "Searching for existing AKS backup vault in region %s (resource group %s)...",
+            cluster_location, backup_resource_group_name)
+        backup_vault = _find_existing_backup_vault(
+            cmd, cluster_subscription_id, cluster_location, backup_resource_group_name)
 
         if backup_vault:
             # Found existing vault - reuse it
@@ -753,25 +881,35 @@ def _setup_backup_vault(
                     f"Please check region availability and try again."
                 )
 
+            # The vault create LRO can return before the vault's own
+            # provisioningState (and downstream role-assignment/backup-instance
+            # eligibility) is fully settled. Wait on the service-visible state
+            # with bounded retries rather than assuming immediate readiness.
+            logger.warning("Waiting for backup vault '%s' to become ready...", backup_vault_name)
+            refreshed_vault = _wait_for_backup_vault_ready(
+                cmd, backup_vault_name, backup_resource_group_name, cluster_subscription_id)
+            if refreshed_vault:
+                backup_vault = refreshed_vault
+
     logger.warning("Backup Vault: %s", backup_vault['id'])
     _check_and_assign_role(
         cmd,
         role="Reader",
-        assignee=backup_vault["identity"]["principalId"],
+        assignee_object_id=backup_vault["identity"]["principalId"],
         scope=cluster_resource.id,
         identity_name="backup vault identity (on cluster)")
 
     _check_and_assign_role(
         cmd,
         role="Reader",
-        assignee=backup_vault["identity"]["principalId"],
+        assignee_object_id=backup_vault["identity"]["principalId"],
         scope=backup_resource_group.id,
         identity_name="backup vault identity (on resource group)")
 
     _check_and_assign_role(
         cmd,
         role="Disk Snapshot Contributor",
-        assignee=backup_vault["identity"]["principalId"],
+        assignee_object_id=backup_vault["identity"]["principalId"],
         scope=backup_resource_group.id,
         identity_name="backup vault identity (snapshot contributor on resource group)")
     logger.warning("[OK] Backup vault ready")
@@ -1009,14 +1147,14 @@ def _show_plan_and_confirm(cluster_subscription_id, cluster_name,
     logger.warning("  RBAC role assignments listed above.")
     logger.warning("")
 
-    from knack.prompting import prompt_y_n
     return prompt_y_n("Do you want to proceed?", default='y')
 
 
 def _setup_extension_and_storage(
         cmd, cluster_subscription_id, cluster_resource_group_name,
         cluster_name, storage_account_id, blob_container_name,
-        backup_resource_group_name, cluster_location, resource_tags):
+        backup_resource_group_name, cluster_location, resource_tags,
+        yes=False):
     """Setup backup extension and storage account (steps 3 & 4).
 
     If the extension is already installed, reuses its configured storage
@@ -1053,7 +1191,7 @@ def _setup_extension_and_storage(
         _check_and_assign_role(
             cmd,
             role="Storage Blob Data Contributor",
-            assignee=existing_extension.aks_assigned_identity.principal_id,
+            assignee_object_id=existing_extension.aks_assigned_identity.principal_id,
             scope=backup_storage_account.id,
             identity_name="backup extension identity")
         logger.warning("[OK] Storage account ready")
@@ -1074,7 +1212,8 @@ def _setup_extension_and_storage(
             cmd, cluster_subscription_id,
             cluster_resource_group_name, cluster_name,
             sa_result[1], sa_result[2],
-            backup_resource_group_name, backup_storage_account)
+            backup_resource_group_name, backup_storage_account,
+            yes=yes)
 
     return backup_storage_account
 
@@ -1141,7 +1280,8 @@ def dataprotection_enable_backup_helper(
         cmd, cluster_subscription_id, cluster_resource_group_name,
         cluster_name, configuration_params.get("storageAccountResourceId"),
         configuration_params.get("blobContainerName"),
-        backup_resource_group_name, cluster_location, resource_tags)
+        backup_resource_group_name, cluster_location, resource_tags,
+        yes=yes)
 
     # Step 5: Setup backup vault
     logger.warning("[5/8] Setting up backup vault...")
@@ -1155,7 +1295,7 @@ def dataprotection_enable_backup_helper(
     _check_and_assign_role(
         cmd,
         role="Storage Blob Data Reader",
-        assignee=backup_vault["identity"]["principalId"],
+        assignee_object_id=backup_vault["identity"]["principalId"],
         scope=backup_storage_account.id,
         identity_name="backup vault identity (on storage account)")
 
@@ -1503,7 +1643,7 @@ def _create_backup_extension(
         cmd, subscription_id, resource_group_name, cluster_name,
         storage_account_name, storage_account_container_name,
         storage_account_resource_group,
-        storage_account_subscription_id):
+        storage_account_subscription_id, yes=False):
     """Create or reuse the data protection k8s extension."""
     from azext_dataprotection.vendored_sdks.azure_mgmt_kubernetesconfiguration import SourceControlConfigurationClient
     k8s_configuration_client = get_mgmt_service_client(
@@ -1555,9 +1695,11 @@ def _create_backup_extension(
 
     logger.warning("Installing data protection extension (azure-aks-backup)...")
 
+    _ensure_k8s_extension(cmd, yes=yes)
+
     from azure.cli.core.extension.operations import add_extension_to_path
     from importlib import import_module
-    add_extension_to_path("k8s-extension")
+    add_extension_to_path(K8S_EXTENSION_NAME)
     k8s_ext_client_factory = import_module(
         "azext_k8s_extension._client_factory")
     k8s_extension_module = import_module("azext_k8s_extension.custom")

@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/networkanchors/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/networkanchors/{}", "2026-06-01"],
         ]
     }
 
@@ -123,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -165,7 +165,9 @@ class Show(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -228,6 +230,9 @@ class Show(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.proximity_placement_group = AAZObjectType(
+                serialized_name="proximityPlacementGroup",
+            )
             properties.resource_anchor_id = AAZStrType(
                 serialized_name="resourceAnchorId",
                 flags={"required": True},
@@ -239,6 +244,19 @@ class Show(AAZCommand):
             properties.vnet_id = AAZStrType(
                 serialized_name="vnetId",
                 flags={"read_only": True},
+            )
+
+            proximity_placement_group = cls._schema_on_200.properties.proximity_placement_group
+            proximity_placement_group.entity_type_intended_to_use = AAZStrType(
+                serialized_name="entityTypeIntendedToUse",
+                flags={"required": True},
+            )
+            proximity_placement_group.proximity_anchor_id = AAZStrType(
+                serialized_name="proximityAnchorId",
+            )
+            proximity_placement_group.proximity_placement_group_id = AAZStrType(
+                serialized_name="proximityPlacementGroupId",
+                flags={"required": True},
             )
 
             system_data = cls._schema_on_200.system_data

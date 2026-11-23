@@ -12,6 +12,13 @@ ACI_FIELD_RESOURCES = "resources"
 ACI_FIELD_RESOURCES_NAME = "name"
 ACI_FIELD_CONTAINERS = "containers"
 ACI_FIELD_SCENARIO = "scenario"
+ACI_FIELD_ALLOWED_LOG_PROVIDERS = "allowedLogProviders"
+ACI_FIELD_ALLOW_LOG_PROVIDER_DROPPING = "allowLogProviderDropping"
+ACI_FIELD_ALLOW_HOST_NETWORK = "allowHostNetwork"
+ACI_FIELD_ALLOW_REGISTRY_CHANGES_DROPPING = "allowRegistryChangesDropping"
+ACI_FIELD_MAPPED_DIRECTORIES = "mappedDirectories"
+ACI_FIELD_MAPPED_DIRECTORIES_CONTAINER_PATH = "containerPath"
+ACI_FIELD_MAPPED_DIRECTORIES_READONLY = "readOnly"
 ACI_FIELD_CONTAINERS_NAME = "name"
 ACI_FIELD_CONTAINERS_CONTAINERIMAGE = "containerImage"
 ACI_FIELD_CONTAINERS_ENVS = "environmentVariables"
@@ -23,6 +30,7 @@ ACI_FIELD_CONTAINERS_COMMAND = "command"
 ACI_FIELD_CONTAINERS_WORKINGDIR = "workingDir"
 ACI_FIELD_CONTAINERS_MOUNTS = "mounts"
 ACI_FIELD_CONTAINERS_MOUNTS_TYPE = "mountType"
+ACI_FIELD_CONTAINERS_MOUNTS_TYPE_ELASTIC_SAN = "elasticSan"
 ACI_FIELD_CONTAINERS_MOUNTS_PATH = "mountPath"
 ACI_FIELD_CONTAINERS_MOUNTS_READONLY = "readonly"
 ACI_FIELD_CONTAINERS_WAIT_MOUNT_POINTS = "wait_mount_points"
@@ -31,6 +39,8 @@ ACI_FIELD_CONTAINERS_SECURITY_CONTEXT = "securityContext"
 ACI_FIELD_CONTAINERS_ALLOW_PRIVILEGE_ESCALATION = "allowPrivilegeEscalation"
 ACI_FIELD_CONTAINERS_RUN_AS_USER = "runAsUser"
 ACI_FIELD_CONTAINERS_RUN_AS_GROUP = "runAsGroup"
+ACI_FIELD_CONTAINERS_WINDOWS_OPTIONS = "windowsOptions"
+ACI_FIELD_CONTAINERS_RUN_AS_USERNAME = "runAsUserName"
 ACI_FIELD_CONTAINERS_SECCOMP_PROFILE = "seccompProfile"
 ACI_FIELD_CONTAINERS_REGO_FRAGMENTS = "fragments"
 ACI_FIELD_CONTAINERS_REGO_FRAGMENTS_FEED = "feed"
@@ -46,6 +56,7 @@ ACI_FIELD_CONTAINERS_ARCHITECTURE_VALUE = "amd64"
 
 
 ACI_FIELD_CONTAINERS_EXEC_PROCESSES = "execProcesses"
+ACI_FIELD_CONTAINERS_REGISTRY_CHANGES = "registryChanges"
 ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS = "allowStdioAccess"
 ACI_FIELD_CONTAINERS_LIVENESS_PROBE = "livenessProbe"
 ACI_FIELD_CONTAINERS_READINESS_PROBE = "readinessProbe"
@@ -128,6 +139,10 @@ POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE = "pattern"
 POLICY_FIELD_CONTAINERS_ELEMENTS_REQUIRED = "required"
 POLICY_FIELD_CONTAINERS_ELEMENTS_LAYERS = "layers"
 POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTED_CIM = "mounted_cim"
+POLICY_FIELD_CONTAINERS_ELEMENTS_REGISTRY_CHANGES = "registry_changes"
+POLICY_FIELD_MAPPED_DIRECTORIES = "mapped_directories"
+POLICY_FIELD_MAPPED_DIRECTORIES_CONTAINER_PATH = "container_path"
+POLICY_FIELD_MAPPED_DIRECTORIES_READONLY = "read_only"
 POLICY_FIELD_CONTAINERS_ELEMENTS_WORKINGDIR = "working_dir"
 POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS = "mounts"
 POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_SOURCE = "source"
@@ -194,6 +209,9 @@ OPENGCS_ENV_RULES = _config["openGCS"]["environmentVariables"]
 FABRIC_ENV_RULES = _config["fabric"]["environmentVariables"]
 # Managed Identity environment variables for customer containers
 MANAGED_IDENTITY_ENV_RULES = _config["managedIdentity"]["environmentVariables"]
+# Managed Identity environment variables for Windows (WCOW) customer containers
+# (Windows adds IDENTITY_ENDPOINT in addition to the shared set)
+MANAGED_IDENTITY_ENV_RULES_WINDOWS = _config["managedIdentityWindows"]["environmentVariables"]
 # VN2 environment variables
 VIRTUAL_NODE_ENV_RULES = _config["default_envs_virtual_node"]["environmentVariables"]
 # VN2 environment variables for workload identities
@@ -207,10 +225,25 @@ DEFAULT_MOUNTS_USER_VIRTUAL_NODE = _config["mount"]["default_mounts_user_virtual
 DEFAULT_MOUNTS_VIRTUAL_NODE = _config["mount"]["default_mounts_virtual_node"]
 DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE = _config["mount"]["default_mounts_virtual_node_privileged"]
 DEFAULT_MOUNTS_WORKLOAD_IDENTITY_VIRTUAL_NODE = _config["mount"]["default_mounts_workload_identity_virtual_node"]
+# default mounts used for Windows VN2 (mount sources are unchanged; only the
+# container destination paths differ, e.g. C:\\var\\run\\secrets\\... )
+DEFAULT_MOUNTS_USER_VIRTUAL_NODE_WINDOWS = _config["mount"]["default_mounts_user_virtual_node_windows"]
+DEFAULT_MOUNTS_VIRTUAL_NODE_WINDOWS = _config["mount"]["default_mounts_virtual_node_windows"]
+DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE_WINDOWS = _config["mount"]["default_mounts_virtual_node_privileged_windows"]
+DEFAULT_MOUNTS_WORKLOAD_IDENTITY_VIRTUAL_NODE_WINDOWS = (
+    _config["mount"]["default_mounts_workload_identity_virtual_node_windows"]
+)
 # default mounts policy options for all containers
 DEFAULT_MOUNT_POLICY = _config["mount"]["default_policy"]
 # default rego policy to be added to all user containers
 DEFAULT_REGO_FRAGMENTS = _config["default_rego_fragments"]
+# Windows (CWCOW) infrastructure fragment and its VN2 variant
+DEFAULT_REGO_FRAGMENTS_WINDOWS = _config["default_rego_fragments_windows"]
+DEFAULT_REGO_FRAGMENTS_WINDOWS_VIRTUAL_NODE = _config["default_rego_fragments_windows_virtual_node"]
+# kube-proxy image-attached fragment to add to VN2 policies when requested
+KUBE_PROXY_REGO_FRAGMENT = _config["kube_proxy_rego_fragment"]
+# Windows (CWCOW) VN2 mount-host image-attached fragment, emitted by default
+DEFAULT_REGO_FRAGMENTS_WINDOWS_MOUNT_HOST = _config["default_rego_fragments_windows_mount_host"]
 # things that need to be set for debug mode
 DEBUG_MODE_SETTINGS = _config["debugMode"]
 DEBUG_MODE_SETTINGS_WINDOWS = _config["debugModeWindows"]
@@ -230,6 +263,9 @@ REGO_IMPORT_FILE_STRUCTURE = """
 }
 """
 CUSTOMER_REGO_POLICY = load_str_from_file(REGO_FILE_PATH)
+CUSTOMER_REGO_POLICY_PRERELEASE = load_str_from_file(
+    f"{script_directory}/data/customer_rego_policy_prerelease.txt"
+)
 CUSTOMER_REGO_POLICY_WINDOWS = load_str_from_file(f"{script_directory}/data/customer_rego_policy_windows.txt")
 CUSTOMER_REGO_FRAGMENT = load_str_from_file(REGO_FRAGMENT_FILE_PATH)
 # sidecar rego file
@@ -239,8 +275,12 @@ SIDECAR_REGO_POLICY = load_str_from_file(SIDECAR_REGO_FILE_PATH)
 # data folder
 DATA_FOLDER = os.path.join(script_directory, "data")
 
-# api version
-API_VERSION = _config["version_api"]
+# Policy versions. Linux defaults to the deployed contract; Windows and
+# explicitly requested prerelease Linux policies use the latest bundled contract.
+DEFAULT_POLICY_API_VERSION = "0.11.0"
+DEFAULT_POLICY_FRAMEWORK_VERSION = "0.2.3"
+PRERELEASE_POLICY_API_VERSION = _config["version_api"]
+PRERELEASE_POLICY_FRAMEWORK_VERSION = "0.5.0"
 # default containers to be added to all container groups
 DEFAULT_CONTAINERS = _config["default_containers"]
 # default container user config to be added for security context
@@ -285,6 +325,8 @@ SIGNALS = {
     "SIGSYS": 31,
     "SIGUNUSED": 31
 }
+DEFAULT_CONTAINER_SIGNALS = [SIGNALS["SIGKILL"], SIGNALS["SIGTERM"]]
+
 # these algorithms are the only supported ones in https://github.com/veraison/go-cose/blob/main/algorithm.go
 SUPPORTED_ALGOS = [
     "PS256",
@@ -295,3 +337,55 @@ SUPPORTED_ALGOS = [
     "ES512",
     "EdDSA",
 ]
+
+
+def _is_windows_platform(platform):
+    return bool(platform) and platform.lower().startswith("windows")
+
+
+def get_default_mounts_user_virtual_node(platform=None):
+    if _is_windows_platform(platform):
+        return DEFAULT_MOUNTS_USER_VIRTUAL_NODE_WINDOWS
+    return DEFAULT_MOUNTS_USER_VIRTUAL_NODE
+
+
+def get_default_mounts_virtual_node(platform=None):
+    if _is_windows_platform(platform):
+        return DEFAULT_MOUNTS_VIRTUAL_NODE_WINDOWS
+    return DEFAULT_MOUNTS_VIRTUAL_NODE
+
+
+def get_default_mounts_privileged_virtual_node(platform=None):
+    if _is_windows_platform(platform):
+        return DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE_WINDOWS
+    return DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE
+
+
+def get_default_mounts_workload_identity_virtual_node(platform=None):
+    if _is_windows_platform(platform):
+        return DEFAULT_MOUNTS_WORKLOAD_IDENTITY_VIRTUAL_NODE_WINDOWS
+    return DEFAULT_MOUNTS_WORKLOAD_IDENTITY_VIRTUAL_NODE
+
+
+def get_default_rego_fragments(platform=None, is_vn2=False, prerelease_policy_api=False):
+    if _is_windows_platform(platform):
+        # The infrastructure fragment is only emitted with --prerelease-policy-api.
+        if prerelease_policy_api:
+            if is_vn2:
+                return DEFAULT_REGO_FRAGMENTS_WINDOWS_VIRTUAL_NODE
+            return DEFAULT_REGO_FRAGMENTS_WINDOWS
+        # By default the VN2 mount host relies on its image-attached fragment;
+        # non-VN2 Windows has no default fragment.
+        if is_vn2:
+            return DEFAULT_REGO_FRAGMENTS_WINDOWS_MOUNT_HOST
+        return []
+    return DEFAULT_REGO_FRAGMENTS
+
+
+def get_all_default_rego_fragments():
+    return (
+        DEFAULT_REGO_FRAGMENTS
+        + DEFAULT_REGO_FRAGMENTS_WINDOWS
+        + DEFAULT_REGO_FRAGMENTS_WINDOWS_VIRTUAL_NODE
+        + DEFAULT_REGO_FRAGMENTS_WINDOWS_MOUNT_HOST
+    )

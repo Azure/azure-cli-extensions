@@ -13,9 +13,11 @@ from ._check_name_availability import *
 from ._create import *
 from ._delete import *
 from ._get_provisioning_recommendation import *
+from ._get_redundancy_conversion_status import *
 from ._limits_show import *
 from ._list import *
 from ._show import *
+from ._start_redundancy_conversion import *
 from ._update import *
 from ._usage_show import *
 from ._wait import *

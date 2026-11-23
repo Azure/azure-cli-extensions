@@ -19,9 +19,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2026-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2025-07-01", "identity"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2026-05-01", "identity"],
         ]
     }
 
@@ -46,6 +46,9 @@ class Show(AAZCommand):
             options=["-n", "--name", "--endpoint-name"],
             help="The name of the Endpoint resource.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -54,6 +57,9 @@ class Show(AAZCommand):
             options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
         return cls._args_schema
 
@@ -137,7 +143,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-05-01",
                     required=True,
                 ),
             }
@@ -224,6 +230,7 @@ class _ShowHelper:
         )
         identity.user_assigned_identities = AAZDictType(
             serialized_name="userAssignedIdentities",
+            nullable=True,
         )
 
         user_assigned_identities = _schema_endpoint_read.identity.user_assigned_identities
@@ -241,6 +248,9 @@ class _ShowHelper:
 
         properties = _schema_endpoint_read.properties
         properties.description = AAZStrType()
+        properties.endpoint_kind = AAZStrType(
+            serialized_name="endpointKind",
+        )
         properties.endpoint_type = AAZStrType(
             serialized_name="endpointType",
             flags={"required": True},
@@ -261,14 +271,23 @@ class _ShowHelper:
         )
 
         disc_azure_storage_blob_container = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "AzureStorageBlobContainer")
+        disc_azure_storage_blob_container.allowed_storage_accounts = AAZListType(
+            serialized_name="allowedStorageAccounts",
+        )
         disc_azure_storage_blob_container.blob_container_name = AAZStrType(
             serialized_name="blobContainerName",
             flags={"required": True},
+        )
+        disc_azure_storage_blob_container.enable_cross_tenant_transfer = AAZBoolType(
+            serialized_name="enableCrossTenantTransfer",
         )
         disc_azure_storage_blob_container.storage_account_resource_id = AAZStrType(
             serialized_name="storageAccountResourceId",
             flags={"required": True},
         )
+
+        allowed_storage_accounts = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "AzureStorageBlobContainer").allowed_storage_accounts
+        allowed_storage_accounts.Element = AAZStrType()
 
         disc_azure_storage_nfs_file_share = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "AzureStorageNfsFileShare")
         disc_azure_storage_nfs_file_share.file_share_name = AAZStrType(
@@ -281,6 +300,12 @@ class _ShowHelper:
         )
 
         disc_azure_storage_smb_file_share = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "AzureStorageSmbFileShare")
+        disc_azure_storage_smb_file_share.allowed_storage_accounts = AAZListType(
+            serialized_name="allowedStorageAccounts",
+        )
+        disc_azure_storage_smb_file_share.enable_cross_tenant_transfer = AAZBoolType(
+            serialized_name="enableCrossTenantTransfer",
+        )
         disc_azure_storage_smb_file_share.file_share_name = AAZStrType(
             serialized_name="fileShareName",
             flags={"required": True},
@@ -289,6 +314,9 @@ class _ShowHelper:
             serialized_name="storageAccountResourceId",
             flags={"required": True},
         )
+
+        allowed_storage_accounts = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "AzureStorageSmbFileShare").allowed_storage_accounts
+        allowed_storage_accounts.Element = AAZStrType()
 
         disc_nfs_mount = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "NfsMount")
         disc_nfs_mount.export = AAZStrType(
@@ -300,6 +328,32 @@ class _ShowHelper:
         disc_nfs_mount.nfs_version = AAZStrType(
             serialized_name="nfsVersion",
         )
+        disc_nfs_mount.source_type = AAZStrType(
+            serialized_name="sourceType",
+        )
+
+        disc_s3_with_hmac = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "S3WithHMAC")
+        disc_s3_with_hmac.credentials = AAZObjectType()
+        disc_s3_with_hmac.other_source_type_description = AAZStrType(
+            serialized_name="otherSourceTypeDescription",
+        )
+        disc_s3_with_hmac.source_type = AAZStrType(
+            serialized_name="sourceType",
+        )
+        disc_s3_with_hmac.source_uri = AAZStrType(
+            serialized_name="sourceUri",
+        )
+
+        credentials = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "S3WithHMAC").credentials
+        credentials.access_key_uri = AAZStrType(
+            serialized_name="accessKeyUri",
+        )
+        credentials.secret_key_uri = AAZStrType(
+            serialized_name="secretKeyUri",
+        )
+        credentials.type = AAZStrType(
+            flags={"required": True},
+        )
 
         disc_smb_mount = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "SmbMount")
         disc_smb_mount.credentials = AAZObjectType()
@@ -309,6 +363,9 @@ class _ShowHelper:
         disc_smb_mount.share_name = AAZStrType(
             serialized_name="shareName",
             flags={"required": True},
+        )
+        disc_smb_mount.source_type = AAZStrType(
+            serialized_name="sourceType",
         )
 
         credentials = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "SmbMount").credentials

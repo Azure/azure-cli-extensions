@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from azure.core.exceptions import HttpResponseError
 from azure.cli.testsdk import ResourceGroupPreparer, JMESPathCheck
 from azure.cli.testsdk import ScenarioTest, record_only
 from .afdx_scenario_mixin import CdnAfdScenarioMixin
@@ -23,6 +24,7 @@ class CdnAfdOriginScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
         origin_name = self.create_random_name(prefix='origin', length=16)
         create_options = "--host-name plstestcli.blob.core.windows.net " \
                          + "--origin-host-header plstestcli.blob.core.windows.net " \
+                         + "--cert-name-check-mode OriginHostname " \
                          + "--priority 1 --weight 1000 --http-port 80 --https-port 443 --enabled-state Enabled"
 
         create_checks = [JMESPathCheck('name', origin_name),
@@ -33,6 +35,7 @@ class CdnAfdOriginScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('weight', 1000),
                          JMESPathCheck('enabledState', "Enabled"),
                          JMESPathCheck('enforceCertificateNameCheck', True),
+                         JMESPathCheck('certificateNameCheckValidationMode', 'OriginHostname'),
                          JMESPathCheck('provisioningState', 'Succeeded')]
         self.afd_origin_create_cmd(resource_group,
                                    profile_name,
@@ -40,6 +43,8 @@ class CdnAfdOriginScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                                    origin_name,
                                    create_options,
                                    create_checks)
+        self.afd_origin_show_cmd(resource_group, profile_name, origin_group_name, origin_name,
+                                  checks=create_checks)
 
         origin_name1 = self.create_random_name(prefix='origin', length=16)
         create_options = "--host-name huaiyiztesthost1.blob.core.chinacloudapi.cn " \
@@ -68,6 +73,9 @@ class CdnAfdOriginScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                        JMESPathCheck('@[1].name', origin_name1)]
         self.afd_origin_list_cmd(resource_group, profile_name, origin_group_name, checks=list_checks)
         self.afd_origin_delete_cmd(resource_group, profile_name, origin_group_name, origin_name1)
+        list_checks = [JMESPathCheck('length(@)', 1),
+                   JMESPathCheck('@[0].name', origin_name)]
+        self.afd_origin_list_cmd(resource_group, profile_name, origin_group_name, checks=list_checks)
 
         update_checks = [JMESPathCheck('name', origin_name),
                          JMESPathCheck('hostName', "plstestcli.blob.core.windows.net"),
@@ -116,11 +124,8 @@ class CdnAfdOriginScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('sharedPrivateLinkResource.privateLinkLocation', "eastus"),
                          JMESPathCheck('sharedPrivateLinkResource.requestMessage', "Private link service from AFD"),
                          JMESPathCheck('provisioningState', 'Succeeded')]
-        options = '--http-port 80 --enable-private-link --private-link-resource ' \
-                  + f' /subscriptions/{self.get_subscription_id()}/resourceGroups/CliDevReservedGroup/providers/Microsoft.Storage/storageAccounts/plstestcli' \
-                  + ' --private-link-sub-resource blob' \
-                  + ' --private-link-location eastus' \
-                  + ' --private-link-request-message "Private link service from AFD"'
+        options = '--http-port 80 ' \
+                  f'--shared-private-link-resource \'{{"private-link":{{"id":"/subscriptions/{self.get_subscription_id()}/resourceGroups/CliDevReservedGroup/providers/Microsoft.Storage/storageAccounts/plstestcli"}},"group-id":"blob","private-link-location":"eastus","request-message":"Private link service from AFD"}}\''
         self.afd_origin_update_cmd(resource_group,
                                    profile_name,
                                    origin_group_name,
@@ -141,7 +146,7 @@ class CdnAfdOriginScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('sharedPrivateLinkResource.privateLinkLocation', "eastus"),
                          JMESPathCheck('sharedPrivateLinkResource.requestMessage', "Private link service from AFD"),
                          JMESPathCheck('provisioningState', 'Succeeded')]
-        options = '--private-link-sub-resource table'
+        options = '--shared-private-link-resource \'{"group-id":"table"}\''
         self.afd_origin_update_cmd(resource_group,
                                    profile_name,
                                    origin_group_name,
@@ -159,7 +164,7 @@ class CdnAfdOriginScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('enforceCertificateNameCheck', True),
                          JMESPathCheck('sharedPrivateLinkResource', None),
                          JMESPathCheck('provisioningState', 'Succeeded')]
-        options = '--weight 99 --enable-private-link false --enabled-state Disabled'
+        options = '--weight 99 --enabled-state Disabled --shared-private-link-resource null'
         self.afd_origin_update_cmd(resource_group,
                                    profile_name,
                                    origin_group_name,
@@ -167,7 +172,53 @@ class CdnAfdOriginScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                                    options=options,
                                    checks=update_checks)
 
-        self.afd_origin_delete_cmd(resource_group, profile_name, origin_group_name, origin_name)
+        certificate_checks = [
+            JMESPathCheck('name', origin_name),
+            JMESPathCheck('hostName', 'plstestcli.blob.core.windows.net'),
+            JMESPathCheck('originHostHeader', 'plstestcli.blob.core.windows.net'),
+            JMESPathCheck('enabledState', 'Disabled'),
+            JMESPathCheck('enforceCertificateNameCheck', True),
+            JMESPathCheck('weight', 99),
+            JMESPathCheck('provisioningState', 'Succeeded'),
+        ]
+        # IncomingHostHeader is reserved and rejected when certificate checks are enabled.
+        with self.assertRaisesRegex(
+                HttpResponseError,
+                r"certificateNameCheckValidationMode 'IncomingHostHeader' is not supported"):
+            self.afd_origin_update_cmd(
+                resource_group, profile_name, origin_group_name, origin_name,
+                options='--enforce-certificate-name-check true --cert-name-check-mode IncomingHostHeader')
+        self.afd_origin_show_cmd(resource_group, profile_name, origin_group_name, origin_name,
+                                  checks=certificate_checks + [
+                                      JMESPathCheck('certificateNameCheckValidationMode', 'OriginHostname'),
+                                  ])
 
-        list_checks = [JMESPathCheck('length(@)', 0)]
-        self.afd_origin_list_cmd(resource_group, profile_name, origin_group_name, list_checks)
+        custom_checks = certificate_checks + [
+            JMESPathCheck('certificateNameCheckValidationMode', 'CustomCertificateSubject'),
+            JMESPathCheck('customCertificateSubjects', ['plstestcli.blob.core.windows.net']),
+        ]
+        self.afd_origin_update_cmd(
+            resource_group, profile_name, origin_group_name, origin_name,
+            options='--cert-name-check-mode CustomCertificateSubject '
+                    '--cert-subjects \'["plstestcli.blob.core.windows.net"]\'',
+            checks=custom_checks)
+        self.afd_origin_show_cmd(resource_group, profile_name, origin_group_name, origin_name,
+                                  checks=custom_checks)
+
+        subjects = ['plstestcli.blob.core.windows.net', '*.blob.core.windows.net']
+        custom_checks = certificate_checks + [
+            JMESPathCheck('certificateNameCheckValidationMode', 'CustomCertificateSubject'),
+            JMESPathCheck('customCertificateSubjects', subjects),
+        ]
+        self.afd_origin_update_cmd(
+            resource_group, profile_name, origin_group_name, origin_name,
+            options='--custom-certificate-subjects '
+                    '\'["plstestcli.blob.core.windows.net","*.blob.core.windows.net"]\'',
+            checks=custom_checks)
+        self.afd_origin_show_cmd(resource_group, profile_name, origin_group_name, origin_name,
+                                  checks=custom_checks)
+        self.afd_origin_list_cmd(resource_group, profile_name, origin_group_name, checks=[
+            JMESPathCheck('length(@)', 1),
+            JMESPathCheck('[0].certificateNameCheckValidationMode', 'CustomCertificateSubject'),
+            JMESPathCheck('[0].customCertificateSubjects', subjects),
+        ])

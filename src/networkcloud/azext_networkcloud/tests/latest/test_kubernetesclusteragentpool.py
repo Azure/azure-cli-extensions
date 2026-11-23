@@ -15,6 +15,7 @@ Kubernetescluster agentpool tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -30,9 +31,36 @@ def cleanup_scenario1(test):
 def call_scenario1a(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_create_scenario1(test)
-    step_update_scenario1(test)
-    step_show(test)
+    step_create_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+            test.check("count", attr(test, "count")),
+        ],
+    )
+    step_update_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("count", attr(test, "count")),
+        ],
+    )
+    step_show(
+        test,
+        checks=[
+            test.exists("name"),
+            test.exists("id"),
+            test.check(
+                "administratorConfiguration.adminUsername", attr(test, "adminUsername")
+            ),
+            test.check("count", attr(test, "count")),
+            test.check("mode", attr(test, "mode")),
+            test.check("vmSkuName", attr(test, "vmSkuName")),
+        ],
+    )
     step_list(test)
     step_delete(test)
     cleanup_scenario1(test)
@@ -41,8 +69,23 @@ def call_scenario1a(test):
 def call_scenario1b(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_create_scenario2(test)
-    step_update_scenario2(test)
+    step_create_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+            test.check("count", attr(test, "count")),
+        ],
+    )
+    step_update_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+            test.check("tags", attr(test, "tagsUpdate")),
+            test.check("count", attr(test, "count")),
+        ],
+    )
     cleanup_scenario1(test)
 
 
@@ -59,7 +102,13 @@ def cleanup_scenario2(test):
 def call_scenario2(test):
     """# Testcase: scenario2"""
     setup_scenario2(test)
-    step_update_admin_cred(test)
+    step_update_admin_cred(
+        test,
+        checks=[
+            test.check("name", attr(test, "nameUpdate")),
+            test.check("provisioningState", attr(test, "provisioningState")),
+        ],
+    )
     cleanup_scenario2(test)
 
 
@@ -79,7 +128,8 @@ def step_create_scenario1(test, checks=None):
         "--attached-network-configuration l3-networks={l3Networks} "
         "--availability-zones {availabilityZones} "
         "--upgrade-settings max-surge={maxSurge} "
-        "--tags {tags}"
+        "--tags {tags}",
+        checks=checks,
     )
 
 
@@ -99,7 +149,8 @@ def step_create_scenario2(test, checks=None):
         "--availability-zones {availabilityZones} "
         "--upgrade-settings max-surge={maxSurge} "
         "--ssh-key-values {sshKey} "
-        "--tags {tags}"
+        "--tags {tags}",
+        checks=checks,
     )
 
 
@@ -110,7 +161,8 @@ def step_update_scenario1(test, checks=None):
     test.cmd(
         "az networkcloud kubernetescluster agentpool update --name {name} "
         "--kubernetes-cluster-name {clusterName} --resource-group {rg} "
-        "--tags {tagsUpdate}"
+        "--tags {tagsUpdate}",
+        checks=checks,
     )
 
 
@@ -124,7 +176,8 @@ def step_update_scenario2(test, checks=None):
         "--ssh-key-values {sshKey} "
         "--count {count} "
         "--upgrade-settings max-surge={maxSurge} "
-        "--tags {tagsUpdate}"
+        "--tags {tagsUpdate}",
+        checks=checks,
     )
 
 
@@ -134,7 +187,8 @@ def step_show(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud kubernetescluster agentpool show --name {name} "
-        "--kubernetes-cluster-name {clusterName} --resource-group {rg}"
+        "--kubernetes-cluster-name {clusterName} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -144,7 +198,8 @@ def step_list(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud kubernetescluster agentpool list "
-        "--kubernetes-cluster-name {clusterName} --resource-group {rg}"
+        "--kubernetes-cluster-name {clusterName} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -154,7 +209,8 @@ def step_delete(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud kubernetescluster agentpool delete --name {name} "
-        "--kubernetes-cluster-name {clusterName} --resource-group {rg} -y"
+        "--kubernetes-cluster-name {clusterName} --resource-group {rg} --yes",
+        checks=checks,
     )
 
 
@@ -163,7 +219,8 @@ def step_update_admin_cred(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud kubernetescluster agentpool update --name {nameUpdate} --resource-group {rgUpdate} --kubernetes-cluster-name {clusterNameUpdate} --ssh-key-values {sshKeyUpdate}"
+        "az networkcloud kubernetescluster agentpool update --name {nameUpdate} --resource-group {rgUpdate} --kubernetes-cluster-name {clusterNameUpdate} --ssh-key-values {sshKeyUpdate}",
+        checks=checks,
     )
 
 
@@ -211,6 +268,9 @@ class KubernetesClusterAgentPoolScenarioTest(ScenarioTest):
                 "nameUpdate": CONFIG.get("KUBERNETESCLUSTER_AGENTPOOL", "name_update"),
                 "sshKeyUpdate": CONFIG.get(
                     "KUBERNETESCLUSTER_AGENTPOOL", "ssh_key_values_update"
+                ),
+                "provisioningState": CONFIG.get(
+                    "KUBERNETESCLUSTER_AGENTPOOL", "provisioning_state"
                 ),
             }
         )

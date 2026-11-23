@@ -13,7 +13,12 @@ from azure.cli.core.util import send_raw_request
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 
 from ._client_factory import handle_raw_exception
-from ._validators import validate_basic_arguments, validate_revision_and_get_name, validate_functionapp_kind
+from ._validators import (
+    validate_basic_arguments,
+    validate_revision_and_get_name,
+    validate_functionapp_kind,
+    validate_functionapp_ingress_enabled,
+)
 from ._transformers import process_app_insights_response
 from ._clients import ContainerAppPreviewClient
 
@@ -100,10 +105,21 @@ class ContainerAppFunctionsListDecorator(ContainerAppFunctionsDecorator):
             resource_group_name, name, revision_name = self.validate_common_arguments()
 
             # Validate that the Container App has kind 'functionapp'
-            validate_functionapp_kind(
+            containerapp_def = validate_functionapp_kind(
                 cmd=self.cmd,
                 resource_group_name=resource_group_name,
                 container_app_name=name
+            )
+
+            # Functions can only be listed while ingress is enabled (the platform
+            # populates the function metadata behind ingress). Fail fast with an
+            # actionable message instead of the generic server error otherwise.
+            # Reuse the Container App fetched above to avoid an extra ARM GET.
+            validate_functionapp_ingress_enabled(
+                cmd=self.cmd,
+                resource_group_name=resource_group_name,
+                container_app_name=name,
+                containerapp_def=containerapp_def
             )
 
             if revision_name and revision_name is not None:
@@ -139,10 +155,21 @@ class ContainerAppFunctionsShowDecorator(ContainerAppFunctionsDecorator):
             resource_group_name, name, revision_name, function_name = self.validate_show_arguments()
 
             # Validate that the Container App has kind 'functionapp'
-            validate_functionapp_kind(
+            containerapp_def = validate_functionapp_kind(
                 cmd=self.cmd,
                 resource_group_name=resource_group_name,
                 container_app_name=name
+            )
+
+            # Functions can only be retrieved while ingress is enabled (the platform
+            # populates the function metadata behind ingress). Fail fast with an
+            # actionable message instead of the generic server error otherwise.
+            # Reuse the Container App fetched above to avoid an extra ARM GET.
+            validate_functionapp_ingress_enabled(
+                cmd=self.cmd,
+                resource_group_name=resource_group_name,
+                container_app_name=name,
+                containerapp_def=containerapp_def
             )
 
             if revision_name and revision_name is not None:

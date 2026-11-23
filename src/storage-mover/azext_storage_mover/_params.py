@@ -8,7 +8,7 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
-from azure.cli.core.commands.parameters import (get_enum_type)
+from azure.cli.core.commands.parameters import get_enum_type, get_three_state_flag
 
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
@@ -23,6 +23,24 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
                    help='The name of the Storage Mover resource.')
         c.argument('description', help='A description for the Endpoint.')
 
+    for command in ['create-for-storage-container', 'create-for-nfs', 'create-for-storage-smb-file-share',
+                    'create-for-storage-nfs-file-share', 'create-for-multi-cloud-connector',
+                    'create-for-smb', 'create-for-s3-with-hmac']:
+        with self.argument_context('storage-mover endpoint ' + command) as c:
+            c.argument('endpoint_kind', arg_type=get_enum_type(['Source', 'Target']),
+                       help='The Endpoint resource kind, source or target.')
+
+    for command in ['create-for-storage-container', 'update-for-storage-container',
+                    'create-for-storage-smb-file-share', 'update-for-storage-smb-file-share']:
+        with self.argument_context('storage-mover endpoint ' + command) as c:
+            c.argument('enable_cross_tenant_transfer', arg_type=get_three_state_flag(),
+                       options_list=('--enable-cross-tenant-transfer', '--enable-cross-tenant'),
+                       help='Enable this endpoint for cross-tenant data transfers.')
+            c.argument('allowed_storage_accounts', nargs='*',
+                       options_list=('--allowed-storage-accounts', '--allowed-accounts'),
+                       help='Space-separated ARM resource IDs of allowed partner-tenant storage accounts. '
+                            'Replaces the entire list. Use this option without values to clear the list.')
+
     with self.argument_context('storage-mover endpoint create-for-storage-container') as c:
         c.argument('blob_container_name', options_list=('--container-name'),
                    help='The name of the Storage blob container that is the target destination.')
@@ -32,8 +50,18 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
     with self.argument_context('storage-mover endpoint create-for-nfs') as c:
         c.argument('export', help='The directory being exported from the server.')
         c.argument('host', help='The host name or IP address of the server exporting the file system.')
-        c.argument('nfs_version', arg_type=get_enum_type(['NFSauto', 'NFSv3', 'NFSv4']),
+        c.argument('nfs_version', arg_type=get_enum_type(['NFSauto', 'NFSv3', 'NFSv4', 'NFSv4_1']),
                    help='The NFS protocol version.')
+
+    for command in ['create-for-nfs', 'update-for-nfs']:
+        with self.argument_context('storage-mover endpoint ' + command) as c:
+            c.argument('source_type', arg_type=get_enum_type(['NfsMount', 'FSX-EFS']),
+                       help='The NFS mount source type.')
+
+    for command in ['create-for-smb', 'update-for-smb']:
+        with self.argument_context('storage-mover endpoint ' + command) as c:
+            c.argument('source_type', arg_type=get_enum_type(['SmbMount', 'FSX-SMB']),
+                       help='The SMB mount source type.')
 
     with self.argument_context('storage-mover endpoint create-for-storage-smb-file-share') as c:
         c.argument('file_share_name', help='The name of the Azure Storage file share.')
@@ -58,3 +86,15 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         with self.argument_context('storage-mover endpoint ' + command) as c:
             c.argument('password_uri', help='The Azure Key Vault secret URI which stores the password. Use empty string to clean-up existing value.')
             c.argument('username_uri', help='The Azure Key Vault secret URI which stores the username. Use empty string to clean-up existing value.')
+
+    with self.argument_context('storage-mover endpoint create-for-s3-with-hmac') as c:
+        c.argument('source_uri', help='The URI which points to the S3-compatible source.')
+        c.argument('source_type', arg_type=get_enum_type(['ALIBABA', 'DELL_EMC', 'GCS', 'IBM', 'MINIO', 'OTHER']),
+                   help='The source type of the S3WithHmac endpoint.')
+        c.argument('other_source_type_description', options_list=('--other-source-type-desc', '--other-source-type-description'),
+                   help='The description for other source type of S3WithHmac endpoint.')
+
+    for command in ['create-for-s3-with-hmac', 'update-for-s3-with-hmac']:
+        with self.argument_context('storage-mover endpoint ' + command) as c:
+            c.argument('access_key_uri', help='The Azure Key Vault secret URI which stores the access key. Use empty string to clean-up existing value.')
+            c.argument('secret_key_uri', help='The Azure Key Vault secret URI which stores the secret key. Use empty string to clean-up existing value.')

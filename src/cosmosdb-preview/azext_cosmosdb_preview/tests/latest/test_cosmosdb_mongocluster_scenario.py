@@ -6,7 +6,7 @@
 import os
 from unittest import mock
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
@@ -14,6 +14,8 @@ class MongoClusterScenarioTest(ScenarioTest):
 
     # pylint: disable=line-too-long
     # pylint: disable=broad-except
+    # Requires M40 + HA tier availability/quota; not recordable in CI, so run live only.
+    @live_only()
     @ResourceGroupPreparer(name_prefix='cli_cosmosdb_mongocluster_crud', location='westcentralus')
     def test_cosmosdb_mongocluster_crud(self, resource_group):
         admin_login = self.create_random_name(prefix='cli', length=8)
@@ -103,6 +105,8 @@ class MongoClusterScenarioTest(ScenarioTest):
 
     # pylint: disable=line-too-long
     # pylint: disable=broad-except
+    # Requires M40 + HA tier availability/quota; not recordable in CI, so run live only.
+    @live_only()
     @ResourceGroupPreparer(name_prefix='cli_cosmosdb_mongocluster_firewall', location='westcentralus')
     def test_cosmosdb_mongocluster_firewall(self, resource_group):
         rule_name = self.create_random_name(prefix='cli', length=10)

@@ -5,6 +5,7 @@
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-statements
+# pylint: disable=too-many-locals
 from azure.cli.core.commands import CliCommandType
 from azext_cosmosdb_preview._client_factory import (
     cf_cassandra_cluster,
@@ -31,7 +32,10 @@ from azext_cosmosdb_preview._client_factory import (
     cf_fleet,
     cf_fleetspace,
     cf_fleetspace_account,
-    cf_fleet_analytics
+    cf_fleet_analytics,
+    cf_softdeleted_database_accounts,
+    cf_softdeleted_sql_databases,
+    cf_softdeleted_sql_containers
 )
 
 
@@ -220,6 +224,19 @@ def load_command_table(self, _):
         operations_tmpl='azure.mgmt.cosmosdb.operations#RestorableDatabaseAccountsOperations.{}',
         client_factory=cf_restorable_database_accounts)
 
+    # Soft-deleted resources SDK types
+    cosmosdb_softdeleted_accounts_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#SoftDeletedDatabaseAccountsOperations.{}',
+        client_factory=cf_softdeleted_database_accounts)
+
+    cosmosdb_softdeleted_sql_databases_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#SoftDeletedSqlDatabasesOperations.{}',
+        client_factory=cf_softdeleted_sql_databases)
+
+    cosmosdb_softdeleted_sql_containers_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#SoftDeletedSqlContainersOperations.{}',
+        client_factory=cf_softdeleted_sql_containers)
+
     # define commands
     # Restorable apis for sql,mongodb,gremlin and table
     # Provisioning/migrate Continuous 7 days accounts
@@ -229,6 +246,9 @@ def load_command_table(self, _):
         g.custom_command('update', 'cli_cosmosdb_update')
         g.custom_command('list', 'cli_cosmosdb_list')
         g.show_command('show', 'get')
+
+    with self.command_group('cosmosdb keys', cosmosdb_sdk, client_factory=cf_db_accounts) as g:
+        g.custom_command('regenerate', 'cli_cosmosdb_keys_regenerate')
 
     with self.command_group('cosmosdb sql restorable-container', cosmosdb_restorable_sql_containers_sdk, client_factory=cf_restorable_sql_containers, is_preview=True) as g:
         g.command('list', 'list')
@@ -366,6 +386,36 @@ def load_command_table(self, _):
 
     with self.command_group('cosmosdb table', cosmosdb_table_sdk, client_factory=cf_table_resources) as g:
         g.custom_command('restore', 'cli_cosmosdb_table_restore', is_preview=True)
+
+    # Soft-deleted Account commands
+    with self.command_group('cosmosdb softdeleted-account',
+                            cosmosdb_softdeleted_accounts_sdk,
+                            client_factory=cf_softdeleted_database_accounts,
+                            is_preview=True) as g:
+        g.custom_command('list', 'cli_cosmosdb_sql_softdeleted_account_list')
+        g.custom_show_command('show', 'cli_cosmosdb_sql_softdeleted_account_show')
+        g.custom_command('delete', 'cli_cosmosdb_sql_softdeleted_account_delete', confirmation=True)
+        g.custom_command('recover', 'cli_cosmosdb_sql_softdeleted_account_recover')
+
+    # Soft-deleted Database commands
+    with self.command_group('cosmosdb sql softdeleted-database',
+                            cosmosdb_softdeleted_sql_databases_sdk,
+                            client_factory=cf_softdeleted_sql_databases,
+                            is_preview=True) as g:
+        g.custom_command('list', 'cli_cosmosdb_sql_softdeleted_database_list')
+        g.custom_show_command('show', 'cli_cosmosdb_sql_softdeleted_database_show')
+        g.custom_command('delete', 'cli_cosmosdb_sql_softdeleted_database_delete', confirmation=True)
+        g.custom_command('recover', 'cli_cosmosdb_sql_softdeleted_database_recover')
+
+    # Soft-deleted Collection commands
+    with self.command_group('cosmosdb sql softdeleted-container',
+                            cosmosdb_softdeleted_sql_containers_sdk,
+                            client_factory=cf_softdeleted_sql_containers,
+                            is_preview=True) as g:
+        g.custom_command('list', 'cli_cosmosdb_sql_softdeleted_container_list')
+        g.custom_show_command('show', 'cli_cosmosdb_sql_softdeleted_container_show')
+        g.custom_command('delete', 'cli_cosmosdb_sql_softdeleted_container_delete', confirmation=True)
+        g.custom_command('recover', 'cli_cosmosdb_sql_softdeleted_container_recover')
 
     setup_mongocluster_commands(self)
 

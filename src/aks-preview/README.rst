@@ -14,6 +14,127 @@ Install this extension using the following CLI command `az extension add --name 
 
 Remove this extension using the following CLI command `az extension remove --name aks-preview`.
 
+Upgrade Insights
+================
+
+Evaluate upgrade readiness without upgrading the cluster or node pool::
+
+    az aks upgrade-insights create -g MyResourceGroup --name MyCluster --target-kubernetes-ver 1.35.1
+    az aks upgrade-insights create -g MyResourceGroup --name MyCluster --upgrade-type ControlPlane --target-kubernetes-ver 1.35.1
+    az aks nodepool upgrade-insights create -g MyResourceGroup --cluster-name MyCluster --name nodepool1 --target-kubernetes-ver 1.35.1
+    az aks nodepool upgrade-insights create -g MyResourceGroup --cluster-name MyCluster --name nodepool1 --upgrade-type NodeImage
+    az aks nodepool upgrade-insights create -g MyResourceGroup --cluster-name MyCluster --name nodepool1 --upgrade-type NodeImage --target-node-image-ver NODE_IMAGE_VERSION
+
+Cluster evaluations default to ``ControlPlaneAndAgentPools``; node pool evaluations
+default to ``AgentPool``. Kubernetes evaluations require ``--target-kubernetes-ver``.
+``NodeImage`` accepts an optional ``--target-node-image-ver``; omitting it evaluates
+the latest available image and the report shows the resolved target. The two target
+flags cannot be mixed.
+
+Read stored results using the insight name returned by ``create`` or ``list``::
+
+    az aks upgrade-insights list -g MyResourceGroup --name MyCluster
+    az aks upgrade-insights show -g MyResourceGroup --name MyCluster --insight-name INSIGHT_NAME
+    az aks nodepool upgrade-insights show -g MyResourceGroup --cluster-name MyCluster --name nodepool1 --insight-name INSIGHT_NAME
+
+``list`` is cluster-level only and includes all stored scopes. Node pool ``show``
+requires a single-pool ``AgentPool`` or ``NodeImage`` insight belonging to that pool;
+use cluster ``show`` for combined insights. Reading does not regenerate an evaluation,
+and expired or missing insights return a not-found error.
+
+By default, the human-readable readiness report nests issue messages, affected resources,
+and recommended actions under the scope that produced them. ``list`` shows scoped issue
+summaries. A failed readiness check is an evaluation result, not a failure to run the
+command. API and authentication errors still fail the command.
+
+Use ``--output json`` for complete structured results, or ``--output table`` for scoped
+issue rows. Explicit output settings, a configured ``core.output``, and ``--query``
+retain standard Azure CLI formatting and query behavior, including parser-accepted
+abbreviations such as ``--out json``, ``--out=json``, and ``--que``.
+
+If a combined response omits agent-pool evaluations, the report and table explicitly
+show that the agent pools were not evaluated; a passed control-plane result alone
+does not make the combined readiness report pass. Structured JSON is left unchanged.
+
+Live validation
+---------------
+
+``UpgradeInsightsScenarioTest.test_aks_upgrade_insights_scopes`` uses the repository's
+``ScenarioTest`` and ``AKSCustomResourceGroupPreparer`` conventions. It creates a
+temporary single-pool cluster and tests all four upgrade scopes, latest and explicit
+node-image targets, stored reads, cluster listing, and an unsupported agent-pool version blocker
+with a scope-indented report. It never upgrades the cluster or pool. The preparer
+cleans up the temporary resource group. Its cluster needs no SSH key and explicitly
+enables KMS infrastructure encryption to match the live service's encryption requirements.
+
+The scenario is marked ``live_only`` because the preview API requires an enabled test
+subscription and no live recording is available yet. Standard offline CI skips it before
+resource preparation. This skip is not evidence that live API validation passed; the
+scenario still runs under ``azdev test --live``.
+
+The live-test subscription must have ``Microsoft.ContainerService/AKSUpgradeInsightsPreview``
+registered, and the API must be enabled in the test region. Missing preview registration
+fails explicitly rather than reporting a skipped or successful live validation.
+
+For the repository-managed live workflow, publish a PR and dispatch
+``Azure/issue-sentinel/.github/workflows/live-test.yml`` for its head SHA. The workflow
+sets up ``aks-preview`` and runs changed test selectors with ``azdev test --live --series``
+using runner-owned Azure credentials. It uploads the results and recordings.
+
+Azure Managed Lustre
+--------------------
+
+Install the prerequisite CLI extension and enable Azure Managed Lustre::
+
+    az extension add --name k8s-extension
+    az aks create --resource-group <resource-group> --name <cluster-name> --generate-ssh-keys --enable-azure-managed-lustre
+
+For an existing AKS cluster, enable the extension with::
+
+    az aks update --resource-group <resource-group> --name <cluster-name> --enable-azure-managed-lustre
+
+These flags manage the ``azurelustre`` extension on the ``stable`` train, without a pinned
+version or automatic minor-version upgrades. Existing successful installations are preserved.
+Use ``az k8s-extension`` to manage installations with other names.
+Enablement rejects another Azure Managed Lustre extension regardless of its name or provisioning
+state: only one driver installation per cluster is supported.
+
+At least one supported Linux pool is required: Ubuntu 20.04/22.04 or Azure Linux 3 on x64,
+or Ubuntu 24.04 on x64/ARM64.
+OS aliases and default Kubernetes versions are resolved
+automatically. Create and update use Compute SKU discovery, not node labels. Without
+subscription-level ``Microsoft.Compute/skus/read``, a warning is shown and enablement
+continues without architecture validation. These flags do not require ``kubectl`` or cluster credentials.
+When ``--node-vm-size`` is omitted during creation, the service-selected size is validated
+after the cluster is created and before Lustre is installed. If that size is incompatible,
+the cluster remains created but Lustre is not installed. Sizes in both manual and autoscale
+profiles are checked for ``VirtualMachines`` pools.
+Compute SKU discovery is deferred until a service-selected size is available; successful
+discovery for explicit sizes is reused during post-create validation.
+
+The default chart must be able to schedule both its controller and node plugin.
+Pools reserved with ``CriticalAddonsOnly`` or custom hard taints do not qualify for the
+node plugin. Spot/GPU taints supported by the chart allow the node plugin, but the
+controller still needs untainted Linux capacity (or node auto-provisioning).
+For custom tolerations, configure the extension with ``az k8s-extension`` instead.
+
+Before disabling, stop workloads and provisioning, and safely retire matching PVCs/PVs,
+including static and retained volumes, following the
+`driver teardown guidance <https://github.com/kubernetes-sigs/azurelustre-csi-driver/blob/development/charts/README.md#uninstall>`_::
+
+    az aks update --resource-group <resource-group> --name <cluster-name> --disable-azure-managed-lustre
+
+Update validates Lustre inputs and asks for disable confirmation before any external changes,
+including monitoring cleanup and the cluster PUT. Use ``--yes`` to confirm
+non-interactively after reviewing the teardown guidance.
+It waits for Azure resource deletion and reports failures returned by Azure.
+It does not check PVs or Helm status. A Helm uninstall guard can block driver removal
+after the Azure resource is deleted, without an ARM failure; verify removal in the cluster.
+Do not use disable/re-enable for recovery or upgrades, or bypass the uninstall guard.
+These operations wait for cluster provisioning even with ``--no-wait``.
+Lustre operations run after independent cluster post-processing. If Lustre fails at that stage, the command reports the failure
+and explicitly notes that the cluster request has already succeeded.
+
 Dependency between aks-preview and azure-cli/acs (azure-cli-core)
 =================================================================
 
@@ -53,8 +174,10 @@ Dependency between aks-preview and azure-cli/acs (azure-cli-core)
       - >= `\2.61.0 <https://github.com/Azure/azure-cli/releases/tag/azure-cli-2.61.0>`_, 2024/05/21
     * - 18.0.0b35 ~ 20.0.0b2
       - >= `\2.73.0 <https://github.com/Azure/azure-cli/releases/tag/azure-cli-2.73.0>`_, 2025/05/19
-    * - 20.0.0b3 ~ latest
+    * - 20.0.0b3 ~ 20.0.0b4
       - >= `\2.76.0 <https://github.com/Azure/azure-cli/releases/tag/azure-cli-2.76.0>`_, 2025/08/15
+    * - 20.0.0b5 ~ latest
+      - >= `\2.85.0 <https://github.com/Azure/azure-cli/releases/tag/azure-cli-2.85.0>`_, 2026/04/07
 
 Released version and adopted API version
 ========================================
@@ -98,130 +221,130 @@ Released version and adopted API version
       - Out of support
     * - 0.5.49 ~ 0.5.52
       - 2021-11-01-preview
-      - Out of support, API version **deprecated** on 2023/07/01
+      - Out of support
     * - 0.5.53 ~ 0.5.57
       - 2022-01-02-preview
-      - Out of support, API version **deprecated** on 2023/09/01
+      - Out of support
     * - 0.5.58 ~ 0.5.60
       - 2022-02-02-preview
-      - Out of support, API version **deprecated** on 2023/08/01
+      - Out of support
     * - 0.5.61 ~ 0.5.66
       - 2022-03-02-preview
-      - Out of support, API version **deprecated** on 2023/09/01
+      - Out of support
     * - 0.5.67 ~ 0.5.78
       - 2022-04-02-preview
-      - Out of support, API version **deprecated** on 2023/09/01
+      - Out of support
     * - 0.5.79 ~ 0.5.91
       - 2022-05-02-preview
-      - Out of support, API version **deprecated** on 2023/09/01
+      - Out of support
     * - 0.5.92 ~ 0.5.93
       - 2022-06-02-preview
-      - Out of support, API version **deprecated** on 2023/09/01
+      - Out of support
     * - 0.5.94 ~ 0.5.100
       - 2022-07-02-preview
-      - Out of support, API version **deprecated** on 2024/09/01
+      - Out of support
     * - 0.5.101 ~ 0.5.104
       - 2022-08-02-preview
-      - Out of support, API version **deprecated** on 2024/09/01
+      - Out of support
     * - 0.5.105 ~ 0.5.107
       - 2022-08-03-preview
-      - Out of support, API version **deprecated** on 2024/09/01
+      - Out of support
     * - 0.5.108 ~ 0.5.115
       - 2022-09-02-preview
-      - Out of support, API version **deprecated** on 2024/11/01
+      - Out of support
     * - 0.5.116 ~ 0.5.121
       - 2022-10-02-preview
-      - Out of support, API version **deprecated** on 2024/11/01
+      - Out of support
     * - 0.5.122 ~ 0.5.128
       - 2022-11-02-preview
-      - Out of support, API version **deprecated** on 2024/09/01
+      - Out of support
     * - 0.5.129 ~ 0.5.132
       - 2023-01-02-preview
-      - Out of support, API version **deprecated** on 2024/11/01
+      - Out of support
     * - 0.5.133 ~ 0.5.137
       - 2023-02-02-preview
-      - Out of support, API version **deprecated** on 2024/11/01
+      - Out of support
     * - 0.5.138 ~ 0.5.139
       - 2023-03-02-preview
-      - Out of support, API version **deprecated** on 2025/02/03
+      - Out of support
     * - 0.5.140 ~ 0.5.142
       - 2023-04-02-preview
-      - Out of support, API version **deprecated** on 2025/02/10
+      - Out of support
     * - 0.5.143 ~ 0.5.149
       - 2023-05-02-preview
-      - Out of support, API version **deprecated** on 2025/02/17
+      - Out of support
     * - 0.5.150 ~ 0.5.153
       - 2023-06-02-preview
-      - Out of support, API version **deprecated** on 2025/02/24
+      - Out of support
     * - 0.5.154 ~ 0.5.161
       - 2023-07-02-preview
-      - Out of support, API version **deprecated** on 2025/03/03
+      - Out of support
     * - 0.5.162 ~ 0.5.166
       - 2023-08-02-preview
-      - Out of support, API version **deprecated** on 2025/03/10
+      - Out of support
     * - 0.5.167 ~ 0.5.171
       - 2023-09-02-preview
-      - Plan to **retire** on 2024/12/01
+      - Plan to **retire** on 2026/09/01
     * - 0.5.172 ~ 1.0.0b5
       - 2023-10-02-preview
-      - Plan to **retire** on 2024/12/01
+      - Out of support, plan to **retire** on 2026/07/01
     * - 1.0.0b6 ~ 1.0.0b6
       - 2023-11-02-preview
-      - 
+      - Out of support, plan to **retire** on 2026/07/01
     * - 1.0.0b7 ~ 2.0.0b6
       - 2024-01-02-preview
-      - 
+      - Out of support, plan to **retire** on 2026/07/01
     * - 2.0.0b7 ~ 3.0.0b9
       - 2024-02-02-preview
-      - 
+      - Out of support, plan to **retire** on 2026/07/01
     * - 3.0.0b10 ~ 5.0.0b1
       - 2024-03-02-preview
-      - 
+      - Out of support, plan to **retire** on 2026/07/01
     * - 5.0.0b2 ~ 7.0.0b2
       - 2024-04-02-preview
-      - 
+      - Out of support, plan to **retire** on 2026/07/01
     * - 7.0.0b3 ~ 7.0.0b3
       - 2024-05-02-preview
-      - 
+      - Out of support, plan to **retire** on 2026/07/01
     * - 7.0.0b4 ~ 9.0.0b1
       - 2024-06-02-preview
-      - 
+      - Out of support, plan to **retire** on 2026/07/01
     * - 9.0.0b2 ~ 13.0.0b1
       - 2024-07-02-preview
-      - 
+      - Out of support, plan to **retire** on 2026/07/01
     * - 13.0.0b2 ~ 13.0.0b8
       - 2024-09-02-preview
-      - 
+      - Out of support, plan to **retire** on 2026/07/01
     * - 13.0.0b9 ~ 13.0.0b9
       - 2024-10-02-preview
-      - 
+      - Plan to **retire** on 2027/02/01
     * - 14.0.0b1 ~ 14.0.0b3
       - 2025-01-02-preview
-      - 
+      - Plan to **retire** on 2027/02/01
     * - 14.0.0b4 ~ 18.0.0b1
       - 2025-02-02-preview
-      - 
+      - Plan to **retire** on 2027/02/01
     * - 18.0.0b2 ~ 18.0.0b10
       - 2025-03-02-preview
-      -
+      - Plan to **retire** on 2027/02/01
     * - 18.0.0b11 ~ 18.0.0b15
       - 2025-04-02-preview
-      -
+      - Plan to **retire** on 2027/02/01
     * - 18.0.0b16 ~ 18.0.0b21
       - 2025-05-02-preview
-      -
+      - Plan to **retire** on 2027/02/01
     * - 18.0.0b22 ~ 18.0.0b34
       - 2025-06-02-preview
-      -
+      - Plan to **retire** on 2027/02/01
     * - 18.0.0b35 ~ 18.0.0b43
       - 2025-07-02-preview
-      -
+      - Plan to **retire** on 2027/02/01
     * - 18.0.0b44 ~ 19.0.0b9
       - 2025-08-02-preview
-      -
+      - Plan to **retire** on 2027/02/01
     * - 19.0.0b10 ~ 19.0.0b17
       - 2025-09-02-preview
-      -
+      - Plan to **retire** on 2027/02/01
     * - 19.0.0b18 ~ 19.0.0b23
       - 2025-10-02-preview
       -
@@ -234,6 +357,24 @@ Released version and adopted API version
     * - 20.0.0b7 ~ 20.0.0b8
       - 2026-02-02-preview
       -
-    * - 21.0.0b1 ~ latest
+    * - 21.0.0b1 ~ 21.0.0b3
       - 2026-03-02-preview
+      -
+    * - 21.0.0b4 ~ 21.0.0b10
+      - 2026-04-02-preview
+      -
+    * - 21.0.0b11 ~ 22.0.0b4
+      - 2026-05-02-preview
+      -
+    * - 22.0.0b5 ~ 22.0.0b9
+      - 2026-06-02-preview
+      -
+    * - 22.0.0b10 ~ 22.0.0b13
+      - 2026-07-02-preview
+      -
+    * - 22.0.0b14 ~ 22.0.0b16
+      - 2026-08-02-preview
+      -
+    * - 22.0.0b17 ~ latest
+      - 2026-09-02-preview
       -

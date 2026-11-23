@@ -5,6 +5,7 @@
 
 import os
 import unittest
+from unittest import mock
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
@@ -16,11 +17,22 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
 
+    def setUp(self):
+        super().setUp()
+        # The in-account restore scenarios sleep for several minutes so the
+        # service can process the restore operations. Those waits only matter
+        # against a live backend, so skip them during cassette playback to keep
+        # test runs fast.
+        if not self.is_live:
+            sleep_patcher = mock.patch('time.sleep')
+            sleep_patcher.start()
+            self.addCleanup(sleep_patcher.stop)
+
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_database')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_database', location='eastus2')
     def test_cosmosdb_gremlin_database(self, resource_group):
         db_name = self.create_random_name(prefix='cli', length=15)
-        location = "WestUS"
+        location = "eastus2"
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
@@ -28,7 +40,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
             'loc': location
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --capabilities EnableGremlin  --backup-policy-type Continuous --locations regionName={loc}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --capabilities EnableGremlin  --backup-policy-type Continuous --locations regionName={loc}')
 
         assert not self.cmd('az cosmosdb gremlin database exists -g {rg} -a {acc} -n {db_name}').get_output_in_json()
 
@@ -52,7 +64,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
         ]).get_output_in_json()
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_graph')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_graph', location='eastus2')
     def test_cosmosdb_gremlin_graph(self, resource_group):
         db_name = self.create_random_name(prefix='cli', length=15)
         gp_name = self.create_random_name(prefix='cli', length=15)
@@ -61,7 +73,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
         new_default_ttl = 2000
         conflict_resolution_policy = '"{\\"mode\\": \\"lastWriterWins\\", \\"conflictResolutionPath\\": \\"/path\\"}"'
         indexing = '"{\\"indexingMode\\": \\"consistent\\", \\"automatic\\": true, \\"includedPaths\\": [{\\"path\\": \\"/*\\"}], \\"excludedPaths\\": [{\\"path\\": \\"/headquarters/employees/?\\"}]}"'
-        location = "WestUS"
+        location = "eastus2"
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
@@ -75,7 +87,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
             'loc': location
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --capabilities EnableGremlin --backup-policy-type Continuous --locations regionName={loc}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --capabilities EnableGremlin --backup-policy-type Continuous --locations regionName={loc}')
         self.cmd('az cosmosdb gremlin database create -g {rg} -a {acc} -n {db_name}')
 
         assert not self.cmd('az cosmosdb gremlin graph exists -g {rg} -a {acc} -d {db_name} -n {gp_name}').get_output_in_json()
@@ -109,7 +121,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
         ]).get_output_in_json()
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_database_graph_restore')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_database_graph_restore', location='eastus2')
     def test_cosmosdb_gremlin_database_graph_restore(self, resource_group):
         db_name = self.create_random_name(prefix='cli', length=15)
         gp_name = self.create_random_name(prefix='cli', length=15)
@@ -118,7 +130,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
         new_default_ttl = 2000
         conflict_resolution_policy = '"{\\"mode\\": \\"lastWriterWins\\", \\"conflictResolutionPath\\": \\"/path\\"}"'
         indexing = '"{\\"indexingMode\\": \\"consistent\\", \\"automatic\\": true, \\"includedPaths\\": [{\\"path\\": \\"/*\\"}], \\"excludedPaths\\": [{\\"path\\": \\"/headquarters/employees/?\\"}]}"'
-        location = "WestUS"
+        location = "eastus2"
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
@@ -132,7 +144,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
             'loc': location
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --capabilities EnableGremlin --backup-policy-type Continuous --locations regionName={loc}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --capabilities EnableGremlin --backup-policy-type Continuous --locations regionName={loc}')
         self.cmd('az cosmosdb gremlin database create -g {rg} -a {acc} -n {db_name}')
 
         assert not self.cmd('az cosmosdb gremlin graph exists -g {rg} -a {acc} -d {db_name} -n {gp_name}').get_output_in_json()
@@ -213,7 +225,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
         ]).get_output_in_json()
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_restore')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_restore', location='eastus2')
     def test_cosmosdb_table(self, resource_group):
         table_name = self.create_random_name(prefix='cli', length=15)
 
@@ -223,7 +235,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
             'loc': 'eastus2'
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableTable')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableTable')
 
         assert not self.cmd('az cosmosdb table exists -g {rg} -a {acc} -n {table_name}').get_output_in_json()
 
