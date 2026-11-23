@@ -270,13 +270,21 @@ class WorkloadOrchestrationTest(ScenarioTest):
     @AllowLargeResponse(size_kb=9999)
     def test_full_wom_workflow(self):
         # List contexts and check for created entry
-        result = self.cmd(
+        contexts = self.cmd(
             f'az workload-orchestration context list --resource-group {self.context_rg}'
         ).get_output_in_json()
-        assert any(item.get("name") == self.context_name for item in result), f"{self.context_name} not found in context list"
+        context_before = next(
+            (item for item in contexts if item.get("name") == self.context_name),
+            None,
+        )
+        assert context_before is not None, f"{self.context_name} not found in context list"
 
         rg = self.rg
         location = self.location
+        capability = f"{self.resource_prefix}-Shampoo"
+        assert capability not in {
+            item["name"] for item in context_before["properties"]["capabilities"]
+        }
         
         # Create schema first
         schema_name = f"{self.resource_prefix}-schema"
@@ -286,7 +294,6 @@ class WorkloadOrchestrationTest(ScenarioTest):
         )
         
         solution_template_name = f"{self.resource_prefix}-solution-cli"
-        capability = f"{self.resource_prefix}-Shampoo"
         description = "This is Holtmelt Solution"
         # Create solution-template
         create_result = self.cmd(
@@ -350,16 +357,7 @@ class WorkloadOrchestrationTest(ScenarioTest):
             json.dump(target_spec_content, f)
         with open(custom_location_file, "w") as f:
             json.dump(custom_location_content, f)
-        # Verify the capability is absent before Target creation.
-        context_before = self.cmd(
-            f"az workload-orchestration context show "
-            f"--resource-group {self.context_rg} "
-            f"--name {self.context_name}"
-        ).get_output_in_json()
         context_id = context_before["id"]
-        assert target_capability not in {
-            item["name"] for item in context_before["properties"]["capabilities"]
-        }
 
         # Create target with context-id
         create_result = self.cmd(
