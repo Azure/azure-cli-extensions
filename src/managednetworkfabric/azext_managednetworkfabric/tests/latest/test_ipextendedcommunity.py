@@ -14,6 +14,7 @@ Ip Extended Community tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -29,9 +30,39 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario1(test)
-    step_create(test, checks=[])
-    step_show(test, checks=[])
-    step_update(test, checks=[])
+    step_create(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check(
+                "ipExtendedCommunityRules", attr(test, "ipExtendedCommunityRules")
+            ),
+        ],
+    )
+    step_show(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check(
+                "ipExtendedCommunityRules", attr(test, "ipExtendedCommunityRules")
+            ),
+        ],
+    )
+    step_update(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check(
+                "provisioningState", attr(test, "expectedProvisioningStateUpdate")
+            ),
+            test.check(
+                "ipExtendedCommunityRules",
+                attr(test, "updatedIpExtendedCommunityRules"),
+            ),
+        ],
+    )
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
     step_delete(test, checks=[])
@@ -44,7 +75,7 @@ def step_create(test, checks=None):
         checks = []
     test.cmd(
         "az networkfabric ipextendedcommunity create --resource-group {rg} --location {location} --resource-name {name} --annotation {annotation}"
-        " --ip-extended-community-rules {ipExtendedCommunityRules} --ip-ext-community-rules {ipExtendedCommunityRules}",
+        " --ip-extended-community-rules {ipExtendedCommunityRules}",
         checks=checks,
     )
 
@@ -54,7 +85,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric ipextendedcommunity show --resource-name {name} --resource-group {rg}"
+        "az networkfabric ipextendedcommunity show --resource-name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -64,7 +96,7 @@ def step_update(test, checks=None):
         checks = []
     test.cmd(
         "az networkfabric ipextendedcommunity update --resource-group {rg} --resource-name {name} --annotation {annotation}"
-        " --ip-extended-community-rules {updatedIpExtendedCommunityRules} --ip-ext-community-rules {ipExtendedCommunityRules}",
+        " --ip-ext-community-rules {updatedIpExtendedCommunityRules}",
         checks=checks,
     )
 
@@ -110,6 +142,12 @@ class GA_IpExtendedCommunityScenarioTest1(ScenarioTest):
                 ),
                 "updatedIpExtendedCommunityRules": CONFIG.get(
                     "IP_EXTENDED_COMMUNITY", "updated_ip_extended_community_rules"
+                ),
+                "expectedProvisioningState": CONFIG.get(
+                    "IP_EXTENDED_COMMUNITY", "expected_provisioning_state"
+                ),
+                "expectedProvisioningStateUpdate": CONFIG.get(
+                    "IP_EXTENDED_COMMUNITY", "expected_provisioning_state_update"
                 ),
             }
         )

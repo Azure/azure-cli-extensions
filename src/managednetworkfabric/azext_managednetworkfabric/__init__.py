@@ -8,18 +8,13 @@
 from azure.cli.core import AzCommandsLoader
 from azext_managednetworkfabric._help import helps  # pylint: disable=unused-import
 
-try:
-    from azext_managednetworkfabric import _breaking_change  # noqa: F401 pylint: disable=unused-import
-except ImportError:
-    pass
-
 
 class ManagednetworkfabricCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         custom_command_type = CliCommandType(
-            operations_tmpl='azext_managednetworkfabric.operations#{}')
+            operations_tmpl='azext_managednetworkfabric.custom#{}')
         super().__init__(cli_ctx=cli_ctx,
                          custom_command_type=custom_command_type)
 

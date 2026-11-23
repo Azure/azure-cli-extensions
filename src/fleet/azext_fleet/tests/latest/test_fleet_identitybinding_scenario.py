@@ -62,12 +62,12 @@ class FleetIdentityBindingScenarioTest(ScenarioTest):
         # Apply rejects members without workload identity and the OIDC issuer.
         mc1_id = self.cmd(
             'aks create -g {rg} -n {member1_name} --ssh-key-value={ssh_key_value} --node-count 1 '
-            '--enable-oidc-issuer --enable-workload-identity',
+            '--enable-oidc-issuer --enable-workload-identity --enable-aad',
             checks=[self.check('name', '{member1_name}')]
         ).get_output_in_json()['id']
         mc2_id = self.cmd(
             'aks create -g {rg} -n {member2_name} --ssh-key-value={ssh_key_value} --node-count 1 '
-            '--enable-oidc-issuer --enable-workload-identity',
+            '--enable-oidc-issuer --enable-workload-identity --enable-aad',
             checks=[self.check('name', '{member2_name}')]
         ).get_output_in_json()['id']
         self.kwargs.update({

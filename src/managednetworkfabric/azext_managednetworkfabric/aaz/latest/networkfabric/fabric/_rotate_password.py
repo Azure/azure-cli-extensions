@@ -22,9 +22,9 @@ class RotatePassword(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/rotatepasswords", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/rotatepasswords", "2026-07-15-preview"],
         ]
     }
 
@@ -45,8 +45,8 @@ class RotatePassword(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.network_fabric_name = AAZStrArg(
-            options=["--resource-name", "--network-fabric-name"],
+        _args_schema.resource_name = AAZStrArg(
+            options=["--resource-name"],
             help="Name of the Network Fabric.",
             required=True,
             id_part="name",
@@ -122,7 +122,7 @@ class RotatePassword(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkFabricName", self.ctx.args.network_fabric_name,
+                    "networkFabricName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -140,7 +140,7 @@ class RotatePassword(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }

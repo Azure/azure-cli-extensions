@@ -1,0 +1,76 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "MSN Weather",
+    "version": "1.0"
+  },
+  "paths": {
+    "/current": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/region"
+        }
+      ],
+      "get": {
+        "operationId": "CurrentWeather",
+        "summary": "Get current weather",
+        "parameters": [
+          {
+            "name": "location",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "City or postal code",
+            "x-ms-dynamic-values": {
+              "operationId": "SearchLocations",
+              "parameters": {
+                "query": "location"
+              }
+            }
+          },
+          {
+            "name": "units",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "C",
+              "F"
+            ],
+            "default": "C"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current conditions",
+            "schema": {
+              "$ref": "#/definitions/WeatherResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "parameters": {
+    "region": {
+      "name": "region",
+      "in": "header",
+      "required": false,
+      "type": "string"
+    }
+  },
+  "definitions": {
+    "WeatherResponse": {
+      "type": "object",
+      "properties": {
+        "temperature": {
+          "type": "number",
+          "format": "float"
+        },
+        "condition": {
+          "$ref": "https://schemas.example.test/weather.json#/definitions/Condition"
+        }
+      }
+    }
+  }
+}

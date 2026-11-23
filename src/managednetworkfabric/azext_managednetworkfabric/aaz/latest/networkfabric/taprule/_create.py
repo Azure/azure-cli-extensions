@@ -17,20 +17,26 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a Network Tap Rule resource
 
-    :example: Create a Network Tap Rule with Configuration type as "File".
-        az networkfabric taprule create --resource-group "example-rg" --location "westus3" --resource-name "example-networktaprule" --polling-interval-in-seconds "30" --configuration-type "File" --tap-rules-url "https://microsoft.com/<FileName>"
+    :example: Create a Network Tap Rule with Configuration type as "File"
+        az networkfabric taprule create --resource-group "example-rg" --location "westus3" --resource-name "example-networktaprule" --polling-interval-in-seconds "30" --configuration-type "File" --tap-rules-url "https://microsoft.com/<FileName>" --tags "{key:value}" --annotation "example-annotation"
 
-    :example: Create a Network Tap Rule with Configuration type as "Inline".
+    :example: Create a Network Tap Rule with Configuration type as "Inline"
         az networkfabric taprule create --resource-group "example-rg" --location "westus3" --resource-name "example-networktaprule" --configuration-type "Inline" --match-configurations "[{matchConfigurationName:config1,sequenceNumber:10,ipAddressType:IPv4,matchConditions:[{encapsulationType:None,portCondition:{portType:SourcePort,layer4Protocol:TCP,ports:[100],portGroupNames:['example-portGroup1']},protocolTypes:[TCP],vlanMatchCondition:{vlans:['10'],innerVlans:['11-20']},ipCondition:{type:SourceIP,prefixType:Prefix,ipPrefixValues:['10.10.10.10/20']}}],actions:[{type:Drop,truncate:100,isTimestampEnabled:True,destinationId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourcegroups/example-rg/providers/Microsoft.ManagedNetworkFabric/neighborGroups/example-neighborGroup',matchConfigurationName:match1}]}]" --dynamic-match-configurations "[{ipGroups:[{name:'example-ipGroup1',ipAddressType:IPv4,ipPrefixes:['10.10.10.10/30']}],vlanGroups:[{name:'exmaple-vlanGroup',vlans:['10']}],portGroups:[{name:'example-portGroup1',ports:['100-200']}]}]"
 
-    :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
+    :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax
         az networkfabric taprule create --match-configurations "??"
+
+    :example: Create a Network Tap Rule with identity selector
+        az networkfabric taprule create --resource-group "example-rg" --resource-name "example-taprule" --location "eastus" --configuration-type "Inline" --identity-selector "{identityType:SystemAssignedIdentity}"
+
+    :example: Create a Network Tap Rule with system-assigned and user-assigned identities
+        az networkfabric taprule create --resource-name "example-networktaprule" --resource-group "example-rg" --location "westus3" --configuration-type "File" --system-assigned "true" --user-assigned "/subscriptions/example-subscription-id/resourceGroups/example-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/example-identity"
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networktaprules/{}", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networktaprules/{}", "2026-07-15-preview"],
         ]
     }
 
@@ -134,6 +140,12 @@ class Create(AAZCommand):
             options=["--identity-selector"],
             arg_group="Properties",
             help="The selection of the managed identity to use with this storage account. The identity type must be either system assigned or user assigned.",
+        )
+        _args_schema.is_match_config_updated = AAZStrArg(
+            options=["--is-mc-updated", "--is-match-config-updated"],
+            arg_group="Properties",
+            help="Match configuration update types. If the configuration type is not provided, then both static and dynamic match configurations will be updated.",
+            enum={"False": "False", "True": "True"},
         )
         _args_schema.match_configurations = AAZListArg(
             options=["--match-configurations"],
@@ -535,7 +547,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }
@@ -581,6 +593,7 @@ class Create(AAZCommand):
                 properties.set_prop("dynamicMatchConfigurations", AAZListType, ".dynamic_match_configurations")
                 properties.set_prop("globalNetworkTapRuleActions", AAZObjectType, ".global_network_tap_rule_actions")
                 properties.set_prop("identitySelector", AAZObjectType, ".identity_selector")
+                properties.set_prop("isMatchConfigurationUpdated", AAZStrType, ".is_match_config_updated")
                 properties.set_prop("matchConfigurations", AAZListType, ".match_configurations")
                 properties.set_prop("pollingIntervalInSeconds", AAZIntType, ".polling_interval_in_seconds")
                 properties.set_prop("tapRulesUrl", AAZStrType, ".tap_rules_url")
@@ -833,6 +846,9 @@ class Create(AAZCommand):
             properties.identity_selector = AAZObjectType(
                 serialized_name="identitySelector",
             )
+            properties.is_match_configuration_updated = AAZStrType(
+                serialized_name="isMatchConfigurationUpdated",
+            )
             properties.last_operation = AAZObjectType(
                 serialized_name="lastOperation",
                 flags={"read_only": True},
@@ -933,7 +949,30 @@ class Create(AAZCommand):
             )
 
             last_operation = cls._schema_on_200_201.properties.last_operation
+            last_operation.completed_at = AAZStrType(
+                serialized_name="completedAt",
+                flags={"read_only": True},
+            )
+            last_operation.correlation_id = AAZStrType(
+                serialized_name="correlationId",
+                flags={"read_only": True},
+            )
             last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
+            last_operation.operation_type = AAZStrType(
+                serialized_name="operationType",
+                flags={"read_only": True},
+            )
+            last_operation.result_blob_url = AAZStrType(
+                serialized_name="resultBlobUrl",
+                flags={"read_only": True},
+            )
+            last_operation.started_at = AAZStrType(
+                serialized_name="startedAt",
+                flags={"read_only": True},
+            )
+            last_operation.status = AAZStrType(
                 flags={"read_only": True},
             )
 

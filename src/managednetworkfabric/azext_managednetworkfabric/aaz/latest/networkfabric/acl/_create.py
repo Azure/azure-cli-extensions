@@ -17,20 +17,20 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a Access Control List resource
 
-    :example: Create an Access Control List with Configuration type as "File".
-        az networkfabric acl create --resource-group "example-rg" --location "westus3" --resource-name "example-accesscontrollist" --configuration-type "File" --acls-url "https://ACL-Storage-URL"
+    :example: Create an Access Control List with Configuration type as "File"
+        az networkfabric acl create --resource-group "example-rg" --location "westus3" --resource-name "example-accesscontrollist" --configuration-type "File" --acls-url "https://ACL-Storage-URL" --tags "{key:value}" --annotation "example-annotation"
 
-    :example: Create an Access Control List with Configuration type as "Inline".
+    :example: Create an Access Control List with Configuration type as "Inline"
         az networkfabric acl create --resource-group "example-rg" --location "westus3" --resource-name "example-accesscontrollist" --configuration-type "Inline" --default-action "Permit" --dynamic-match-configurations "[{ipGroups:[{name:'example-ipGroup',ipAddressType:IPv4,ipPrefixes:['10.20.3.1/20']}],vlanGroups:[{name:'example-vlanGroup',vlans:['20-30']}],portGroups:[{name:'example-portGroup',ports:['100-200']}]}]" --match-configurations "[{matchConfigurationName:'example-match',sequenceNumber:123,ipAddressType:IPv4,matchConditions:[{etherTypes:['0x1'],fragments:['0xff00-0xffff'],ipLengths:['4094-9214'],ttlValues:[23],dscpMarkings:[32],portCondition:{flags:[established],portType:SourcePort,layer4Protocol:TCP,ports:['1-20'],portGroupNames:['example-portGroup']},protocolTypes:[TCP],vlanMatchCondition:{vlans:['20-30'],innerVlans:[30],vlanGroupNames:['example-vlanGroup']},ipCondition:{type:SourceIP,prefixType:Prefix,ipPrefixValues:['10.20.20.20/12'],ipGroupNames:['example-ipGroup']}}],actions:[{type:Count,counterName:'example-counter'}]}]"
 
-    :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
+    :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax
         az networkfabric acl create --dynamic-match-configurations "??"
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/accesscontrollists/{}", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/accesscontrollists/{}", "2026-07-15-preview"],
         ]
     }
 
@@ -783,7 +783,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }
@@ -1312,7 +1312,30 @@ class Create(AAZCommand):
             )
 
             last_operation = cls._schema_on_200_201.properties.last_operation
+            last_operation.completed_at = AAZStrType(
+                serialized_name="completedAt",
+                flags={"read_only": True},
+            )
+            last_operation.correlation_id = AAZStrType(
+                serialized_name="correlationId",
+                flags={"read_only": True},
+            )
             last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
+            last_operation.operation_type = AAZStrType(
+                serialized_name="operationType",
+                flags={"read_only": True},
+            )
+            last_operation.result_blob_url = AAZStrType(
+                serialized_name="resultBlobUrl",
+                flags={"read_only": True},
+            )
+            last_operation.started_at = AAZStrType(
+                serialized_name="startedAt",
+                flags={"read_only": True},
+            )
+            last_operation.status = AAZStrType(
                 flags={"read_only": True},
             )
 

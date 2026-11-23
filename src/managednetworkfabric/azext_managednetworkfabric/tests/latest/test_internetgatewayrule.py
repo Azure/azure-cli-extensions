@@ -12,6 +12,7 @@ Internet Gateway Rule tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -27,8 +28,22 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario1(test)
-    step_create(test, checks=[])
-    step_show(test, checks=[])
+    step_create(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("ruleProperties", attr(test, "ruleProperties")),
+        ],
+    )
+    step_show(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("ruleProperties", attr(test, "ruleProperties")),
+        ],
+    )
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
@@ -40,7 +55,8 @@ def step_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric internetgatewayrule create --resource-group {rg} --location {location} --resource-name {name} --rule-properties {ruleProperties} --annotation {annotation}",
+        "az networkfabric internetgatewayrule create --resource-group {rg} --location {location} "
+        "--resource-name {name} --rule-properties {ruleProperties} --annotation {annotation}",
         checks=checks,
     )
 
@@ -50,7 +66,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric internetgatewayrule show --resource-name {name} --resource-group {rg}"
+        "az networkfabric internetgatewayrule show --resource-name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -102,6 +119,9 @@ class GA_InternetGatewayRuleScenarioTest1(ScenarioTest):
                     "INTERNET_GATEWAY_RULE", "rule_properties"
                 ),
                 "tag": CONFIG.get("INTERNET_GATEWAY_RULE", "tag"),
+                "expectedProvisioningState": CONFIG.get(
+                    "INTERNET_GATEWAY_RULE", "expected_provisioning_state"
+                ),
             }
         )
 

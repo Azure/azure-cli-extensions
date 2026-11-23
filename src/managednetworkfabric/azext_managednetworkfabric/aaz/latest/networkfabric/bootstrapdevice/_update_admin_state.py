@@ -18,13 +18,16 @@ class UpdateAdminState(AAZCommand):
     """Updates the Administrative state of the Network Bootstrap Device.
 
     :example: Updates the Administrative state of the Network Bootstrap Device
-        az networkfabric bootstrapdevice update-admin-state --resource-group "example-rg" --resource-name "example-device" --resource-ids "[/Subscriptions/1234ABCD-0A1B-1234-5678-123456ABCDEF/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device-1]" --state "RMA"
+        az networkfabric bootstrapdevice update-admin-state --resource-group "example-rg" --resource-name "example-device" --state "RMA"
+
+    :example: Updates the Administrative state of the Network Bootstrap Device with resource ids parameter
+        az networkfabric bootstrapdevice update-admin-state --resource-group "example-rg" --resource-name "example-device" --resource-ids "[/Subscriptions/example-subscription-id/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device-1]" --state "RMA"
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkbootstrapdevices/{}/updateadministrativestate", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkbootstrapdevices/{}/updateadministrativestate", "2026-07-15-preview"],
         ]
     }
 
@@ -45,8 +48,8 @@ class UpdateAdminState(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.network_bootstrap_device_name = AAZStrArg(
-            options=["--resource-name", "--network-bootstrap-device-name"],
+        _args_schema.resource_name = AAZStrArg(
+            options=["--resource-name"],
             help="Name of the Network Bootstrap Device.",
             required=True,
             id_part="name",
@@ -140,7 +143,7 @@ class UpdateAdminState(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkBootstrapDeviceName", self.ctx.args.network_bootstrap_device_name,
+                    "networkBootstrapDeviceName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -158,7 +161,7 @@ class UpdateAdminState(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }

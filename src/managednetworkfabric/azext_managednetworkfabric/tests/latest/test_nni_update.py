@@ -31,8 +31,8 @@ def call_scenario1(test):
     cleanup_scenario(test)
 
 
-def call_scenario1(test):
-    """Testcase: scenario1"""
+def call_scenario2(test):
+    """Testcase: scenario2"""
     setup_scenario(test)
     step_update_scenario2(test, checks=[])
     cleanup_scenario(test)
@@ -107,3 +107,8 @@ class GA_NNI_update_ScenarioTest1(ScenarioTest):
     def test_GA_nni_update_scenario1(self):
         """test scenario for NNI CRUD operations"""
         call_scenario1(self)
+
+    def test_GA_nni_update_scenario2(self):
+        """Test scenario 2 with alternate command parameters."""
+        call_scenario2(self)
+        self.assertTrue(self.cassette.all_played)

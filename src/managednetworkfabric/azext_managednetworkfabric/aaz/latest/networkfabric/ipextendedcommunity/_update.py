@@ -18,13 +18,13 @@ class Update(AAZCommand):
     """Update to update certain properties of the IP Extended Community resource.
 
     :example: Update the Ip Extended Community
-        az networkfabric ipextendedcommunity update --resource-group "example-rg" --resource-name "example-ipextendedcommunity" --ip-extended-community-rules "[{action:Permit,sequenceNumber:1234,routeTargets:['1024:219','1001:200']}]"
+        az networkfabric ipextendedcommunity update --resource-group "example-rg" --resource-name "example-ipextendedcommunity" --ip-extended-community-rules "[{action:Permit,sequenceNumber:1234,routeTargets:['1024:219','1001:200']}]" --tags "{key:value}" --annotation "example-annotation"
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities/{}", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities/{}", "2026-07-15-preview"],
         ]
     }
 
@@ -199,7 +199,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }
@@ -339,7 +339,30 @@ class Update(AAZCommand):
             route_targets.Element = AAZStrType()
 
             last_operation = cls._schema_on_200.properties.last_operation
+            last_operation.completed_at = AAZStrType(
+                serialized_name="completedAt",
+                flags={"read_only": True},
+            )
+            last_operation.correlation_id = AAZStrType(
+                serialized_name="correlationId",
+                flags={"read_only": True},
+            )
             last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
+            last_operation.operation_type = AAZStrType(
+                serialized_name="operationType",
+                flags={"read_only": True},
+            )
+            last_operation.result_blob_url = AAZStrType(
+                serialized_name="resultBlobUrl",
+                flags={"read_only": True},
+            )
+            last_operation.started_at = AAZStrType(
+                serialized_name="startedAt",
+                flags={"read_only": True},
+            )
+            last_operation.status = AAZStrType(
                 flags={"read_only": True},
             )
 

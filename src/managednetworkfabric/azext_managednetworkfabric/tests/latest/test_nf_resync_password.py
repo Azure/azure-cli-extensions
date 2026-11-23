@@ -14,6 +14,7 @@ from azure.cli.testsdk import ScenarioTest
 from azext_managednetworkfabric.operations.error_format import ErrorFormat
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario(test):
@@ -29,14 +30,13 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_resync_password_scenario1(test)
-    cleanup_scenario(test)
-
-
-def call_scenario2(test):
-    """Testcase: scenario2"""
-    setup_scenario(test)
-    step_resync_password_scenario2(test)
+    step_resync_password_scenario1(
+        test,
+        checks=[
+            test.check("status", attr(test, "expectedStatus")),
+            test.check("resourceId", attr(test, "expectedResyncPasswordResourceId")),
+        ],
+    )
     cleanup_scenario(test)
 
 
@@ -51,24 +51,10 @@ def step_resync_password_scenario1(test, checks=None):
     """nf resync password operation"""
     if checks is None:
         checks = []
-    output = test.cmd(
-        "az networkfabric fabric resync-password --resource-name {name} --resource-group {resourceGroup}"
-    ).get_output_in_json()
-
-    assert output["status"] == "Succeeded"
-    assert "networkFabrics" in output.get("resourceId", "")
-
-
-def step_resync_password_scenario2(test, checks=None):
-    """nf resync password operation"""
-    if checks is None:
-        checks = []
-    output = test.cmd(
-        "az networkfabric fabric resync-password --network-fabric-name {name} --resource-group {resourceGroup}"
-    ).get_output_in_json()
-
-    assert output["status"] == "Succeeded"
-    assert "networkFabrics" in output.get("resourceId", "")
+    test.cmd(
+        "az networkfabric fabric resync-password --resource-name {name} --resource-group {resourceGroup}",
+        checks=checks,
+    )
 
 
 def step_resync_password_partial_success(test, checks=None):
@@ -110,16 +96,16 @@ class GA_NFResyncPasswordScenarioTest1(ScenarioTest):
             {
                 "name": CONFIG.get("NETWORK_FABRIC", "name"),
                 "resourceGroup": CONFIG.get("NETWORK_FABRIC", "resource_group"),
+                "expectedStatus": CONFIG.get("NETWORK_FABRIC", "expected_status"),
+                "expectedResyncPasswordResourceId": CONFIG.get(
+                    "NETWORK_FABRIC", "expected_resync_password_resource_id"
+                ),
             }
         )
 
     def test_GA_nf_resync_password_scenario1(self):
         """test scenario for NF resync password operations"""
         call_scenario1(self)
-
-    def test_GA_nf_resync_password_scenario2(self):
-        """test scenario for NF resync password with alias"""
-        call_scenario2(self)
 
     def test_GA_nf_resync_password_scenario3(self):
         """test scenario for NF resync password with partial success"""
