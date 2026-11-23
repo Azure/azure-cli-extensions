@@ -6,12 +6,16 @@
 import json
 from contextlib import redirect_stderr, redirect_stdout
 from io import StringIO
+from types import SimpleNamespace
 from unittest import TestCase
 from unittest.mock import patch
+from urllib.parse import parse_qsl, urlsplit
 
 from azure.cli.core import MainCommandsLoader, get_default_cli
 from azure.cli.core.commands import ExtensionCommandSource
 from azext_horizondb import HorizonDBCommandsLoader
+
+from .recording_processors import ArmOperationResultsRecordingProcessor
 
 
 class _MaintenanceEventCommandsLoader(MainCommandsLoader):
@@ -93,3 +97,38 @@ class MaintenanceEventTests(TestCase):
         help_text = self._invoke_cli('--help')
         self.assertRegex(help_text, r'(?m)^\s+list\b')
         self.assertNotRegex(help_text, r'(?m)^\s+show\b')
+
+
+class ArmOperationResultsRecordingProcessorTests(TestCase):
+
+    def setUp(self):
+        self.processor = ArmOperationResultsRecordingProcessor()
+        self.uri = (
+            'https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/'
+            'operationresults/private-rg-job?api-version=2024-11-01'
+            '&t=fake-timestamp&c=fake-certificate&s=fake-signature&h=fake-hash'
+        )
+
+    def test_operation_result_requests_remove_signed_data(self):
+        request = SimpleNamespace(uri=self.uri)
+        self.processor.process_request(request)
+        parsed = urlsplit(request.uri)
+        self.assertNotIn('private-rg-job', parsed.path)
+        self.assertEqual(dict(parse_qsl(parsed.query)), {'api-version': '2024-11-01'})
+        sanitized_uri = request.uri
+        self.processor.process_request(request)
+        self.assertEqual(request.uri, sanitized_uri)
+
+        other = SimpleNamespace(uri=self.uri.replace('private-rg-job', 'other-rg-job'))
+        self.processor.process_request(other)
+        self.assertNotEqual(other.uri, sanitized_uri)
+
+    def test_operation_result_response_headers_match_scrubbed_requests(self):
+        request = SimpleNamespace(uri=self.uri)
+        self.processor.process_request(request)
+        ordinary_uri = 'https://management.azure.com/resourcegroups/test-rg?api-version=2024-11-01'
+        for header in ['Location', 'Azure-AsyncOperation', 'Operation-Location']:
+            with self.subTest(header=header):
+                response = {'headers': {header: [self.uri, ordinary_uri]}}
+                self.processor.process_response(response)
+                self.assertEqual(response['headers'][header], [request.uri, ordinary_uri])
