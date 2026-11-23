@@ -74,8 +74,9 @@ az horizondb cluster authentication password update -g example-resource-group --
 az horizondb cluster authentication password wait -g example-resource-group --cluster-name example-cluster --updated
 ```
 
-`password update` changes only the supplied settings. Use `--state Disabled` alone
-to disable password authentication, or `--state Enabled` with a password to
+Configuring password authentication requires a compute pool. `password update`
+changes only the supplied settings. To disable the method with `--state Disabled`,
+first enable Microsoft Entra authentication with a valid tenant. Use `--state Enabled` with a password to
 re-enable the method and reset the password. Both create and update accept `--no-wait`.
 
 ## Manage parameter groups
