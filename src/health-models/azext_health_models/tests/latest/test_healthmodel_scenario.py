@@ -4,14 +4,47 @@
 # --------------------------------------------------------------------------------------------
 
 import json
+import re
 import shlex
 
 from azure.core.exceptions import ResourceNotFoundError
 from azure.cli.testsdk import *
+from azure.cli.testsdk.scenario_tests import RecordingProcessor
+from azure.cli.testsdk.scenario_tests.const import MOCKED_SUBSCRIPTION_ID
+from azure.cli.testsdk.scenario_tests.utilities import is_text_payload
+
+
+class ArmPollingUrlSanitizer(RecordingProcessor):
+    @staticmethod
+    def redact(value):
+        is_bytes = isinstance(value, bytes)
+        text = value.decode('utf-8') if is_bytes else value
+        text = re.sub(r"""([?&])([tcsh])=[^&#\s"'<>\\]*""",
+                      lambda match: f'{match[1]}{match[2]}=redacted-{match[2]}', text)
+        return text.encode('utf-8') if is_bytes else text
+
+    def process_request(self, request):
+        request.uri = self.redact(request.uri)
+        if request.body and is_text_payload(request):
+            request.body = self.redact(request.body)
+        return request
+
+    def process_response(self, response):
+        if response['body']['string'] and is_text_payload(response):
+            response['body']['string'] = self.redact(response['body']['string'])
+        for key, values in response['headers'].items():
+            response['headers'][key] = [self.redact(value) for value in values]
+        return response
 
 
 class HealthModelScenarioTest(ScenarioTest):
     FILTER_HEADERS = ScenarioTest.FILTER_HEADERS + ['x-ms-operation-identifier']
+
+    def __init__(self, method_name, **kwargs):
+        super().__init__(method_name, **kwargs)
+        processor = ArmPollingUrlSanitizer()
+        self.recording_processors.append(processor)
+        self.replay_processors.append(processor)
 
     @ResourceGroupPreparer(name_prefix='cli_test_healthmodel_crud', location='centralus')
     def test_healthmodel_crud_cycle(self, resource_group):
@@ -350,7 +383,9 @@ class HealthModelScenarioTest(ScenarioTest):
                 self.assertIn(recommendation['configuration']['signalKind'],
                               ('AzureResourceMetric', 'LogAnalyticsQuery', 'PrometheusMetricsQuery'))
                 self.assertTrue(recommendation['signalId'])
-        self.kwargs['subscription_id'] = self.get_subscription_id()
+        subscription_id = self.get_subscription_id()
+        self.name_replacer.register_name_pair(subscription_id, MOCKED_SUBSCRIPTION_ID)
+        self.kwargs['subscription_id'] = subscription_id
         self.cmd('monitor health-models discovery-rule create -g {rg} --health-model-name {model} -n {rule} '
                  '--display-name "Storage discovery" --authentication-setting {auth} '
                  "--specification \"{{resource-graph-query:{{resource-graph-query:'resources | "
