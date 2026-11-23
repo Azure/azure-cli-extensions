@@ -6,11 +6,11 @@
 
 import errno
 import os
-import shutil
 import subprocess
 
 import yaml
 from azure.cli.core.azclierror import AzCLIError
+from azure.cli.core.util import get_safe_executable_path
 from knack.log import get_logger
 from knack.util import CLIError
 
@@ -61,7 +61,7 @@ def get_aks_credentials(
     try:
         # Check if kubeconfig requires kubelogin with devicecode and convert it
         if _uses_kubelogin_devicecode(kubeconfig):
-            kubelogin_path = shutil.which("kubelogin")
+            kubelogin_path = get_safe_executable_path("kubelogin")
             if kubelogin_path:
                 try:
                     # Run kubelogin convert-kubeconfig -l azurecli
