@@ -201,3 +201,8 @@ Release History
 1.12.0
 ++++++
 * Add 2026-11-02-preview API version and ``az fleet identitybindingprofile`` commands.
+
+1.12.1
+++++++
+* Use trusted executable lookup for ``kubelogin`` during Fleet credential conversion.
+* Require Azure CLI 2.93.0 or later.

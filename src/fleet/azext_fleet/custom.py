@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import shutil
 import subprocess
 import tempfile
 import yaml
@@ -14,7 +13,7 @@ from knack.util import CLIError
 
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from azure.cli.core.util import sdk_no_wait, get_file_json, shell_safe_json_parse
+from azure.cli.core.util import get_safe_executable_path, sdk_no_wait, get_file_json, shell_safe_json_parse
 from azure.cli.core import get_default_cli
 from azure.mgmt.core.tools import parse_resource_id
 from azure.cli.command_modules.acs._graph import resolve_object_id
@@ -245,7 +244,7 @@ def _convert_kubeconfig_to_azurecli(path):
     if is_stdout_path(path):
         return
 
-    kubelogin_path = shutil.which("kubelogin")
+    kubelogin_path = get_safe_executable_path("kubelogin")
     if kubelogin_path:
         try:
             subprocess.run(
