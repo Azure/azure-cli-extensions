@@ -12,6 +12,7 @@ Rack tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -27,7 +28,16 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario1(test)
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("networkFabricId", attr(test, "expectedNetworkFabricId")),
+            test.check("networkRackType", attr(test, "expectedNetworkRackType")),
+            test.check("networkDevices", attr(test, "expectedNetworkDevices")),
+        ],
+    )
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
     cleanup_scenario1(test)
@@ -37,7 +47,10 @@ def step_show(test, checks=None):
     """Rack show operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkfabric rack show --resource-name {name} --resource-group {rg}")
+    test.cmd(
+        "az networkfabric rack show --resource-name {name} --resource-group {rg}",
+        checks=checks,
+    )
 
 
 def step_list_resource_group(test, checks=None):
@@ -63,6 +76,18 @@ class GA_RackScenarioTest1(ScenarioTest):
             {
                 "name": CONFIG.get("NETWORK_RACK", "name"),
                 "rg": CONFIG.get("NETWORK_RACK", "resource_group"),
+                "expectedNetworkDevices": CONFIG.get(
+                    "NETWORK_RACK", "expected_network_devices"
+                ),
+                "expectedNetworkFabricId": CONFIG.get(
+                    "NETWORK_RACK", "expected_network_fabric_id"
+                ),
+                "expectedNetworkRackType": CONFIG.get(
+                    "NETWORK_RACK", "expected_network_rack_type"
+                ),
+                "expectedProvisioningState": CONFIG.get(
+                    "NETWORK_RACK", "expected_provisioning_state"
+                ),
             }
         )
 

@@ -2894,6 +2894,7 @@ configuration:
             - nikitagarg_microsoft
             - sanar_microsoft
             - cawa_microsoft
+            - kanchanjoshi_microsoft
             - Azure/act-codegen-extensibility-squad
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
@@ -3542,6 +3543,8 @@ configuration:
           label: Auto-Assign
       - requestReview:
           reviewer: FumingZhang
+      - requestReview:
+          reviewer: Azure/act-observability-squad
       - addLabel:
           label: AKS
       - addLabel:
@@ -3567,8 +3570,12 @@ configuration:
           reviewer: techworldhello
       - requestReview:
           reviewer: PugDeveloper
+      - requestReview:
+          reviewer: Azure/act-observability-squad
       - addLabel:
           label: AKS
+      - addLabel:
+          label: act-observability-squad
       description: '[aks aimanager] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -3631,6 +3638,8 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: act-experience-enablement-squad
+      - requestReview:
+          reviewer: Azure/act-experience-enablement-squad
       description: '[machine learning] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -3696,6 +3705,8 @@ configuration:
           label: VM SSH
       - addLabel:
           label: act-observability-squad
+      - requestReview:
+          reviewer: Azure/act-observability-squad
       description: '[ssh] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -3774,6 +3785,8 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: act-observability-squad
+      - requestReview:
+          reviewer: Azure/act-observability-squad
       description: '[spring-cloud] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -3817,6 +3830,8 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: act-observability-squad
+      - requestReview:
+          reviewer: Azure/act-observability-squad
       description: '[monitor] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -3833,6 +3848,8 @@ configuration:
           label: Network
       - addLabel:
           label: act-quality-productivity-squad
+      - requestReview:
+          reviewer: Azure/act-quality-productivity-squad
       description: '[Network] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -3898,6 +3915,8 @@ configuration:
           label: IoT/CLI
       - addLabel:
           label: act-observability-squad
+      - requestReview:
+          reviewer: Azure/act-observability-squad
       description: '[iot] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -3978,6 +3997,8 @@ configuration:
           label: Storage
       - addLabel:
           label: act-codegen-extensibility-squad
+      - requestReview:
+          reviewer: Azure/act-codegen-extensibility-squad
       description: '[Storage] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -3994,6 +4015,8 @@ configuration:
           label: KeyVault
       - addLabel:
           label: act-identity-squad
+      - requestReview:
+          reviewer: Azure/act-identity-squad
       description: '[keyvault] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -4059,6 +4082,8 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: act-codegen-extensibility-squad
+      - requestReview:
+          reviewer: Azure/act-codegen-extensibility-squad
       description: '[cosmosdb] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -4100,6 +4125,8 @@ configuration:
           label: Account
       - addLabel:
           label: act-identity-squad
+      - requestReview:
+          reviewer: Azure/act-identity-squad
       description: '[account] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -4505,6 +4532,8 @@ configuration:
           label: Logic App
       - addLabel:
           label: act-observability-squad
+      - requestReview:
+          reviewer: Azure/act-observability-squad
       description: '[logic] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -5024,6 +5053,8 @@ configuration:
           label: Quantum
       - addLabel:
           label: act-codegen-extensibility-squad
+      - requestReview:
+          reviewer: Azure/act-codegen-extensibility-squad
       description: '[quantum] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5067,6 +5098,8 @@ configuration:
           label: Compute
       - addLabel:
           label: act-observability-squad
+      - requestReview:
+          reviewer: Azure/act-observability-squad
       description: '[Compute] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5122,6 +5155,8 @@ configuration:
           label: extension/webapp
       - addLabel:
           label: act-observability-squad
+      - requestReview:
+          reviewer: Azure/act-observability-squad
       description: '[appservice] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5163,6 +5198,8 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: act-codegen-extensibility-squad
+      - requestReview:
+          reviewer: Azure/act-codegen-extensibility-squad
       description: '[datamigration] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5239,6 +5276,8 @@ configuration:
           label: Functions
       - addLabel:
           label: act-observability-squad
+      - requestReview:
+          reviewer: Azure/act-observability-squad
       description: '[functionapp] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -5258,6 +5297,8 @@ configuration:
           label: Event Grid
       - addLabel:
           label: act-observability-squad
+      - requestReview:
+          reviewer: Azure/act-observability-squad
       description: '[eventgrid] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5298,6 +5339,8 @@ configuration:
           label: Desktop Virtualization
       - addLabel:
           label: act-codegen-extensibility-squad
+      - requestReview:
+          reviewer: Azure/act-codegen-extensibility-squad
       description: '[desktopvirtualization] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5365,6 +5408,8 @@ configuration:
           reviewer: jijohn14
       - requestReview:
           reviewer: Greedygre
+      - requestReview:
+          reviewer: Azure/act-observability-squad
       description: '[container app] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5476,6 +5521,8 @@ configuration:
           label: CI
       - addLabel:
           label: act-platform-engineering-squad
+      - requestReview:
+          reviewer: Azure/act-platform-engineering-squad
       description: '[ci] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5534,6 +5581,8 @@ configuration:
           label: Network - Network Manager
       - addLabel:
           label: act-quality-productivity-squad
+      - requestReview:
+          reviewer: Azure/act-quality-productivity-squad
       description: '[NetworkManager] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5612,6 +5661,8 @@ configuration:
           label: Kubernetes Configuration
       - addLabel:
           label: act-observability-squad
+      - requestReview:
+          reviewer: Azure/act-observability-squad
       description: '[k8sconfiguration] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5721,6 +5772,8 @@ configuration:
           label: SQL
       - addLabel:
           label: act-codegen-extensibility-squad
+      - requestReview:
+          reviewer: Azure/act-codegen-extensibility-squad
       description: '[sql] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5935,6 +5988,8 @@ configuration:
           label: Subscription
       - addLabel:
           label: act-identity-squad
+      - requestReview:
+          reviewer: Azure/act-identity-squad
       description: '[ subscription ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -5954,6 +6009,8 @@ configuration:
           label: Subscription
       - addLabel:
           label: act-identity-squad
+      - requestReview:
+          reviewer: Azure/act-identity-squad
       description: '[subscription] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -6379,6 +6436,8 @@ configuration:
           label: Storagesync
       - addLabel:
           label: act-codegen-extensibility-squad
+      - requestReview:
+          reviewer: Azure/act-codegen-extensibility-squad
       description: '[Storagesync] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -6433,6 +6492,8 @@ configuration:
           label: Network - Network Watcher
       - addLabel:
           label: act-quality-productivity-squad
+      - requestReview:
+          reviewer: Azure/act-quality-productivity-squad
       description: '[Network Watcher] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues

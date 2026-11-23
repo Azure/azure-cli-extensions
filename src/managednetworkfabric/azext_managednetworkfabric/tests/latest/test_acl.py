@@ -12,6 +12,7 @@ Access Control Lists tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario(test):
@@ -27,8 +28,46 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_create_scenario1(test, checks=[])
-    step_show(test, checks=[])
+    step_create_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("aclType", attr(test, "aclType")),
+            test.check("configurationType", attr(test, "configurationType")),
+            test.check("defaultAction", attr(test, "defaultAction")),
+            test.check("deviceRole", attr(test, "deviceRole")),
+            test.check("matchConfigurations", attr(test, "matchConfigurations")),
+            test.check(
+                "dynamicMatchConfigurations", attr(test, "dynamicMatchConfigurations")
+            ),
+            test.check(
+                "globalAccessControlListActions",
+                attr(test, "expectedGlobalAccessControlListActions"),
+            ),
+            test.check("aclsUrl", attr(test, "aclsUrl")),
+        ],
+    )
+    step_show(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("aclType", attr(test, "aclType")),
+            test.check("configurationType", attr(test, "configurationType")),
+            test.check("defaultAction", attr(test, "defaultAction")),
+            test.check("deviceRole", attr(test, "deviceRole")),
+            test.check("matchConfigurations", attr(test, "matchConfigurations")),
+            test.check(
+                "dynamicMatchConfigurations", attr(test, "dynamicMatchConfigurations")
+            ),
+            test.check(
+                "globalAccessControlListActions",
+                attr(test, "expectedGlobalAccessControlListActions"),
+            ),
+            test.check("aclsUrl", attr(test, "aclsUrl")),
+        ],
+    )
     step_update_scenario1(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
@@ -39,7 +78,26 @@ def call_scenario1(test):
 def call_scenario2(test):
     """Testcase: scenario2"""
     setup_scenario(test)
-    step_create_scenario2(test, checks=[])
+    step_create_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("aclType", attr(test, "aclType")),
+            test.check("configurationType", attr(test, "configurationType")),
+            test.check("defaultAction", attr(test, "defaultAction")),
+            test.check("deviceRole", attr(test, "deviceRole")),
+            test.check("matchConfigurations", attr(test, "matchConfigurations")),
+            test.check(
+                "dynamicMatchConfigurations", attr(test, "dynamicMatchConfigurations")
+            ),
+            test.check(
+                "globalAccessControlListActions",
+                attr(test, "expectedGlobalAccessControlListActions"),
+            ),
+            test.check("aclsUrl", attr(test, "aclsUrl")),
+        ],
+    )
     step_update_scenario2(test, checks=[])
     cleanup_scenario(test)
 
@@ -74,7 +132,10 @@ def step_show(test, checks=None):
     """Access Control List show operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkfabric acl show --resource-name {name} --resource-group {rg}")
+    test.cmd(
+        "az networkfabric acl show --resource-name {name} --resource-group {rg}",
+        checks=checks,
+    )
 
 
 def step_update_scenario1(test, checks=None):
@@ -155,9 +216,20 @@ class GA_AccessControlListsScenarioTest1(ScenarioTest):
                 "updatedMatchConfigurations": CONFIG.get(
                     "ACCESS_CONTROL_LIST", "updated_match_configurations"
                 ),
+                "expectedGlobalAccessControlListActions": CONFIG.get(
+                    "ACCESS_CONTROL_LIST", "expected_global_access_control_list_actions"
+                ),
+                "expectedProvisioningState": CONFIG.get(
+                    "ACCESS_CONTROL_LIST", "expected_provisioning_state"
+                ),
             }
         )
 
     def test_GA_accesscontrollists_scenario1(self):
         """test scenario for Access Control List CRUD operations"""
         call_scenario1(self)
+
+    def test_GA_accesscontrollists_scenario2(self):
+        """Test scenario 2 with alternate command parameters."""
+        call_scenario2(self)
+        self.assertTrue(self.cassette.all_played)

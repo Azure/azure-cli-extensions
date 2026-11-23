@@ -18,13 +18,13 @@ class Delete(AAZCommand):
     """Delete layer 2 connectivity between compute nodes by managed by named NetworkMonitor name.
 
     :example: Delete the Network Monitor
-        az networkfabric networkmonitor delete --resource-group "rgmanagednetworkfabric" --network-monitor-name "example-monitor"
+        az networkfabric networkmonitor delete --resource-group "rgmanagednetworkfabric" --resource-name "example-monitor"
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkmonitors/{}", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkmonitors/{}", "2026-07-15-preview"],
         ]
     }
 
@@ -45,8 +45,8 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.network_monitor_name = AAZStrArg(
-            options=["-n", "--name", "--resource-name", "--network-monitor-name"],
+        _args_schema.resource_name = AAZStrArg(
+            options=["--resource-name"],
             help="Name of the Network Monitor.",
             required=True,
             id_part="name",
@@ -127,7 +127,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkMonitorName", self.ctx.args.network_monitor_name,
+                    "networkMonitorName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -145,7 +145,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }

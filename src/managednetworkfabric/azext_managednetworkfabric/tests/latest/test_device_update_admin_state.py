@@ -14,6 +14,7 @@ Device tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -29,7 +30,12 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario1(test)
-    step_update_admin_state(test, checks=[])
+    step_update_admin_state(
+        test,
+        checks=[
+            test.check("status", attr(test, "expectedStatus")),
+        ],
+    )
     cleanup_scenario1(test)
 
 
@@ -38,7 +44,9 @@ def step_update_admin_state(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric device update-admin-state --resource-name {name} --resource-group {rg} --state {state} --resource-ids {resourceIds}"
+        "az networkfabric device update-admin-state --resource-name {name} --resource-group {rg} --state "
+        "{state} --resource-ids {resourceIds}",
+        checks=checks,
     )
 
 
@@ -55,6 +63,7 @@ class GA_DeviceUpdateAdminStateScenarioTest1(ScenarioTest):
                 "state": CONFIG.get(
                     "NETWORK_DEVICE", "update_admin_state_device_state"
                 ),
+                "expectedStatus": CONFIG.get("NETWORK_DEVICE", "expected_status"),
             }
         )
 
