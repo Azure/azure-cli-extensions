@@ -59,7 +59,7 @@ class FleetHubfulScenarioTest(ScenarioTest):
 
         self.cmd('fleet get-credentials -g {rg} -n {fleet_name} --context fleet-{fleet_name} --overwrite-existing')
 
-        mc_id = self.cmd('aks create -g {rg} -n {member_name} --ssh-key-value={ssh_key_value}', checks=[
+        mc_id = self.cmd('aks create -g {rg} -n {member_name} --ssh-key-value={ssh_key_value} --enable-aad', checks=[
             self.check('name', '{member_name}')
         ]).get_output_in_json()['id']
 
