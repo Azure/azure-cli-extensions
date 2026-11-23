@@ -1,0 +1,200 @@
+interactions:
+- request:
+    body: '{"properties": {"internetGatewayRuleId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFCRG-eus/providers/Microsoft.ManagedNetworkFabric/InternetGatewayRules/Lab100GFABNFC-eus-infra-system"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric internetgateway update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '221'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --resource-name --internet-gateway-rule-id
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFCRG-eus/providers/Microsoft.ManagedNetworkFabric/internetGateways/Lab100GFABNFC-eus-infra?api-version=2026-07-15-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-57211348024d*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638427021482175213&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Feb 2024 03:55:47 GMT
+      etag:
+      - '"00000000-0000-0000-0000-9222a3cb77b0"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-57211348024d*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638427021482175213&c=REDACTED&s=REDACTED&h=REDACTED
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-bc3399e2f144
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: DED626CADACB4D2DA781FD2B189C0054 Ref B: MAA201060513027 Ref C: 2024-02-05T03:55:45Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric internetgateway update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --internet-gateway-rule-id
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-57211348024d*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638427021482175213&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-57211348024d*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-57211348024d*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFCRG-eus/providers/Microsoft.ManagedNetworkFabric/internetGateways/Lab100GFABNFC-eus-infra","status":"Updating","startTime":"2024-02-05T03:55:47.8624978Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '593'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Feb 2024 03:55:49 GMT
+      etag:
+      - '"00000000-0000-0000-0000-79e94c2e103b"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: D33B9D5302A242299C5062832FE35C26 Ref B: MAA201060513025 Ref C: 2024-02-05T03:55:48Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric internetgateway update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --internet-gateway-rule-id
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-57211348024d*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638427021482175213&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-57211348024d*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-57211348024d*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFCRG-eus/providers/Microsoft.ManagedNetworkFabric/internetGateways/Lab100GFABNFC-eus-infra","status":"Succeeded","startTime":"2024-02-05T03:55:47.8624978Z","endTime":"2024-02-05T03:56:02.9861268Z","percentComplete":100.0,"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '677'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Feb 2024 03:56:19 GMT
+      etag:
+      - '"00000000-0000-0000-0000-928c7261dac5"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: FC80187AE49944FB85ED5BD6C28F85FF Ref B: MAA201060514017 Ref C: 2024-02-05T03:56:19Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric internetgateway update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --internet-gateway-rule-id
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-57211348024d*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638427021482175213&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-57211348024d*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-57211348024d*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFCRG-eus/providers/Microsoft.ManagedNetworkFabric/internetGateways/Lab100GFABNFC-eus-infra","status":"Succeeded","startTime":"2024-02-05T03:55:47.8624978Z","endTime":"2024-02-05T03:56:02.9861268Z","percentComplete":100.0,"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '677'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Feb 2024 03:56:20 GMT
+      etag:
+      - '"00000000-0000-0000-0000-928c7261dac5"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: C16E7D184EDD4C689E1FB45D23912E31 Ref B: MAA201060514047 Ref C: 2024-02-05T03:56:20Z'
+    status:
+      code: 200
+      message: OK
+version: 1

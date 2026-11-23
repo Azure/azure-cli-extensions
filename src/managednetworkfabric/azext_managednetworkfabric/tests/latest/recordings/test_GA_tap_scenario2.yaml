@@ -1,0 +1,344 @@
+interactions:
+- request:
+    body: '{"identity": {"userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1": {}}, "type": "SystemAssigned,UserAssigned"}, "location": "eastus", "properties": {"annotation": "test-annotation", "destinations": [{"destinationId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/ayt-l3domain/internalNetworks/ayt-internalNetworkIpv4VProbe", "destinationTapRuleId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/networkTapRules/ayt-networktapruleIpv4VprobeInline", "destinationType": "IsolationDomain", "isolationDomainProperties": {"encapsulation": "GRE", "neighborGroupIds": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/neighborGroups/ayt-neighborGroupVProbe"]}, "name": "example-destinaionName"}], "networkPacketBrokerId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/microsoft.managednetworkfabric/networkpacketbrokers/nffab3-4-2-bf-npb", "pollingType": "Pull"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric tap create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1288'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --location --resource-name --network-packet-broker-id --polling-type --destinations --annotation --mi-user-assigned --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.29.5 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/networkTaps/aytl3-networktapIpv4VProbe?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/networkTaps/aytl3-networktapIpv4VProbe","name":"aytl3-networktapIpv4VProbe","type":"microsoft.managednetworkfabric/networktaps","location":"eastus","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-12-05T09:16:12.9143949Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-12-15T12:05:15.8240291Z"},"properties":{"networkPacketBrokerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/microsoft.managednetworkfabric/networkpacketbrokers/nffab3-4-2-bf-npb","sourceTapRuleId":null,"pollingType":"Pull","destinations":[{"destinationId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/ayt-l3domain/internalNetworks/ayt-internalNetworkIpv4VProbe","destinationTapRuleId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/networkTapRules/ayt-networktapruleIpv4VprobeInline","destinationType":"IsolationDomain","isolationDomainProperties":{"encapsulation":"GRE","neighborGroupIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/neighborGroups/ayt-neighborGroupVProbe"]},"name":"example-destinaionName"}],"configurationState":"Succeeded","provisioningState":"Accepted","administrativeState":"Disabled","annotation":"test-annotation"},"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1":{}},"type":"SystemAssigned,UserAssigned"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-eb0814516c7b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638382387174022646&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '1847'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Dec 2023 12:05:16 GMT
+      etag:
+      - '"00000000-0000-0000-0000-b6eabc9307ef"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-ba5c1d82a2ea
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric tap create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --resource-name --network-packet-broker-id --polling-type --destinations --annotation --mi-user-assigned --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.29.5 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-eb0814516c7b*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638382387174022646&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-eb0814516c7b*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-eb0814516c7b*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/networkTaps/aytl3-networktapIpv4VProbe","status":"Succeeded","startTime":"2023-12-15T12:05:16.9752695Z","endTime":"2023-12-15T12:05:17.9806764Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Dec 2023 12:05:18 GMT
+      etag:
+      - '"00000000-0000-0000-0000-9b802a08c23c"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric tap create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --resource-name --network-packet-broker-id --polling-type --destinations --annotation --mi-user-assigned --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.29.5 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/networkTaps/aytl3-networktapIpv4VProbe?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/networkTaps/aytl3-networktapIpv4VProbe","name":"aytl3-networktapIpv4VProbe","type":"microsoft.managednetworkfabric/networktaps","location":"eastus","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-12-05T09:16:12.9143949Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-12-15T12:05:15.8240291Z"},"properties":{"networkPacketBrokerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/microsoft.managednetworkfabric/networkpacketbrokers/nffab3-4-2-bf-npb","sourceTapRuleId":null,"pollingType":"Pull","destinations":[{"destinationId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/ayt-l3domain/internalNetworks/ayt-internalNetworkIpv4VProbe","destinationTapRuleId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/networkTapRules/ayt-networktapruleIpv4VprobeInline","destinationType":"IsolationDomain","isolationDomainProperties":{"encapsulation":"GRE","neighborGroupIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/neighborGroups/ayt-neighborGroupVProbe"]},"name":"example-destinaionName"}],"configurationState":"Succeeded","provisioningState":"Succeeded","administrativeState":"Disabled","annotation":"test-annotation"},"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1":{}},"type":"SystemAssigned,UserAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Dec 2023 12:05:20 GMT
+      etag:
+      - '"00000000-0000-0000-0000-613b696ee994"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1": {}}, "type": "SystemAssigned,UserAssigned"}, "properties": {"annotation": "test-annotation", "destinations": [{"destinationId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/ayt-l3domain/internalNetworks/ayt-internalNetworkIpv4VProbe", "destinationTapRuleId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/networkTapRules/ayt-networktapruleIpv4VprobeInline", "destinationType": "IsolationDomain", "isolationDomainProperties": {"encapsulation": "GRE", "neighborGroupIds": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/neighborGroups/ayt-neighborGroupVProbe"]}, "name": "example-updated"}], "pollingType": "Push"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric tap update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1067'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-name --resource-group --destinations --polling-type --annotation --mi-user-assigned --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/networkTaps/aytl3-networktapIpv4VProbe?api-version=2026-07-15-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638433394058497001&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 12:56:45 GMT
+      etag:
+      - '"00000000-0000-0000-0000-522eacde5b81"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638433394058497001&c=REDACTED&s=REDACTED&h=REDACTED
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-1f76cdf09ace
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: EC58EA19F03E472A878C0ECB322C3D6E Ref B: MAA201060514039 Ref C: 2024-02-12T12:56:42Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric tap update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group --destinations --polling-type --annotation --mi-user-assigned --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638433394058497001&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/networkTaps/aytl3-networktapIpv4VProbe","status":"Accepted","startTime":"2024-02-12T12:56:45.2757647Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '596'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 12:56:46 GMT
+      etag:
+      - '"00000000-0000-0000-0000-fe4bd48e8735"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: F1B18602894741639A3E4B228BCB8E02 Ref B: MAA201060513019 Ref C: 2024-02-12T12:56:46Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric tap update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group --destinations --polling-type --annotation --mi-user-assigned --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638433394058497001&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/networkTaps/aytl3-networktapIpv4VProbe","status":"Succeeded","startTime":"2024-02-12T12:56:45.2757647Z","endTime":"2024-02-12T12:56:49.4458361Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '656'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 12:57:18 GMT
+      etag:
+      - '"00000000-0000-0000-0000-ac4d459c9e1f"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 5B3F36CCB87D473795D01D5FADCED008 Ref B: MAA201060515049 Ref C: 2024-02-12T12:57:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric tap update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group --destinations --polling-type --annotation --mi-user-assigned --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638433394058497001&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/networkTaps/aytl3-networktapIpv4VProbe","status":"Succeeded","startTime":"2024-02-12T12:56:45.2757647Z","endTime":"2024-02-12T12:56:49.4458361Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '656'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 12:57:19 GMT
+      etag:
+      - '"00000000-0000-0000-0000-ac4d459c9e1f"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 69AD99E9FA87444ABE4D9809C421441B Ref B: MAA201060513019 Ref C: 2024-02-12T12:57:19Z'
+    status:
+      code: 200
+      message: OK
+version: 1

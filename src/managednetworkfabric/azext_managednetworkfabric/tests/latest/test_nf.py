@@ -12,6 +12,7 @@ NF tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario(test):
@@ -27,17 +28,99 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_create_scenario1(test, checks=[])
-    step_show(test, checks=[])
+    step_create_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("networkFabricSku", attr(test, "nfSku")),
+            test.check("networkFabricControllerId", attr(test, "nfcId")),
+            test.check("fabricASN", int(attr(test, "fabricAsn"))),
+            test.check("fabricVersion", attr(test, "fabricVersion")),
+            test.check("ipv4Prefix", attr(test, "ipv4Prefix")),
+            test.check("ipv6Prefix", attr(test, "ipv6Prefix")),
+            test.check("rackCount", int(attr(test, "rackCount"))),
+            test.check("serverCountPerRack", int(attr(test, "serverCountPerRack"))),
+            test.check(
+                "terminalServerConfiguration",
+                attr(test, "expectedTerminalServerConfiguration"),
+            ),
+            test.check(
+                "managementNetworkConfiguration",
+                attr(test, "expectedManagementNetworkConfiguration"),
+            ),
+            test.check("authorizedTransceiver", attr(test, "authorizedTransceiver")),
+        ],
+    )
+    step_show(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("networkFabricSku", attr(test, "nfSku")),
+            test.check("networkFabricControllerId", attr(test, "nfcId")),
+            test.check("fabricASN", int(attr(test, "fabricAsn"))),
+            test.check("fabricVersion", attr(test, "fabricVersion")),
+            test.check("ipv4Prefix", attr(test, "ipv4Prefix")),
+            test.check("ipv6Prefix", attr(test, "ipv6Prefix")),
+            test.check("rackCount", int(attr(test, "rackCount"))),
+            test.check("serverCountPerRack", int(attr(test, "serverCountPerRack"))),
+            test.check(
+                "terminalServerConfiguration",
+                attr(test, "expectedTerminalServerConfiguration"),
+            ),
+            test.check(
+                "managementNetworkConfiguration",
+                attr(test, "expectedManagementNetworkConfiguration"),
+            ),
+            test.check("authorizedTransceiver", attr(test, "authorizedTransceiver")),
+        ],
+    )
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
     cleanup_scenario(test)
 
 
 def call_scenario2(test):
-    """Testcase: scenario1"""
+    """Testcase: scenario2"""
     setup_scenario(test)
-    step_create_scenario1(test, checks=[])
+    step_create_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("networkFabricSku", attr(test, "nfSku")),
+            test.check("networkFabricControllerId", attr(test, "nfcId")),
+            test.check("fabricASN", int(attr(test, "fabricAsn"))),
+            test.check("fabricVersion", attr(test, "fabricVersion")),
+            test.check("ipv4Prefix", attr(test, "ipv4Prefix")),
+            test.check("ipv6Prefix", attr(test, "ipv6Prefix")),
+            test.check("rackCount", int(attr(test, "rackCount"))),
+            test.check("serverCountPerRack", int(attr(test, "serverCountPerRack"))),
+            test.check(
+                "terminalServerConfiguration",
+                attr(test, "expectedTerminalServerConfiguration"),
+            ),
+            test.check(
+                "managementNetworkConfiguration.infrastructureVpnConfiguration.peeringOption",
+                attr(test, "managementNetworkConfig")["infrastructureVpnConfiguration"][
+                    "peeringOption"
+                ],
+            ),
+            test.check(
+                "managementNetworkConfiguration.workloadVpnConfiguration.peeringOption",
+                attr(test, "managementNetworkConfig")["workloadVpnConfiguration"][
+                    "peeringOption"
+                ],
+            ),
+            test.check("featureFlags", attr(test, "featureFlags")),
+            test.check(
+                "qosConfiguration.qosConfigurationState",
+                attr(test, "qosConfig")["qosConfigurationState"],
+            ),
+            test.check("authorizedTransceiver", attr(test, "authorizedTransceiver")),
+        ],
+    )
     cleanup_scenario(test)
 
 
@@ -48,10 +131,11 @@ def step_create_scenario1(test, checks=None):
     test.cmd(
         "az networkfabric fabric create --resource-group {rg} --location {location} --resource-name {name} --nf-sku {nfSku} --nfc-id {nfcId}"
         " --fabric-asn {fabricAsn} --ipv4-prefix {ipv4Prefix} --ipv6-prefix {ipv6Prefix} --rack-count {rackCount} --server-count-per-rack {serverCountPerRack}"
-        " --ts-config {terminalServerConf} --managed-network-config {managedNetworkConf} --user-assigned {userAssignedIdentity}"
+        " --ts-config {terminalServerConf} --managed-network-config {managedNetworkConf}"
         " --control-plane-acls {controlPlaneAcls} --fabric-version {fabricVersion} --annotation {annotation}"
         " --ha-threshold {hardwareAlertThreshold} --storage-account-config {storageAccountConfiguration}"
         " --storage-array-count {storageArrayCount} --trusted-ip-prefixes {trustedIpPrefixes} --unique-rd-config {uniqueRdConfiguration}"
+        " --upgrade-profile {upgradeProfile} --secret-archive-settings {secretArchiveSettings} --public-connectivity {publicConnectivity}"
         " --authorized-transceiver {authorizedTransceiver} --tags {tags} --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity}",
         checks=checks,
     )
@@ -64,10 +148,11 @@ def step_create_scenario2(test, checks=None):
     test.cmd(
         "az networkfabric fabric create --resource-group {rg} --location {location} --resource-name {name} --network-fabric-sku {nfSku} --network-fabric-controller-id {nfcId}"
         " --fabric-asn {fabricAsn} --ipv4-prefix {ipv4Prefix} --ipv6-prefix {ipv6Prefix} --rack-count {rackCount} --server-count-per-rack {serverCountPerRack}"
-        " --terminal-server-configuration {terminalServerConf} --user-assigned {userAssignedIdentity} --control-plane-acls {controlPlaneAcls} --fabric-version {fabricVersion} "
+        " --terminal-server-configuration {terminalServerConf} --control-plane-acls {controlPlaneAcls} --fabric-version {fabricVersion} "
         " --annotation {annotation} --feature-flags {featureFlags} --management-network-configuration {managementNetworkConfig} --qos-configuration {qosConfig}"
         " --hardware-alert-threshold {hardwareAlertThreshold} --storage-account-configuration {storageAccountConfiguration}"
         " --storage-array-count {storageArrayCount} --trusted-ip-prefixes {trustedIpPrefixes} --unique-rd-configuration {uniqueRdConfiguration}"
+        " --archive-settings {secretArchiveSettings}"
         " --authorized-transceiver {authorizedTransceiver} --tags {tags} --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity}",
         checks=checks,
     )
@@ -78,7 +163,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric show --resource-name {name} --resource-group {rg}"
+        "az networkfabric fabric show --resource-name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -147,6 +233,13 @@ class GA_NFScenarioTest1(ScenarioTest):
                     "NETWORK_FABRIC", "management_network_configuration"
                 ),
                 "featureFlags": CONFIG.get("NETWORK_FABRIC", "feature_flags"),
+                "upgradeProfile": CONFIG.get("NETWORK_FABRIC", "upgrade_profile"),
+                "secretArchiveSettings": CONFIG.get(
+                    "NETWORK_FABRIC", "secret_archive_settings"
+                ),
+                "publicConnectivity": CONFIG.get(
+                    "NETWORK_FABRIC", "public_connectivity"
+                ),
                 "tags": CONFIG.get("NETWORK_FABRIC", "tags"),
                 "userAssignedIdentity": CONFIG.get(
                     "MANAGED_IDENTITY", "user_assigned_identity"
@@ -154,9 +247,23 @@ class GA_NFScenarioTest1(ScenarioTest):
                 "systemAssignedIdentity": CONFIG.get(
                     "MANAGED_IDENTITY", "system_assigned_identity"
                 ),
+                "expectedManagementNetworkConfiguration": CONFIG.get(
+                    "NETWORK_FABRIC", "expected_management_network_configuration"
+                ),
+                "expectedProvisioningState": CONFIG.get(
+                    "NETWORK_FABRIC", "expected_provisioning_state"
+                ),
+                "expectedTerminalServerConfiguration": CONFIG.get(
+                    "NETWORK_FABRIC", "expected_terminal_server_configuration"
+                ),
             }
         )
 
     def test_GA_nf_scenario1(self):
         """test scenario for NF CRUD operations"""
         call_scenario1(self)
+
+    def test_GA_nf_scenario2(self):
+        """Test scenario 2 with alternate command parameters."""
+        call_scenario2(self)
+        self.assertTrue(self.cassette.all_played)

@@ -18,16 +18,16 @@ class Update(AAZCommand):
     """Update the Network to Network interconnect resource
 
     :example: Update the Network To Network Interconnect
-        az networkfabric nni update --resource-group "example-rg" --fabric "example-fabric" --resource-name "example-nni" --import-route-policy "{importIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy',importIpv6RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}" --export-route-policy "{exportIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy',exportIpv6RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}" --layer2-configuration "{interfaces:['resourceId'],mtu:1500}" --option-b-layer3-configuration "{peerASN:28,vlanId:501,primaryIpv4Prefix:'172.31.0.0/31',secondaryIpv4Prefix:'172.31.0.20/31'}"
+        az networkfabric nni update --resource-group "example-rg" --fabric "example-fabric" --resource-name "example-nni" --import-route-policy "{importIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy',importIpv6RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}" --export-route-policy "{exportIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy',exportIpv6RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}" --layer2-configuration "{interfaces:['resourceId'],mtu:1500}" --option-b-layer3-configuration "{peerASN:28,vlanId:501,primaryIpv4Prefix:'172.31.0.0/31',secondaryIpv4Prefix:'172.31.0.20/31'}" --ingress-acl-id "/subscriptions/example-subscription-id/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/accessControlLists/example-ingress-acl" --egress-acl-id "/subscriptions/example-subscription-id/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/accessControlLists/example-egress-acl" --static-route-config "{bfdConfiguration:{intervalInMilliSeconds:300,multiplier:10},ipv4Routes:[{prefix:'10.0.0.1/24',nextHop:['10.0.0.1']}],ipv6Routes:[{prefix:'2fff::/64',nextHop:['3ffe::1']}]}"
 
-    :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
+    :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax
         az networkfabric nni update --layer2-configuration "??"
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/networktonetworkinterconnects/{}", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/networktonetworkinterconnects/{}", "2026-07-15-preview"],
         ]
     }
 
@@ -440,7 +440,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }
@@ -693,7 +693,30 @@ class Update(AAZCommand):
             )
 
             last_operation = cls._schema_on_200.properties.last_operation
+            last_operation.completed_at = AAZStrType(
+                serialized_name="completedAt",
+                flags={"read_only": True},
+            )
+            last_operation.correlation_id = AAZStrType(
+                serialized_name="correlationId",
+                flags={"read_only": True},
+            )
             last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
+            last_operation.operation_type = AAZStrType(
+                serialized_name="operationType",
+                flags={"read_only": True},
+            )
+            last_operation.result_blob_url = AAZStrType(
+                serialized_name="resultBlobUrl",
+                flags={"read_only": True},
+            )
+            last_operation.started_at = AAZStrType(
+                serialized_name="startedAt",
+                flags={"read_only": True},
+            )
+            last_operation.status = AAZStrType(
                 flags={"read_only": True},
             )
 

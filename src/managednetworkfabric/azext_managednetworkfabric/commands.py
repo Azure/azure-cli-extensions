@@ -12,6 +12,29 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
+    # bootstrapdevice
+    with self.command_group("networkfabric bootstrapdevice"):
+
+        from .operations.bootstrapdevice._run_ro_command import RunRoCommand
+
+        self.command_table["networkfabric bootstrapdevice run-ro-command"] = (
+            RunRoCommand(loader=self)
+        )
+
+        from .operations.bootstrapdevice._run_rw_command import RunRwCommand
+
+        self.command_table["networkfabric bootstrapdevice run-rw-command"] = (
+            RunRwCommand(loader=self)
+        )
+
+        from .operations.bootstrapdevice_resync_password import (
+            ResyncPasswordCommand as BootstrapDeviceResyncPasswordCommand,
+        )
+
+        self.command_table["networkfabric bootstrapdevice resync-password"] = (
+            BootstrapDeviceResyncPasswordCommand(loader=self)
+        )
+
     # device
     with self.command_group("networkfabric device"):
 
@@ -23,6 +46,12 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
 
         self.command_table["networkfabric device resync-password"] = (
             ResyncPasswordCommand(loader=self)
+        )
+
+        from .operations.device._run_validation import RunValidation
+
+        self.command_table["networkfabric device run-validation"] = RunValidation(
+            loader=self
         )
 
     with self.command_group("networkfabric internetgateway"):
@@ -57,12 +86,10 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
             FabricRotateCertificateCommand(loader=self)
         )
 
-    with self.command_group("networkfabric bootstrapdevice"):
-
-        from .operations.bootstrapdevice_resync_password import (
-            ResyncPasswordCommand as BootstrapDeviceResyncPasswordCommand,
+        from .operations.fabric._run_validation import (
+            RunValidation as FabricRunValidation,
         )
 
-        self.command_table["networkfabric bootstrapdevice resync-password"] = (
-            BootstrapDeviceResyncPasswordCommand(loader=self)
+        self.command_table["networkfabric fabric run-validation"] = FabricRunValidation(
+            loader=self
         )

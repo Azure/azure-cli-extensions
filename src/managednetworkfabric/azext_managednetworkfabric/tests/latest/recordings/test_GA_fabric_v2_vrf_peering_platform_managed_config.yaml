@@ -1,0 +1,132 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "properties": {"platformManagedConfig": {"egressAclResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/accessControlLists/example-egress-acl", "exportRoutePolicy": {"routePolicyResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/routePolicies/example-export-policy"}, "importRoutePolicy": {"routePolicyResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/routePolicies/example-import-policy"}, "ingressAclResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/accessControlLists/example-ingress-acl", "labeledVpnConfig": {"exportRouteTargets": ["65001:100"], "importRouteTargets": ["65001:200"]}, "multihopLabeledVpnConfig": {"asbrPeerAddress": "10.0.0.2", "asbrPeerAsn": 65002, "ebgpMultihop": 2, "exportRouteTargets": ["65001:300"], "importRouteTargets": ["65001:400"], "remotePeAddress": "10.0.0.3", "remotePeAsn": 65003}, "peeringKind": "VrfToVrf", "staticRouteConfiguration": {"ipv4Routes": [{"nextHop": ["10.0.0.1"], "prefix": "10.1.0.0/24"}], "ipv6Routes": [{"nextHop": ["2001:db8::1"], "prefix": "2001:db8:1::/64"}]}, "uplinkResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/uplinks/example-uplink", "vrfToVrfConfig": {"mtu": 1500, "vlanId": 100}}}}'
+    headers:
+      CommandName:
+      - networkfabric fabric-v2 vrf peering create
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --fabric-v2-name --vrf-name --resource-name --location --platform-managed-config
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      Content-Length:
+      - '1651'
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/vrfs/vrf-test/peerings/peering-test?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/vrfs/vrf-test/peerings/peering-test","name":"peering-test","type":"Microsoft.ManagedNetworkFabric/fabrics/vrfs/peerings","location":"eastus","properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      content-type:
+      - application/json
+      cache-control:
+      - no-cache
+      date:
+      - Wed, 18 Nov 2026 12:00:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-82c7601594d2
+      content-length:
+      - '346'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"platformManagedConfig": {"egressAclResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/accessControlLists/example-egress-acl", "exportRoutePolicy": {"routePolicyResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/routePolicies/example-export-policy"}, "importRoutePolicy": {"routePolicyResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/routePolicies/example-import-policy"}, "ingressAclResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/accessControlLists/example-ingress-acl", "labeledVpnConfig": {"exportRouteTargets": ["65001:100"], "importRouteTargets": ["65001:200"]}, "multihopLabeledVpnConfig": {"asbrPeerAddress": "10.0.0.2", "asbrPeerAsn": 65002, "ebgpMultihop": 2, "exportRouteTargets": ["65001:300"], "importRouteTargets": ["65001:400"], "remotePeAddress": "10.0.0.3", "remotePeAsn": 65003}, "peeringKind": "VrfToVrf", "staticRouteConfiguration": {"ipv4Routes": [{"nextHop": ["10.0.0.1"], "prefix": "10.1.0.0/24"}], "ipv6Routes": [{"nextHop": ["2001:db8::1"], "prefix": "2001:db8:1::/64"}]}, "uplinkResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/uplinks/example-uplink", "vrfToVrfConfig": {"mtu": 1500, "vlanId": 100}}}}'
+    headers:
+      CommandName:
+      - networkfabric fabric-v2 vrf peering update
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --fabric-v2-name --vrf-name --resource-name --platform-managed-config
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      Content-Length:
+      - '1629'
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/vrfs/vrf-test/peerings/peering-test?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/vrfs/vrf-test/peerings/peering-test","name":"peering-test","type":"Microsoft.ManagedNetworkFabric/fabrics/vrfs/peerings","location":"eastus","properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      content-type:
+      - application/json
+      cache-control:
+      - no-cache
+      date:
+      - Wed, 18 Nov 2026 12:00:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-e112e363b269
+      content-length:
+      - '346'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      CommandName:
+      - networkfabric fabric-v2 vrf peering delete
+      ParameterSetName:
+      - --resource-group --fabric-v2 --vrf --resource-name
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/vrfs/vrf-test/peerings/peering-test?api-version=2026-07-15-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Wed, 18 Nov 2026 12:00:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-d1d694fa9922
+    status:
+      code: 204
+      message: No Content
+version: 1

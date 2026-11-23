@@ -18,17 +18,17 @@ class Create(AAZCommand):
     """Create NetworkMonitor resource.
 
     :example: Create a Network Monitor
-        az networkfabric networkmonitor create --resource-group "example-rg" --network-monitor-name "example-monitor" --location "eastus" --bmp-configuration station-configuration-state="Enabled" scope-resource-id="/subscriptions/1234ABCD-0A1B-1234-5678-123456ABCDEF/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric" station-name="name" station-ip="10.0.0.1" station-port="62695" station-connection-mode="Active" station-connection-properties="{keepalive-idle-time:49,probe-interval:3558,probe-count:45}" station-network="/subscriptions/1234ABCD-0A1B-1234-5678-123456ABCDEF/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/example-l3domain/internalNetworks/example-internalnetwork" monitored-networks="[/subscriptions/1234ABCD-0A1B-1234-5678-123456ABCDEF/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/example-l3domain]" export-policy="Pre-Policy" monitored-address-families="[ipv4Unicast]" --tags "{key:value}"
+        az networkfabric networkmonitor create --resource-group "example-rg" --resource-name "example-monitor" --location "eastus" --bmp-configuration "{\\"stationConfigurationState\\":\\"Enabled\\",\\"scopeResourceId\\":\\"/subscriptions/1234ABCD-0A1B-1234-5678-123456ABCDEF/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric\\",\\"stationName\\":\\"name\\",\\"stationIp\\":\\"10.0.0.1\\",\\"stationPort\\":62695,\\"stationConnectionMode\\":\\"Active\\",\\"stationConnectionProperties\\":{\\"keepaliveIdleTime\\":49,\\"probeInterval\\":3558,\\"probeCount\\":45},\\"stationNetwork\\":\\"/subscriptions/1234ABCD-0A1B-1234-5678-123456ABCDEF/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/example-l3domain/internalNetworks/example-internalnetwork\\",\\"monitoredNetworks\\":[\\"/subscriptions/1234ABCD-0A1B-1234-5678-123456ABCDEF/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/example-l3domain\\"],\\"exportPolicy\\":\\"Pre-Policy\\",\\"monitoredAddressFamilies\\":[\\"ipv4Unicast\\"]}" --tags "{key:value}" --annotation "example-annotation"
 
-    :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
+    :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax
         az networkfabric networkmonitor create --bmp-configuration "??"
         az networkfabric networkmonitor create --bmp-configuration "{exportPolicy: ??"
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkmonitors/{}", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkmonitors/{}", "2026-07-15-preview"],
         ]
     }
 
@@ -49,8 +49,8 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.network_monitor_name = AAZStrArg(
-            options=["-n", "--name", "--resource-name", "--network-monitor-name"],
+        _args_schema.resource_name = AAZStrArg(
+            options=["--resource-name"],
             help="Name of the Network Monitor.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -274,7 +274,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkMonitorName", self.ctx.args.network_monitor_name,
+                    "networkMonitorName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -292,7 +292,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }
@@ -498,7 +498,30 @@ class Create(AAZCommand):
             )
 
             last_operation = cls._schema_on_200_201.properties.last_operation
+            last_operation.completed_at = AAZStrType(
+                serialized_name="completedAt",
+                flags={"read_only": True},
+            )
+            last_operation.correlation_id = AAZStrType(
+                serialized_name="correlationId",
+                flags={"read_only": True},
+            )
             last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
+            last_operation.operation_type = AAZStrType(
+                serialized_name="operationType",
+                flags={"read_only": True},
+            )
+            last_operation.result_blob_url = AAZStrType(
+                serialized_name="resultBlobUrl",
+                flags={"read_only": True},
+            )
+            last_operation.started_at = AAZStrType(
+                serialized_name="startedAt",
+                flags={"read_only": True},
+            )
+            last_operation.status = AAZStrType(
                 flags={"read_only": True},
             )
 

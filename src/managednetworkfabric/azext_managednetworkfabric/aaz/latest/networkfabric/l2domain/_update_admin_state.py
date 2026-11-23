@@ -17,14 +17,17 @@ from azure.cli.core.aaz import *
 class UpdateAdminState(AAZCommand):
     """Enables isolation domain across the fabric or on specified racks.
 
-    :example: Update admin state of L2 Isolation Domain
-        az networkfabric l2domain update-admin-state --resource-group "example-rg" --resource-name "example-l2domain" --state "Enable"
+    :example: Updates the Administrative state of the L2 Isolation Domain
+        az networkfabric l2domain update-admin-state --resource-group "example-rg" --resource-name "example-l2domain" --state "Enable" --force "True"
+
+    :example: Updates the Administrative state of the L2 Isolation Domain with resource ids parameter
+        az networkfabric l2domain update-admin-state --resource-group "example-rg" --resource-name "example-l2domain" --resource-ids "[/Subscriptions/example-subscription-id/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/example-l2domain-1]" --state "Enable"
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l2isolationdomains/{}/updateadministrativestate", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l2isolationdomains/{}/updateadministrativestate", "2026-07-15-preview"],
         ]
     }
 
@@ -61,6 +64,12 @@ class UpdateAdminState(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
+        _args_schema.force = AAZStrArg(
+            options=["-f", "--force"],
+            arg_group="Body",
+            help="Force update of administrative state on the resources. Default value is false.",
+            enum={"False": "False", "True": "True"},
+        )
         _args_schema.resource_ids = AAZListArg(
             options=["--resource-ids"],
             arg_group="Body",
@@ -158,7 +167,7 @@ class UpdateAdminState(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }
@@ -183,6 +192,7 @@ class UpdateAdminState(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("force", AAZStrType, ".force")
             _builder.set_prop("resourceIds", AAZListType, ".resource_ids")
             _builder.set_prop("state", AAZStrType, ".state")
 

@@ -2,6 +2,10 @@
 Release History
 ===============
 
+2.5.1
+++++++
+Ship read-only guest probe scripts that report whether a VM has a MANA or Mellanox accelerated-networking device and whether its operating system has the MANA network driver. They are groundwork for MANA migration diagnostics and are not run by any command yet, so command behavior, parameters, and output are unchanged.
+
 2.5.0
 ++++++
 Prepare MANA migration diagnostics by adding five networking properties to reset-nic telemetry. Unmeasured networking and guest-health values are explicitly reported as unknown. NIC reset behavior and command output are unchanged; this does not add MANA driver recovery or accelerated-networking fallback.

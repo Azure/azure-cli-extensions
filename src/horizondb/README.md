@@ -186,6 +186,15 @@ az horizondb cluster pool firewall-rule create --resource-group example-resource
 - `az horizondb cluster pool update`: Update a pool.
 - `az horizondb cluster pool wait`: Wait for a pool to satisfy a condition.
 
+### HorizonDB Pool Maintenance
+
+*Commands:*
+
+- `az horizondb cluster pool maintenance-event list`: Show the system-managed maintenance policy for a pool.
+
+Maintenance updates currently use a system-managed maintenance window. This command
+returns an informational message without querying maintenance events.
+
 ### HorizonDB Pool Firewall Rules
 
 *Commands:*

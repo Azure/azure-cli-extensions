@@ -12,6 +12,7 @@ Network Monitor create test scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario(test):
@@ -27,29 +28,21 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_create_scenario1(test, checks=[])
-    cleanup_scenario(test)
-
-
-def call_scenario2(test):
-    """Testcase: scenario1"""
-    setup_scenario(test)
-    step_create_scenario2(test, checks=[])
+    step_create_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("bmpConfiguration", attr(test, "bmpConfiguration")),
+            test.check(
+                "administrativeState", attr(test, "expectedAdministrativeState")
+            ),
+        ],
+    )
     cleanup_scenario(test)
 
 
 def step_create_scenario1(test, checks=None):
-    """Network Monitor create operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
-        "az networkfabric networkmonitor create --resource-group {rg} --location {location} --network-monitor-name {name}"
-        " --bmp-configuration {bmpConfiguration} --annotation {annotation}",
-        checks=checks,
-    )
-
-
-def step_create_scenario2(test, checks=None):
     """Network Monitor create operation"""
     if checks is None:
         checks = []
@@ -72,6 +65,12 @@ class GA_NetworkMonitorCreateScenarioTest1(ScenarioTest):
                 "rg": CONFIG.get("NETWORK_MONITOR", "resource_group"),
                 "location": CONFIG.get("NETWORK_MONITOR", "location"),
                 "bmpConfiguration": CONFIG.get("NETWORK_MONITOR", "bmp_configuration"),
+                "expectedAdministrativeState": CONFIG.get(
+                    "NETWORK_MONITOR", "expected_administrative_state"
+                ),
+                "expectedProvisioningState": CONFIG.get(
+                    "NETWORK_MONITOR", "expected_provisioning_state"
+                ),
             }
         )
 

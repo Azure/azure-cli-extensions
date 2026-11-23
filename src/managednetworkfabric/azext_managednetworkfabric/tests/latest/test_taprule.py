@@ -12,6 +12,7 @@ Network Tap Rule tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -37,11 +38,51 @@ def cleanup_scenario2(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario1(test)
-    step_create_scenario1(test, checks=[])
-    step_show(test, checks=[])
+    step_create_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("configurationType", attr(test, "configurationType")),
+            test.check(
+                "matchConfigurations", attr(test, "expectedMatchConfigurations")
+            ),
+            test.check(
+                "pollingIntervalInSeconds", int(attr(test, "pollingIntervalInSeconds"))
+            ),
+        ],
+    )
+    step_show(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("configurationType", attr(test, "configurationType")),
+            test.check(
+                "matchConfigurations", attr(test, "expectedMatchConfigurations")
+            ),
+            test.check(
+                "pollingIntervalInSeconds", int(attr(test, "pollingIntervalInSeconds"))
+            ),
+        ],
+    )
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
-    step_update_scenario1(test, checks=[])
+    step_update_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("configurationType", attr(test, "configurationType")),
+            test.check(
+                "matchConfigurations",
+                attr(test, "expectedMatchConfigurationsUpdateScenario1"),
+            ),
+            test.check(
+                "pollingIntervalInSeconds", int(attr(test, "pollingIntervalInSeconds"))
+            ),
+        ],
+    )
     step_delete(test, checks=[])
     cleanup_scenario1(test)
 
@@ -49,8 +90,35 @@ def call_scenario1(test):
 def call_scenario2(test):
     """Testcase: scenario2"""
     setup_scenario2(test)
-    step_create_scenario2(test, checks=[])
-    step_update_scenario2(test, checks=[])
+    step_create_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("configurationType", attr(test, "configurationType")),
+            test.check(
+                "matchConfigurations", attr(test, "expectedMatchConfigurations")
+            ),
+            test.check(
+                "pollingIntervalInSeconds", int(attr(test, "pollingIntervalInSeconds"))
+            ),
+        ],
+    )
+    step_update_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("configurationType", attr(test, "configurationType")),
+            test.check(
+                "matchConfigurations",
+                attr(test, "expectedMatchConfigurationsUpdateScenario1"),
+            ),
+            test.check(
+                "pollingIntervalInSeconds", int(attr(test, "pollingIntervalInSeconds"))
+            ),
+        ],
+    )
     cleanup_scenario2(test)
 
 
@@ -59,9 +127,12 @@ def step_create_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric taprule create --resource-group {rg} --location {location} --resource-name {name} --configuration-type {configurationType} --dynamic-match-configurations {dynamicMatchConfigurations}"
-        " --global-network-tap-rule-actions {globalNetworkTapRuleActions} --match-configurations {matchConfigurations} --polling-interval-in-seconds {pollingIntervalInSeconds} --tap-rules-url {tapRulesUrl}"
-        " --identity-selector {identitySelector} --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity} --annotation {annotation} ",
+        "az networkfabric taprule create --resource-group {rg} --location {location} --resource-name {name}"
+        " --configuration-type {configurationType} --dynamic-match-configurations {dynamicMatchConfigurations}"
+        " --global-network-tap-rule-actions {globalNetworkTapRuleActions} --match-configurations {matchConfigurations}"
+        " --polling-interval-in-seconds {pollingIntervalInSeconds} --tap-rules-url {tapRulesUrl}"
+        " --identity-selector {identitySelector} --mi-user-assigned {userAssignedIdentity}"
+        " --mi-system-assigned {systemAssignedIdentity} --annotation {annotation} --is-match-config-updated {matchConfigUpdated}",
         checks=checks,
     )
 
@@ -71,9 +142,12 @@ def step_create_scenario2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric taprule create --resource-group {rg} --location {location} --resource-name {name} --configuration-type {configurationType} --dynamic-match-configs {dynamicMatchConfigurations}"
-        " --global-ntr-actions {globalNetworkTapRuleActions} --match-configurations {matchConfigurations} --polling-interval {pollingIntervalInSeconds} --tap-rules-url {tapRulesUrl}"
-        " --identity-selector {identitySelector} --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity} --annotation {annotation} ",
+        "az networkfabric taprule create --resource-group {rg} --location {location} --resource-name {name}"
+        " --configuration-type {configurationType} --dynamic-match-configs {dynamicMatchConfigurations}"
+        " --global-ntr-actions {globalNetworkTapRuleActions} --match-configurations {matchConfigurations}"
+        " --polling-interval {pollingIntervalInSeconds} --tap-rules-url {tapRulesUrl}"
+        " --identity-selector {identitySelector} --user-assigned {userAssignedIdentity}"
+        " --system-assigned {systemAssignedIdentity} --annotation {annotation} --is-mc-updated {matchConfigUpdated}",
         checks=checks,
     )
 
@@ -83,7 +157,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric taprule show --resource-name {name} --resource-group {rg}"
+        "az networkfabric taprule show --resource-name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -106,10 +181,12 @@ def step_update_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric taprule update --resource-name {deleteName} --resource-group {rg} --match-configurations {updatedMatchConfigurations}"
-        " --tap-rules-url {tapRulesUrl} --identity-selector {identitySelector} --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity}"
-        " --dynamic-match-configurations {dynamicMatchConfigurations} --annotation {annotation} --global-network-tap-rule-actions {globalNetworkTapRuleActions}"
-        " --configuration-type {configurationType}",
+        "az networkfabric taprule update --resource-name {deleteName} --resource-group {rg}"
+        " --match-configurations {updatedMatchConfigurations} --tap-rules-url {tapRulesUrl}"
+        " --identity-selector {identitySelector} --mi-user-assigned {userAssignedIdentity}"
+        " --mi-system-assigned {systemAssignedIdentity} --dynamic-match-configurations {dynamicMatchConfigurations}"
+        " --annotation {annotation} --global-network-tap-rule-actions {globalNetworkTapRuleActions}"
+        " --configuration-type {configurationType} --is-match-config-updated {matchConfigUpdated}",
         checks=checks,
     )
 
@@ -119,10 +196,12 @@ def step_update_scenario2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric taprule update --resource-name {deleteName} --resource-group {rg} --match-configurations {updatedMatchConfigurations}"
-        " --tap-rules-url {tapRulesUrl} --identity-selector {identitySelector} --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity}"
-        " --dynamic-match-configs {dynamicMatchConfigurations} --annotation {annotation} --global-ntr-actions {globalNetworkTapRuleActions}"
-        " --configuration-type {configurationType}",
+        "az networkfabric taprule update --resource-name {deleteName} --resource-group {rg}"
+        " --match-configurations {updatedMatchConfigurations} --tap-rules-url {tapRulesUrl}"
+        " --identity-selector {identitySelector} --user-assigned {userAssignedIdentity}"
+        " --system-assigned {systemAssignedIdentity} --dynamic-match-configs {dynamicMatchConfigurations}"
+        " --annotation {annotation} --global-ntr-actions {globalNetworkTapRuleActions}"
+        " --configuration-type {configurationType} --is-mc-updated {matchConfigUpdated}",
         checks=checks,
     )
 
@@ -174,9 +253,26 @@ class GA_TapRuleScenarioTest1(ScenarioTest):
                 "systemAssignedIdentity": CONFIG.get(
                     "MANAGED_IDENTITY", "system_assigned_identity"
                 ),
+                "matchConfigUpdated": CONFIG.get(
+                    "NETWORK_TAP_RULE", "match_config_updated"
+                ),
+                "expectedMatchConfigurations": CONFIG.get(
+                    "NETWORK_TAP_RULE", "expected_match_configurations"
+                ),
+                "expectedMatchConfigurationsUpdateScenario1": CONFIG.get(
+                    "NETWORK_TAP_RULE", "expected_match_configurations_update_scenario1"
+                ),
+                "expectedProvisioningState": CONFIG.get(
+                    "NETWORK_TAP_RULE", "expected_provisioning_state"
+                ),
             }
         )
 
     def test_GA_taprule_scenario1(self):
         """test scenario for Network Tap Rule CRUD operations"""
         call_scenario1(self)
+
+    def test_GA_taprule_scenario2(self):
+        """Test scenario 2 with alternate command parameters."""
+        call_scenario2(self)
+        self.assertTrue(self.cassette.all_played)
