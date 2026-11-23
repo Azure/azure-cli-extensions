@@ -19,3 +19,14 @@ This command uses PUT, not PATCH: omitted writable fields are not preserved. Sup
 values on every PUT; the service requires all four. Both commands require the Operator subscription.
 
 The commands use the public `Microsoft.EdgeOperator SystemConfiguration REST API specification <https://github.com/Azure/azure-rest-api-specs/tree/main/specification/edgeoperator/resource-manager/Microsoft.EdgeOperator/SystemConfiguration>`_.
+
+Use ``az aldo log-collection collect`` or ``az aldo log-collection collect-indirect`` to collect logs for a
+time range. Both commands wait for the job to finish and return it; with ``--no-wait``, use
+``az aldo log-collection list --from-date`` to find the job and ``az aldo log-collection wait`` to wait for it.
+Use ``az aldo log-collection show`` to retrieve a job by its GUID.
+For indirect collection, ``--save-to-path`` must be an absolute UNC path to a file share
+accessible to the backend, for example ``\\fileserver\share\logs``.
+
+The commands use the public `Microsoft.EdgeOperator LogCollections REST API specification <https://github.com/Azure/azure-rest-api-specs/tree/301e9ae1f39ceef22c00ddcb169b2635ae3e71c4/specification/edgeoperator/resource-manager/Microsoft.EdgeOperator/LogCollections>`_
+at commit ``301e9ae1f39ceef22c00ddcb169b2635ae3e71c4`` (API version ``2026-06-01-preview``).
+Log collection commands require the Operator subscription.
