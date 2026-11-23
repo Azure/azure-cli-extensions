@@ -1891,6 +1891,137 @@ class ExecutionParameterCommandTests(unittest.TestCase):
             self.assertTrue(result['path'].endswith('.html'))
 
 
+class SplitParameterSchemaTests(unittest.TestCase):
+
+    def setUp(self):
+        self.parameters = {
+            '$schema': './parameters.schema.json',
+            'inputs': {'stepInputs': {'target-1': {'name': None}}}}
+        self.schema = {
+            '$schema': 'http://json-schema.org/draft-07/schema#',
+            'type': 'object', 'properties': {
+                '$schema': {'type': 'string'},
+                'inputs': {'type': 'object', 'properties': {
+                    'stepInputs': {'type': 'object', 'properties': {
+                        'target-1': {'type': 'object', 'properties': {
+                            'name': {'type': 'string'}}}}}}}}}
+
+    def archive(self, include_schema=True):
+        members = {
+            'system-derived-parameters.schema.json': json.dumps(self.schema),
+            'system-derived-parameters.json': '{"inputs":{"stepInputs":{"derived":{}}}}',
+            'parameters.json': json.dumps(self.parameters),
+            'spec.json': '{"spec":{"workstreams":[]}}'}
+        if include_schema:
+            members['parameters.schema.json'] = json.dumps(self.schema)
+        return _make_zip(members)
+
+    def test_extracts_user_parameters_and_schema_not_derived_files(self):
+        archive = self.archive()
+        self.assertEqual(files.read_schema_json(archive), self.schema)
+        self.assertEqual(files.read_parameters_json(archive), self.parameters['inputs'])
+        for extract in (files.extract_parameter_files, files.extract_definition_files):
+            with self.subTest(extract=extract.__name__), tempfile.TemporaryDirectory() as tmp:
+                written = extract(archive, tmp)
+                expected = {'parameters.json', 'parameters.schema.json'}
+                if extract is files.extract_definition_files:
+                    expected.add('spec.json')
+                self.assertEqual({os.path.basename(path) for path in written}, expected)
+                self.assertEqual(
+                    files.read_schema_file(os.path.join(tmp, 'parameters.json'), self.parameters),
+                    self.schema)
+
+    def test_missing_and_invalid_referenced_schema_do_not_fall_back_to_legacy(self):
+        with self.assertRaisesRegex(InvalidArgumentValueError, 'schema.*not found'):
+            files.read_schema_json(self.archive(include_schema=False))
+        archive = _make_zip({
+            'parameters.json': json.dumps(self.parameters),
+            'parameters.schema.json': 'invalid'})
+        with self.assertRaisesRegex(InvalidArgumentValueError, 'not valid JSON'):
+            files.read_schema_json(archive)
+        self.assertIsNone(files.read_schema_json(b'{}'))
+        self.assertIsNone(files.read_schema_json(_make_zip({'schema.json': 'invalid'})))
+        self.assertIsNone(files.read_schema_file('inputs.json', _CFG_INPUTS))
+        with self.assertRaisesRegex(InvalidArgumentValueError, 'missing or invalid'):
+            files.write_parameter_schema('parameters.json', self.parameters, None)
+
+    def test_legacy_parameters_are_still_classified_by_content(self):
+        archive = _make_zip({'custom.schema.json': json.dumps(_CFG_INPUTS)})
+        self.assertEqual(files.read_parameters_json(archive), _CFG_INPUTS['inputs'])
+        self.assertIsNone(files.read_schema_json(archive))
+
+    def test_schema_reference_stays_local(self):
+        for reference in (
+                '../parameters.schema.json', r'..\parameters.schema.json',
+                'https://example.invalid/parameters.schema.json',
+                'system-derived-parameters.schema.json'):
+            with self.subTest(reference=reference), self.assertRaises(InvalidArgumentValueError):
+                files.parameter_schema_name({'$schema': reference})
+
+    def test_configure_local_loads_and_copies_sibling_schema_for_both_commands(self):
+        for module in (parameter_cmds, execution_parameter_cmds):
+            with self.subTest(command=module.__name__), tempfile.TemporaryDirectory() as tmp:
+                source = os.path.join(tmp, 'parameters.json')
+                files.write_text(source, json.dumps(self.parameters))
+                files.write_parameter_schema(source, self.parameters, self.schema)
+                output = os.path.join(tmp, 'editor', 'parameters.html')
+                with mock.patch.object(module.files, 'download_bytes') as download, \
+                        mock.patch.object(module.files, 'open_in_browser'):
+                    result = module.configure(mock.Mock(), file=output, from_file=source)
+                download.assert_not_called()
+                self.assertEqual(files.read_json_file(result['inputsPath']), self.parameters)
+                self.assertEqual(files.read_json_file(result['schemaPath']), self.schema)
+                with open(result['path'], encoding='utf-8') as handle:
+                    html = handle.read()
+                self.assertIn('RunbookSchema', html)
+                self.assertIn('parameterSchema', html)
+                self.assertNotIn('__SCHEMA_VALIDATOR__', html)
+
+    def test_configure_download_uses_split_schema_for_both_commands(self):
+        for module in (parameter_cmds, execution_parameter_cmds):
+            with self.subTest(command=module.__name__), tempfile.TemporaryDirectory() as tmp:
+                with mock.patch.object(parameter_cmds, '_artifact_download_url', return_value='https://blob/a'), \
+                        mock.patch.object(execution_parameter_cmds, '_execution_resource_id', return_value='/execution'), \
+                        mock.patch.object(execution_parameter_cmds, '_download_url', return_value='https://blob/a'), \
+                        mock.patch.object(module.files, 'download_bytes', return_value=self.archive()), \
+                        mock.patch.object(module.files, 'open_in_browser'):
+                    result = module.configure(mock.Mock(), file=tmp)
+                self.assertEqual(files.read_json_file(result['schemaPath']), self.schema)
+                self.assertEqual(files.read_json_file(result['inputsPath']), self.parameters)
+
+    def test_local_split_document_uses_runbook_id_not_parameters_filename(self):
+        self.parameters['runbookId'] = (
+            '/subscriptions/s/resourceGroups/rg/providers/Microsoft.Migrate/'
+            'migrateProjects/project/runbooks/source-runbook')
+        with tempfile.TemporaryDirectory() as tmp:
+            source = files.write_text(os.path.join(tmp, 'parameters.json'), json.dumps(self.parameters))
+            files.write_parameter_schema(source, self.parameters, self.schema)
+            with mock.patch.object(parameter_cmds.files, 'open_in_browser'), \
+                    mock.patch.object(configure_renderer, 'render', wraps=configure_renderer.render) as render:
+                parameter_cmds.configure(mock.Mock(), from_file=source, file=tmp)
+            self.assertEqual(render.call_args.args[2]['runbook'], 'source-runbook')
+
+    def test_missing_local_schema_fails_before_writing_editor(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source = files.write_text(os.path.join(tmp, 'parameters.json'), json.dumps(self.parameters))
+            for module in (parameter_cmds, execution_parameter_cmds):
+                with self.subTest(command=module.__name__), self.assertRaises(InvalidArgumentValueError):
+                    module.configure(mock.Mock(), from_file=source, file=tmp)
+
+    def test_draft07_client_validation(self):
+        import shutil
+        import subprocess
+
+        node = shutil.which('node')
+        if not node:
+            self.skipTest('Node.js is required for client-side runtime tests')
+        html_text = configure_renderer.render(self.parameters, None, {}, self.schema)
+        result = subprocess.run(
+            [node, os.path.join(os.path.dirname(__file__), 'test_configure_draft07.js')],
+            input=html_text, text=True, capture_output=True, check=False, timeout=60)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+
 class ConfigureRendererTests(unittest.TestCase):
 
     def test_render_bulk_clear_preserves_non_editable_overrides(self):

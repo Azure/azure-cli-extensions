@@ -1,0 +1,139 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See License.txt in the project root.
+function parameterSchemaEditor(schema, original, entitiesFor) {
+  const own = (value, key) => value != null && Object.prototype.hasOwnProperty.call(value, key);
+  const empty = value => value === null || value === undefined || value === '';
+  const clone = value => JSON.parse(JSON.stringify(value));
+  const parts = pointer => pointer.slice(2).split('/').map(p => decodeURIComponent(p).replace(/~1/g, '/').replace(/~0/g, '~'));
+  const pointer = ref => parts(ref).reduce((value, key) => own(value, key) ? value[key] : undefined, schema);
+  let validator, error, cached;
+  const layouts = new Map();
+  function resolve(value) {
+    const seen = new Set();
+    while (value && typeof value.$ref === 'string') {
+      const ref = value.$ref;
+      if (!ref.startsWith('#/') || seen.has(ref)) throw new Error('Unresolved or recursive editor reference: ' + ref);
+      seen.add(ref);
+      value = pointer(ref);
+      if (value === undefined) throw new Error('Unresolved editor reference: ' + ref);
+    }
+    return value || {};
+  }
+  try {
+    if (!schema || !/^https?:\/\/json-schema\.org\/draft-07\/schema#?$/.test(schema.$schema || ''))
+      throw new Error('The parameters schema must declare JSON Schema Draft-07.');
+    const meta = new RunbookSchema.Validator({
+      ...RunbookSchema.metaSchema, allOf: [{ not: { type: 'object', required: ['$ref', '$id'] } }]
+    }, '7', false);
+    const checked = meta.validate(schema);
+    if (!checked.valid) throw new Error(checked.errors.map(e => e.error).join('; '));
+    validator = new RunbookSchema.Validator(schema, '7', false);
+    validator.addSchema(RunbookSchema.metaSchema);
+  } catch (e) {
+    error = 'Invalid or unsupported parameters schema: ' + e.message;
+  }
+  function layout(sid) {
+    if (layouts.has(sid)) return layouts.get(sid);
+    const inputs = resolve((schema.properties || {}).inputs);
+    const steps = resolve((inputs.properties || {}).stepInputs);
+    const candidates = [
+      ...(own(steps.properties, sid) ? [steps.properties[sid]] : []),
+      ...Object.entries(steps.patternProperties || {}).filter(([pattern]) => new RegExp(pattern).test(sid)).map(([, s]) => s)
+    ];
+    const step = resolve(candidates[0]);
+    const overrides = resolve((step.properties || {}).workloadOverrides);
+    const entity = resolve(overrides.additionalProperties);
+    const result = { step, entity, hasEntities: own(step.properties, 'workloadOverrides') };
+    layouts.set(sid, result);
+    return result;
+  }
+  function descriptor(value, required, entityScope, seen = new Set()) {
+    const rule = resolve(value);
+    if (seen.has(rule)) return { type: rule.type || 'object', required };
+    const next = new Set([...seen, rule]);
+    const source = rule['x-ms-source'] || {};
+    const result = {
+      ...rule, type: Array.isArray(rule.type) ? rule.type.find(t => t !== 'null') || 'string' : rule.type || 'string',
+      required, scope: entityScope ? 'Entity' : source.scope,
+      isEditable: rule.readOnly !== true && source.editable !== false
+    };
+    if (rule.enum) result.allowedValues = rule.enum;
+    if (rule.properties) result.properties = Object.fromEntries(Object.entries(rule.properties)
+      .map(([key, child]) => [key, descriptor(child, (rule.required || []).includes(key), entityScope, next)]));
+    if (rule.items && !Array.isArray(rule.items)) result.items = descriptor(rule.items, false, entityScope, next);
+    return result;
+  }
+  function fields(sid, eid = null) {
+    try {
+      if (error) return {};
+      const info = layout(sid), shape = eid === null ? info.step : info.entity;
+      const cacheKey = eid === null ? 'stepFields' : 'entityFields';
+      if (info[cacheKey]) return info[cacheKey];
+      const properties = { ...info.entity.properties, ...info.step.properties };
+      delete properties.workloadOverrides;
+      info[cacheKey] = Object.fromEntries(Object.entries(properties).map(([key, value]) =>
+        [key, descriptor(value, (shape.required || []).includes(key), info.hasEntities)]));
+      return info[cacheKey];
+    } catch (e) {
+      error = 'Could not render parameters schema: ' + e.message;
+      return {};
+    }
+  }
+  function effectiveDocument(stepInputs) {
+    const document = clone(original);
+    document.inputs = { ...document.inputs, stepInputs: clone(stepInputs) };
+    Object.entries(document.inputs.stepInputs).forEach(([sid, step]) => {
+      const info = layout(sid), known = fields(sid);
+      // Service null/empty placeholders are unset; workload values inherit step defaults.
+      const values = data => Object.fromEntries(Object.entries(data || {})
+        .filter(([key, value]) => key !== 'workloadOverrides' && !(own(known, key) && empty(value))));
+      const defaults = values(step);
+      if (info.hasEntities) {
+        const overrides = step.workloadOverrides || {};
+        const ids = new Set([...entitiesFor(sid).map(e => e.id), ...Object.keys(overrides)]);
+        defaults.workloadOverrides = Object.fromEntries([...ids].map(id =>
+          [id, { ...values(step), ...values(overrides[id]) }]));
+      }
+      document.inputs.stepInputs[sid] = defaults;
+    });
+    // The SDK must see JSON own-properties, not Object.prototype members.
+    return JSON.parse(JSON.stringify(document), (_, value) =>
+      value && typeof value === 'object' && !Array.isArray(value) ? Object.assign(Object.create(null), value) : value);
+  }
+  function issues(stepInputs) {
+    const stamp = JSON.stringify(stepInputs);
+    if (cached && cached.stamp === stamp) return cached.issues;
+    const first = Object.keys(stepInputs)[0];
+    let result;
+    try {
+      if (error) throw new Error(error);
+      const checked = validator.validate(effectiveDocument(stepInputs));
+      result = checked.errors.filter(e => {
+        const location = e.keyword === 'if' ? e.keywordLocation.slice(0, -3) : e.keywordLocation;
+        const aggregate = ['allOf', 'anyOf', 'oneOf', 'if', '$ref', 'properties',
+          'patternProperties', 'additionalProperties', 'false'].includes(e.keyword);
+        return !checked.errors.some(child => child !== e &&
+          (child.keywordLocation.startsWith(location + '/') ||
+            (aggregate && child.instanceLocation.startsWith(e.instanceLocation + '/'))));
+      }).map(e => {
+        const path = parts(e.instanceLocation);
+        const sid = path[0] === 'inputs' && path[1] === 'stepInputs' && own(stepInputs, path[2]) ? path[2] : first;
+        const eid = path[3] === 'workloadOverrides' ? path[4] || null : null;
+        let field = path[eid === null ? 3 : 5];
+        if (!field && e.keyword === 'required') {
+          field = Object.keys(fields(sid)).find(key => e.error.endsWith(`"${key}".`));
+        }
+        return {
+          sid, eid, f: own(fields(sid), field) ? field : null,
+          name: eid === null ? null : (entitiesFor(sid).find(entity => entity.id === eid) || {}).name || eid,
+          msg: `${e.instanceLocation}: ${e.error}`, condition: true
+        };
+      });
+    } catch (e) {
+      result = [{ sid: first, eid: null, f: null, name: null, msg: e.message, condition: true }];
+    }
+    cached = { stamp, issues: result };
+    return result;
+  }
+  return { fields, issues };
+}

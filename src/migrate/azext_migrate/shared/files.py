@@ -42,7 +42,10 @@ _SAS_URL_KEYS = (
 # can only be distinguished by name (content classification is not enough).
 # Both the legacy and post-rename (inputs -> parameters) names are excluded.
 _DERIVED_INPUTS_NAMES = (
-    'system-derived-inputs.json', 'system-derived-parameters.json')
+    'system-derived-inputs.json', 'system-derived-parameters.json',
+    'system-derived-inputs.schema.json', 'system-derived-parameters.schema.json')
+
+_PARAM_EXTRA_NAMES = ('parameters.schema.json', 'schema.json')
 
 # Suffix identifying the execution status document (``executionStatus.json``)
 # fetched via a per-execution SAS download (GenerateDownloadUrl on the
@@ -121,6 +124,19 @@ def _looks_like_parameters(parsed):
         or 'schema' in parsed)
 
 
+def parameter_schema_name(parameters_doc):
+    """Return a split parameters document's local schema filename, if any."""
+    reference = parameters_doc.get('$schema') if isinstance(parameters_doc, dict) else None
+    if not isinstance(reference, str) or not reference.lower().endswith('.schema.json'):
+        return None
+    name = reference[2:] if reference.startswith('./') else reference
+    if any(char in name for char in '/\\:?#') or name.lower() in _DERIVED_INPUTS_NAMES:
+        raise InvalidArgumentValueError(
+            'The parameters $schema must reference a local schema filename '
+            'in the same directory.')
+    return name
+
+
 # Top-level keys that positively identify an execution status document.
 _STATUS_KEYS = ('executionStatus', 'workstreams', 'steps', 'state', 'status')
 
@@ -143,17 +159,19 @@ def _classify_archive(zip_bytes):
     """Sort the GenerateDownloadUrl archive members by role.
 
     Returns ``{'definition': (name, bytes) | None,
-    'parameters': (name, bytes) | None, 'docs': [(name, bytes), ...]}``.
+    'parameters': (name, bytes) | None, 'schema': (name, bytes) | None,
+    'docs': [(name, bytes), ...]}``.
 
     The archive ships the definition (``spec``), the user parameters
     (``inputs``), the ``system-derived-inputs.json`` computed inputs,
     and a documentation markdown. ``system-derived-inputs.json`` shares the
     parameters shape and is distinguished only by name, so it is skipped
-    here; every other member is classified by content. This is the single
-    source of truth for the archive layout.
+    here along with its schema. User schemas are paired by the parameters
+    document's local $schema reference, or the legacy schema filename.
+    This is the single source of truth for the archive layout.
     """
     definition = parameters = None
-    docs = []
+    docs, schemas = [], {}
     with zipfile.ZipFile(io.BytesIO(zip_bytes)) as archive:
         _guard_archive(archive.infolist())
         for info in archive.infolist():
@@ -164,6 +182,8 @@ def _classify_archive(zip_bytes):
             if lower in _DERIVED_INPUTS_NAMES:
                 continue
             data = archive.read(info)
+            if lower in _PARAM_EXTRA_NAMES or lower.endswith('.schema.json'):
+                schemas[lower] = (name, data)
             if lower.endswith('.md'):
                 docs.append((name, data))
                 continue
@@ -173,12 +193,20 @@ def _classify_archive(zip_bytes):
                 parsed = json.loads(data.decode('utf-8'))
             except ValueError:
                 continue
-            if definition is None and _looks_like_spec(parsed):
-                definition = (name, data)
-            elif parameters is None and _looks_like_parameters(parsed):
-                parameters = (name, data)
+            if _looks_like_spec(parsed):
+                schemas.pop(lower, None)
+                if definition is None:
+                    definition = (name, data)
+            elif _looks_like_parameters(parsed):
+                schemas.pop(lower, None)
+                if parameters is None:
+                    parameters = (name, data)
+    schema_name = parameter_schema_name(json.loads(parameters[1])) if parameters else None
+    schema = schemas.get(schema_name.lower()) if schema_name else next(
+        (schemas[name] for name in _PARAM_EXTRA_NAMES if name in schemas), None)
     return {
-        'definition': definition, 'parameters': parameters, 'docs': docs}
+        'definition': definition, 'parameters': parameters,
+        'schema': schema, 'docs': docs}
 
 
 def read_spec_json(zip_bytes):
@@ -235,27 +263,48 @@ def describe_archive(zip_bytes):
 
 
 def read_schema_json(zip_bytes):
-    """Return the parsed standalone ``schema.json`` from the archive, or None.
-
-    When the input schema is shipped as its own file (rather than embedded in
-    ``inputs.json``), configure/validation read it here. A standalone schema
-    document is keyed by step type and matches neither the definition nor the
-    parameters content classifiers, so it is located by name.
-    """
+    """Read the referenced Draft-07 schema or legacy standalone schema."""
     if not _is_zip(zip_bytes):
         return None
-    with zipfile.ZipFile(io.BytesIO(zip_bytes)) as archive:
-        _guard_archive(archive.infolist())
-        for info in archive.infolist():
-            if info.is_dir():
-                continue
-            name = os.path.basename(info.filename.replace('\\', '/')).lower()
-            if name == 'schema.json':
-                try:
-                    return json.loads(archive.read(info).decode('utf-8'))
-                except ValueError:
-                    return None
+    classified = _classify_archive(zip_bytes)
+    found = classified['schema']
+    if found:
+        try:
+            return json.loads(found[1].decode('utf-8'))
+        except ValueError as ex:
+            if found[0].lower() == 'schema.json':
+                return None
+            raise InvalidArgumentValueError(
+                'The parameters schema is not valid JSON: {}'.format(found[0])) from ex
+    parameters = classified['parameters']
+    if parameters and parameter_schema_name(json.loads(parameters[1])):
+        raise InvalidArgumentValueError(
+            'The referenced parameters schema was not found in the archive.')
     return None
+
+
+def read_schema_file(parameters_path, parameters_doc):
+    """Load a local parameters document's sibling schema without network I/O."""
+    name = parameter_schema_name(parameters_doc)
+    if not name:
+        return None
+    path = os.path.join(os.path.dirname(os.path.abspath(parameters_path)), name)
+    try:
+        return read_json_file(path)
+    except (OSError, ValueError) as ex:
+        raise InvalidArgumentValueError(
+            'Could not read the referenced parameters schema: {}'.format(path)) from ex
+
+
+def write_parameter_schema(parameters_path, parameters_doc, schema_doc):
+    """Keep the editor's editable parameters and their schema together."""
+    name = parameter_schema_name(parameters_doc)
+    if not name:
+        return None
+    if not isinstance(schema_doc, dict):
+        raise InvalidArgumentValueError('The referenced parameters schema is missing or invalid.')
+    return write_text(os.path.join(
+        os.path.dirname(os.path.abspath(parameters_path)), name), json.dumps(schema_doc, indent=2))
 
 
 def extract_parameters_file(zip_bytes):
@@ -455,6 +504,8 @@ def extract_definition_files(zip_bytes, destination):
         selected.insert(0, classified['definition'])
     if classified['parameters']:
         selected.append(classified['parameters'])
+    if classified['schema'] and classified['schema'][0].lower() != 'schema.json':
+        selected.append(classified['schema'])
     written = []
     for name, data in selected:
         target = os.path.join(destination, os.path.basename(name))
@@ -464,16 +515,11 @@ def extract_definition_files(zip_bytes, destination):
     return written
 
 
-# Parameter-side files shipped alongside ``inputs.json`` (schema is moving to
-# its own file; captured by name for forward-compatibility).
-_PARAM_EXTRA_NAMES = ('schema.json',)
-
-
 def extract_parameter_files(zip_bytes, destination):
     """Write the runbook parameters file(s) to ``destination``.
 
-    Writes the user parameters (``inputs.json``) and, when the schema is
-    shipped as its own file, ``schema.json`` (needed for validation). The
+    Writes the user parameters and their referenced Draft-07 schema, or
+    the legacy standalone ``schema.json``. The
     definition, docs and the redundant ``system-derived-inputs.json`` are
     skipped. A raw (non-ZIP) blob is written as ``inputs.json``. Member names
     are flattened to their base name (zip-slip is designed out). Returns the
@@ -487,17 +533,10 @@ def extract_parameter_files(zip_bytes, destination):
             handle.write(zip_bytes)
         return [target]
     selected = []
-    parameters = _classify_archive(zip_bytes)['parameters']
-    if parameters:
-        selected.append(parameters)
-    with zipfile.ZipFile(io.BytesIO(zip_bytes)) as archive:
-        _guard_archive(archive.infolist())
-        for info in archive.infolist():
-            if info.is_dir():
-                continue
-            name = os.path.basename(info.filename.replace('\\', '/'))
-            if name.lower() in _PARAM_EXTRA_NAMES:
-                selected.append((name, archive.read(info)))
+    classified = _classify_archive(zip_bytes)
+    for role in ('parameters', 'schema'):
+        if classified[role]:
+            selected.append(classified[role])
     written = []
     seen = set()
     for name, data in selected:

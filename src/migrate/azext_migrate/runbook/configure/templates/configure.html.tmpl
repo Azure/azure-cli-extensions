@@ -422,6 +422,7 @@
 </div>
 
 <script nonce="__CSP_NONCE__">
+__SCHEMA_VALIDATOR__
 // ---- Data injected by `az migrate runbook parameter configure` -------------
 // The CLI substitutes the runbook's real inputs.json (schema + stepInputs +
 // envelope ids) and spec.json (entity list per step) at generation time.
@@ -476,6 +477,8 @@ function stepLabel(sid) {
 
 // Snapshot of what was downloaded, to flag changed (dirty) fields + reset.
 const ORIGINAL = JSON.parse(JSON.stringify(DOC.stepInputs));
+const SCHEMA_EDITOR = Object.prototype.hasOwnProperty.call(BOOT, 'parameterSchema')
+  ? parameterSchemaEditor(BOOT.parameterSchema, BOOT.inputsRoot, entitiesFor) : null;
 
 // ---- helpers --------------------------------------------------------------
 const stepType = sid => sid.replace(/-\d+$/, '');
@@ -483,8 +486,13 @@ const PREPARED_SCHEMAS = new Map(), ISSUE_CACHE = new Map();
 const isObject = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 const has = (o, k) => !!(o && Object.prototype.hasOwnProperty.call(o, k));
 function preparedSchema(sid) {
-  const type = stepType(sid);
+  const type = SCHEMA_EDITOR ? sid : stepType(sid);
   if (PREPARED_SCHEMAS.has(type)) return PREPARED_SCHEMAS.get(type);
+  if (SCHEMA_EDITOR) {
+    const result = { fields: SCHEMA_EDITOR.fields(sid), conditions: [], error: null };
+    PREPARED_SCHEMAS.set(type, result);
+    return result;
+  }
   const raw = DOC.schema[type] || {};
   const entries = Object.entries(raw);
   const fieldEntries = entries.filter(([k, v]) => k !== 'allOf' && isObject(v) &&
@@ -610,6 +618,7 @@ function inputState(sid, eid = null) {
   return { required, excluded };
 }
 function contextRules(sid, eid = null) {
+  if (SCHEMA_EDITOR) return SCHEMA_EDITOR.fields(sid, eid);
   const state = inputState(sid, eid);
   return Object.fromEntries(Object.entries(rulesFor(sid)).filter(([f]) => !state.excluded.has(f))
     .map(([f, r]) => [f, { ...r, required: !!r.required || state.required.has(f) }]));
@@ -650,6 +659,7 @@ function summarise(v, rule) {
   return short(fmt(v), 90);
 }
 function stepIssues(sid) {
+  if (SCHEMA_EDITOR) return SCHEMA_EDITOR.issues(DOC.stepInputs).filter(issue => issue.sid === sid);
   const stamp = JSON.stringify(DOC.stepInputs[sid]);
   const cached = ISSUE_CACHE.get(sid);
   if (cached && cached.stamp === stamp) return cached.issues;
@@ -1146,6 +1156,9 @@ function coerce(raw, rule) {
   if (typeof raw === 'string') raw = raw.trim();
   if (raw === '' || raw === '__inh__') return null;
   if (rule.type === 'boolean') return raw === 'true';
+  if (SCHEMA_EDITOR && (rule.type === 'integer' || rule.type === 'number')) {
+    const number = Number(raw); return Number.isFinite(number) ? number : raw;
+  }
   if (rule.type === 'integer') { const n = parseInt(raw, 10); return Number.isNaN(n) ? raw : n; }
   if (isComplex(rule)) { try { return JSON.parse(raw); } catch (e) { return raw; } }
   return raw;
@@ -1217,7 +1230,7 @@ function refreshValidation() {
   const errorFor = (f, eid) => issues.filter(i => i.f === f && i.eid === eid).map(i => i.msg).join('; ');
   const kind = stepIsEntity(sid) ? 'D' : 'A';
   Object.entries(contextRules(sid)).forEach(([f, rule]) =>
-    mark(`${kind}|${sid}|${f}`, fieldError(rule, DOC.stepInputs[sid][f])));
+    mark(`${kind}|${sid}|${f}`, SCHEMA_EDITOR ? errorFor(f, null) : fieldError(rule, DOC.stepInputs[sid][f])));
   entityFields(sid).forEach(f => {
     // right pane shows the selected entity's inputs
     const ov = hasOverride(sid, selEntity, f), err = errorFor(f, selEntity);

@@ -443,8 +443,8 @@ helps['migrate runbook parameter download'] = """
     type: command
     short-summary: Download the runbook's parameters files.
     long-summary: >
-        Downloads the parameters file (inputs.json) and, when the validation
-        schema is shipped separately, schema.json, into a directory.
+        Downloads the parameters file and its separate schema, when present,
+        into a directory. Supports parameters.schema.json and legacy schema.json.
     examples:
         - name: Download the parameters files to the current directory.
           text: |
@@ -475,9 +475,10 @@ helps['migrate runbook parameter configure'] = """
     short-summary: Generate an offline HTML editor for the parameters file.
     long-summary: >
         Downloads the runbook's inputs and renders a self-contained HTML page
-        for editing them, with fields and validation driven by the schema in
-        the parameters file. The page cannot call Azure; it writes
-        inputs.json locally and shows the parameter upload command to run.
+        for editing them. Legacy embedded schemas retain their existing flow;
+        separate Draft-07 schemas use offline SDK validation. With --from-file,
+        a referenced schema is loaded from the same directory. The page cannot
+        call Azure; save the edited JSON and use the parameter upload command.
     examples:
         - name: Open the parameters editor for a runbook.
           text: |
@@ -500,8 +501,8 @@ helps['migrate runbook execution parameter download'] = """
     type: command
     short-summary: Download an execution's parameters files.
     long-summary: >
-        Downloads the parameters file (inputs.json) and, when the validation
-        schema is shipped separately, schema.json, into a directory.
+        Downloads the parameters file and its separate schema, when present,
+        into a directory. Supports parameters.schema.json and legacy schema.json.
     examples:
         - name: Download the execution parameters files.
           text: |
@@ -528,9 +529,10 @@ helps['migrate runbook execution parameter configure'] = """
     short-summary: Generate an offline HTML editor for an execution's parameters.
     long-summary: >
         Downloads the execution's inputs and renders a self-contained HTML
-        page for editing them, with fields and validation driven by the
-        schema in the parameters file. The page cannot call Azure; it writes
-        inputs.json locally and shows the parameter upload command to run.
+        page for editing them. Legacy embedded schemas retain their existing flow;
+        separate Draft-07 schemas use offline SDK validation. With --from-file,
+        a referenced schema is loaded from the same directory. The page cannot
+        call Azure; save the edited JSON and use the parameter upload command.
     examples:
         - name: Open the parameters editor for an execution.
           text: |
