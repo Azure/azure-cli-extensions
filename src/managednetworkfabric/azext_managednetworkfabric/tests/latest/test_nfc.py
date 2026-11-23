@@ -12,6 +12,7 @@ NFC tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -27,7 +28,28 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario1(test)
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("nfcSku", attr(test, "nfcSku")),
+            test.check("ipv4AddressSpace", attr(test, "ipv4AddressSpace")),
+            test.check("ipv6AddressSpace", attr(test, "expectedIpv6AddressSpace")),
+            test.check(
+                "isWorkloadManagementNetworkEnabled",
+                attr(test, "isWorkloadManagementNetworkEnabled"),
+            ),
+            test.check(
+                "infrastructureExpressRouteConnections",
+                attr(test, "expectedInfrastructureExpressRouteConnections"),
+            ),
+            test.check(
+                "workloadExpressRouteConnections",
+                attr(test, "expectedWorkloadExpressRouteConnections"),
+            ),
+        ],
+    )
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
     step_delete(test, checks=[])
@@ -39,7 +61,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric controller show --resource-name {name} --resource-group {rg}"
+        "az networkfabric controller show --resource-name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -93,6 +116,20 @@ class GA_NFCScenarioTest1(ScenarioTest):
                     "NETWORK_FABRIC_CONTROLLER", "delete_nfc_name"
                 ),
                 "nfcSku": CONFIG.get("NETWORK_FABRIC_CONTROLLER", "nfc_sku"),
+                "expectedInfrastructureExpressRouteConnections": CONFIG.get(
+                    "NETWORK_FABRIC_CONTROLLER",
+                    "expected_infrastructure_express_route_connections",
+                ),
+                "expectedIpv6AddressSpace": CONFIG.get(
+                    "NETWORK_FABRIC_CONTROLLER", "expected_ipv6_address_space"
+                ),
+                "expectedProvisioningState": CONFIG.get(
+                    "NETWORK_FABRIC_CONTROLLER", "expected_provisioning_state"
+                ),
+                "expectedWorkloadExpressRouteConnections": CONFIG.get(
+                    "NETWORK_FABRIC_CONTROLLER",
+                    "expected_workload_express_route_connections",
+                ),
             }
         )
 

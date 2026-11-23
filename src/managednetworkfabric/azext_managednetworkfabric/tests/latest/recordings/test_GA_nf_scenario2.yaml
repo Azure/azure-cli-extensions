@@ -1,0 +1,384 @@
+interactions:
+- request:
+    body: '{"identity": {"userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1": {}}, "type": "SystemAssigned,UserAssigned"}, "location": "eastus2euap", "properties": {"annotation": "test-annotation", "authorizedTransceiver": {"key": "exampleKey", "vendor": "vendorX"}, "controlPlaneAcls": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourcegroupname/providers/Microsoft.ManagedNetworkFabric/accessControlLists/example-acl"], "fabricASN": 65046, "fabricVersion": "1.9.0", "featureFlags": [{"featureFlagName": "flag-a", "featureFlagValue": "flag-value-a"}, {"featureFlagName": "flag-b", "featureFlagValue": "flag-value-b"}], "hardwareAlertThreshold": 74, "ipv4Prefix": "10.18.0.0/19", "ipv6Prefix": "fda0:d59c:da12::/59", "managementNetworkConfiguration": {"infrastructureVpnConfiguration": {"peeringOption": "OptionA"}, "workloadVpnConfiguration": {"peeringOption": "OptionB"}}, "networkFabricControllerId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/microsoft.managednetworkfabric/networkfabriccontrollers/nfcfab3-5-1", "networkFabricSku": "abcd1234", "qosConfiguration": {"qosConfigurationState": "Enabled"}, "rackCount": 2, "secretArchiveSettings": {"associatedIdentity": {"identityType": "SystemAssignedIdentity"}, "vaultUri": "https://fabric-vault.vault.azure.net/"}, "serverCountPerRack": 4, "storageAccountConfiguration": {"storageAccountId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.Storage/storageAccounts/nfStorage", "storageAccountIdentity": {"identityType": "UserAssignedIdentity", "userAssignedIdentityResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/example-managedIdentity/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/my-id"}}, "storageArrayCount": 1, "terminalServerConfiguration": {"password": "fixture-password", "primaryIpv4Prefix": "20.0.1.12/30", "secondaryIpv4Prefix": "20.0.0.12/30", "serialNumber": "abcd1234", "username": "*****"}, "trustedIpPrefixes": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourcegroupname/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/example-prefix"], "uniqueRdConfiguration": {"nniDerivedUniqueRdConfigurationState": "Enabled", "uniqueRdConfigurationState": "Enabled"}}, "tags": {"tag1": "tag1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric fabric create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2626'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --location --resource-name --network-fabric-sku --network-fabric-controller-id --fabric-asn --ipv4-prefix --ipv6-prefix --rack-count --server-count-per-rack --terminal-server-configuration --control-plane-acls --fabric-version --annotation --feature-flags --management-network-configuration --qos-configuration --hardware-alert-threshold --storage-account-configuration --storage-array-count --trusted-ip-prefixes --unique-rd-configuration --archive-settings --authorized-transceiver --tags --mi-user-assigned --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nffab3-5-1?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nffab3-5-1","identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1":{}},"type":"SystemAssigned,UserAssigned"},"name":"nffab3-5-1","type":"microsoft.managednetworkfabric/networkfabrics","location":"eastus2euap","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-02-12T09:30:23.4106879Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-02-12T09:30:23.4106879Z"},"properties":{"authorizedTransceiver":{"vendor":"vendorX","key":"exampleKey"},"fabricVersion":"1.9.0","networkFabricSku":"abcd1234","networkFabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/microsoft.managednetworkfabric/networkfabriccontrollers/nfcfab3-5-1","terminalServerConfiguration":{"username":"*****","serialNumber":"abcd1234","primaryIpv4Prefix":"20.0.1.12/30","secondaryIpv4Prefix":"20.0.0.12/30"},"managementNetworkConfiguration":{"infrastructureVpnConfiguration":{"peeringOption":"OptionA","administrativeState":"Enabled"},"workloadVpnConfiguration":{"peeringOption":"OptionB","administrativeState":"Enabled"}},"provisioningState":"Accepted","configurationState":"Succeeded","rackCount":2,"serverCountPerRack":4,"ipv4Prefix":"10.18.0.0/19","ipv6Prefix":"fda0:d59c:da12::/59","fabricASN":65046,"annotation":"test-annotation","controlPlaneAcls":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourcegroupname/providers/Microsoft.ManagedNetworkFabric/accessControlLists/example-acl"],"featureFlags":[{"featureFlagName":"flag-a","featureFlagValue":"flag-value-a"},{"featureFlagName":"flag-b","featureFlagValue":"flag-value-b"}],"hardwareAlertThreshold":74,"qosConfiguration":{"qosConfigurationState":"Enabled"},"secretArchiveSettings":{"associatedIdentity":{"identityType":"SystemAssignedIdentity"},"vaultUri":"https://fabric-vault.vault.azure.net/"},"storageAccountConfiguration":{"storageAccountId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.Storage/storageAccounts/nfStorage","storageAccountIdentity":{"identityType":"UserAssignedIdentity","userAssignedIdentityResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/example-managedIdentity/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/my-id"}},"storageArrayCount":1,"trustedIpPrefixes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourcegroupname/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/example-prefix"],"uniqueRdConfiguration":{"nniDerivedUniqueRdConfigurationState":"Enabled","uniqueRdConfigurationState":"Enabled"}},"tags":{"tag1":"tag1"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-1a1d5e474f2a*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638433270264107884&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '3071'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 09:30:25 GMT
+      etag:
+      - '"00000000-0000-0000-0000-436f0de26556"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-e449ab89e60f
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 707E386FB40E4475A20D5A0E8327F97F Ref B: MAA201060515035 Ref C: 2024-02-12T09:30:22Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric fabric create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --resource-name --network-fabric-sku --network-fabric-controller-id --fabric-asn --ipv4-prefix --ipv6-prefix --rack-count --server-count-per-rack --terminal-server-configuration --control-plane-acls --fabric-version --annotation --feature-flags --management-network-configuration --qos-configuration --hardware-alert-threshold --storage-account-configuration --storage-array-count --trusted-ip-prefixes --unique-rd-configuration --archive-settings --authorized-transceiver --tags --mi-user-assigned --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-1a1d5e474f2a*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638433270264107884&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-1a1d5e474f2a*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-1a1d5e474f2a*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nffab3-5-1","status":"Updating","startTime":"2024-02-12T09:30:25.5978914Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '580'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 09:30:27 GMT
+      etag:
+      - '"00000000-0000-0000-0000-3ccdfe22bbc9"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 3623081DFB7B4C79B9327332CACE258C Ref B: MAA201060516029 Ref C: 2024-02-12T09:30:26Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric fabric create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --resource-name --network-fabric-sku --network-fabric-controller-id --fabric-asn --ipv4-prefix --ipv6-prefix --rack-count --server-count-per-rack --terminal-server-configuration --control-plane-acls --fabric-version --annotation --feature-flags --management-network-configuration --qos-configuration --hardware-alert-threshold --storage-account-configuration --storage-array-count --trusted-ip-prefixes --unique-rd-configuration --archive-settings --authorized-transceiver --tags --mi-user-assigned --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-1a1d5e474f2a*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638433270264107884&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-1a1d5e474f2a*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-1a1d5e474f2a*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nffab3-5-1","status":"Updating","startTime":"2024-02-12T09:30:25.5978914Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '580'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 09:30:59 GMT
+      etag:
+      - '"00000000-0000-0000-0000-3ccdfe22bbc9"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 69E89BD83C104C10BC05D21AFC9ECF66 Ref B: MAA201060516051 Ref C: 2024-02-12T09:30:58Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric fabric create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --resource-name --network-fabric-sku --network-fabric-controller-id --fabric-asn --ipv4-prefix --ipv6-prefix --rack-count --server-count-per-rack --terminal-server-configuration --control-plane-acls --fabric-version --annotation --feature-flags --management-network-configuration --qos-configuration --hardware-alert-threshold --storage-account-configuration --storage-array-count --trusted-ip-prefixes --unique-rd-configuration --archive-settings --authorized-transceiver --tags --mi-user-assigned --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-1a1d5e474f2a*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638433270264107884&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-1a1d5e474f2a*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-1a1d5e474f2a*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nffab3-5-1","status":"Updating","startTime":"2024-02-12T09:30:25.5978914Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '580'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 09:31:31 GMT
+      etag:
+      - '"00000000-0000-0000-0000-3ccdfe22bbc9"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: F80AD3E715AC4349B72A8E1E3C96D2DC Ref B: MAA201060514053 Ref C: 2024-02-12T09:31:30Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric fabric create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --resource-name --network-fabric-sku --network-fabric-controller-id --fabric-asn --ipv4-prefix --ipv6-prefix --rack-count --server-count-per-rack --terminal-server-configuration --control-plane-acls --fabric-version --annotation --feature-flags --management-network-configuration --qos-configuration --hardware-alert-threshold --storage-account-configuration --storage-array-count --trusted-ip-prefixes --unique-rd-configuration --archive-settings --authorized-transceiver --tags --mi-user-assigned --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-1a1d5e474f2a*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638433270264107884&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-1a1d5e474f2a*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-1a1d5e474f2a*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nffab3-5-1","status":"Updating","startTime":"2024-02-12T09:30:25.5978914Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '580'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 09:32:02 GMT
+      etag:
+      - '"00000000-0000-0000-0000-3ccdfe22bbc9"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 20656973CA3946A4A45B60981D07BD76 Ref B: MAA201060516009 Ref C: 2024-02-12T09:32:02Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric fabric create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --resource-name --network-fabric-sku --network-fabric-controller-id --fabric-asn --ipv4-prefix --ipv6-prefix --rack-count --server-count-per-rack --terminal-server-configuration --control-plane-acls --fabric-version --annotation --feature-flags --management-network-configuration --qos-configuration --hardware-alert-threshold --storage-account-configuration --storage-array-count --trusted-ip-prefixes --unique-rd-configuration --archive-settings --authorized-transceiver --tags --mi-user-assigned --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-1a1d5e474f2a*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638433270264107884&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-1a1d5e474f2a*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-1a1d5e474f2a*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nffab3-5-1","status":"Updating","startTime":"2024-02-12T09:30:25.5978914Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '580'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 09:32:35 GMT
+      etag:
+      - '"00000000-0000-0000-0000-3ccdfe22bbc9"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: EE72E5C5A5F848EDB8075C98C0846880 Ref B: MAA201060514033 Ref C: 2024-02-12T09:32:34Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric fabric create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --resource-name --network-fabric-sku --network-fabric-controller-id --fabric-asn --ipv4-prefix --ipv6-prefix --rack-count --server-count-per-rack --terminal-server-configuration --control-plane-acls --fabric-version --annotation --feature-flags --management-network-configuration --qos-configuration --hardware-alert-threshold --storage-account-configuration --storage-array-count --trusted-ip-prefixes --unique-rd-configuration --archive-settings --authorized-transceiver --tags --mi-user-assigned --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-1a1d5e474f2a*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638433270264107884&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-1a1d5e474f2a*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-1a1d5e474f2a*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nffab3-5-1","status":"Succeeded","startTime":"2024-02-12T09:30:25.5978914Z","endTime":"2024-02-12T09:32:52.9708508Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '640'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 09:33:05 GMT
+      etag:
+      - '"00000000-0000-0000-0000-5b53de0aa9e5"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: AEB116DB7DFD4208A8ACB3E84BFF3BE0 Ref B: MAA201060516021 Ref C: 2024-02-12T09:33:05Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric fabric create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --resource-name --network-fabric-sku --network-fabric-controller-id --fabric-asn --ipv4-prefix --ipv6-prefix --rack-count --server-count-per-rack --terminal-server-configuration --control-plane-acls --fabric-version --annotation --feature-flags --management-network-configuration --qos-configuration --hardware-alert-threshold --storage-account-configuration --storage-array-count --trusted-ip-prefixes --unique-rd-configuration --archive-settings --authorized-transceiver --tags --mi-user-assigned --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nffab3-5-1?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nffab3-5-1","identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1":{}},"type":"SystemAssigned,UserAssigned"},"name":"nffab3-5-1","type":"microsoft.managednetworkfabric/networkfabrics","location":"eastus2euap","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-02-12T09:30:23.4106879Z","lastModifiedBy":"00000000-0000-0000-0000-35edb3c9ef36","lastModifiedByType":"Application","lastModifiedAt":"2024-02-12T09:32:54.0890478Z"},"properties":{"authorizedTransceiver":{"vendor":"vendorX","key":"exampleKey"},"racks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkRacks/nffab3-5-1-aggrack","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkRacks/nffab3-5-1-comprack1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkRacks/nffab3-5-1-comprack2"],"fabricVersion":"1.9.0","networkFabricSku":"abcd1234","networkFabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/microsoft.managednetworkfabric/networkfabriccontrollers/nfcfab3-5-1","terminalServerConfiguration":{"username":"*****","serialNumber":"abcd1234","primaryIpv4Prefix":"20.0.1.12/30","secondaryIpv4Prefix":"20.0.0.12/30"},"managementNetworkConfiguration":{"infrastructureVpnConfiguration":{"administrativeState":"Enabled","peeringOption":"OptionA"},"workloadVpnConfiguration":{"administrativeState":"Enabled","peeringOption":"OptionB","optionBProperties":{"importRouteTargets":["65046:10050","65046:10050"],"exportRouteTargets":["65046:10050","65046:10050"],"routeTargets":{"importIpv4RouteTargets":["65046:10050"],"importIpv6RouteTargets":["65046:10050"],"exportIpv4RouteTargets":["65046:10050"],"exportIpv6RouteTargets":["65046:10050"]}}}},"provisioningState":"Succeeded","configurationState":"Succeeded","rackCount":2,"serverCountPerRack":4,"ipv4Prefix":"10.18.0.0/19","ipv6Prefix":"fda0:d59c:da12::/59","fabricASN":65046,"annotation":"test-annotation","controlPlaneAcls":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourcegroupname/providers/Microsoft.ManagedNetworkFabric/accessControlLists/example-acl"],"featureFlags":[{"featureFlagName":"flag-a","featureFlagValue":"flag-value-a"},{"featureFlagName":"flag-b","featureFlagValue":"flag-value-b"}],"hardwareAlertThreshold":74,"qosConfiguration":{"qosConfigurationState":"Enabled"},"secretArchiveSettings":{"associatedIdentity":{"identityType":"SystemAssignedIdentity"},"vaultUri":"https://fabric-vault.vault.azure.net/"},"storageAccountConfiguration":{"storageAccountId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.Storage/storageAccounts/nfStorage","storageAccountIdentity":{"identityType":"UserAssignedIdentity","userAssignedIdentityResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/example-managedIdentity/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/my-id"}},"storageArrayCount":1,"trustedIpPrefixes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourcegroupname/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/example-prefix"],"uniqueRdConfiguration":{"nniDerivedUniqueRdConfigurationState":"Enabled","uniqueRdConfigurationState":"Enabled"}},"tags":{"tag1":"tag1"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3894'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 09:33:08 GMT
+      etag:
+      - '"00000000-0000-0000-0000-8e692bccf7d6"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 9B8D25FB50C149409CA32D009524E83A Ref B: MAA201060514051 Ref C: 2024-02-12T09:33:06Z'
+    status:
+      code: 200
+      message: OK
+version: 1

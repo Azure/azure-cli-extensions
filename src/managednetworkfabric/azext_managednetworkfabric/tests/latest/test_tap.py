@@ -12,6 +12,7 @@ Network Tap tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario(test):
@@ -27,13 +28,41 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_create_scenario1(test, checks=[])
-    step_show(test, checks=[])
+    step_create_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("networkPacketBrokerId", attr(test, "npbId")),
+            test.check("pollingType", attr(test, "pollingType")),
+            test.check("destinations", attr(test, "destinations")),
+        ],
+    )
+    step_show(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("networkPacketBrokerId", attr(test, "npbId")),
+            test.check("pollingType", attr(test, "pollingType")),
+            test.check("destinations", attr(test, "destinations")),
+        ],
+    )
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_update_scenario1(test, checks=[])
-    step_update_admin_state_Enable(test, checks=[])
-    step_update_admin_state_Disable(test, checks=[])
+    step_update_admin_state_Enable(
+        test,
+        checks=[
+            test.check("status", attr(test, "expectedStatus")),
+        ],
+    )
+    step_update_admin_state_Disable(
+        test,
+        checks=[
+            test.check("status", attr(test, "expectedStatus")),
+        ],
+    )
     step_delete(test, checks=[])
     cleanup_scenario(test)
 
@@ -41,7 +70,16 @@ def call_scenario1(test):
 def call_scenario2(test):
     """Testcase: scenario2"""
     setup_scenario(test)
-    step_create_scenario2(test, checks=[])
+    step_create_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("networkPacketBrokerId", attr(test, "npbId")),
+            test.check("pollingType", attr(test, "pollingType")),
+            test.check("destinations", attr(test, "destinations")),
+        ],
+    )
     step_update_scenario2(test, checks=[])
     cleanup_scenario(test)
 
@@ -73,7 +111,10 @@ def step_show(test, checks=None):
     """Network Tap show operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkfabric tap show --resource-name {name} --resource-group {rg}")
+    test.cmd(
+        "az networkfabric tap show --resource-name {name} --resource-group {rg}",
+        checks=checks,
+    )
 
 
 def step_list_resource_group(test, checks=None):
@@ -117,7 +158,9 @@ def step_update_admin_state_Enable(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric tap update-admin-state --resource-group {rg} --resource-name {name} --state {stateEnable}"
+        "az networkfabric tap update-admin-state --resource-group {rg} --resource-name {name} --state "
+        "{stateEnable} -f {force}",
+        checks=checks,
     )
 
 
@@ -126,7 +169,9 @@ def step_update_admin_state_Disable(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric tap update-admin-state --resource-group {rg} --resource-name {name} --state {stateDisable} --resource-ids {resourceIds}"
+        "az networkfabric tap update-admin-state --resource-group {rg} --resource-name {name} --state "
+        "{stateDisable} --resource-ids {resourceIds} --force {force}",
+        checks=checks,
     )
 
 
@@ -158,15 +203,25 @@ class GA_TapScenarioTest1(ScenarioTest):
                 ),
                 "updatedPollingType": CONFIG.get("NETWORK_TAP", "updated_polling_type"),
                 "resourceIds": CONFIG.get("NETWORK_TAP", "resource_ids"),
+                "force": CONFIG.get("NETWORK_TAP", "force_flag"),
                 "userAssignedIdentity": CONFIG.get(
                     "MANAGED_IDENTITY", "user_assigned_identity"
                 ),
                 "systemAssignedIdentity": CONFIG.get(
                     "MANAGED_IDENTITY", "system_assigned_identity"
                 ),
+                "expectedProvisioningState": CONFIG.get(
+                    "NETWORK_TAP", "expected_provisioning_state"
+                ),
+                "expectedStatus": CONFIG.get("NETWORK_TAP", "expected_status"),
             }
         )
 
     def test_GA_tap_scenario1(self):
         """test scenario for Network Tap CRUD operations"""
         call_scenario1(self)
+
+    def test_GA_tap_scenario2(self):
+        """Test scenario 2 with alternate command parameters."""
+        call_scenario2(self)
+        self.assertTrue(self.cassette.all_played)

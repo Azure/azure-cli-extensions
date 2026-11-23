@@ -1,0 +1,94 @@
+interactions:
+- request:
+    body: '{"operationType": "CollectSupportBundle", "supportBundle": {"supportCaseNumber": "case-1234"}}'
+    headers:
+      CommandName:
+      - networkfabric device run-diagnostic
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-name --resource-group --operation-type --support-bundle
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      Content-Length:
+      - '94'
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab3-5-1-CompRack1-TOR1/runDiagnostics?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"device-support-operation","name":"device-support-operation","status":"Succeeded","properties":{"diagnosticsUrl":"https://example.blob.core.windows.net/results/device-support.zip"}}'
+    headers:
+      content-type:
+      - application/json
+      cache-control:
+      - no-cache
+      date:
+      - Wed, 18 Nov 2026 12:00:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-b0372feb8826
+      content-length:
+      - '187'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"operationType": "CollectRuntimeConfiguration", "runtimeConfiguration": {"category": "InfrastructureNetwork", "filters": [{"deviceRole": "ToR", "resourceIds": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab3-5-1-CompRack1-TOR1"]}]}}'
+    headers:
+      CommandName:
+      - networkfabric device run-diagnostic
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-name --resource-group --operation-type --runtime-config
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      Content-Length:
+      - '330'
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab3-5-1-CompRack1-TOR1/runDiagnostics?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"device-runtime-operation","name":"device-runtime-operation","status":"Succeeded","properties":{"diagnosticsUrl":"https://example.blob.core.windows.net/results/device-runtime.json"}}'
+    headers:
+      content-type:
+      - application/json
+      cache-control:
+      - no-cache
+      date:
+      - Wed, 18 Nov 2026 12:00:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-9ca4180f1539
+      content-length:
+      - '188'
+    status:
+      code: 200
+      message: OK
+version: 1

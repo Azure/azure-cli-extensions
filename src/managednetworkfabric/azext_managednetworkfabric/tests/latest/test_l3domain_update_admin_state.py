@@ -12,6 +12,7 @@ L3 Domain tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -27,8 +28,18 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario1(test)
-    step_update_admin_state_Enable(test, checks=[])
-    step_update_admin_state_Disable(test, checks=[])
+    step_update_admin_state_Enable(
+        test,
+        checks=[
+            test.check("status", attr(test, "expectedStatus")),
+        ],
+    )
+    step_update_admin_state_Disable(
+        test,
+        checks=[
+            test.check("status", attr(test, "expectedStatus")),
+        ],
+    )
     cleanup_scenario1(test)
 
 
@@ -37,7 +48,9 @@ def step_update_admin_state_Enable(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric l3domain update-admin-state --resource-group {rg} --resource-name {postName} --state {stateEnable} --resource-ids {resourceIds}"
+        "az networkfabric l3domain update-admin-state --resource-group {rg} --resource-name {postName} --state "
+        "{stateEnable} --resource-ids {resourceIds} -f {force}",
+        checks=checks,
     )
 
 
@@ -46,7 +59,9 @@ def step_update_admin_state_Disable(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric l3domain update-admin-state --resource-group {rg} --resource-name {postName} --state {stateDisable} --resource-ids {resourceIds}"
+        "az networkfabric l3domain update-admin-state --resource-group {rg} --resource-name {postName} --state "
+        "{stateDisable} --resource-ids {resourceIds} --force {force}",
+        checks=checks,
     )
 
 
@@ -62,6 +77,8 @@ class GA_L3DomainEnableDisableScenarioTest1(ScenarioTest):
                 "stateEnable": CONFIG.get("L3_ISOLATION_DOMAIN", "state_enable"),
                 "stateDisable": CONFIG.get("L3_ISOLATION_DOMAIN", "state_disable"),
                 "resourceIds": CONFIG.get("L3_ISOLATION_DOMAIN", "resource_ids"),
+                "force": CONFIG.get("L3_ISOLATION_DOMAIN", "force_flag"),
+                "expectedStatus": CONFIG.get("L3_ISOLATION_DOMAIN", "expected_status"),
             }
         )
 

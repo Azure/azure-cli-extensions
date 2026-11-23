@@ -1,0 +1,294 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group --network-device-name
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-MgmtSwitch1/networkInterfaces/Ethernet1?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-MgmtSwitch1/networkInterfaces/Ethernet1","name":"Ethernet1","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"00000000-0000-0000-0000-35edb3c9ef36","createdByType":"Application","createdAt":"2024-01-25T10:25:24.9020525Z","lastModifiedBy":"00000000-0000-0000-0000-35edb3c9ef36","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T10:25:24.9020525Z"},"properties":{"physicalIdentifier":"Ethernet1","administrativeState":"Enabled","provisioningState":"Succeeded","connectedTo":"CR1-MGMT SW-Mgmt MA1","interfaceType":"Data"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '755'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 03 Feb 2024 16:36:08 GMT
+      etag:
+      - '"00000000-0000-0000-0000-bedd49e67369"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 731F5DD6283F4523B4B7EF4A05A01BB5 Ref B: MAA201060516035 Ref C: 2024-02-03T16:36:08Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --network-device-name
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-MgmtSwitch1/networkInterfaces?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-MgmtSwitch1/networkInterfaces/Ethernet10","name":"Ethernet10","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"00000000-0000-0000-0000-35edb3c9ef36","createdByType":"Application","createdAt":"2024-01-25T10:25:23.7457832Z","lastModifiedBy":"00000000-0000-0000-0000-35edb3c9ef36","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T10:25:23.7457832Z"},"properties":{"physicalIdentifier":"Ethernet10","administrativeState":"Enabled","provisioningState":"Succeeded","connectedTo":"AR-Mgmt2:MA1","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-MgmtSwitch1/networkInterfaces/Ethernet11","name":"Ethernet11","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"00000000-0000-0000-0000-35edb3c9ef36","createdByType":"Application","createdAt":"2024-01-25T10:25:23.8707885Z","lastModifiedBy":"00000000-0000-0000-0000-35edb3c9ef36","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T10:25:23.8707885Z"},"properties":{"physicalIdentifier":"Ethernet11","administrativeState":"Enabled","provisioningState":"Succeeded","connectedTo":"AR-OM2248-Mgmt-NET3","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-MgmtSwitch1/networkInterfaces/Ethernet39","name":"Ethernet39","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"00000000-0000-0000-0000-35edb3c9ef36","createdByType":"Application","createdAt":"2024-01-25T10:25:23.9957888Z","lastModifiedBy":"00000000-0000-0000-0000-35edb3c9ef36","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T10:25:23.9957888Z"},"properties":{"physicalIdentifier":"Ethernet39","administrativeState":"Enabled","provisioningState":"Succeeded","connectedTo":"AR-PURE1 CT0-ETH0","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-MgmtSwitch1/networkInterfaces/Ethernet40","name":"Ethernet40","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"00000000-0000-0000-0000-35edb3c9ef36","createdByType":"Application","createdAt":"2024-01-25T10:25:24.1051632Z","lastModifiedBy":"00000000-0000-0000-0000-35edb3c9ef36","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T10:25:24.1051632Z"},"properties":{"physicalIdentifier":"Ethernet40","administrativeState":"Enabled","provisioningState":"Succeeded","connectedTo":"AR-PURE2-CT0-ETH0","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-MgmtSwitch1/networkInterfaces/Ethernet43","name":"Ethernet43","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"00000000-0000-0000-0000-35edb3c9ef36","createdByType":"Application","createdAt":"2024-01-25T10:25:24.1832889Z","lastModifiedBy":"00000000-0000-0000-0000-35edb3c9ef36","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T10:25:24.1832889Z"},"properties":{"physicalIdentifier":"Ethernet43","administrativeState":"Enabled","provisioningState":"Succeeded","connectedTo":"AR-CE1-MA1","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-MgmtSwitch1/networkInterfaces/Ethernet44","name":"Ethernet44","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"00000000-0000-0000-0000-35edb3c9ef36","createdByType":"Application","createdAt":"2024-01-25T10:25:24.3082926Z","lastModifiedBy":"00000000-0000-0000-0000-35edb3c9ef36","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T10:25:24.3082926Z"},"properties":{"physicalIdentifier":"Ethernet44","administrativeState":"Enabled","provisioningState":"Succeeded","connectedTo":"AR-CE2-MA1","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-MgmtSwitch1/networkInterfaces/Ethernet45","name":"Ethernet45","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"00000000-0000-0000-0000-35edb3c9ef36","createdByType":"Application","createdAt":"2024-01-25T10:25:24.4020466Z","lastModifiedBy":"00000000-0000-0000-0000-35edb3c9ef36","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T10:25:24.4020466Z"},"properties":{"physicalIdentifier":"Ethernet45","administrativeState":"Enabled","provisioningState":"Succeeded","connectedTo":"AR-PDU1-ETH1","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-MgmtSwitch1/networkInterfaces/Ethernet46","name":"Ethernet46","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"00000000-0000-0000-0000-35edb3c9ef36","createdByType":"Application","createdAt":"2024-01-25T10:25:24.4958007Z","lastModifiedBy":"00000000-0000-0000-0000-35edb3c9ef36","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T10:25:24.4958007Z"},"properties":{"physicalIdentifier":"Ethernet46","administrativeState":"Enabled","provisioningState":"Succeeded","connectedTo":"AR-PDU2-ETH1","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-MgmtSwitch1/networkInterfaces/Ethernet49","name":"Ethernet49","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"00000000-0000-0000-0000-35edb3c9ef36","createdByType":"Application","createdAt":"2024-01-25T10:25:24.5895445Z","lastModifiedBy":"00000000-0000-0000-0000-35edb3c9ef36","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T10:25:24.5895445Z"},"properties":{"physicalIdentifier":"Ethernet49","administrativeState":"Enabled","provisioningState":"Succeeded","connectedTo":"AR-CE1-Port3/1 (Cassette1)","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-MgmtSwitch1/networkInterfaces/Ethernet50","name":"Ethernet50","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"00000000-0000-0000-0000-35edb3c9ef36","createdByType":"Application","createdAt":"2024-01-25T10:25:24.6989244Z","lastModifiedBy":"00000000-0000-0000-0000-35edb3c9ef36","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T10:25:24.6989244Z"},"properties":{"physicalIdentifier":"Ethernet50","administrativeState":"Enabled","provisioningState":"Succeeded","connectedTo":"AR-CE2-Port3/1 (Cassette2)","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-MgmtSwitch1/networkInterfaces/Management1","name":"Management1","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"00000000-0000-0000-0000-35edb3c9ef36","createdByType":"Application","createdAt":"2024-01-25T10:25:24.7926783Z","lastModifiedBy":"00000000-0000-0000-0000-35edb3c9ef36","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T10:25:24.7926783Z"},"properties":{"physicalIdentifier":"Management","administrativeState":"Enabled","provisioningState":"Succeeded","connectedTo":"Not-Connected","interfaceType":"Management","ipv4Address":"10.100.2.6","ipv6Address":"fda0:d59c:df06:2::6"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-MgmtSwitch1/networkInterfaces/Ethernet1","name":"Ethernet1","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"00000000-0000-0000-0000-35edb3c9ef36","createdByType":"Application","createdAt":"2024-01-25T10:25:24.9020525Z","lastModifiedBy":"00000000-0000-0000-0000-35edb3c9ef36","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T10:25:24.9020525Z"},"properties":{"physicalIdentifier":"Ethernet1","administrativeState":"Enabled","provisioningState":"Succeeded","connectedTo":"CR1-MGMT SW-Mgmt MA1","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-MgmtSwitch1/networkInterfaces/Ethernet41","name":"Ethernet41","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"00000000-0000-0000-0000-35edb3c9ef36","createdByType":"Application","createdAt":"2024-01-25T10:25:24.9958015Z","lastModifiedBy":"00000000-0000-0000-0000-35edb3c9ef36","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T10:25:24.9958015Z"},"properties":{"physicalIdentifier":"Ethernet41","administrativeState":"Enabled","provisioningState":"Succeeded","connectedTo":"AR-NPB1-Mgmt MA1","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-MgmtSwitch1/networkInterfaces/Ethernet2","name":"Ethernet2","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"00000000-0000-0000-0000-35edb3c9ef36","createdByType":"Application","createdAt":"2024-01-25T10:25:25.1051766Z","lastModifiedBy":"00000000-0000-0000-0000-35edb3c9ef36","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T10:25:25.1051766Z"},"properties":{"physicalIdentifier":"Ethernet2","administrativeState":"Enabled","provisioningState":"Succeeded","connectedTo":"CR2-MGMT SW-Mgmt MA1","interfaceType":"Data"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '10652'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 03 Feb 2024 16:36:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 7E95D64820084D7FAC7AC4AEE83C3673 Ref B: MAA201060513035 Ref C: 2024-02-03T16:36:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1": {}}, "type": "SystemAssigned,UserAssigned"}, "properties": {"additionalDescription": "This is a test interface description update", "annotation": "test-annotation"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '360'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --network-device-name --resource-name --additional-description --annotation --user-assigned --system-assigned
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-MgmtSwitch1/networkInterfaces/Ethernet1?api-version=2026-07-15-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-ffe062c7a773*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638426238257266679&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 04 Feb 2024 06:10:24 GMT
+      etag:
+      - '"00000000-0000-0000-0000-b6ae84a41a30"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-ffe062c7a773*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638426238257266679&c=REDACTED&s=REDACTED&h=REDACTED
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-279f67f59455
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 4A41228340A94456A55ADD630C2B7364 Ref B: MAA201060516037 Ref C: 2024-02-04T06:10:24Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --network-device-name --resource-name --additional-description --annotation --user-assigned --system-assigned
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-ffe062c7a773*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638426238257266679&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-ffe062c7a773*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-ffe062c7a773*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-MgmtSwitch1/networkInterfaces/Ethernet1","status":"Updating","startTime":"2024-02-04T06:10:25.4365382Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '632'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 04 Feb 2024 06:10:27 GMT
+      etag:
+      - '"00000000-0000-0000-0000-77e186157030"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: B052B2245A684CE6BB409E58FCB42AFD Ref B: MAA201060515037 Ref C: 2024-02-04T06:10:26Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --network-device-name --resource-name --additional-description --annotation --user-assigned --system-assigned
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-ffe062c7a773*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638426238257266679&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-ffe062c7a773*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-ffe062c7a773*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-MgmtSwitch1/networkInterfaces/Ethernet1","status":"Succeeded","startTime":"2024-02-04T06:10:25.4365382Z","endTime":"2024-02-04T06:10:27.8274572Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '692'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 04 Feb 2024 06:10:57 GMT
+      etag:
+      - '"00000000-0000-0000-0000-11a198932b6d"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 8D2BDCA4532349FF80126A30B3EB8878 Ref B: MAA201060513035 Ref C: 2024-02-04T06:10:57Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --network-device-name --resource-name --additional-description --annotation --user-assigned --system-assigned
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-ffe062c7a773*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638426238257266679&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-ffe062c7a773*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-ffe062c7a773*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-MgmtSwitch1/networkInterfaces/Ethernet1","status":"Succeeded","startTime":"2024-02-04T06:10:25.4365382Z","endTime":"2024-02-04T06:10:27.8274572Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '692'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 04 Feb 2024 06:10:58 GMT
+      etag:
+      - '"00000000-0000-0000-0000-11a198932b6d"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: AFF54302752D44188A92BCC50F611521 Ref B: MAA201060516053 Ref C: 2024-02-04T06:10:58Z'
+    status:
+      code: 200
+      message: OK
+version: 1

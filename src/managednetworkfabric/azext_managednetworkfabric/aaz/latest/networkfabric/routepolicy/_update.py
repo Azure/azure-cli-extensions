@@ -18,16 +18,16 @@ class Update(AAZCommand):
     """Update the Route Policy resource.
 
     :example: Update Route Policy with IP Community ids
-        az networkfabric routepolicy update --resource-group "example-rg" --resource-name "example-routepolicy" --statements "[{sequenceNumber:1234,condition:{ipCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipCommunities/example-ipCommunityName'],ipPrefixId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/example-ipPrefixName',type:Or},action:{localPreference:123,actionType:Permit,ipCommunityProperties:{add:{ipCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipCommunities/example-ipCommunityName']}}}}]"
+        az networkfabric routepolicy update --resource-group "example-rg" --resource-name "example-routepolicy" --statements "[{sequenceNumber:1234,condition:{ipCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipCommunities/example-ipCommunityName'],ipPrefixId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/example-ipPrefixName',type:Or},action:{localPreference:123,actionType:Permit,ipCommunityProperties:{add:{ipCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipCommunities/example-ipCommunityName']}}}}]" --tags "{key:value}"
 
     :example: Update Route Policy with IP Extended Community ids
         az networkfabric routepolicy update --resource-group "example-rg" --resource-name "example-routepolicy" --statements "[{sequenceNumber:1235,condition:{ipExtendedCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipExtendedCommunities/example-ipExtendedCommunityName'],type:And},action:{localPreference:1235,actionType:Deny,ipExtendedCommunityProperties:{set:{ipExtendedCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipExtendedCommunities/example-ipExtendedCommunityName']}}}}]"
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/routepolicies/{}", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/routepolicies/{}", "2026-07-15-preview"],
         ]
     }
 
@@ -325,7 +325,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }
@@ -482,7 +482,30 @@ class Update(AAZCommand):
             )
 
             last_operation = cls._schema_on_200.properties.last_operation
+            last_operation.completed_at = AAZStrType(
+                serialized_name="completedAt",
+                flags={"read_only": True},
+            )
+            last_operation.correlation_id = AAZStrType(
+                serialized_name="correlationId",
+                flags={"read_only": True},
+            )
             last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
+            last_operation.operation_type = AAZStrType(
+                serialized_name="operationType",
+                flags={"read_only": True},
+            )
+            last_operation.result_blob_url = AAZStrType(
+                serialized_name="resultBlobUrl",
+                flags={"read_only": True},
+            )
+            last_operation.started_at = AAZStrType(
+                serialized_name="startedAt",
+                flags={"read_only": True},
+            )
+            last_operation.status = AAZStrType(
                 flags={"read_only": True},
             )
 

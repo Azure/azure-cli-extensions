@@ -12,6 +12,7 @@ NF tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario(test):
@@ -27,14 +28,12 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_discard_commit_batch_scenario1(test)
-    cleanup_scenario(test)
-
-
-def call_scenario2(test):
-    """Testcase: scenario2"""
-    setup_scenario(test)
-    step_discard_commit_batch_scenario2(test)
+    step_discard_commit_batch_scenario1(
+        test,
+        checks=[
+            test.check("status", attr(test, "expectedStatus")),
+        ],
+    )
     cleanup_scenario(test)
 
 
@@ -43,16 +42,9 @@ def step_discard_commit_batch_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric discard-commit-batch --resource-name {name} --resource-group {resourceGroup} --commit-batch-id {commitBatchId}"
-    )
-
-
-def step_discard_commit_batch_scenario2(test, checks=None):
-    """nf discard commit batch operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
-        "az networkfabric fabric discard-commit-batch --network-fabric-name {name} --resource-group {resourceGroup} --commit-batch-id {commitBatchId}"
+        "az networkfabric fabric discard-commit-batch --resource-name {name} --resource-group {resourceGroup} "
+        "--commit-batch-id {commitBatchId}",
+        checks=checks,
     )
 
 
@@ -66,6 +58,7 @@ class GA_NFDiscardCommitBatchScenarioTest1(ScenarioTest):
                 "name": CONFIG.get("NETWORK_FABRIC", "name"),
                 "resourceGroup": CONFIG.get("NETWORK_FABRIC", "resource_group"),
                 "commitBatchId": CONFIG.get("NETWORK_FABRIC", "commit_nf_batch_id"),
+                "expectedStatus": CONFIG.get("NETWORK_FABRIC", "expected_status"),
             }
         )
 

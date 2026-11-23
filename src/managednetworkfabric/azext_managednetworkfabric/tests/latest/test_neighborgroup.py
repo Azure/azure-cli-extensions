@@ -12,6 +12,7 @@ Neighbor Group tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario(test):
@@ -27,20 +28,55 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario"""
     setup_scenario(test)
-    step_create_scenario1(test, checks=[])
-    step_show(test, checks=[])
+    step_create_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("destination", attr(test, "destination")),
+        ],
+    )
+    step_show(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("destination", attr(test, "destination")),
+        ],
+    )
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
-    step_update_scenario1(test, checks=[])
+    step_update_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("destination", attr(test, "expectedDestination")),
+        ],
+    )
     step_delete(test, checks=[])
     cleanup_scenario(test)
 
 
 def call_scenario2(test):
-    """Testcase: scenario"""
+    """Testcase: scenario2"""
     setup_scenario(test)
-    step_create_scenario2(test, checks=[])
-    step_update_scenario2(test, checks=[])
+    step_create_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("destination", attr(test, "destination")),
+        ],
+    )
+    step_update_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("destination", attr(test, "expectedDestination")),
+        ],
+    )
     cleanup_scenario(test)
 
 
@@ -71,7 +107,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric neighborgroup show --resource-name {name} --resource-group {rg}"
+        "az networkfabric neighborgroup show --resource-name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -139,9 +176,20 @@ class GA_NeighborGroupScenarioTest1(ScenarioTest):
                 "systemAssignedIdentity": CONFIG.get(
                     "MANAGED_IDENTITY", "system_assigned_identity"
                 ),
+                "expectedDestination": CONFIG.get(
+                    "NEIGHBOR_GROUP", "expected_destination"
+                ),
+                "expectedProvisioningState": CONFIG.get(
+                    "NEIGHBOR_GROUP", "expected_provisioning_state"
+                ),
             }
         )
 
     def test_GA_neighborgroup_scenario1(self):
         """test scenario for Neighbor Group CRUD operations"""
         call_scenario1(self)
+
+    def test_GA_neighborgroup_scenario2(self):
+        """Test scenario 2 with alternate command parameters."""
+        call_scenario2(self)
+        self.assertTrue(self.cassette.all_played)

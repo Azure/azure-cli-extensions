@@ -1,0 +1,94 @@
+interactions:
+- request:
+    body: '{"identity": {"userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedIdentity/userAssignedIdentities/fabric-v2-test": {}}, "type": "SystemAssigned,UserAssigned"}, "kind": "ControllerManaged", "location": "eastus", "properties": {"controllerManagedConfig": {"controllerKind": "AristaCloudVision", "credentialSecretRef": {"name": "fabric-secret"}, "endpoints": [{"role": "primary", "url": "https://100.71.33.2"}], "hydration": "Enabled"}, "customLocationId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ExtendedLocation/customLocations/fabric-v2-test", "description": "Fabric v2 test", "fabricSku": "fabric-sku-test", "infrastructure": {"dnsServers": ["10.0.0.10"], "networks": [{"name": "management", "purpose": "management", "useDhcp": "True", "vlanId": 100}], "ntpServers": ["10.0.0.11"], "proxyConfigs": [{"httpProxy": "http://proxy.example.com", "httpsProxy": "https://proxy.example.com", "noProxy": ["localhost"], "purpose": "platformProxy"}]}, "tenant": {"network": {"ipv4EndAddr": "10.1.0.20", "ipv4Gateway": "10.1.0.1", "ipv4Mtu": 1500, "ipv4StartAddr": "10.1.0.10", "ipv4Subnet": "10.1.0.0/24", "name": "tenant", "vlanId": 200}, "proxyConfig": {"httpProxy": "http://proxy.example.com", "httpsProxy": "https://proxy.example.com", "noProxy": ["localhost"]}}}, "tags": {"environment": "mock"}}'
+    headers:
+      CommandName:
+      - networkfabric fabric-v2 create
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --resource-name --location --kind --desc --tags --mi-system-assigned --mi-user-assigned --cmc --cl-id --fabric-sku --infra --tenant
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      Content-Length:
+      - '1449'
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test","name":"fabric-v2-test","type":"Microsoft.ManagedNetworkFabric/fabrics","location":"eastus","kind":"ControllerManaged","properties":{"description":"Fabric v2 test","provisioningState":"Succeeded","controllerManagedConfig":{"controllerKind":"AristaCloudVision","credentialSecretRef":{"name":"fabric-secret"},"endpoints":[{"role":"primary","url":"https://100.71.33.2"}],"hydration":"Enabled"},"customLocationId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ExtendedLocation/customLocations/fabric-v2-test","fabricSku":"fabric-sku-test","infrastructure":{"dnsServers":["10.0.0.10"],"networks":[{"name":"management","purpose":"management","useDhcp":"True","vlanId":100}],"ntpServers":["10.0.0.11"],"proxyConfigs":[{"httpProxy":"http://proxy.example.com","httpsProxy":"https://proxy.example.com","noProxy":["localhost"],"purpose":"platformProxy"}]},"tenant":{"network":{"ipv4EndAddr":"10.1.0.20","ipv4Gateway":"10.1.0.1","ipv4Mtu":1500,"ipv4StartAddr":"10.1.0.10","ipv4Subnet":"10.1.0.0/24","name":"tenant","vlanId":200},"proxyConfig":{"httpProxy":"http://proxy.example.com","httpsProxy":"https://proxy.example.com","noProxy":["localhost"]}}},"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedIdentity/userAssignedIdentities/fabric-v2-test":{}},"type":"SystemAssigned,UserAssigned"},"tags":{"environment":"mock"}}'
+    headers:
+      content-type:
+      - application/json
+      cache-control:
+      - no-cache
+      date:
+      - Wed, 18 Nov 2026 12:00:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-bd229c3060e1
+      content-length:
+      - '1633'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedIdentity/userAssignedIdentities/fabric-v2-test": {}}, "type": "SystemAssigned,UserAssigned"}, "properties": {"controllerManagedConfig": {"controllerKind": "AristaCloudVision", "credentialSecretRef": {"name": "fabric-secret"}, "endpoints": [{"role": "primary", "url": "https://100.71.33.2"}], "hydration": "Enabled"}, "customLocationId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ExtendedLocation/customLocations/fabric-v2-test", "description": "Updated Fabric v2 test", "infrastructure": {"dnsServers": ["10.0.0.10"], "networks": [{"name": "management", "purpose": "management", "useDhcp": "True", "vlanId": 100}], "ntpServers": ["10.0.0.11"], "proxyConfigs": [{"httpProxy": "http://proxy.example.com", "httpsProxy": "https://proxy.example.com", "noProxy": ["localhost"], "purpose": "platformProxy"}]}, "tenant": {"network": {"ipv4EndAddr": "10.1.0.20", "ipv4Gateway": "10.1.0.1", "ipv4Mtu": 1500, "ipv4StartAddr": "10.1.0.10", "ipv4Subnet": "10.1.0.0/24", "name": "tenant", "vlanId": 200}, "proxyConfig": {"httpProxy": "http://proxy.example.com", "httpsProxy": "https://proxy.example.com", "noProxy": ["localhost"]}}}, "tags": {"environment": "updated"}}'
+    headers:
+      CommandName:
+      - networkfabric fabric-v2 update
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --resource-name --desc --tags --mi-system-assigned --mi-user-assigned --cmc --cl-id --infra --tenant
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      Content-Length:
+      - '1377'
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test","name":"fabric-v2-test","type":"Microsoft.ManagedNetworkFabric/fabrics","location":"eastus","kind":"ControllerManaged","properties":{"description":"Updated Fabric v2 test","provisioningState":"Succeeded","controllerManagedConfig":{"controllerKind":"AristaCloudVision","credentialSecretRef":{"name":"fabric-secret"},"endpoints":[{"role":"primary","url":"https://100.71.33.2"}],"hydration":"Enabled"},"customLocationId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ExtendedLocation/customLocations/fabric-v2-test","fabricSku":"fabric-sku-test","infrastructure":{"dnsServers":["10.0.0.10"],"networks":[{"name":"management","purpose":"management","useDhcp":"True","vlanId":100}],"ntpServers":["10.0.0.11"],"proxyConfigs":[{"httpProxy":"http://proxy.example.com","httpsProxy":"https://proxy.example.com","noProxy":["localhost"],"purpose":"platformProxy"}]},"tenant":{"network":{"ipv4EndAddr":"10.1.0.20","ipv4Gateway":"10.1.0.1","ipv4Mtu":1500,"ipv4StartAddr":"10.1.0.10","ipv4Subnet":"10.1.0.0/24","name":"tenant","vlanId":200},"proxyConfig":{"httpProxy":"http://proxy.example.com","httpsProxy":"https://proxy.example.com","noProxy":["localhost"]}}},"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedIdentity/userAssignedIdentities/fabric-v2-test":{}},"type":"SystemAssigned,UserAssigned"},"tags":{"environment":"updated"}}'
+    headers:
+      content-type:
+      - application/json
+      cache-control:
+      - no-cache
+      date:
+      - Wed, 18 Nov 2026 12:00:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-850ed661be48
+      content-length:
+      - '1644'
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -14,6 +14,7 @@ Device tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario(test):
@@ -29,17 +30,65 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("hostName", attr(test, "expectedHostName")),
+            test.check("networkDeviceRole", attr(test, "expectedNetworkDeviceRole")),
+            test.check("networkDeviceSku", attr(test, "expectedNetworkDeviceSku")),
+            test.check("networkRackId", attr(test, "expectedNetworkRackId")),
+            test.check("serialNumber", attr(test, "expectedSerialNumber")),
+            test.check("version", attr(test, "expectedVersion")),
+            test.check(
+                "administrativeState", attr(test, "expectedAdministrativeState")
+            ),
+            test.check("configurationState", attr(test, "expectedConfigurationState")),
+        ],
+    )
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
-    step_update_scenario1(test, checks=[])
+    step_update_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("hostName", attr(test, "hostName")),
+            test.check("networkDeviceRole", attr(test, "expectedNetworkDeviceRole")),
+            test.check("networkDeviceSku", attr(test, "expectedNetworkDeviceSku")),
+            test.check("networkRackId", attr(test, "expectedNetworkRackId")),
+            test.check("serialNumber", attr(test, "serialNumber")),
+            test.check("version", attr(test, "expectedVersion")),
+            test.check(
+                "administrativeState", attr(test, "expectedAdministrativeState")
+            ),
+            test.check("configurationState", attr(test, "expectedConfigurationState")),
+        ],
+    )
     cleanup_scenario(test)
 
 
 def call_scenario2(test):
-    """Testcase: scenario1"""
+    """Testcase: scenario2"""
     setup_scenario(test)
-    step_update_scenario1(test, checks=[])
+    step_update_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("hostName", attr(test, "hostName")),
+            test.check("networkDeviceRole", attr(test, "expectedNetworkDeviceRole")),
+            test.check("networkDeviceSku", attr(test, "expectedNetworkDeviceSku")),
+            test.check("networkRackId", attr(test, "expectedNetworkRackId")),
+            test.check("serialNumber", attr(test, "serialNumber")),
+            test.check("version", attr(test, "expectedVersion")),
+            test.check(
+                "administrativeState", attr(test, "expectedAdministrativeState")
+            ),
+            test.check("configurationState", attr(test, "expectedConfigurationState")),
+        ],
+    )
     cleanup_scenario(test)
 
 
@@ -48,7 +97,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric device show --resource-name {name} --resource-group {rg}"
+        "az networkfabric device show --resource-name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -107,6 +157,29 @@ class GA_DeviceScenarioTest1(ScenarioTest):
                 "systemAssignedIdentity": CONFIG.get(
                     "MANAGED_IDENTITY", "system_assigned_identity"
                 ),
+                "expectedAdministrativeState": CONFIG.get(
+                    "NETWORK_DEVICE", "expected_administrative_state"
+                ),
+                "expectedConfigurationState": CONFIG.get(
+                    "NETWORK_DEVICE", "expected_configuration_state"
+                ),
+                "expectedHostName": CONFIG.get("NETWORK_DEVICE", "expected_host_name"),
+                "expectedNetworkDeviceRole": CONFIG.get(
+                    "NETWORK_DEVICE", "expected_network_device_role"
+                ),
+                "expectedNetworkDeviceSku": CONFIG.get(
+                    "NETWORK_DEVICE", "expected_network_device_sku"
+                ),
+                "expectedNetworkRackId": CONFIG.get(
+                    "NETWORK_DEVICE", "expected_network_rack_id"
+                ),
+                "expectedProvisioningState": CONFIG.get(
+                    "NETWORK_DEVICE", "expected_provisioning_state"
+                ),
+                "expectedSerialNumber": CONFIG.get(
+                    "NETWORK_DEVICE", "expected_serial_number"
+                ),
+                "expectedVersion": CONFIG.get("NETWORK_DEVICE", "expected_version"),
             }
         )
 
@@ -114,3 +187,9 @@ class GA_DeviceScenarioTest1(ScenarioTest):
     def test_GA_device_scenario1(self):
         """test scenario for Device CRUD operations"""
         call_scenario1(self)
+
+    @AllowLargeResponse()
+    def test_GA_device_scenario2(self):
+        """Test scenario 2 with alternate command parameters."""
+        call_scenario2(self)
+        self.assertTrue(self.cassette.all_played)

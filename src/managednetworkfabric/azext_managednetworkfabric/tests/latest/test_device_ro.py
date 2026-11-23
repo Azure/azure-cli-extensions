@@ -5,7 +5,6 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=too-few-public-methods,unnecessary-pass,unused-argument
 
-import json
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 """
@@ -15,6 +14,7 @@ Device tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario(test):
@@ -30,21 +30,21 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_ro_valid_json(test, checks=[])
+    step_ro_valid_json(test, checks=[test.check("@", attr(test, "expectedResponse"))])
     cleanup_scenario(test)
 
 
 def call_scenario2(test):
     """Testcase: scenario2"""
     setup_scenario(test)
-    step_ro_invalid_json(test, checks=[])
+    step_ro_invalid_json(test, checks=[test.check("@", attr(test, "expectedResponse"))])
     cleanup_scenario(test)
 
 
 def call_scenario3(test):
     """Testcase: scenario3"""
     setup_scenario(test)
-    step_ro_missing_keys(test, checks=[])
+    step_ro_missing_keys(test, checks=[test.check("@", attr(test, "expectedResponse"))])
     cleanup_scenario(test)
 
 
@@ -52,41 +52,19 @@ def step_ro_valid_json(test, checks=None):
     """Device run RO operation - valid JSON"""
     if checks is None:
         checks = []
-    output = test.cmd(
-        "az networkfabric device run-ro --resource-name {name} --resource-group {rg} --ro-command {command}"
-    ).get_output_in_json()
-
-    expected_object = {
-        "configurationState": CONFIG.get("NETWORK_DEVICE", "ro_config_state"),
-        "outputUrl": CONFIG.get("NETWORK_DEVICE", "ro_output_url"),
-        "deviceConfigurationPreview": {
-            "architecture": "x86_64",
-            "bootupTimestamp": 1708977169.5043042,
-            "configMacAddress": "00:00:00:00:00:00",
-        },
-    }
-
-    assert output == expected_object
+    test.cmd(
+        "az networkfabric device run-ro --resource-name {name} --resource-group {rg} --ro-command {command}",
+        checks=checks,
+    )
 
 
 def step_ro_invalid_json(test, checks=None):
     """Device run RO operation - Invalid  JSON - truncated at server"""
     if checks is None:
         checks = []
-    output = test.cmd(
-        "az networkfabric device run-ro --resource-name {name} --resource-group {rg} --ro-command {command}"
-    ).get_output_in_json()
-
-    expected_object = {
-        "configurationState": CONFIG.get("NETWORK_DEVICE", "ro_config_state"),
-        "outputUrl": CONFIG.get("NETWORK_DEVICE", "ro_output_url"),
-        "deviceConfigurationPreview": '{\n  "architecture": "x86_64",\n  "bootupTimestamp": 1708977169.5043042,\n  "configMacAddr',
-    }
-
-    assert output == expected_object
-    assert (
-        output["deviceConfigurationPreview"]
-        == expected_object["deviceConfigurationPreview"]
+    test.cmd(
+        "az networkfabric device run-ro --resource-name {name} --resource-group {rg} --ro-command {command}",
+        checks=checks,
     )
 
 
@@ -94,15 +72,10 @@ def step_ro_missing_keys(test, checks=None):
     """Device run RO operation - missing configurationState and outputUrl"""
     if checks is None:
         checks = []
-    output = test.cmd(
-        "az networkfabric device run-ro --resource-name {name} --resource-group {rg} --ro-command {command}"
-    ).get_output_in_json()
-
-    expected_object = {
-        "deviceConfigurationPreview": {},
-    }
-
-    assert output == expected_object
+    test.cmd(
+        "az networkfabric device run-ro --resource-name {name} --resource-group {rg} --ro-command {command}",
+        checks=checks,
+    )
 
 
 class GA_DeviceRoScenarioTest1(ScenarioTest):
@@ -115,6 +88,9 @@ class GA_DeviceRoScenarioTest1(ScenarioTest):
                 "name": CONFIG.get("NETWORK_DEVICE", "ro_device_name"),
                 "rg": CONFIG.get("NETWORK_DEVICE", "ro_device_rg"),
                 "command": CONFIG.get("NETWORK_DEVICE", "ro_command"),
+                "expectedResponse": CONFIG.get(
+                    "NETWORK_DEVICE", "ro_valid_json_response"
+                ),
             }
         )
 
@@ -134,6 +110,9 @@ class GA_DeviceRoScenarioTest2(ScenarioTest):
                 "name": CONFIG.get("NETWORK_DEVICE", "ro_device_name"),
                 "rg": CONFIG.get("NETWORK_DEVICE", "ro_device_rg"),
                 "command": CONFIG.get("NETWORK_DEVICE", "ro_command"),
+                "expectedResponse": CONFIG.get(
+                    "NETWORK_DEVICE", "ro_invalid_json_response"
+                ),
             }
         )
 
@@ -153,6 +132,9 @@ class GA_DeviceRoScenarioTest3(ScenarioTest):
                 "name": CONFIG.get("NETWORK_DEVICE", "ro_device_name"),
                 "rg": CONFIG.get("NETWORK_DEVICE", "ro_device_rg"),
                 "command": CONFIG.get("NETWORK_DEVICE", "ro_command"),
+                "expectedResponse": CONFIG.get(
+                    "NETWORK_DEVICE", "ro_missing_keys_response"
+                ),
             }
         )
 

@@ -12,6 +12,7 @@ NFC tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario(test):
@@ -27,21 +28,90 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_create_scenario1(test, checks=[])
+    step_create_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("nfcSku", attr(test, "nfcSku")),
+            test.check("ipv4AddressSpace", attr(test, "ipv4AddressSpace")),
+            test.check("ipv6AddressSpace", attr(test, "ipv6AddressSpace")),
+            test.check(
+                "isWorkloadManagementNetworkEnabled",
+                attr(test, "isWorkloadManagementNetworkEnabled"),
+            ),
+            test.check(
+                "infrastructureExpressRouteConnections",
+                attr(
+                    test, "expectedInfrastructureExpressRouteConnectionsCreateScenario1"
+                ),
+            ),
+            test.check(
+                "workloadExpressRouteConnections",
+                attr(test, "expectedWorkloadExpressRouteConnectionsCreateScenario1"),
+            ),
+        ],
+    )
     cleanup_scenario(test)
 
 
 def call_scenario2(test):
-    """Testcase: scenario1"""
+    """Testcase: scenario2"""
     setup_scenario(test)
-    step_create_scenario2(test, checks=[])
+    step_create_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("nfcSku", attr(test, "nfcSku")),
+            test.check("ipv4AddressSpace", attr(test, "ipv4AddressSpace")),
+            test.check("ipv6AddressSpace", attr(test, "ipv6AddressSpace")),
+            test.check(
+                "isWorkloadManagementNetworkEnabled",
+                attr(test, "isWorkloadManagementNetworkEnabled"),
+            ),
+            test.check(
+                "infrastructureExpressRouteConnections",
+                attr(
+                    test, "expectedInfrastructureExpressRouteConnectionsCreateScenario1"
+                ),
+            ),
+            test.check(
+                "workloadExpressRouteConnections",
+                attr(test, "expectedWorkloadExpressRouteConnectionsCreateScenario1"),
+            ),
+        ],
+    )
     cleanup_scenario(test)
 
 
 def call_scenario3(test):
-    """Testcase: scenario1"""
+    """Testcase: scenario3"""
     setup_scenario(test)
-    step_create_scenario3(test, checks=[])
+    step_create_scenario3(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("nfcSku", attr(test, "nfcSku")),
+            test.check("ipv4AddressSpace", attr(test, "ipv4AddressSpace")),
+            test.check("ipv6AddressSpace", attr(test, "ipv6AddressSpace")),
+            test.check(
+                "isWorkloadManagementNetworkEnabled",
+                attr(test, "isWorkloadManagementNetworkEnabled"),
+            ),
+            test.check(
+                "infrastructureExpressRouteConnections",
+                attr(
+                    test, "expectedInfrastructureExpressRouteConnectionsCreateScenario1"
+                ),
+            ),
+            test.check(
+                "workloadExpressRouteConnections",
+                attr(test, "expectedWorkloadExpressRouteConnectionsCreateScenario1"),
+            ),
+        ],
+    )
     cleanup_scenario(test)
 
 
@@ -52,8 +122,9 @@ def step_create_scenario1(test, checks=None):
     test.cmd(
         "az networkfabric controller create --resource-group {rg} --location {location} --resource-name {name} --annotation {annotation}"
         " --ipv4-address-space {ipv4AddressSpace} --ipv6-address-space {ipv6AddressSpace} --is-workload-management-network-enabled {isWorkloadManagementNetworkEnabled} --nfc-sku {nfcSku}"
-        " --infra-er-connections {infraERConnections} --workload-express-route-connections {workloadERConnections} --mrg name={managedResourceGroupName} --mrg location={managedResourceGroupLocation}"
-        " --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity}",
+        " --infra-er-connections {infraERConnections} --workload-express-route-connections {workloadERConnections} --mrg name={managedResourceGroupName} location={managedResourceGroupLocation}"
+        " --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity} --public-connectivity infrastructure-vpn-gateway-sku={infraVpnSku} tenant-vpn-gateway-sku={tenantVpnSku}"
+        " --vm-profile vm-sku-name={vmSkuName}",
         checks=checks,
     )
 
@@ -65,8 +136,9 @@ def step_create_scenario2(test, checks=None):
     test.cmd(
         "az networkfabric controller create --resource-group {rg} --location {location} --resource-name {name} --annotation {annotation}"
         " --ipv4-address-space {ipv4AddressSpace} --ipv6-address-space {ipv6AddressSpace} --is-workload-management-network-enabled {isWorkloadManagementNetworkEnabled} --nfc-sku {nfcSku}"
-        " --infrastructure-express-route-connections {infraERConnections} --workload-er-connections {workloadERConnections} --mrg name={managedResourceGroupName} --mrg location={managedResourceGroupLocation}"
-        " --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity}",
+        " --infrastructure-express-route-connections {infraERConnections} --workload-er-connections {workloadERConnections} --mrg name={managedResourceGroupName} location={managedResourceGroupLocation}"
+        " --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity} --public-connectivity infrastructure-vpn-gateway-sku={infraVpnSku} tenant-vpn-gateway-sku={tenantVpnSku}"
+        " --vm-profile vm-sku-name={vmSkuName}",
         checks=checks,
     )
 
@@ -130,9 +202,35 @@ class GA_NFCCreateScenarioTest1(ScenarioTest):
                 "systemAssignedIdentity": CONFIG.get(
                     "MANAGED_IDENTITY", "system_assigned_identity"
                 ),
+                "infraVpnSku": CONFIG.get("NETWORK_FABRIC_CONTROLLER", "infra_vpn_sku"),
+                "tenantVpnSku": CONFIG.get(
+                    "NETWORK_FABRIC_CONTROLLER", "tenant_vpn_sku"
+                ),
+                "vmSkuName": CONFIG.get("NETWORK_FABRIC_CONTROLLER", "vm_sku_name"),
+                "expectedInfrastructureExpressRouteConnectionsCreateScenario1": CONFIG.get(
+                    "NETWORK_FABRIC_CONTROLLER",
+                    "expected_infrastructure_express_route_connections_create_scenario1",
+                ),
+                "expectedProvisioningState": CONFIG.get(
+                    "NETWORK_FABRIC_CONTROLLER", "expected_provisioning_state"
+                ),
+                "expectedWorkloadExpressRouteConnectionsCreateScenario1": CONFIG.get(
+                    "NETWORK_FABRIC_CONTROLLER",
+                    "expected_workload_express_route_connections_create_scenario1",
+                ),
             }
         )
 
     def test_GA_nfc_create_scenario1(self):
         """test scenario for NFC CRUD operations"""
         call_scenario1(self)
+
+    def test_GA_nfc_create_scenario2(self):
+        """Test scenario 2 with alternate command parameters."""
+        call_scenario2(self)
+        self.assertTrue(self.cassette.all_played)
+
+    def test_GA_nfc_create_scenario3(self):
+        """Test scenario 3 with alternate command parameters."""
+        call_scenario3(self)
+        self.assertTrue(self.cassette.all_played)

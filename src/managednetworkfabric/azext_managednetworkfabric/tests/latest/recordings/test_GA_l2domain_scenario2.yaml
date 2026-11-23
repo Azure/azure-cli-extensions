@@ -1,0 +1,1805 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "properties": {"mtu": 1512, "networkFabricId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkFabrics/Lab100GFABNF-eus",
+      "vlanId": 550, "extendedVlan": "Enabled"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '271'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --resource-name --location --nf-id --vlan-id --mtu --extended-vlan
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","name":"l2infranetwork-312","type":"microsoft.managednetworkfabric/l2isolationdomains","location":"eastus","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-02-02T05:03:17.8127871Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-02-02T05:03:17.8127871Z"},"properties":{"provisioningState":"Accepted","configurationState":"Succeeded","vlanId":550,"extendedVlan":"Enabled","mtu":1512,"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkFabrics/Lab100GFABNF-eus","administrativeState":"Disabled"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-71585bbeaea8*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424469991409281&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '850'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:03:18 GMT
+      etag:
+      - '"00000000-0000-0000-0000-515da9e079aa"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-4fc2d015b154
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 5B44EA0800A041138ECD87806A928C3F Ref B: MAA201060516011 Ref C: 2024-02-02T05:03:16Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --location --nf-id --vlan-id --mtu --extended-vlan
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-71585bbeaea8*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424469991409281&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-71585bbeaea8*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-71585bbeaea8*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Accepted","startTime":"2024-02-02T05:03:18.7219058Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:03:19 GMT
+      etag:
+      - '"00000000-0000-0000-0000-0775a6e8f058"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: B4FE14D743CB40028BB24B6A8F4B35CC Ref B: MAA201060514035 Ref C: 2024-02-02T05:03:19Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --location --nf-id --vlan-id --mtu --extended-vlan
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-71585bbeaea8*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424469991409281&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-71585bbeaea8*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-71585bbeaea8*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Succeeded","startTime":"2024-02-02T05:03:18.7219058Z","endTime":"2024-02-02T05:03:21.6964312Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '677'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:03:50 GMT
+      etag:
+      - '"00000000-0000-0000-0000-6fa92df4df8f"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 098B7F7E2EA14DEA8B109438ECC8EA02 Ref B: MAA201060514031 Ref C: 2024-02-02T05:03:50Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --location --nf-id --vlan-id --mtu --extended-vlan
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","name":"l2infranetwork-312","type":"microsoft.managednetworkfabric/l2isolationdomains","location":"eastus","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-02-02T05:03:17.8127871Z","lastModifiedBy":"00000000-0000-0000-0000-35edb3c9ef36","lastModifiedByType":"Application","lastModifiedAt":"2024-02-02T05:03:22.3789921Z"},"properties":{"provisioningState":"Succeeded","configurationState":"Succeeded","vlanId":550,"extendedVlan":"Enabled","mtu":1512,"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkFabrics/Lab100GFABNF-eus","administrativeState":"Disabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '886'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:03:51 GMT
+      etag:
+      - '"00000000-0000-0000-0000-415c18e1ef6c"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: D735ABB3B1D047F4A994635C41401E2E Ref B: MAA201060514025 Ref C: 2024-02-02T05:03:51Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","name":"l2infranetwork-312","type":"microsoft.managednetworkfabric/l2isolationdomains","location":"eastus","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-02-02T05:03:17.8127871Z","lastModifiedBy":"00000000-0000-0000-0000-35edb3c9ef36","lastModifiedByType":"Application","lastModifiedAt":"2024-02-02T05:03:22.3789921Z"},"properties":{"provisioningState":"Succeeded","configurationState":"Succeeded","vlanId":550,"extendedVlan":"Enabled","mtu":1512,"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkFabrics/Lab100GFABNF-eus","administrativeState":"Disabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '886'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:03:52 GMT
+      etag:
+      - '"00000000-0000-0000-0000-415c18e1ef6c"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 4FA02AA14F08460DA764FB8A797805C9 Ref B: MAA201060516025 Ref C: 2024-02-02T05:03:52Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"mtu": 1500}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '29'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --resource-name --mtu
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","name":"l2infranetwork-312","type":"microsoft.managednetworkfabric/l2isolationdomains","location":"eastus","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-02-02T05:03:17.8127871Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-02-02T05:03:54.8701262Z"},"properties":{"configurationState":"Succeeded","vlanId":550,"extendedVlan":"Enabled","mtu":1500,"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkFabrics/Lab100GFABNF-eus","administrativeState":"Disabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '851'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:03:56 GMT
+      etag:
+      - '"00000000-0000-0000-0000-5212dad10eb3"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-52d4cfa97de4
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 68B22066B831484980FF98A829C0593D Ref B: MAA201060514031 Ref C: 2024-02-02T05:03:53Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-200","name":"l2infranetwork-200","type":"microsoft.managednetworkfabric/l2isolationdomains","location":"eastus","systemData":{"createdBy":"00000000-0000-0000-0000-97da22db25d2","createdByType":"Application","createdAt":"2024-01-30T14:18:38.9884702Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-02-02T05:03:54.8701262Z"},"properties":{"configurationState":"Succeeded","vlanId":550,"extendedVlan":"Enabled","mtu":1500,"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkFabrics/Lab100GFABNF-eus","administrativeState":"Disabled","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '898'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:03:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 00000000-0000-0000-0000-33c587154fdf
+      - 00000000-0000-0000-0000-1c9c5906a9c4
+      - 00000000-0000-0000-0000-feb85eb9b4d4
+      - 00000000-0000-0000-0000-c70c95b034fd
+      - 00000000-0000-0000-0000-3ed849ae3ad4
+      - 00000000-0000-0000-0000-92b6e1ff87ae
+      x-msedge-ref:
+      - 'Ref A: A5BFDF72D5A84BCD92AD6FE28F309B98 Ref B: MAA201060515033 Ref C: 2024-02-02T05:03:57Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/__nfcResourceGroupName__/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/nfa-tool-ts-GA-cli-l2Domain101123","name":"nfa-tool-ts-GA-cli-l2Domain101123","type":"microsoft.managednetworkfabric/l2isolationdomains","location":"eastus2euap","systemData":{"createdBy":"00000000-0000-0000-0000-1a249e0cb430","createdByType":"Application","createdAt":"2024-01-16T09:07:24.235991Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-02-02T05:03:54.8701262Z"},"properties":{"configurationState":"Succeeded","vlanId":550,"extendedVlan":"Enabled","mtu":1500,"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkFabrics/Lab100GFABNF-eus","administrativeState":"Disabled","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '913'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:04:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 00000000-0000-0000-0000-3b7f6177107b
+      - 00000000-0000-0000-0000-9954c2bf1189
+      - 00000000-0000-0000-0000-cb2e533c5cbb
+      - 00000000-0000-0000-0000-ce77b4977a4a
+      - 00000000-0000-0000-0000-4c0a1a3c2328
+      - 00000000-0000-0000-0000-351148b3556b
+      x-msedge-ref:
+      - 'Ref A: D948A128B50846E7B1430F1209947D99 Ref B: MAA201060515031 Ref C: 2024-02-02T05:03:59Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"state": "Enable"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '19'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312/updateAdministrativeState?api-version=2026-07-15-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470429336184&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:04:02 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470429492286&c=REDACTED&s=REDACTED&h=REDACTED
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-b18e7b08dc3a
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 57E784D24B904C45BDDD8A6D9416213A Ref B: MAA201060513031 Ref C: 2024-02-02T05:04:01Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470429336184&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Updating","startTime":"2024-02-02T05:04:02.4711667Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470438638136&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:04:03 GMT
+      etag:
+      - '"00000000-0000-0000-0000-80fb30511182"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470438794364&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 38B21BF25E9643758AB3A7870C1AD1B5 Ref B: MAA201060516025 Ref C: 2024-02-02T05:04:03Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470429336184&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Updating","startTime":"2024-02-02T05:04:02.4711667Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470748305491&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:04:34 GMT
+      etag:
+      - '"00000000-0000-0000-0000-80fb30511182"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470748461770&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: AC8E885CBE194615BE0E3C2BB8234A05 Ref B: MAA201060516017 Ref C: 2024-02-02T05:04:34Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470429336184&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Updating","startTime":"2024-02-02T05:04:02.4711667Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424471058121247&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:05:05 GMT
+      etag:
+      - '"00000000-0000-0000-0000-80fb30511182"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424471058277927&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: C2B931846089469DA814E9464A4B308F Ref B: MAA201060515021 Ref C: 2024-02-02T05:05:05Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470429336184&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Updating","startTime":"2024-02-02T05:04:02.4711667Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424471363985778&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:05:35 GMT
+      etag:
+      - '"00000000-0000-0000-0000-80fb30511182"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424471363985778&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: DDD4C52106374EA18063C080B4149C1C Ref B: MAA201060514053 Ref C: 2024-02-02T05:05:36Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470429336184&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Updating","startTime":"2024-02-02T05:04:02.4711667Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424471673800547&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:06:07 GMT
+      etag:
+      - '"00000000-0000-0000-0000-80fb30511182"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424471673800547&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 5B33D685584C4CD7873635F7CD1D09BF Ref B: MAA201060514023 Ref C: 2024-02-02T05:06:06Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470429336184&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Updating","startTime":"2024-02-02T05:04:02.4711667Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424471979171966&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:06:37 GMT
+      etag:
+      - '"00000000-0000-0000-0000-80fb30511182"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424471979171966&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 784BF4BF23424F67AE044FD8B15E203A Ref B: MAA201060515019 Ref C: 2024-02-02T05:06:37Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470429336184&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Updating","startTime":"2024-02-02T05:04:02.4711667Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424472288990143&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:07:08 GMT
+      etag:
+      - '"00000000-0000-0000-0000-80fb30511182"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424472289146103&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: E85191099A764BEEA4C05CA8E5C97060 Ref B: MAA201060514025 Ref C: 2024-02-02T05:07:08Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470429336184&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Updating","startTime":"2024-02-02T05:04:02.4711667Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424472598978160&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:07:39 GMT
+      etag:
+      - '"00000000-0000-0000-0000-80fb30511182"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424472599135063&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 806AF9E7667E4900B4442FA6AB37BB1A Ref B: MAA201060516017 Ref C: 2024-02-02T05:07:39Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470429336184&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Updating","startTime":"2024-02-02T05:04:02.4711667Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424472908745041&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:08:10 GMT
+      etag:
+      - '"00000000-0000-0000-0000-80fb30511182"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424472908901545&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: AEC4F5E62324423982F77E2CE624BFEA Ref B: MAA201060515033 Ref C: 2024-02-02T05:08:10Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470429336184&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Updating","startTime":"2024-02-02T05:04:02.4711667Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424473218427470&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:08:41 GMT
+      etag:
+      - '"00000000-0000-0000-0000-80fb30511182"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424473218584065&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 35031093DB934C878D080ECB6A9E606B Ref B: MAA201060513023 Ref C: 2024-02-02T05:08:41Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470429336184&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Updating","startTime":"2024-02-02T05:04:02.4711667Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424473528916744&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:09:12 GMT
+      etag:
+      - '"00000000-0000-0000-0000-80fb30511182"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424473528916744&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 0F7FB4F7420A49E09BB0EF0711FBC06E Ref B: MAA201060514017 Ref C: 2024-02-02T05:09:12Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470429336184&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Updating","startTime":"2024-02-02T05:04:02.4711667Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424473835545718&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:09:43 GMT
+      etag:
+      - '"00000000-0000-0000-0000-80fb30511182"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424473835701671&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: AF220175EC4B4693B0C8FD24D72F1DEA Ref B: MAA201060515019 Ref C: 2024-02-02T05:09:43Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470429336184&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Updating","startTime":"2024-02-02T05:04:02.4711667Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424474146075292&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:10:13 GMT
+      etag:
+      - '"00000000-0000-0000-0000-80fb30511182"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424474146231614&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 66A573B50C124559A6C16377ADC72048 Ref B: MAA201060513039 Ref C: 2024-02-02T05:10:13Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470429336184&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Updating","startTime":"2024-02-02T05:04:02.4711667Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424474455517874&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:10:44 GMT
+      etag:
+      - '"00000000-0000-0000-0000-80fb30511182"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424474455517874&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: B41DEBF3239E422188D4C0D32F834810 Ref B: MAA201060516039 Ref C: 2024-02-02T05:10:44Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470429336184&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Updating","startTime":"2024-02-02T05:04:02.4711667Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424474765591173&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:11:16 GMT
+      etag:
+      - '"00000000-0000-0000-0000-80fb30511182"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424474765747387&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: D42AB7F4F61A48CA96B86D8D4F0DFF25 Ref B: MAA201060515023 Ref C: 2024-02-02T05:11:15Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470429336184&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Updating","startTime":"2024-02-02T05:04:02.4711667Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424475074831263&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:11:46 GMT
+      etag:
+      - '"00000000-0000-0000-0000-80fb30511182"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424475074831263&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 1E227B7CFC764D76BE9B72A25E5A4517 Ref B: MAA201060513011 Ref C: 2024-02-02T05:11:46Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470429336184&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Succeeded","startTime":"2024-02-02T05:04:02.4711667Z","endTime":"2024-02-02T05:12:05.3654477Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '677'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:12:18 GMT
+      etag:
+      - '"00000000-0000-0000-0000-0ebfda57c94e"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 25F863A695FD4E42B25E2F6B6C0A48F7 Ref B: MAA201060514047 Ref C: 2024-02-02T05:12:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424470429492286&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2cc8d46691bf*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Succeeded","startTime":"2024-02-02T05:04:02.4711667Z","endTime":"2024-02-02T05:12:05.3654477Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '677'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:12:19 GMT
+      etag:
+      - '"00000000-0000-0000-0000-0ebfda57c94e"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: A061F653B8054951842B890C7F8BC8D6 Ref B: MAA201060514035 Ref C: 2024-02-02T05:12:18Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"state": "Disable"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '20'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312/updateAdministrativeState?api-version=2026-07-15-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-ab6d37ee8719*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424475413543627&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:12:21 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-ab6d37ee8719*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424475413543627&c=REDACTED&s=REDACTED&h=REDACTED
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-ba5c00e55b69
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 5AE9E68AD3E1408BB59AA8B1AEAC6AC6 Ref B: MAA201060513009 Ref C: 2024-02-02T05:12:20Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-ab6d37ee8719*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424475413543627&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-ab6d37ee8719*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-ab6d37ee8719*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Updating","startTime":"2024-02-02T05:12:20.8840737Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-ab6d37ee8719*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424475419738226&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:12:21 GMT
+      etag:
+      - '"00000000-0000-0000-0000-f4bfc8ffe51b"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-ab6d37ee8719*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424475419738226&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 42E19AE91FEF49789ECDF44928095285 Ref B: MAA201060513033 Ref C: 2024-02-02T05:12:21Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-ab6d37ee8719*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424475413543627&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-ab6d37ee8719*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-ab6d37ee8719*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Updating","startTime":"2024-02-02T05:12:20.8840737Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-ab6d37ee8719*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424475729838062&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:12:52 GMT
+      etag:
+      - '"00000000-0000-0000-0000-f4bfc8ffe51b"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-ab6d37ee8719*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424475729838062&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: BA73661683A44F2B90FD95FAC8CC68DA Ref B: MAA201060513047 Ref C: 2024-02-02T05:12:52Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-ab6d37ee8719*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424475413543627&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-ab6d37ee8719*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-ab6d37ee8719*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Succeeded","startTime":"2024-02-02T05:12:20.8840737Z","endTime":"2024-02-02T05:13:04.7754787Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '677'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:13:23 GMT
+      etag:
+      - '"00000000-0000-0000-0000-2cfa7bcd2691"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 6BC045CAAD1242AA92B27CA6A69924D9 Ref B: MAA201060514037 Ref C: 2024-02-02T05:13:23Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --state
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-ab6d37ee8719*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424475413543627&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-ab6d37ee8719*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-ab6d37ee8719*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Succeeded","startTime":"2024-02-02T05:12:20.8840737Z","endTime":"2024-02-02T05:13:04.7754787Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '677'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:13:24 GMT
+      etag:
+      - '"00000000-0000-0000-0000-2cfa7bcd2691"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 1A888840048C425AAF5627F5F5A7DD73 Ref B: MAA201060515017 Ref C: 2024-02-02T05:13:24Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-name --resource-group
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312?api-version=2026-07-15-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2e602a99b54a*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424476067747631&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:13:26 GMT
+      etag:
+      - '"00000000-0000-0000-0000-6d61e10befd3"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2e602a99b54a*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424476067903692&c=REDACTED&s=REDACTED&h=REDACTED
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-25e48fa51bd9
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-msedge-ref:
+      - 'Ref A: 395816B66866403BABF9A9C38924A7F2 Ref B: MAA201060514037 Ref C: 2024-02-02T05:13:25Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2e602a99b54a*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424476067747631&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2e602a99b54a*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2e602a99b54a*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Deleting","startTime":"2024-02-02T05:13:26.6250937Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2e602a99b54a*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424476072968354&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:13:27 GMT
+      etag:
+      - '"00000000-0000-0000-0000-92b1cdd644e7"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/00000000-0000-0000-0000-2e602a99b54a*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424476072968354&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 3FD37A7B9E434777989E28EE40138918 Ref B: MAA201060513023 Ref C: 2024-02-02T05:13:27Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2e602a99b54a*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424476067747631&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2e602a99b54a*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2e602a99b54a*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Succeeded","startTime":"2024-02-02T05:13:26.6250937Z","endTime":"2024-02-02T05:13:27.3592563Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '677'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:13:58 GMT
+      etag:
+      - '"00000000-0000-0000-0000-bb6f93d77a95"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: B3D38ECA281D417DAD9AA784F5B9E7B5 Ref B: MAA201060515049 Ref C: 2024-02-02T05:13:57Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric l2domain delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2e602a99b54a*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424476067903692&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2e602a99b54a*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2e602a99b54a*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-ed8f098a5b7d-HostedResources-3A16B1C4/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2infranetwork-312","status":"Succeeded","startTime":"2024-02-02T05:13:26.6250937Z","endTime":"2024-02-02T05:13:27.3592563Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '677'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 05:13:58 GMT
+      etag:
+      - '"00000000-0000-0000-0000-bb6f93d77a95"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: E581A00483D64D1480C2DC6FB6272D8C Ref B: MAA201060516031 Ref C: 2024-02-02T05:13:58Z'
+    status:
+      code: 200
+      message: OK
+version: 1
