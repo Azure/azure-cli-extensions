@@ -6,7 +6,7 @@
 from azure.cli.testsdk import NoneCheck, ResourceGroupPreparer, ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
-from .constants import JAPANEAST, CLUSTER_NAME_PREFIX, CLUSTER_NAME_MAX_LENGTH
+from .constants import JAPANEAST, INDIASOUTHCENTRAL, CLUSTER_NAME_PREFIX, CLUSTER_NAME_MAX_LENGTH
 
 
 class HorizonDBClusterMgmtScenarioTest(ScenarioTest):
@@ -51,3 +51,56 @@ class HorizonDBClusterMgmtScenarioTest(ScenarioTest):
 
         self.cmd('horizondb cluster delete -g {rg} -n {cluster} --yes', checks=NoneCheck())
         self.cmd('horizondb cluster list -g {rg}', checks=self.check('length(@)', 0))
+
+
+class HorizonDBClusterFailoverScenarioTest(ScenarioTest):
+
+    def setUp(self):
+        if self.in_recording and not self.is_live:
+            self.fail('Failover playback recording is missing. Restore the fixture; live recording requires approval.')
+        super().setUp()
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_horizondb_failover_', location=INDIASOUTHCENTRAL)
+    def test_horizondb_cluster_failover(self, resource_group):
+        self.kwargs.update({
+            'rg': resource_group,
+            'location': INDIASOUTHCENTRAL,
+            'cluster': self.create_random_name(CLUSTER_NAME_PREFIX, CLUSTER_NAME_MAX_LENGTH),
+            'pool': self.create_random_name('pool-', 24),
+        })
+        cluster = self.cmd(
+            'horizondb cluster create -g {rg} -n {cluster} --location {location} '
+            '--version 17 --geo-redundancy Disabled --public-access Disabled',
+        ).get_output_in_json()
+        self.kwargs['cluster_id'] = cluster['id']
+        pool = self.cmd(
+            'horizondb cluster pool create -g {rg} --cluster-name {cluster} -n {pool} '
+            '--compute-generation 1 --compute-processor Intel --v-cores 2 '
+            '--node-count 2 --high-availability-mode AnyZone',
+            checks=[
+                self.check('properties.provisioningState', 'Succeeded'),
+                self.check('properties.nodeCount', 2),
+                self.check('properties.highAvailability.mode', 'AnyZone'),
+            ],
+        ).get_output_in_json()
+        self.kwargs['pool_id'] = pool['id']
+
+        self.cmd('horizondb cluster show -g {rg} -n {cluster}', checks=[
+            self.check('properties.state', 'Ready'),
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('properties.readWritePool.designatedPoolResourceId', '{pool_id}'),
+        ])
+        self.cmd('horizondb cluster failover -g {rg} -n {cluster}', checks=[
+            self.check('id', '{cluster_id}'),
+            self.check('name', '{cluster}'),
+            self.check('properties.state', 'Ready'),
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('properties.readWritePool.designatedPoolResourceId', '{pool_id}'),
+        ])
+        self.cmd('horizondb cluster show -g {rg} -n {cluster}', checks=[
+            self.check('properties.state', 'Ready'),
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('properties.readWritePool.designatedPoolResourceId', '{pool_id}'),
+        ])
+        self.cmd('horizondb cluster delete -g {rg} -n {cluster} --yes', checks=NoneCheck())

@@ -93,6 +93,25 @@ on restore. Backup retention is not copied into the restore request.
 Only specify `--location` when the source has geo-redundancy enabled; otherwise,
 omit it to use the source location. Restore does not create a pool.
 
+## Fail over a cluster
+
+Trigger failover within the cluster's designated read-write pool:
+
+```powershell
+az horizondb cluster failover --resource-group example-resource-group --name example-cluster
+```
+
+HorizonDB selects the replacement node using the same eligibility and
+node-selection rules as automatic failover. There is no pool, target-node,
+availability-zone, or failover-mode option.
+
+The command waits for completion and returns the updated cluster. Add `--no-wait`
+to return after the service accepts the request, without waiting or returning a
+cluster. Use `az horizondb cluster show` to inspect its state afterward.
+
+The service returns `409 Conflict` if the designated pool is not eligible for
+failover or another conflicting operation is in progress.
+
 ## Customer-managed encryption keys
 
 On cluster create or restore, supply both `--primary-key-uri` and
@@ -170,6 +189,7 @@ az horizondb cluster pool firewall-rule create --resource-group example-resource
 - `az horizondb cluster create`: Create a HorizonDB cluster.
 - `az horizondb cluster restore`: Restore a HorizonDB cluster from a source cluster.
 - `az horizondb cluster delete`: Delete a HorizonDB cluster.
+- `az horizondb cluster failover`: Trigger service-selected failover in the designated read-write pool.
 - `az horizondb cluster list`: List HorizonDB clusters.
 - `az horizondb cluster show`: Show details of a HorizonDB cluster.
 - `az horizondb cluster update`: Update a HorizonDB cluster.
@@ -237,3 +257,31 @@ python -m pip install azdev
 azdev setup -r "$PWD" -e horizondb
 az horizondb cluster pool --help
 ```
+
+`test_horizondb_cluster_failover` creates a cluster with a multi-node pool and
+triggers one failover. It checks the two-node `AnyZone` pool and designated
+read-write pool before failover, then checks the returned cluster and a subsequent
+show. These operations and assertions run in both recording and playback modes;
+`--no-wait` is covered separately by mocked HTTP unit tests, not another live failover.
+
+Failover can disconnect clients. Obtain approval for a disposable subscription,
+resource group, cluster, region, compute cost, and cleanup scope before recording.
+The current test uses `indiasouthcentral`, PostgreSQL 17, Intel generation 1,
+2 vCores per node, and two nodes. Confirm regional capacity and actual failover
+eligibility with the service; configured HA alone does not establish eligibility.
+
+After local development setup, the standard commands are:
+
+```powershell
+azdev test test_horizondb_cluster_failover --discover --series --live
+$env:AZURE_TEST_RUN_LIVE = 'false'
+azdev test test_horizondb_cluster_failover --series
+```
+
+The test SDK writes
+`azext_horizondb\tests\latest\recordings\test_horizondb_cluster_failover.yaml`.
+Review it using the test SDK's sanitizers and inspect for residual sensitive data
+before committing it. If the recording is missing, playback explicitly fails
+before resource preparation rather than implicitly starting a live recording.
+The recorded failover and its assertions execute in playback without live-only
+gates. Never synthesize service responses or bypass the missing-fixture guard.
