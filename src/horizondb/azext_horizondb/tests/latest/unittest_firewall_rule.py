@@ -60,6 +60,17 @@ class FirewallRuleTests(TestCase):
                 command(command_args=dict(self.args, firewall_rule_name='office', start_ip_address=start,
                                           end_ip_address=end, no_wait=True))
 
+    def test_create_warns_about_effective_access(self):
+        name = 'horizondb cluster pool firewall-rule create'
+        command = self.loader.load_command_table(name.split())[name]
+        for end, message in [('0.0.0.0', 'from all Azure resources'),
+                             ('0.0.0.10', "from '0.0.0.0' to '0.0.0.10'")]:
+            with self.subTest(end=end), patch.object(command, 'FirewallRulesCreateOrReplace'), \
+                    self.assertLogs(level='WARNING') as logs:
+                command(command_args=dict(self.args, firewall_rule_name='office', start_ip_address='0.0.0.0',
+                                          end_ip_address=end, no_wait=True))
+                self.assertIn(message, logs.output[-1])
+
     def test_update_validates_merged_range_before_put(self):
         name = 'horizondb cluster pool firewall-rule update'
         command = self.loader.load_command_table(name.split())[name]
@@ -77,7 +88,9 @@ class FirewallRuleTests(TestCase):
                 command(command_args=args)
             put.assert_not_called()
             args['end_ip_address'] = '203.0.113.10'
-            command(command_args=args)
+            with self.assertLogs(level='WARNING') as logs:
+                command(command_args=args)
+            self.assertIn("from '203.0.113.10' to '203.0.113.10'", logs.output[-1])
             put.assert_called_once()
 
     def test_firewall_rule_name_pattern_rejects_invalid_names(self):

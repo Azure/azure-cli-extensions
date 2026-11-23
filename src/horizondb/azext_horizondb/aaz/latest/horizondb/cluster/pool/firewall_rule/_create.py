@@ -16,9 +16,9 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Create(AAZCommand):
-    """Create or replace a HorizonDB pool firewall rule.
+    """Create a HorizonDB pool firewall rule.
 
-    :example: Create or replace a firewall rule on a HorizonDB pool
+    :example: Create a firewall rule on a HorizonDB pool
         az horizondb cluster pool firewall-rule create --resource-group example-resource-group --cluster-name example-cluster --pool-name example-pool-01 --firewall-rule-name example-firewall-rule-01 --start-ip-address 10.0.0.1 --end-ip-address 10.0.0.254 --description "Allow access from the corporate network"
     """
 
