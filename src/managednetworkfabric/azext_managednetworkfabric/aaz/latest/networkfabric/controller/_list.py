@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers", "2026-01-15-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers", "2026-07-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers", "2026-07-15-preview"],
         ]
     }
 
@@ -115,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }
@@ -253,6 +253,9 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.public_connectivity = AAZObjectType(
+                serialized_name="publicConnectivity",
+            )
             properties.tenant_internet_gateway_ids = AAZListType(
                 serialized_name="tenantInternetGatewayIds",
                 flags={"read_only": True},
@@ -274,7 +277,30 @@ class List(AAZCommand):
             _ListHelper._build_schema_express_route_connection_information_read(infrastructure_express_route_connections.Element)
 
             last_operation = cls._schema_on_200.value.Element.properties.last_operation
+            last_operation.completed_at = AAZStrType(
+                serialized_name="completedAt",
+                flags={"read_only": True},
+            )
+            last_operation.correlation_id = AAZStrType(
+                serialized_name="correlationId",
+                flags={"read_only": True},
+            )
             last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
+            last_operation.operation_type = AAZStrType(
+                serialized_name="operationType",
+                flags={"read_only": True},
+            )
+            last_operation.result_blob_url = AAZStrType(
+                serialized_name="resultBlobUrl",
+                flags={"read_only": True},
+            )
+            last_operation.started_at = AAZStrType(
+                serialized_name="startedAt",
+                flags={"read_only": True},
+            )
+            last_operation.status = AAZStrType(
                 flags={"read_only": True},
             )
 
@@ -286,6 +312,32 @@ class List(AAZCommand):
             network_fabric_ids.Element = AAZStrType(
                 nullable=True,
             )
+
+            public_connectivity = cls._schema_on_200.value.Element.properties.public_connectivity
+            public_connectivity.infrastructure_vpn_gateway_sku = AAZStrType(
+                serialized_name="infrastructureVpnGatewaySku",
+                flags={"required": True},
+            )
+            public_connectivity.infrastructure_vpn_gateways = AAZListType(
+                serialized_name="infrastructureVpnGateways",
+                flags={"read_only": True},
+            )
+            public_connectivity.tenant_vpn_gateway_sku = AAZStrType(
+                serialized_name="tenantVpnGatewaySku",
+                flags={"required": True},
+            )
+            public_connectivity.tenant_vpn_gateways = AAZListType(
+                serialized_name="tenantVpnGateways",
+                flags={"read_only": True},
+            )
+
+            infrastructure_vpn_gateways = cls._schema_on_200.value.Element.properties.public_connectivity.infrastructure_vpn_gateways
+            infrastructure_vpn_gateways.Element = AAZObjectType()
+            _ListHelper._build_schema_vpn_gateway_read(infrastructure_vpn_gateways.Element)
+
+            tenant_vpn_gateways = cls._schema_on_200.value.Element.properties.public_connectivity.tenant_vpn_gateways
+            tenant_vpn_gateways.Element = AAZObjectType()
+            _ListHelper._build_schema_vpn_gateway_read(tenant_vpn_gateways.Element)
 
             tenant_internet_gateway_ids = cls._schema_on_200.value.Element.properties.tenant_internet_gateway_ids
             tenant_internet_gateway_ids.Element = AAZStrType(
@@ -371,7 +423,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }
@@ -509,6 +561,9 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.public_connectivity = AAZObjectType(
+                serialized_name="publicConnectivity",
+            )
             properties.tenant_internet_gateway_ids = AAZListType(
                 serialized_name="tenantInternetGatewayIds",
                 flags={"read_only": True},
@@ -530,7 +585,30 @@ class List(AAZCommand):
             _ListHelper._build_schema_express_route_connection_information_read(infrastructure_express_route_connections.Element)
 
             last_operation = cls._schema_on_200.value.Element.properties.last_operation
+            last_operation.completed_at = AAZStrType(
+                serialized_name="completedAt",
+                flags={"read_only": True},
+            )
+            last_operation.correlation_id = AAZStrType(
+                serialized_name="correlationId",
+                flags={"read_only": True},
+            )
             last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
+            last_operation.operation_type = AAZStrType(
+                serialized_name="operationType",
+                flags={"read_only": True},
+            )
+            last_operation.result_blob_url = AAZStrType(
+                serialized_name="resultBlobUrl",
+                flags={"read_only": True},
+            )
+            last_operation.started_at = AAZStrType(
+                serialized_name="startedAt",
+                flags={"read_only": True},
+            )
+            last_operation.status = AAZStrType(
                 flags={"read_only": True},
             )
 
@@ -542,6 +620,32 @@ class List(AAZCommand):
             network_fabric_ids.Element = AAZStrType(
                 nullable=True,
             )
+
+            public_connectivity = cls._schema_on_200.value.Element.properties.public_connectivity
+            public_connectivity.infrastructure_vpn_gateway_sku = AAZStrType(
+                serialized_name="infrastructureVpnGatewaySku",
+                flags={"required": True},
+            )
+            public_connectivity.infrastructure_vpn_gateways = AAZListType(
+                serialized_name="infrastructureVpnGateways",
+                flags={"read_only": True},
+            )
+            public_connectivity.tenant_vpn_gateway_sku = AAZStrType(
+                serialized_name="tenantVpnGatewaySku",
+                flags={"required": True},
+            )
+            public_connectivity.tenant_vpn_gateways = AAZListType(
+                serialized_name="tenantVpnGateways",
+                flags={"read_only": True},
+            )
+
+            infrastructure_vpn_gateways = cls._schema_on_200.value.Element.properties.public_connectivity.infrastructure_vpn_gateways
+            infrastructure_vpn_gateways.Element = AAZObjectType()
+            _ListHelper._build_schema_vpn_gateway_read(infrastructure_vpn_gateways.Element)
+
+            tenant_vpn_gateways = cls._schema_on_200.value.Element.properties.public_connectivity.tenant_vpn_gateways
+            tenant_vpn_gateways.Element = AAZObjectType()
+            _ListHelper._build_schema_vpn_gateway_read(tenant_vpn_gateways.Element)
 
             tenant_internet_gateway_ids = cls._schema_on_200.value.Element.properties.tenant_internet_gateway_ids
             tenant_internet_gateway_ids.Element = AAZStrType(
@@ -641,6 +745,51 @@ class _ListHelper:
 
         _schema.express_route_authorization_key = cls._schema_express_route_connection_information_read.express_route_authorization_key
         _schema.express_route_circuit_id = cls._schema_express_route_connection_information_read.express_route_circuit_id
+
+    _schema_vpn_gateway_read = None
+
+    @classmethod
+    def _build_schema_vpn_gateway_read(cls, _schema):
+        if cls._schema_vpn_gateway_read is not None:
+            _schema.vpn_gateway_asn = cls._schema_vpn_gateway_read.vpn_gateway_asn
+            _schema.vpn_gateway_bgp_primary_ip_v4_address = cls._schema_vpn_gateway_read.vpn_gateway_bgp_primary_ip_v4_address
+            _schema.vpn_gateway_bgp_secondary_ip_v4_address = cls._schema_vpn_gateway_read.vpn_gateway_bgp_secondary_ip_v4_address
+            _schema.vpn_gateway_id = cls._schema_vpn_gateway_read.vpn_gateway_id
+            _schema.vpn_gateway_ip_v4_address = cls._schema_vpn_gateway_read.vpn_gateway_ip_v4_address
+            _schema.vpn_gateway_type = cls._schema_vpn_gateway_read.vpn_gateway_type
+            return
+
+        cls._schema_vpn_gateway_read = _schema_vpn_gateway_read = AAZObjectType()
+
+        vpn_gateway_read = _schema_vpn_gateway_read
+        vpn_gateway_read.vpn_gateway_asn = AAZIntType(
+            serialized_name="vpnGatewayAsn",
+        )
+        vpn_gateway_read.vpn_gateway_bgp_primary_ip_v4_address = AAZStrType(
+            serialized_name="vpnGatewayBgpPrimaryIpV4Address",
+        )
+        vpn_gateway_read.vpn_gateway_bgp_secondary_ip_v4_address = AAZStrType(
+            serialized_name="vpnGatewayBgpSecondaryIpV4Address",
+        )
+        vpn_gateway_read.vpn_gateway_id = AAZStrType(
+            serialized_name="vpnGatewayId",
+            nullable=True,
+            flags={"read_only": True},
+        )
+        vpn_gateway_read.vpn_gateway_ip_v4_address = AAZStrType(
+            serialized_name="vpnGatewayIpV4Address",
+        )
+        vpn_gateway_read.vpn_gateway_type = AAZStrType(
+            serialized_name="vpnGatewayType",
+            flags={"read_only": True},
+        )
+
+        _schema.vpn_gateway_asn = cls._schema_vpn_gateway_read.vpn_gateway_asn
+        _schema.vpn_gateway_bgp_primary_ip_v4_address = cls._schema_vpn_gateway_read.vpn_gateway_bgp_primary_ip_v4_address
+        _schema.vpn_gateway_bgp_secondary_ip_v4_address = cls._schema_vpn_gateway_read.vpn_gateway_bgp_secondary_ip_v4_address
+        _schema.vpn_gateway_id = cls._schema_vpn_gateway_read.vpn_gateway_id
+        _schema.vpn_gateway_ip_v4_address = cls._schema_vpn_gateway_read.vpn_gateway_ip_v4_address
+        _schema.vpn_gateway_type = cls._schema_vpn_gateway_read.vpn_gateway_type
 
 
 __all__ = ["List"]

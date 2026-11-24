@@ -1,0 +1,48 @@
+interactions:
+- request:
+    body: '{"command": "show running-config", "commandUrl": "https://example.blob.core.windows.net/commands/config.txt"}'
+    headers:
+      CommandName:
+      - networkfabric bootstrapdevice run-rw-command
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-name --resource-group --command --command-url
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      Content-Length:
+      - '109'
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device/runRwCommand?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"bootstrap-rw-operation","name":"bootstrap-rw-operation","status":"Succeeded","properties":{"configurationState":"Succeeded","outputUrl":"https://example.blob.core.windows.net/results/bootstrap-rw.txt"}}'
+    headers:
+      content-type:
+      - application/json
+      cache-control:
+      - no-cache
+      date:
+      - Wed, 18 Nov 2026 12:00:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-c0b9a00f83fd
+      content-length:
+      - '209'
+    status:
+      code: 200
+      message: OK
+version: 1

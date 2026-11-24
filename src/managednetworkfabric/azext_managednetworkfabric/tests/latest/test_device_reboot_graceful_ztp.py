@@ -14,6 +14,7 @@ Device tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -32,7 +33,7 @@ def call_scenario1(test):
     step_reboot(
         test,
         checks=[
-            test.check("status", "Succeeded"),
+            test.check("status", attr(test, "expectedStatus")),
         ],
     )
     cleanup_scenario1(test)
@@ -43,7 +44,8 @@ def step_reboot(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric device reboot --network-device-name {name} --resource-group {rg} --reboot-type {rebootType}"
+        "az networkfabric device reboot --resource-name {name} --resource-group {rg} --reboot-type {rebootType}",
+        checks=checks,
     )
 
 
@@ -57,6 +59,7 @@ class GA_DeviceRebootGracefulZTPScenarioTest1(ScenarioTest):
                 "name": CONFIG.get("NETWORK_DEVICE", "reboot_device_name"),
                 "rg": CONFIG.get("NETWORK_DEVICE", "reboot_device_rg"),
                 "rebootType": CONFIG.get("NETWORK_DEVICE", "graceful_ztp_reboot_type"),
+                "expectedStatus": CONFIG.get("NETWORK_DEVICE", "expected_status"),
             }
         )
 

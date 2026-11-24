@@ -13,6 +13,7 @@ from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -28,9 +29,32 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario1(test)
-    step_create(test, checks=[])
-    step_show(test, checks=[])
-    step_update(test, checks=[])
+    step_create(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("ipPrefixRules", attr(test, "expectedIpPrefixRules")),
+        ],
+    )
+    step_show(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("ipPrefixRules", attr(test, "expectedIpPrefixRules")),
+        ],
+    )
+    step_update(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check(
+                "provisioningState", attr(test, "expectedProvisioningStateUpdate")
+            ),
+            test.check("ipPrefixRules", attr(test, "expectedIpPrefixRulesUpdate")),
+        ],
+    )
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
     step_delete(test, checks=[])
@@ -42,7 +66,8 @@ def step_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric ipprefix create --resource-group {rg} --location {location} --resource-name {name} --ip-prefix-rules {ipPrefixRules} --annotation {annotation}",
+        "az networkfabric ipprefix create --resource-group {rg} --location {location} --resource-name {name} "
+        "--ip-prefix-rules {ipPrefixRules} --annotation {annotation}",
         checks=checks,
     )
 
@@ -52,7 +77,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric ipprefix show --resource-name {name} --resource-group {rg}"
+        "az networkfabric ipprefix show --resource-name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -61,7 +87,8 @@ def step_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric ipprefix update --resource-group {rg} --resource-name {name} --ip-prefix-rules {updatedIpPrefixRules} --annotation {annotation}",
+        "az networkfabric ipprefix update --resource-group {rg} --resource-name {name} --ip-prefix-rules "
+        "{updatedIpPrefixRules} --annotation {annotation}",
         checks=checks,
     )
 
@@ -103,6 +130,18 @@ class GA_IpPrefixScenarioTest1(ScenarioTest):
                 "ipPrefixRules": CONFIG.get("IP_PREFIX", "ip_prefix_rules"),
                 "updatedIpPrefixRules": CONFIG.get(
                     "IP_PREFIX", "updated_ip_prefix_rules"
+                ),
+                "expectedIpPrefixRules": CONFIG.get(
+                    "IP_PREFIX", "expected_ip_prefix_rules"
+                ),
+                "expectedIpPrefixRulesUpdate": CONFIG.get(
+                    "IP_PREFIX", "expected_ip_prefix_rules_update"
+                ),
+                "expectedProvisioningState": CONFIG.get(
+                    "IP_PREFIX", "expected_provisioning_state"
+                ),
+                "expectedProvisioningStateUpdate": CONFIG.get(
+                    "IP_PREFIX", "expected_provisioning_state_update"
                 ),
             }
         )

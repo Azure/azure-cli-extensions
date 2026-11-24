@@ -32,14 +32,14 @@ def call_scenario1(test):
 
 
 def call_scenario2(test):
-    """Testcase: scenario"""
+    """Testcase: scenario2"""
     setup_scenario(test)
     step_update_scenario2(test, checks=[])
     cleanup_scenario(test)
 
 
 def call_scenario3(test):
-    """Testcase: scenario"""
+    """Testcase: scenario3"""
     setup_scenario(test)
     step_update_scenario3(test, checks=[])
     cleanup_scenario(test)
@@ -105,3 +105,13 @@ class GA_NFCUpdateScenarioTest1(ScenarioTest):
     def test_GA_nfc_update_scenario1(self):
         """test scenario for NNI CRUD operations"""
         call_scenario1(self)
+
+    def test_GA_nfc_update_scenario2(self):
+        """Test scenario 2 with alternate command parameters."""
+        call_scenario2(self)
+        self.assertTrue(self.cassette.all_played)
+
+    def test_GA_nfc_update_scenario3(self):
+        """Test scenario 3 with alternate command parameters."""
+        call_scenario3(self)
+        self.assertTrue(self.cassette.all_played)

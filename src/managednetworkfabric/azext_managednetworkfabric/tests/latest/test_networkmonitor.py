@@ -12,6 +12,7 @@ Network Monitor show/list/delete tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario(test):
@@ -27,18 +28,20 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_show_scenario1(test, checks=[])
+    step_show_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("bmpConfiguration", attr(test, "expectedBmpConfiguration")),
+            test.check(
+                "administrativeState", attr(test, "expectedAdministrativeState")
+            ),
+        ],
+    )
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
     step_delete_scenario1(test, checks=[])
-    cleanup_scenario(test)
-
-
-def call_scenario1(test):
-    """Testcase: scenario1"""
-    setup_scenario(test)
-    step_show_scenario2(test, checks=[])
-    step_delete_scenario2(test, checks=[])
     cleanup_scenario(test)
 
 
@@ -47,16 +50,8 @@ def step_show_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric networkmonitor show --resource-name {name} --resource-group {rg}"
-    )
-
-
-def step_show_scenario2(test, checks=None):
-    """networkmonitor show operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
-        "az networkfabric networkmonitor show --network-monitor-name {name} --resource-group {rg}"
+        "az networkfabric networkmonitor show --resource-name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -79,15 +74,6 @@ def step_delete_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric networkmonitor delete --network-monitor-name {deleteNetworkMonitorName} --resource-group {rg}"
-    )
-
-
-def step_delete_scenario2(test, checks=None):
-    """networkmonitor delete operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
         "az networkfabric networkmonitor delete --resource-name {deleteNetworkMonitorName} --resource-group {rg}"
     )
 
@@ -104,6 +90,15 @@ class GA_NetworkMonitorScenarioTest1(ScenarioTest):
                 "location": CONFIG.get("NETWORK_MONITOR", "location"),
                 "deleteNetworkMonitorName": CONFIG.get(
                     "NETWORK_MONITOR", "delete_networkmonitor_name"
+                ),
+                "expectedAdministrativeState": CONFIG.get(
+                    "NETWORK_MONITOR", "expected_administrative_state"
+                ),
+                "expectedBmpConfiguration": CONFIG.get(
+                    "NETWORK_MONITOR", "expected_bmp_configuration"
+                ),
+                "expectedProvisioningState": CONFIG.get(
+                    "NETWORK_MONITOR", "expected_provisioning_state"
                 ),
             }
         )

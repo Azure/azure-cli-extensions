@@ -1,0 +1,200 @@
+interactions:
+- request:
+    body: '{"properties": {"egressAclId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/accessControlLists/example-acl1", "exportRoutePolicy": {"exportIpv4RoutePolicyId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-4-2-routePolicy", "exportIpv6RoutePolicyId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-4-2-routePolicy"}, "importRoutePolicy": {"importIpv4RoutePolicyId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-4-2-routePolicy", "importIpv6RoutePolicyId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-4-2-routePolicy"}, "ingressAclId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/accessControlLists/example-acl2", "layer2Configuration": {"interfaces": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab3-5-1-AggrRack-CE1/networkInterfaces/Ethernet1-1", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab3-5-1-AggrRack-CE2/networkInterfaces/Ethernet1-1"], "mtu": 1500}, "microBfdState": "Enabled", "npbStaticRouteConfiguration": {"bfdConfiguration": {"intervalInMilliSeconds": 300, "multiplier": 10}, "ipv4Routes": [{"nextHop": ["10.0.0.1"], "prefix": "jffgck"}], "ipv6Routes": [{"nextHop": ["10.0.0.1"], "prefix": "2fff::/64"}]}, "optionBLayer3Configuration": {"peerASN": 65046, "primaryIpv4Prefix": "10.18.0.8/30", "secondaryIpv4Prefix": "10.18.0.12/30", "vlanId": 501}, "staticRouteConfiguration": {"bfdConfiguration": {"intervalInMilliSeconds": 300, "multiplier": 10}, "ipv4Routes": [{"nextHop": ["10.0.0.1"], "prefix": "10.0.0.1/24"}], "ipv6Routes": [{"nextHop": ["3ffe::1"], "prefix": "2fff::/64"}]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric nni update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2290'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --resource-name --fabric-name --l2-config --option-b-l3-config --import-route-policy --export-route-policy --egress-acl-id --ingress-acl-id --micro-bfd-state --npb-static-route-conf --static-route-config
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nffab3-5-1/networkToNetworkInterconnects/nffab3-5-1-nni?api-version=2026-07-15-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638433394058497001&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 12:56:45 GMT
+      etag:
+      - '"00000000-0000-0000-0000-522eacde5b81"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638433394058497001&c=REDACTED&s=REDACTED&h=REDACTED
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-1f76cdf09ace
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: EC58EA19F03E472A878C0ECB322C3D6E Ref B: MAA201060514039 Ref C: 2024-02-12T12:56:42Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric nni update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --fabric-name --l2-config --option-b-l3-config --import-route-policy --export-route-policy --egress-acl-id --ingress-acl-id --micro-bfd-state --npb-static-route-conf --static-route-config
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638433394058497001&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nffab3-5-1/networkToNetworkInterconnects/nffab3-5-1-nni","status":"Accepted","startTime":"2024-02-12T12:56:45.2757647Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '625'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 12:56:46 GMT
+      etag:
+      - '"00000000-0000-0000-0000-fe4bd48e8735"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: F1B18602894741639A3E4B228BCB8E02 Ref B: MAA201060513019 Ref C: 2024-02-12T12:56:46Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric nni update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --fabric-name --l2-config --option-b-l3-config --import-route-policy --export-route-policy --egress-acl-id --ingress-acl-id --micro-bfd-state --npb-static-route-conf --static-route-config
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638433394058497001&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nffab3-5-1/networkToNetworkInterconnects/nffab3-5-1-nni","status":"Succeeded","startTime":"2024-02-12T12:56:45.2757647Z","endTime":"2024-02-12T12:56:49.4458361Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '685'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 12:57:18 GMT
+      etag:
+      - '"00000000-0000-0000-0000-ac4d459c9e1f"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 5B3F36CCB87D473795D01D5FADCED008 Ref B: MAA201060515049 Ref C: 2024-02-12T12:57:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric nni update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --fabric-name --l2-config --option-b-l3-config --import-route-policy --export-route-policy --egress-acl-id --ingress-acl-id --micro-bfd-state --npb-static-route-conf --static-route-config
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638433394058497001&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-4592e2e21d94*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nffab3-5-1/networkToNetworkInterconnects/nffab3-5-1-nni","status":"Succeeded","startTime":"2024-02-12T12:56:45.2757647Z","endTime":"2024-02-12T12:56:49.4458361Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '685'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 12:57:19 GMT
+      etag:
+      - '"00000000-0000-0000-0000-ac4d459c9e1f"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 69AD99E9FA87444ABE4D9809C421441B Ref B: MAA201060513019 Ref C: 2024-02-12T12:57:19Z'
+    status:
+      code: 200
+      message: OK
+version: 1

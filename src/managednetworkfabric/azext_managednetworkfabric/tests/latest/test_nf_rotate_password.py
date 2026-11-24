@@ -12,6 +12,7 @@ NF post tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario(test):
@@ -27,14 +28,12 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_rotate_password_scenario1(test)
-    cleanup_scenario(test)
-
-
-def call_scenario2(test):
-    """Testcase: scenario2"""
-    setup_scenario(test)
-    step_rotate_password_scenario2(test)
+    step_rotate_password_scenario1(
+        test,
+        checks=[
+            test.check("status", attr(test, "expectedStatus")),
+        ],
+    )
     cleanup_scenario(test)
 
 
@@ -43,16 +42,8 @@ def step_rotate_password_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric rotate-password --resource-name {name} --resource-group {resourceGroup}"
-    )
-
-
-def step_rotate_password_scenario2(test, checks=None):
-    """nf rotate password operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
-        "az networkfabric fabric rotate-password --network-fabric-name {name} --resource-group {resourceGroup}"
+        "az networkfabric fabric rotate-password --resource-name {name} --resource-group {resourceGroup}",
+        checks=checks,
     )
 
 
@@ -65,6 +56,7 @@ class GA_NFRotatePasswordScenarioTest1(ScenarioTest):
             {
                 "name": CONFIG.get("NETWORK_FABRIC", "name"),
                 "resourceGroup": CONFIG.get("NETWORK_FABRIC", "resource_group"),
+                "expectedStatus": CONFIG.get("NETWORK_FABRIC", "expected_status"),
             }
         )
 

@@ -5,10 +5,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=protected-access,duplicate-code
 
-"""
-This code inherits the auto-generated code for bootstrapdevice resync-password command,
-and adds custom error formatting.
-"""
+"""Custom error formatting for bootstrapdevice resync-password."""
 
 from azure.core.exceptions import HttpResponseError
 
@@ -19,7 +16,7 @@ from azext_managednetworkfabric.operations.error_format import ErrorFormat
 
 
 class ResyncPasswordCommand(_ResyncPasswordCommand):
-    """Custom class for networkfabric bootstrapdevice resync-password"""
+    """Custom class for networkfabric bootstrapdevice resync-password."""
 
     def _handler(self, command_args):
         poller = super()._handler(command_args)

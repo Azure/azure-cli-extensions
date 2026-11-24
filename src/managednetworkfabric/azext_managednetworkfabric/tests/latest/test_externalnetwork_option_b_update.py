@@ -12,6 +12,7 @@ External Network tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -28,7 +29,20 @@ def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario1(test)
     step_update_s1(test, checks=[])
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("peeringOption", attr(test, "expectedPeeringOptionCreateS1")),
+            test.check(
+                "optionBProperties", attr(test, "expectedOptionBPropertiesAfterUpdate")
+            ),
+            test.check(
+                "administrativeState", attr(test, "expectedAdministrativeStateShow")
+            ),
+        ],
+    )
     step_list_resource_group(test, checks=[])
     cleanup_scenario1(test)
 
@@ -38,7 +52,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric externalnetwork show --resource-name {name} --l3domain {l3Domain} --resource-group {rg}"
+        "az networkfabric externalnetwork show --resource-name {name} --l3domain {l3Domain} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -90,6 +105,18 @@ class GA_ExternalNetworkOptionBUpdateScenarioTest1(ScenarioTest):
                 ),
                 "staticRouteConfig": CONFIG.get(
                     "EXTERNAL_NETWORK", "static_route_conf"
+                ),
+                "expectedAdministrativeStateShow": CONFIG.get(
+                    "EXTERNAL_NETWORK", "expected_administrative_state_show"
+                ),
+                "expectedPeeringOptionCreateS1": CONFIG.get(
+                    "EXTERNAL_NETWORK", "expected_peering_option_create_s1"
+                ),
+                "expectedProvisioningState": CONFIG.get(
+                    "EXTERNAL_NETWORK", "expected_provisioning_state"
+                ),
+                "expectedOptionBPropertiesAfterUpdate": CONFIG.get(
+                    "EXTERNAL_NETWORK", "expected_option_b_properties_after_update"
                 ),
             }
         )

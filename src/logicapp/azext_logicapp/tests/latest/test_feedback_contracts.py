@@ -270,13 +270,14 @@ class FeedbackValidationContracts(unittest.TestCase):
         module = ast.parse(Path(_test_report.__file__).read_text(encoding="utf-8"))
         version = next(node for node in module.body if isinstance(node, ast.Assign)
                        and any(isinstance(target, ast.Name) and target.id == "VERSION" for target in node.targets))
-        version.value = ast.copy_location(ast.Constant(value="1.0.0b3"), version.value)
+        version.value = ast.copy_location(ast.Constant(value="1.0.0b4"), version.value)
         namespace = {}
         exec(compile(module, "<future-report-producer>", "exec"), namespace)
         (self.root / "host.json").write_text(json.dumps(_workflow.HOST_JSON), encoding="utf-8")
         report = _testing.plan_report(str(self.root), "hello")
         for schema, producers in (("1.0", ("1.0.0b1",)),
-                                  ("2.0", ("0.1.22", "0.1.23", "0.1.24", "0.1.25", "0.1.26", "1.0.0b1"))):
+                                  ("2.0", ("0.1.22", "0.1.23", "0.1.24", "0.1.25", "0.1.26",
+                                           "1.0.0b1", "1.0.0b2"))):
             for producer in producers:
                 with self.subTest(schema=schema, producer=producer):
                     saved = copy.deepcopy(report)
@@ -303,7 +304,7 @@ class FeedbackValidationContracts(unittest.TestCase):
             _test_report.finalize(saved)
             with self.subTest(schema=schema, legacy=legacy):
                 self.assertTrue(namespace["validate_report"](saved))
-                saved["provenance"]["cliVersion"] = "1.0.0b3"
+                saved["provenance"]["cliVersion"] = "1.0.0b4"
                 self.assertEqual(schema == "2.0" and not legacy, namespace["validate_report"](saved))
 
         for schema, legacy in (("1.0", True), ("2.0", True), ("2.0", False)):
@@ -317,7 +318,7 @@ class FeedbackValidationContracts(unittest.TestCase):
             _test_report.finalize(saved)
             with self.subTest(schema=schema, legacy=legacy, rule="report.invalid"):
                 self.assertTrue(namespace["validate_report"](saved))
-                saved["provenance"]["cliVersion"] = "1.0.0b3"
+                saved["provenance"]["cliVersion"] = "1.0.0b4"
                 self.assertEqual(schema == "2.0" and not legacy, namespace["validate_report"](saved))
 
     def test_sdk_era_foundation_producers_retain_exact_error_catalogs_and_blocked_gates(self):
