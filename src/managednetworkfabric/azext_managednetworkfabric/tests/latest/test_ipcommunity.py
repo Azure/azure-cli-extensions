@@ -14,6 +14,7 @@ Ip Community tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -29,9 +30,30 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario1(test)
-    step_create(test, checks=[])
-    step_show(test, checks=[])
-    step_update(test, checks=[])
+    step_create(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("ipCommunityRules", attr(test, "ipCommunityRules")),
+        ],
+    )
+    step_show(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("ipCommunityRules", attr(test, "ipCommunityRules")),
+        ],
+    )
+    step_update(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("ipCommunityRules", attr(test, "updatedIpCommunityRules")),
+        ],
+    )
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
     step_delete(test, checks=[])
@@ -54,7 +76,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric ipcommunity show --resource-name {name} --resource-group {rg}"
+        "az networkfabric ipcommunity show --resource-name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -108,6 +131,9 @@ class GA_IpCommunityScenarioTest1(ScenarioTest):
                 "ipCommunityRules": CONFIG.get("IP_COMMUNITY", "ip_community_rules"),
                 "updatedIpCommunityRules": CONFIG.get(
                     "IP_COMMUNITY", "updated_ip_community_rules"
+                ),
+                "expectedProvisioningState": CONFIG.get(
+                    "IP_COMMUNITY", "expected_provisioning_state"
                 ),
             }
         )

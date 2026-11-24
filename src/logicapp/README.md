@@ -60,7 +60,7 @@ The original capabilities remain part of this contribution:
 | `dependency check/install/uninstall` | Inspect or explicitly manage selected developer tools without modifying global PATH. |
 | `runtime start/show/stop` | Manage owned local hosts and shared CLI-owned storage with PID/birth-identity guards. |
 | `connector`, `connector operation` | Inspect built-in runtime connector and trigger/action catalogs. |
-| `connector managed`, `connector managed operation` | Inspect the ARM managed connector catalog. |
+| `connector managed`, `connector managed operation` | Inspect the ARM managed connector catalog and optionally export operation input schemas. |
 | `connection create/list/show/test/delete` | Author local wiring or manage deployed connections, with explicit targeting, authentication and retention limits. |
 | `connection acl`, `identity` | Inspect/manage access policies and assigned identities; these do not prove the caller's effective RBAC. |
 | `run start/list/show`, `run action` | Invoke and inspect supported runtime executions and recorded action content. |
@@ -70,6 +70,68 @@ Use each group's `--help` for target and confirmation requirements. Local
 dependency/runtime commands are explicit operations, not part of validation
 or the testing foundation. Never put secret values in `--parameter` or
 `--app-setting`; local connection secrets are read from standard input.
+
+## Discover built-in connector action inputs
+
+Operation list and default operation show return descriptive metadata. Request
+the selected runtime's full operation manifest explicitly to discover input
+names, required fields, nested schemas, constraints and defaults:
+
+```powershell
+az logicapp connector operation show --local --port 7071 --connector serviceBus --operation sendMessage --include-manifest --query properties.manifest.inputs --output json
+az logicapp connector operation show --local --port 7071 --connector AzureBlob --operation uploadBlob --include-manifest --query properties.manifest.inputs --output json
+az logicapp connector operation show -g my-rg -n my-app --connector AzureBlob --operation uploadBlob --include-manifest --output json
+```
+
+The option makes one metadata GET with `$expand=properties/manifest`, the
+[same expansion used by the Logic Apps Standard designer](https://github.com/Azure/LogicAppsUX/blob/e7b33649963fb9a4e4efae59d231e370198994ff/libs/logic-apps-shared/src/designer-client-services/lib/standard/operationmanifest.ts#L165-L223).
+The complete operation response is preserved at its original paths. Input
+schemas are at `properties.manifest.inputs`; use the manifest's `inputsLocation`
+and other binding metadata when mapping them into workflow JSON. Fields such as
+Azure Blob's `containerName`, `blobName`, `content` and optional
+`overrideIfExists`, and Service Bus's nested message fields, come from the
+runtime, not CLI-maintained templates. Availability varies with connector and
+runtime versions. This does not validate or author a workflow or prove a
+connection works. For example, `inputsLocation: ["inputs", "parameters"]` means
+the input schema describes `inputs.parameters` in the workflow action. Preserve
+string enums as strings and unconstrained content schemas as returned; do not
+infer missing types or defaults.
+
+Missing, empty or non-object manifests are errors, never silently replaced
+with metadata or invented schemas. Dynamic schema/value references and schema
+references are preserved but not invoked, fetched or resolved. No action,
+workflow, connection test or data-plane operation runs. Local host keys remain
+headers, and deployed requests use the existing ARM authentication path.
+Default show and list output, list filtering/pagination and request counts are
+unchanged; there is no per-operation manifest fan-out on list.
+
+## Discover managed connector input schemas
+
+`connector managed operation show` continues to return APIHub operation
+metadata by default. Add `--include-input-schema` to also fetch the connector's
+Swagger 2.0 export and return an `inputSchema` object containing the selected
+operation's path-level and operation-level parameters, reusable parameter
+definitions, schema definitions, and the original dynamic metadata and `$ref`s:
+
+```powershell
+az logicapp connector managed operation show --location eastus --connector msnweather --operation CurrentWeather --include-input-schema --output json
+az logicapp connector managed operation show --location eastus --connector msnweather --operation CurrentWeather --include-input-schema --query "inputSchema.{operationParameters: operationParameters, parameterDefinitions: parameterDefinitions}" --output json
+```
+
+References are not dereferenced. An entry in `pathParameters` or
+`operationParameters` may be only a reference such as
+`{"$ref": "#/parameters/Location"}`; inspect the matching key (`Location`) in
+`inputSchema.parameterDefinitions` for its name, location, type, `required` and
+enum. Filtering only inline entries, for example
+`operationParameters[?required]`, can omit required inputs. For MSN Weather
+`CurrentWeather`, the required `Location` and `units` inputs are references.
+
+The export is fetched from the managed connector ARM resource URI with
+`export=true`. Operation IDs must match uniquely. External `$ref` targets are
+reported but never fetched, and dynamic values/schema extensions are retained
+without attempting designer/runtime lookups. A selected path item with an
+unresolved `$ref` fails rather than returning potentially incomplete inherited
+input parameters.
 
 ## Create, plan and run local workflow tests
 

@@ -12,6 +12,7 @@ Network Tap Rule tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -27,7 +28,12 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario1(test)
-    step_resync(test, checks=[])
+    step_resync(
+        test,
+        checks=[
+            test.check("status", attr(test, "expectedStatus")),
+        ],
+    )
     cleanup_scenario1(test)
 
 
@@ -36,7 +42,8 @@ def step_resync(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric taprule resync --resource-group {rg} --resource-name {name}"
+        "az networkfabric taprule resync --resource-group {rg} --resource-name {name}",
+        checks=checks,
     )
 
 
@@ -49,6 +56,7 @@ class GA_TapRuleResyncScenarioTest1(ScenarioTest):
             {
                 "name": CONFIG.get("NETWORK_TAP_RULE", "resync_tap_rule_name"),
                 "rg": CONFIG.get("NETWORK_TAP_RULE", "resynctaprule_resource_group"),
+                "expectedStatus": CONFIG.get("NETWORK_TAP_RULE", "expected_status"),
             }
         )
 

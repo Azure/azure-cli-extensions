@@ -12,6 +12,7 @@ Internet Gateway tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario(test):
@@ -28,7 +29,21 @@ def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
     step_update_scenario1(test, checks=[])
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("gatewayType", attr(test, "expectedGatewayType")),
+            test.check("port", int(attr(test, "expectedPort"))),
+            test.check("ipv4Address", attr(test, "expectedIpv4Address")),
+            test.check("internetGatewayRuleId", attr(test, "internetGatewayRuleId")),
+            test.check(
+                "networkFabricControllerId",
+                attr(test, "expectedNetworkFabricControllerId"),
+            ),
+        ],
+    )
     step_list_resource_group(test, checks=[])
     cleanup_scenario(test)
 
@@ -36,7 +51,7 @@ def call_scenario1(test):
 def call_scenario2(test):
     """Testcase: scenario2"""
     setup_scenario(test)
-    step_update_scenario1(test, checks=[])
+    step_update_scenario2(test, checks=[])
     cleanup_scenario(test)
 
 
@@ -45,7 +60,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric internetgateway show --resource-name {name} --resource-group {rg}"
+        "az networkfabric internetgateway show --resource-name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -54,7 +70,8 @@ def step_update_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric internetgateway update --resource-group {rg} --resource-name {name} --gateway-rule-id {internetGatewayRuleId}",
+        "az networkfabric internetgateway update --resource-group {rg} --resource-name {name} --gateway-rule-id"
+        " {internetGatewayRuleId}",
         checks=checks,
     )
 
@@ -64,7 +81,8 @@ def step_update_scenario2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric internetgateway update --resource-group {rg} --resource-name {name} --internet-gateway-rule-id {internetGatewayRuleId}",
+        "az networkfabric internetgateway update --resource-group {rg} --resource-name {name} "
+        "--internet-gateway-rule-id {internetGatewayRuleId}",
         checks=checks,
     )
 
@@ -88,9 +106,27 @@ class GA_internetgatewayScenarioTest1(ScenarioTest):
                 "internetGatewayRuleId": CONFIG.get(
                     "INTERNET_GATEWAY", "internet_gateway_rule_id"
                 ),
+                "expectedGatewayType": CONFIG.get(
+                    "INTERNET_GATEWAY", "expected_gateway_type"
+                ),
+                "expectedIpv4Address": CONFIG.get(
+                    "INTERNET_GATEWAY", "expected_ipv4_address"
+                ),
+                "expectedNetworkFabricControllerId": CONFIG.get(
+                    "INTERNET_GATEWAY", "expected_network_fabric_controller_id"
+                ),
+                "expectedPort": CONFIG.get("INTERNET_GATEWAY", "expected_port"),
+                "expectedProvisioningState": CONFIG.get(
+                    "INTERNET_GATEWAY", "expected_provisioning_state"
+                ),
             }
         )
 
     def test_GA_internetgateway_scenario1(self):
         """test scenario for internetgateway CRUD operations"""
         call_scenario1(self)
+
+    def test_GA_internetgateway_scenario2(self):
+        """Test scenario 2 with alternate command parameters."""
+        call_scenario2(self)
+        self.assertTrue(self.cassette.all_played)

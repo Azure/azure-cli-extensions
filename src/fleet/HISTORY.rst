@@ -204,5 +204,10 @@ Release History
 
 1.12.1
 ++++++
+* Introduce new ``az fleet network`` command group with ``cross-cluster`` commands.
+* Deprecate ``clustermeshprofile`` commands in favour of the new ``cross-cluster`` terminology.
+
+1.12.2
+++++++
 * Use trusted executable lookup for ``kubelogin`` during Fleet credential conversion.
 * Require Azure CLI 2.93.0 or later.

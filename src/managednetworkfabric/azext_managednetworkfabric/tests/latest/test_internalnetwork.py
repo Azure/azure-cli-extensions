@@ -12,6 +12,7 @@ Internal Network tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario(test):
@@ -27,9 +28,53 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_create_scenario1(test, checks=[])
+    step_create_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("vlanId", int(attr(test, "vlanId"))),
+            test.check("mtu", int(attr(test, "mtu"))),
+            test.check("extension", attr(test, "extension")),
+            test.check("isMonitoringEnabled", attr(test, "isMonitoringEnabled")),
+            test.check(
+                "connectedIPv4Subnets", attr(test, "expectedConnectedIPv4Subnets")
+            ),
+            test.check("bgpConfiguration", attr(test, "expectedBgpConfiguration")),
+            test.check(
+                "staticRouteConfiguration",
+                attr(test, "expectedStaticRouteConfiguration"),
+            ),
+            test.check("nativeIpv4PrefixLimit", attr(test, "nativeIpv4PrefixLimit")),
+            test.check("nativeIpv6PrefixLimit", attr(test, "nativeIpv6PrefixLimit")),
+        ],
+    )
     step_update_scenario1(test, checks=[])
-    step_show_scenario1(test, checks=[])
+    step_show_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("vlanId", int(attr(test, "vlanId"))),
+            test.check("mtu", int(attr(test, "mtu"))),
+            test.check("extension", attr(test, "extension")),
+            test.check("isMonitoringEnabled", attr(test, "isMonitoringEnabled")),
+            test.check(
+                "connectedIPv4Subnets", attr(test, "expectedConnectedIPv4Subnets")
+            ),
+            test.check("bgpConfiguration", attr(test, "expectedBgpConfiguration")),
+            test.check(
+                "staticRouteConfiguration",
+                attr(test, "expectedStaticRouteConfiguration"),
+            ),
+            test.check(
+                "nativeIpv4PrefixLimit", attr(test, "updatedNativeIpv4PrefixLimit")
+            ),
+            test.check(
+                "nativeIpv6PrefixLimit", attr(test, "updatedNativeIpv6PrefixLimit")
+            ),
+        ],
+    )
     step_list_resource_group_scenario1(test, checks=[])
     step_delete_scenario1(test, checks=[])
     cleanup_scenario(test)
@@ -38,9 +83,53 @@ def call_scenario1(test):
 def call_scenario2(test):
     """Testcase: scenario2"""
     setup_scenario(test)
-    step_create_scenario2(test, checks=[])
+    step_create_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("vlanId", int(attr(test, "vlanId"))),
+            test.check("mtu", int(attr(test, "mtu"))),
+            test.check("extension", attr(test, "extension")),
+            test.check("isMonitoringEnabled", attr(test, "isMonitoringEnabled")),
+            test.check(
+                "connectedIPv4Subnets", attr(test, "expectedConnectedIPv4Subnets")
+            ),
+            test.check("bgpConfiguration", attr(test, "expectedBgpConfiguration")),
+            test.check(
+                "staticRouteConfiguration",
+                attr(test, "expectedStaticRouteConfiguration"),
+            ),
+            test.check("nativeIpv4PrefixLimit", attr(test, "nativeIpv4PrefixLimit")),
+            test.check("nativeIpv6PrefixLimit", attr(test, "nativeIpv6PrefixLimit")),
+        ],
+    )
     step_update_scenario2(test, checks=[])
-    step_show_scenario2(test, checks=[])
+    step_show_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("vlanId", int(attr(test, "vlanId"))),
+            test.check("mtu", int(attr(test, "mtu"))),
+            test.check("extension", attr(test, "extension")),
+            test.check("isMonitoringEnabled", attr(test, "isMonitoringEnabled")),
+            test.check(
+                "connectedIPv4Subnets", attr(test, "expectedConnectedIPv4Subnets")
+            ),
+            test.check("bgpConfiguration", attr(test, "expectedBgpConfiguration")),
+            test.check(
+                "staticRouteConfiguration",
+                attr(test, "expectedStaticRouteConfiguration"),
+            ),
+            test.check(
+                "nativeIpv4PrefixLimit", attr(test, "updatedNativeIpv4PrefixLimit")
+            ),
+            test.check(
+                "nativeIpv6PrefixLimit", attr(test, "updatedNativeIpv6PrefixLimit")
+            ),
+        ],
+    )
     step_list_resource_group_scenario2(test, checks=[])
     step_delete_scenario2(test, checks=[])
     cleanup_scenario(test)
@@ -107,7 +196,8 @@ def step_show_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric internalnetwork show --resource-name {name} --l3domain {l3Domain} --resource-group {rg}"
+        "az networkfabric internalnetwork show --resource-name {name} --l3domain {l3Domain} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -116,7 +206,8 @@ def step_show_scenario2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric internalnetwork show --resource-name {name} --l3-isolation-domain-name {l3Domain} --resource-group {rg}"
+        "az networkfabric internalnetwork show --resource-name {name} --l3-isolation-domain-name {l3Domain} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -208,9 +299,26 @@ class GA_InternalNetworkScenarioTest1(ScenarioTest):
                 ),
                 "ingressAclId": CONFIG.get("INTERNAL_NETWORK", "ingress_acl_id"),
                 "egressAclId": CONFIG.get("INTERNAL_NETWORK", "egress_acl_id"),
+                "expectedBgpConfiguration": CONFIG.get(
+                    "INTERNAL_NETWORK", "expected_bgp_configuration"
+                ),
+                "expectedConnectedIPv4Subnets": CONFIG.get(
+                    "INTERNAL_NETWORK", "expected_connected_i_pv4_subnets"
+                ),
+                "expectedProvisioningState": CONFIG.get(
+                    "INTERNAL_NETWORK", "expected_provisioning_state"
+                ),
+                "expectedStaticRouteConfiguration": CONFIG.get(
+                    "INTERNAL_NETWORK", "expected_static_route_configuration"
+                ),
             }
         )
 
     def test_GA_internalnetwork_scenario1(self):
         """test scenario for internalnetwork CRUD operations"""
         call_scenario1(self)
+
+    def test_GA_internalnetwork_scenario2(self):
+        """Test scenario 2 with alternate command parameters."""
+        call_scenario2(self)
+        self.assertTrue(self.cassette.all_played)

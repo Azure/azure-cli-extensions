@@ -12,6 +12,7 @@ NNI tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario(test):
@@ -27,18 +28,74 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_create_scenario1(test, checks=[])
-    step_show_scenario1(test, checks=[])
+    step_create_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("nniType", attr(test, "nniType")),
+            test.check("isManagementType", attr(test, "isManagementType")),
+            test.check("useOptionB", attr(test, "useOptionB")),
+            test.check("layer2Configuration", attr(test, "layer2Configuration")),
+            test.check(
+                "optionBLayer3Configuration",
+                attr(test, "expectedOptionBLayer3Configuration"),
+            ),
+        ],
+    )
+    step_show_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("nniType", attr(test, "nniType")),
+            test.check("isManagementType", attr(test, "isManagementType")),
+            test.check("useOptionB", attr(test, "useOptionB")),
+            test.check("layer2Configuration", attr(test, "layer2Configuration")),
+            test.check(
+                "optionBLayer3Configuration",
+                attr(test, "expectedOptionBLayer3Configuration"),
+            ),
+        ],
+    )
     step_list_resource_group_scenario1(test, checks=[])
     step_delete_scenario1(test, checks=[])
     cleanup_scenario(test)
 
 
 def call_scenario2(test):
-    """Testcase: scenario1"""
+    """Testcase: scenario2"""
     setup_scenario(test)
-    step_create_scenario2(test, checks=[])
-    step_show_scenario2(test, checks=[])
+    step_create_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("nniType", attr(test, "nniType")),
+            test.check("isManagementType", attr(test, "isManagementType")),
+            test.check("useOptionB", attr(test, "useOptionB")),
+            test.check("layer2Configuration", attr(test, "layer2Configuration")),
+            test.check(
+                "optionBLayer3Configuration",
+                attr(test, "expectedOptionBLayer3Configuration"),
+            ),
+        ],
+    )
+    step_show_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("nniType", attr(test, "nniType")),
+            test.check("isManagementType", attr(test, "isManagementType")),
+            test.check("useOptionB", attr(test, "useOptionB")),
+            test.check("layer2Configuration", attr(test, "layer2Configuration")),
+            test.check(
+                "optionBLayer3Configuration",
+                attr(test, "expectedOptionBLayer3Configuration"),
+            ),
+        ],
+    )
     step_list_resource_group_scenario2(test, checks=[])
     step_delete_scenario2(test, checks=[])
     cleanup_scenario(test)
@@ -81,7 +138,8 @@ def step_show_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric nni show --resource-name {name} --resource-group {rg} --fabric {fabric}"
+        "az networkfabric nni show --resource-name {name} --resource-group {rg} --fabric {fabric}",
+        checks=checks,
     )
 
 
@@ -90,7 +148,8 @@ def step_show_scenario2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric nni show --resource-name {name} --resource-group {rg} --fabric-name {fabric}"
+        "az networkfabric nni show --resource-name {name} --resource-group {rg} --fabric-name {fabric}",
+        checks=checks,
     )
 
 
@@ -173,9 +232,21 @@ class GA_NNIScenarioTest1(ScenarioTest):
                 "staticRouteConfiguration": CONFIG.get(
                     "NETWORK_TO_NETWORK_INTERCONNECT", "static_route_configuration"
                 ),
+                "expectedOptionBLayer3Configuration": CONFIG.get(
+                    "NETWORK_TO_NETWORK_INTERCONNECT",
+                    "expected_option_b_layer3_configuration",
+                ),
+                "expectedProvisioningState": CONFIG.get(
+                    "NETWORK_TO_NETWORK_INTERCONNECT", "expected_provisioning_state"
+                ),
             }
         )
 
     def test_GA_nni_scenario1(self):
         """test scenario for NNI CRUD operations"""
         call_scenario1(self)
+
+    def test_GA_nni_scenario2(self):
+        """Test scenario 2 with alternate command parameters."""
+        call_scenario2(self)
+        self.assertTrue(self.cassette.all_played)

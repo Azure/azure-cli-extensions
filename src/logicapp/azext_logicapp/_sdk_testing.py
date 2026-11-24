@@ -26,7 +26,7 @@ REPORT_TYPE = "logicapp-sdk-test"
 TRX_NAMESPACE = "{http://microsoft.com/schemas/VisualStudio/TeamTest/2010}"
 MAX_SOURCE_FILES = 256
 MAX_SOURCE_BYTES = 16 * 1024 * 1024
-SUPPORTED_PRODUCERS = ("0.1.25", "0.1.26", "1.0.0b1", VERSION)
+SUPPORTED_PRODUCERS = ("0.1.25", "0.1.26", "1.0.0b1", "1.0.0b2", VERSION)
 # Priority is explicit: a partial/failed cleanup or publication cannot become a native pass.
 RULES = {
     "cleanup.pending": ("cleanupPending", 9, "Tracked native processes could not be safely stopped. Inspect the retained process receipt; do not kill processes by name."),

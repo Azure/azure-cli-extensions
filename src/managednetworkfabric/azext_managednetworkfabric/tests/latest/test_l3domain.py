@@ -12,6 +12,7 @@ L3 Domain tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario(test):
@@ -27,8 +28,50 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_create_scenario1(test, checks=[])
-    step_show(test, checks=[])
+    step_create_scenario1(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("networkFabricId", attr(test, "nfId")),
+            test.check(
+                "aggregateRouteConfiguration",
+                attr(test, "expectedAggregateRouteConfiguration"),
+            ),
+            test.check(
+                "redistributeConnectedSubnets",
+                attr(test, "redistributeConnectedSubnets"),
+            ),
+            test.check(
+                "redistributeStaticRoutes", attr(test, "redistributeStaticRoutes")
+            ),
+            test.check(
+                "administrativeState", attr(test, "expectedAdministrativeState")
+            ),
+        ],
+    )
+    step_show(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("networkFabricId", attr(test, "nfId")),
+            test.check(
+                "aggregateRouteConfiguration",
+                attr(test, "expectedAggregateRouteConfiguration"),
+            ),
+            test.check(
+                "redistributeConnectedSubnets",
+                attr(test, "redistributeConnectedSubnets"),
+            ),
+            test.check(
+                "redistributeStaticRoutes", attr(test, "redistributeStaticRoutes")
+            ),
+            test.check(
+                "administrativeState", attr(test, "expectedAdministrativeState")
+            ),
+        ],
+    )
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
     cleanup_scenario(test)
@@ -37,7 +80,28 @@ def call_scenario1(test):
 def call_scenario2(test):
     """Testcase: scenario2"""
     setup_scenario(test)
-    step_create_scenario2(test, checks=[])
+    step_create_scenario2(
+        test,
+        checks=[
+            test.check("name", attr(test, "name")),
+            test.check("provisioningState", attr(test, "expectedProvisioningState")),
+            test.check("networkFabricId", attr(test, "nfId")),
+            test.check(
+                "aggregateRouteConfiguration",
+                attr(test, "expectedAggregateRouteConfiguration"),
+            ),
+            test.check(
+                "redistributeConnectedSubnets",
+                attr(test, "redistributeConnectedSubnets"),
+            ),
+            test.check(
+                "redistributeStaticRoutes", attr(test, "redistributeStaticRoutes")
+            ),
+            test.check(
+                "administrativeState", attr(test, "expectedAdministrativeState")
+            ),
+        ],
+    )
     cleanup_scenario(test)
 
 
@@ -50,7 +114,8 @@ def step_create_scenario1(test, checks=None):
         " --redistribute-connected-subnets {redistributeConnectedSubnets} --redistribute-static-routes {redistributeStaticRoutes}"
         " --aggregate-route-configuration {aggregateRouteConf} --connected-subnet-route-policy {connectedSubnetRoutePolicy}"
         " --static-route-route-policy {staticRouteRoutePolicy} --annotation {annotation} --v4route-prefix-limit {ipv4RoutePrefixLimit}"
-        " --v6route-prefix-limit {ipv6RoutePrefixLimit} --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity}",
+        " --v6route-prefix-limit {ipv6RoutePrefixLimit} --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity}"
+        " --export-policy-configuration {exportPolicyConfig}",
         checks=checks,
     )
 
@@ -62,7 +127,7 @@ def step_create_scenario2(test, checks=None):
     test.cmd(
         "az networkfabric l3domain create --resource-group {rg} --resource-name {name} --location {location} --network-fabric-id {nfId}"
         " --redist-conn-subnets {redistributeConnectedSubnets} --redist-static-routes {redistributeStaticRoutes}"
-        " --aggr-route-config {aggregateRouteConf} --cs-route-policy {connectedSubnetRoutePolicy} --export-policy-config {export_policy_config}"
+        " --aggr-route-config {aggregateRouteConf} --cs-route-policy {connectedSubnetRoutePolicy} --export-policy-config {exportPolicyConfig}"
         " --sr-route-policy {staticRouteRoutePolicy} --annotation {annotation} --v4route-prefix-limit {ipv4RoutePrefixLimit}"
         " --v6route-prefix-limit {ipv6RoutePrefixLimit} --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity}",
         checks=checks,
@@ -74,7 +139,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric l3domain show --resource-name {name} --resource-group {rg}"
+        "az networkfabric l3domain show --resource-name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -137,9 +203,23 @@ class GA_L3DomainScenarioTest1(ScenarioTest):
                 "systemAssignedIdentity": CONFIG.get(
                     "MANAGED_IDENTITY", "system_assigned_identity"
                 ),
+                "expectedAdministrativeState": CONFIG.get(
+                    "L3_ISOLATION_DOMAIN", "expected_administrative_state"
+                ),
+                "expectedAggregateRouteConfiguration": CONFIG.get(
+                    "L3_ISOLATION_DOMAIN", "expected_aggregate_route_configuration"
+                ),
+                "expectedProvisioningState": CONFIG.get(
+                    "L3_ISOLATION_DOMAIN", "expected_provisioning_state"
+                ),
             }
         )
 
     def test_GA_l3domain_scenario1(self):
         """test scenario for L3 Domain CRUD operations"""
         call_scenario1(self)
+
+    def test_GA_l3domain_scenario2(self):
+        """Test scenario 2 with alternate command parameters."""
+        call_scenario2(self)
+        self.assertTrue(self.cassette.all_played)

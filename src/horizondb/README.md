@@ -54,6 +54,31 @@ For example, scale the pool's vCores:
 az horizondb cluster pool update --resource-group example-resource-group --cluster-name example-cluster --name example-pool --v-cores 4
 ```
 
+## Manage cluster authentication
+
+List the cluster's service-created authentication methods, then inspect the password method:
+
+```powershell
+az horizondb cluster authentication list -g example-resource-group --cluster-name example-cluster
+az horizondb cluster authentication password show -g example-resource-group --cluster-name example-cluster
+```
+
+For initial setup, use `password create` with `--state Enabled` and the administrator login.
+Pass `--admin-password` (alias `--administrator-login-password`) **without a value** in a terminal to enter and confirm
+the password without echo. An inline password can appear in shell history, process arguments,
+or CLI debug logs. Passwords are never returned by these commands.
+
+```powershell
+az horizondb cluster authentication password create -g example-resource-group --cluster-name example-cluster --state Enabled --administrator-login exampleadmin --admin-password
+az horizondb cluster authentication password update -g example-resource-group --cluster-name example-cluster --admin-password --no-wait
+az horizondb cluster authentication password wait -g example-resource-group --cluster-name example-cluster --updated
+```
+
+Configuring password authentication requires a compute pool. `password update`
+changes only the supplied settings. To disable the method with `--state Disabled`,
+first enable Microsoft Entra authentication with a valid tenant. Use `--state Enabled` with a password to
+re-enable the method and reset the password. Both create and update accept `--no-wait`.
+
 ## Manage parameter groups
 
 Create a parameter group for the cluster's PostgreSQL version, then associate
@@ -161,6 +186,14 @@ az horizondb cluster update --resource-group example-resource-group --name examp
 az horizondb cluster pool firewall-rule create --resource-group example-resource-group --cluster-name example-cluster --pool-name example-pool --name client-access --start-ip-address 203.0.113.10 --end-ip-address 203.0.113.10
 ```
 
+Use `create` for a new rule and supply both ends of the inclusive IPv4 range.
+Use `update` to change an existing rule; you can supply just one end of the range
+or change the description. Setting both bounds to `0.0.0.0` allows connections
+from all Azure resources, not just resources in your subscription.
+Neither command changes an individual endpoint. Use `--no-wait` on create, update,
+or delete to return after submission; use `firewall-rule wait --created` or
+`--deleted` with the same resource group, cluster, pool, and rule name to wait.
+
 ## Included Features
 
 ### HorizonDB Cluster Management
@@ -185,6 +218,15 @@ az horizondb cluster pool firewall-rule create --resource-group example-resource
 - `az horizondb cluster pool show`: Show details of a pool.
 - `az horizondb cluster pool update`: Update a pool.
 - `az horizondb cluster pool wait`: Wait for a pool to satisfy a condition.
+
+### HorizonDB Pool Maintenance
+
+*Commands:*
+
+- `az horizondb cluster pool maintenance-event list`: Show the system-managed maintenance policy for a pool.
+
+Maintenance updates currently use a system-managed maintenance window. This command
+returns an informational message without querying maintenance events.
 
 ### HorizonDB Pool Firewall Rules
 

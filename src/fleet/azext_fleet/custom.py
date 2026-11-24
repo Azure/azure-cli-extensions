@@ -1255,13 +1255,13 @@ def get_namespace_credentials(cmd,
         _convert_kubeconfig_to_azurecli(path)
 
 
-def create_cluster_mesh_profile(cmd,
-                                client,
-                                resource_group_name,
-                                fleet_name,
-                                name,
-                                member_selector=None,
-                                no_wait=False):
+def create_cross_cluster_network(cmd,
+                                 client,
+                                 resource_group_name,
+                                 fleet_name,
+                                 name,
+                                 member_selector=None,
+                                 no_wait=False):
     cluster_mesh_profile_model = cmd.get_models(
         "ClusterMeshProfile",
         resource_type=CUSTOM_MGMT_FLEET,
@@ -1295,49 +1295,49 @@ def create_cluster_mesh_profile(cmd,
     )
 
 
-def show_cluster_mesh_profile(cmd,  # pylint: disable=unused-argument
-                              client,
-                              resource_group_name,
-                              fleet_name,
-                              name):
+def show_cross_cluster_network(cmd,  # pylint: disable=unused-argument
+                               client,
+                               resource_group_name,
+                               fleet_name,
+                               name):
     return client.get(resource_group_name, fleet_name, name)
 
 
-def list_cluster_mesh_profiles(cmd,  # pylint: disable=unused-argument
-                               client,
-                               resource_group_name,
-                               fleet_name):
+def list_cross_cluster_networks(cmd,  # pylint: disable=unused-argument
+                                client,
+                                resource_group_name,
+                                fleet_name):
     return client.list_by_fleet(resource_group_name, fleet_name)
 
 
-def delete_cluster_mesh_profile(cmd,  # pylint: disable=unused-argument
+def delete_cross_cluster_network(cmd,  # pylint: disable=unused-argument
+                                 client,
+                                 resource_group_name,
+                                 fleet_name,
+                                 name,
+                                 no_wait=False):
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, fleet_name, name)
+
+
+def apply_cross_cluster_network(cmd,
                                 client,
                                 resource_group_name,
                                 fleet_name,
                                 name,
+                                what_if=False,
                                 no_wait=False):
-    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, fleet_name, name)
-
-
-def apply_cluster_mesh_profile(cmd,
-                               client,
-                               resource_group_name,
-                               fleet_name,
-                               name,
-                               what_if=False,
-                               no_wait=False):
     if what_if:
-        return _apply_cluster_mesh_what_if(cmd, resource_group_name, fleet_name, name)
+        return _apply_cross_cluster_network_what_if(cmd, resource_group_name, fleet_name, name)
 
     return sdk_no_wait(no_wait, client.begin_apply, resource_group_name, fleet_name, name)
 
 
-def list_cluster_mesh_profile_members(cmd,
-                                      client,  # pylint: disable=unused-argument
-                                      resource_group_name,
-                                      fleet_name,
-                                      name,
-                                      selector=False):
+def list_cross_cluster_network_members(cmd,
+                                       client,  # pylint: disable=unused-argument
+                                       resource_group_name,
+                                       fleet_name,
+                                       name,
+                                       selector=False):
     """List fleet members for a cluster mesh profile.
 
     Modes:
@@ -1354,7 +1354,7 @@ def list_cluster_mesh_profile_members(cmd,
     return members_client.list_by_fleet(resource_group_name, fleet_name, filter=filter_expr)
 
 
-def _apply_cluster_mesh_what_if(cmd, resource_group_name, fleet_name, name):
+def _apply_cross_cluster_network_what_if(cmd, resource_group_name, fleet_name, name):
     """Simulate apply by comparing currently-applied members vs selector-matched members.
 
     Uses the server-side selector filter to find members that match the
