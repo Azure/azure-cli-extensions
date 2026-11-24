@@ -5,6 +5,7 @@
 from azure.cli.testsdk import ResourceGroupPreparer, JMESPathCheck
 from azure.cli.testsdk import ScenarioTest, record_only
 from .afdx_scenario_mixin import CdnAfdScenarioMixin
+from .config import fixture
 import json
 
 from azure.cli.core.azclierror import (InvalidArgumentValueError)
@@ -46,10 +47,8 @@ def _route_override_actions_option():
 
 def _client_response_edge_action(subscription_id):
     # Existing shared fixture: reference only, never update or delete the EdgeAction.
-    edge_action_id = (
-        f'/subscriptions/{subscription_id}/resourceGroups/FDQuickstart-zf'
-        '/providers/Microsoft.Cdn/edgeActions/EdgeActionTest'
-    )
+    edge_action_id = fixture('edge_action_id')
+    edge_action_id = edge_action_id.replace(edge_action_id.split('/')[2], subscription_id, 1)
     return {'edge-action': {'parameters': {
         'edge-action-reference': {'id': edge_action_id},
         'invocation-point': 'ClientResponse',

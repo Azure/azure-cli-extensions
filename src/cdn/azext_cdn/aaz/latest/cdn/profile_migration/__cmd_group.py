@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "cdn profile-migration",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Classic cdn profile migration operations

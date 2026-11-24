@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "cdn profile-migration abort",
-    is_preview=True,
 )
 class Abort(AAZCommand):
     """Abort the migration to Azure Frontdoor Premium/Standard.
@@ -23,9 +22,9 @@ class Abort(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-04-01-preview",
+        "version": "2026-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/migrationabort", "2026-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/migrationabort", "2026-10-01"],
         ]
     }
 
@@ -130,7 +129,7 @@ class Abort(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-01-preview",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }

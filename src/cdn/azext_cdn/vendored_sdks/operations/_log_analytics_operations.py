@@ -42,7 +42,7 @@ def build_get_log_analytics_metrics_request(
     country_or_regions: Optional[List[str]] = None,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2021-06-01"
+    api_version = "2026-10-01"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cdn/profiles/{profileName}/getLogAnalyticsMetrics')
@@ -96,7 +96,7 @@ def build_get_log_analytics_rankings_request(
     custom_domains: Optional[List[str]] = None,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2021-06-01"
+    api_version = "2026-10-01"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cdn/profiles/{profileName}/getLogAnalyticsRankings')
@@ -138,7 +138,7 @@ def build_get_log_analytics_locations_request(
     profile_name: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2021-06-01"
+    api_version = "2026-10-01"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cdn/profiles/{profileName}/getLogAnalyticsLocations')
@@ -173,7 +173,7 @@ def build_get_log_analytics_resources_request(
     profile_name: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2021-06-01"
+    api_version = "2026-10-01"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cdn/profiles/{profileName}/getLogAnalyticsResources')
@@ -216,7 +216,7 @@ def build_get_waf_log_analytics_metrics_request(
     rule_types: Optional[List[Union[str, "_models.WafRuleType"]]] = None,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2021-06-01"
+    api_version = "2026-10-01"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cdn/profiles/{profileName}/getWafLogAnalyticsMetrics')
@@ -269,7 +269,7 @@ def build_get_waf_log_analytics_rankings_request(
     rule_types: Optional[List[Union[str, "_models.WafRuleType"]]] = None,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2021-06-01"
+    api_version = "2026-10-01"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cdn/profiles/{profileName}/getWafLogAnalyticsRankings')

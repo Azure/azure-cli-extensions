@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-09-01-preview",
+        "version": "2026-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/rulesets/{}", "2026-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/rulesets/{}", "2026-10-01"],
         ]
     }
 
@@ -115,9 +115,6 @@ class Create(AAZCommand):
         actions.Element = AAZObjectArg()
 
         _element = cls._args_schema.rules.Element.actions.Element
-        _element.afd_url_signing = AAZObjectArg(
-            options=["afd-url-signing"],
-        )
         _element.cache_expiration = AAZObjectArg(
             options=["cache-expiration"],
         )
@@ -148,39 +145,6 @@ class Create(AAZCommand):
         _element.url_signing = AAZObjectArg(
             options=["url-signing"],
         )
-
-        afd_url_signing = cls._args_schema.rules.Element.actions.Element.afd_url_signing
-        afd_url_signing.parameters = AAZObjectArg(
-            options=["parameters"],
-            help="Defines the parameters for the action.",
-            required=True,
-        )
-
-        parameters = cls._args_schema.rules.Element.actions.Element.afd_url_signing.parameters
-        parameters.algorithm = AAZStrArg(
-            options=["algorithm"],
-            help="Algorithm to use for URL signing",
-            enum={"SHA256": "SHA256"},
-        )
-        parameters.key_group_reference = AAZObjectArg(
-            options=["key-group-reference"],
-            help="Resource reference to the Azure Key Vault secret. Expected to be in format of /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cdn/profiles/{profileName}/keyGroups/{keyGroupName}",
-            required=True,
-        )
-        cls._build_args_resource_reference_create(parameters.key_group_reference)
-        parameters.parameter_name_override = AAZListArg(
-            options=["parameter-name-override"],
-            help="Defines which query string parameters in the url to be considered for expires, key id etc.",
-        )
-        parameters.type_name = AAZStrArg(
-            options=["type-name"],
-            required=True,
-            enum={"DeliveryRuleAfdUrlSigningActionParameters": "DeliveryRuleAfdUrlSigningActionParameters"},
-        )
-
-        parameter_name_override = cls._args_schema.rules.Element.actions.Element.afd_url_signing.parameters.parameter_name_override
-        parameter_name_override.Element = AAZObjectArg()
-        cls._build_args_url_signing_param_identifier_create(parameter_name_override.Element)
 
         cache_expiration = cls._args_schema.rules.Element.actions.Element.cache_expiration
         cache_expiration.parameters = AAZObjectArg(
@@ -413,7 +377,19 @@ class Create(AAZCommand):
 
         parameter_name_override = cls._args_schema.rules.Element.actions.Element.url_signing.parameters.parameter_name_override
         parameter_name_override.Element = AAZObjectArg()
-        cls._build_args_url_signing_param_identifier_create(parameter_name_override.Element)
+
+        _element = cls._args_schema.rules.Element.actions.Element.url_signing.parameters.parameter_name_override.Element
+        _element.param_indicator = AAZStrArg(
+            options=["param-indicator"],
+            help="Indicates the purpose of the parameter",
+            required=True,
+            enum={"Expires": "Expires", "KeyId": "KeyId", "Signature": "Signature"},
+        )
+        _element.param_name = AAZStrArg(
+            options=["param-name"],
+            help="Parameter name",
+            required=True,
+        )
 
         conditions = cls._args_schema.rules.Element.conditions
         conditions.Element = AAZObjectArg()
@@ -1233,33 +1209,6 @@ class Create(AAZCommand):
 
         _schema.id = cls._args_resource_reference_create.id
 
-    _args_url_signing_param_identifier_create = None
-
-    @classmethod
-    def _build_args_url_signing_param_identifier_create(cls, _schema):
-        if cls._args_url_signing_param_identifier_create is not None:
-            _schema.param_indicator = cls._args_url_signing_param_identifier_create.param_indicator
-            _schema.param_name = cls._args_url_signing_param_identifier_create.param_name
-            return
-
-        cls._args_url_signing_param_identifier_create = AAZObjectArg()
-
-        url_signing_param_identifier_create = cls._args_url_signing_param_identifier_create
-        url_signing_param_identifier_create.param_indicator = AAZStrArg(
-            options=["param-indicator"],
-            help="Indicates the purpose of the parameter",
-            required=True,
-            enum={"Expires": "Expires", "KeyId": "KeyId", "Signature": "Signature"},
-        )
-        url_signing_param_identifier_create.param_name = AAZStrArg(
-            options=["param-name"],
-            help="Parameter name",
-            required=True,
-        )
-
-        _schema.param_indicator = cls._args_url_signing_param_identifier_create.param_indicator
-        _schema.param_name = cls._args_url_signing_param_identifier_create.param_name
-
     def _execute_operations(self):
         self.pre_operations()
         yield self.RuleSetsCreate(ctx=self.ctx)()
@@ -1345,7 +1294,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-09-01-preview",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }
@@ -1395,7 +1344,6 @@ class Create(AAZCommand):
 
             _elements = _builder.get(".properties.rules[].actions[]")
             if _elements is not None:
-                _elements.set_const("name", "AfdUrlSigning", AAZStrType, ".afd_url_signing", typ_kwargs={"flags": {"required": True}})
                 _elements.set_const("name", "CacheExpiration", AAZStrType, ".cache_expiration", typ_kwargs={"flags": {"required": True}})
                 _elements.set_const("name", "CacheKeyQueryString", AAZStrType, ".cache_key_query_string", typ_kwargs={"flags": {"required": True}})
                 _elements.set_const("name", "EdgeAction", AAZStrType, ".edge_action", typ_kwargs={"flags": {"required": True}})
@@ -1406,7 +1354,6 @@ class Create(AAZCommand):
                 _elements.set_const("name", "UrlRedirect", AAZStrType, ".url_redirect", typ_kwargs={"flags": {"required": True}})
                 _elements.set_const("name", "UrlRewrite", AAZStrType, ".url_rewrite", typ_kwargs={"flags": {"required": True}})
                 _elements.set_const("name", "UrlSigning", AAZStrType, ".url_signing", typ_kwargs={"flags": {"required": True}})
-                _elements.discriminate_by("name", "AfdUrlSigning")
                 _elements.discriminate_by("name", "CacheExpiration")
                 _elements.discriminate_by("name", "CacheKeyQueryString")
                 _elements.discriminate_by("name", "EdgeAction")
@@ -1417,21 +1364,6 @@ class Create(AAZCommand):
                 _elements.discriminate_by("name", "UrlRedirect")
                 _elements.discriminate_by("name", "UrlRewrite")
                 _elements.discriminate_by("name", "UrlSigning")
-
-            disc_afd_url_signing = _builder.get(".properties.rules[].actions[]{name:AfdUrlSigning}")
-            if disc_afd_url_signing is not None:
-                disc_afd_url_signing.set_prop("parameters", AAZObjectType, ".afd_url_signing.parameters", typ_kwargs={"flags": {"required": True}})
-
-            parameters = _builder.get(".properties.rules[].actions[]{name:AfdUrlSigning}.parameters")
-            if parameters is not None:
-                parameters.set_prop("algorithm", AAZStrType, ".algorithm")
-                _CreateHelper._build_schema_resource_reference_create(parameters.set_prop("keyGroupReference", AAZObjectType, ".key_group_reference", typ_kwargs={"flags": {"required": True}}))
-                parameters.set_prop("parameterNameOverride", AAZListType, ".parameter_name_override")
-                parameters.set_prop("typeName", AAZStrType, ".type_name", typ_kwargs={"flags": {"required": True}})
-
-            parameter_name_override = _builder.get(".properties.rules[].actions[]{name:AfdUrlSigning}.parameters.parameterNameOverride")
-            if parameter_name_override is not None:
-                _CreateHelper._build_schema_url_signing_param_identifier_create(parameter_name_override.set_elements(AAZObjectType, "."))
 
             disc_cache_expiration = _builder.get(".properties.rules[].actions[]{name:CacheExpiration}")
             if disc_cache_expiration is not None:
@@ -1541,7 +1473,12 @@ class Create(AAZCommand):
 
             parameter_name_override = _builder.get(".properties.rules[].actions[]{name:UrlSigning}.parameters.parameterNameOverride")
             if parameter_name_override is not None:
-                _CreateHelper._build_schema_url_signing_param_identifier_create(parameter_name_override.set_elements(AAZObjectType, "."))
+                parameter_name_override.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.rules[].actions[]{name:UrlSigning}.parameters.parameterNameOverride[]")
+            if _elements is not None:
+                _elements.set_prop("paramIndicator", AAZStrType, ".param_indicator", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("paramName", AAZStrType, ".param_name", typ_kwargs={"flags": {"required": True}})
 
             conditions = _builder.get(".properties.rules[].conditions")
             if conditions is not None:
@@ -2053,30 +1990,6 @@ class Create(AAZCommand):
                 flags={"required": True},
             )
 
-            disc_afd_url_signing = cls._schema_on_200_201.properties.rules.Element.actions.Element.discriminate_by("name", "AfdUrlSigning")
-            disc_afd_url_signing.parameters = AAZObjectType(
-                flags={"required": True},
-            )
-
-            parameters = cls._schema_on_200_201.properties.rules.Element.actions.Element.discriminate_by("name", "AfdUrlSigning").parameters
-            parameters.algorithm = AAZStrType()
-            parameters.key_group_reference = AAZObjectType(
-                serialized_name="keyGroupReference",
-                flags={"required": True},
-            )
-            _CreateHelper._build_schema_resource_reference_read(parameters.key_group_reference)
-            parameters.parameter_name_override = AAZListType(
-                serialized_name="parameterNameOverride",
-            )
-            parameters.type_name = AAZStrType(
-                serialized_name="typeName",
-                flags={"required": True},
-            )
-
-            parameter_name_override = cls._schema_on_200_201.properties.rules.Element.actions.Element.discriminate_by("name", "AfdUrlSigning").parameters.parameter_name_override
-            parameter_name_override.Element = AAZObjectType()
-            _CreateHelper._build_schema_url_signing_param_identifier_read(parameter_name_override.Element)
-
             disc_cache_expiration = cls._schema_on_200_201.properties.rules.Element.actions.Element.discriminate_by("name", "CacheExpiration")
             disc_cache_expiration.parameters = AAZObjectType(
                 flags={"required": True},
@@ -2278,7 +2191,16 @@ class Create(AAZCommand):
 
             parameter_name_override = cls._schema_on_200_201.properties.rules.Element.actions.Element.discriminate_by("name", "UrlSigning").parameters.parameter_name_override
             parameter_name_override.Element = AAZObjectType()
-            _CreateHelper._build_schema_url_signing_param_identifier_read(parameter_name_override.Element)
+
+            _element = cls._schema_on_200_201.properties.rules.Element.actions.Element.discriminate_by("name", "UrlSigning").parameters.parameter_name_override.Element
+            _element.param_indicator = AAZStrType(
+                serialized_name="paramIndicator",
+                flags={"required": True},
+            )
+            _element.param_name = AAZStrType(
+                serialized_name="paramName",
+                flags={"required": True},
+            )
 
             conditions = cls._schema_on_200_201.properties.rules.Element.conditions
             conditions.Element = AAZObjectType()
@@ -2845,13 +2767,6 @@ class _CreateHelper:
             return
         _builder.set_prop("id", AAZStrType, ".id")
 
-    @classmethod
-    def _build_schema_url_signing_param_identifier_create(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("paramIndicator", AAZStrType, ".param_indicator", typ_kwargs={"flags": {"required": True}})
-        _builder.set_prop("paramName", AAZStrType, ".param_name", typ_kwargs={"flags": {"required": True}})
-
     _schema_header_action_parameters_read = None
 
     @classmethod
@@ -2899,30 +2814,6 @@ class _CreateHelper:
         resource_reference_read.id = AAZStrType()
 
         _schema.id = cls._schema_resource_reference_read.id
-
-    _schema_url_signing_param_identifier_read = None
-
-    @classmethod
-    def _build_schema_url_signing_param_identifier_read(cls, _schema):
-        if cls._schema_url_signing_param_identifier_read is not None:
-            _schema.param_indicator = cls._schema_url_signing_param_identifier_read.param_indicator
-            _schema.param_name = cls._schema_url_signing_param_identifier_read.param_name
-            return
-
-        cls._schema_url_signing_param_identifier_read = _schema_url_signing_param_identifier_read = AAZObjectType()
-
-        url_signing_param_identifier_read = _schema_url_signing_param_identifier_read
-        url_signing_param_identifier_read.param_indicator = AAZStrType(
-            serialized_name="paramIndicator",
-            flags={"required": True},
-        )
-        url_signing_param_identifier_read.param_name = AAZStrType(
-            serialized_name="paramName",
-            flags={"required": True},
-        )
-
-        _schema.param_indicator = cls._schema_url_signing_param_identifier_read.param_indicator
-        _schema.param_name = cls._schema_url_signing_param_identifier_read.param_name
 
 
 __all__ = ["Create"]

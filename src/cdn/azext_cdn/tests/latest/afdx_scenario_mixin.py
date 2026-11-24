@@ -7,11 +7,14 @@
 import hashlib
 import json
 from contextlib import contextmanager
+from datetime import datetime, timedelta, timezone
+from urllib.parse import parse_qs, urlsplit
 
 from azure.cli.testsdk import JMESPathCheck
 from azure.cli.testsdk.scenario_tests.recording_processors import RecordingProcessor
 
 from .scenario_mixin import add_tags
+from .config import configure_test_environment, fixture
 
 
 def _json_arg(value):
@@ -151,13 +154,36 @@ class ByocVaultRecordingProcessor(RecordingProcessor):
 
 # pylint: disable=too-many-public-methods
 class CdnAfdScenarioMixin:
+    def setUp(self):
+        configure_test_environment(self)
+        super().setUp()
+
     def cmd(self, command, checks=None, expect_failure=False):
         return super().cmd(_escape_format_placeholders(command, getattr(self, 'kwargs', {})), checks,
                            expect_failure=expect_failure)
 
+    def analytics_time_range(self, operation):
+        if not self.is_playback_mode():
+            start = datetime.now(timezone.utc).replace(microsecond=0)
+            return start, start + timedelta(minutes=5)
+
+        for request in self.cassette.requests:
+            url = urlsplit(request.uri)
+            if request.method == 'GET' and url.path.rsplit('/', 1)[-1] == operation:
+                query = parse_qs(url.query)
+                return tuple(
+                    datetime.fromisoformat(query[name][0].replace('Z', '+00:00'))
+                    for name in ('dateTimeBegin', 'dateTimeEnd')
+                )
+        raise AssertionError(f'No recorded Analytics time range for {operation}')
+
     @contextmanager
-    def afd_byoc_identity(self, resource_group, profile_name, vault_name='Azure-CDN-BYOC',
-                          vault_resource_group='byoc', vault_subscription='3c0124f9-e564-4c42-86f7-fa79457aedc3'):
+    def afd_byoc_identity(self, resource_group, profile_name, vault_name=None,
+                          vault_resource_group=None, vault_subscription=None):
+        vault = fixture('byoc_vault_id').split('/')
+        vault_name = vault_name or vault[-1]
+        vault_resource_group = vault_resource_group or vault[4]
+        vault_subscription = vault_subscription or vault[2]
         identity = self.cmd(
             f'afd profile identity assign -g {resource_group} --profile-name {profile_name} '
             '--system-assigned').get_output_in_json()

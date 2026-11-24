@@ -1,0 +1,29 @@
+{
+  "subscription_id": "27cafca8-b9a4-4264-b399-45d0c9cca1ab",
+  "subscription_name": "AZURE-CDN-TEST",
+  "cloud": "AzureCloud",
+  "arm_endpoint": "https://management.azure.com",
+  "fixtures": {
+    "classic_profile_id": "/subscriptions/27cafca8-b9a4-4264-b399-45d0c9cca1ab/resourceGroups/CDNQuickstart-zf/providers/Microsoft.Cdn/profiles/zftest",
+    "classic_byoc_latest_endpoint_id": "/subscriptions/3c0124f9-e564-4c42-86f7-fa79457aedc3/resourceGroups/clitest.rgeq2o4sqemg35laa4vdxfxp6t4x667oign26iahzna3oeg4hab6mows3pys56hebjx/providers/Microsoft.Cdn/profiles/profile123/endpoints/byoc-l-071401",
+    "classic_https_endpoint_id": "/subscriptions/3c0124f9-e564-4c42-86f7-fa79457aedc3/resourceGroups/clitest.rg7rwu4lfk2rh63bysdqqftzgxpd7saokizo4ombqluf5srf2dpggs47m5yxvorwwkh/providers/Microsoft.Cdn/profiles/profile123/endpoints/msft-byoc-071401",
+    "edge_action_id": "/subscriptions/27cafca8-b9a4-4264-b399-45d0c9cca1ab/resourceGroups/FDQuickstart-zf/providers/Microsoft.Cdn/edgeActions/EdgeActionTest",
+    "private_link_id": "/subscriptions/27cafca8-b9a4-4264-b399-45d0c9cca1ab/resourceGroups/cdn-sdk-test/providers/Microsoft.Network/privateLinkServices/cdn-sdk-pls-test",
+    "private_link_location": "EastUS",
+    "waf_policy_id": "/subscriptions/27cafca8-b9a4-4264-b399-45d0c9cca1ab/resourcegroups/CliDevReservedGroup/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/SampleStandard",
+    "byoc_vault_id": "/subscriptions/3c0124f9-e564-4c42-86f7-fa79457aedc3/resourceGroups/byoc/providers/Microsoft.KeyVault/vaults/Azure-CDN-BYOC",
+    "afd_byoc_secret_name": "afde2e-root-azfdtest-xyz",
+    "afd_byoc_domain": "afde2e-root.azfdtest.xyz",
+    "classic_byoc_secret_name": "wildcard-afdx-rp-platform-test-azfdtest-xyz"
+  },
+  "timeouts": {
+    "replay": {
+      "case_seconds": 300,
+      "suite_seconds": 1800
+    },
+    "record": {
+      "case_seconds": 3600,
+      "suite_seconds": 21600
+    }
+  }
+}

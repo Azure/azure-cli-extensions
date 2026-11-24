@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "cdn profile-migration check-compatibility",
-    is_preview=True,
 )
 class CheckCompatibility(AAZCommand):
     """Checks if CDN profile can be migrated to Azure Frontdoor(Standard/Premium) profile.
@@ -23,9 +22,9 @@ class CheckCompatibility(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-04-01-preview",
+        "version": "2026-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/cdncanmigratetoafd", "2026-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/cdncanmigratetoafd", "2026-10-01"],
         ]
     }
 
@@ -143,7 +142,7 @@ class CheckCompatibility(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-01-preview",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }

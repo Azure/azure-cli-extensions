@@ -3,6 +3,14 @@
 Release History
 ===============
 
+1.0.0
++++++
+* Initial stable release of the CDN and AFD extension.
+* Use stable API version 2026-10-01 for AFD and Classic CDN commands, including legacy SDK-backed commands.
+* Exclude preview-only authentication policies, deployment versions, capacity distribution settings, gRPC configuration, and the AfdUrlSigning rule action.
+* Retain stable mTLS, origin authentication, TLS groups, certificate validation settings, batch rules, and EdgeAction rule associations.
+* Preserve the optional AFD profile create-only NonProduction environment override for enabled subscriptions.
+
 1.0.0b4
 +++++++
 * Upgrade AFD commands to API version 2026-09-01-preview, preserving Classic CDN commands on 2026-04-01-preview and other pinned API versions through separate profile command models.

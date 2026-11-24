@@ -1,51 +1,5 @@
 interactions:
 - request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - afd profile create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --profile-name --sku
-      User-Agent:
-      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2024-11-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"owner":"jingnanxu"},"properties":{"provisioningState":"Succeeded"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '258'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 21 Oct 2026 08:48:05 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
-      x-msedge-ref:
-      - 'Ref A: 0C459683728248A09EE35CE38992B1A0 Ref B: SG2AA1040519029 Ref C: 2026-10-21T08:48:05Z'
-    status:
-      code: 200
-      message: OK
-- request:
     body: '{"location": "global", "sku": {"name": "Standard_AzureFrontDoor"}}'
     headers:
       Accept:
@@ -65,21 +19,21 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002?api-version=2026-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002","type":"Microsoft.Cdn/profiles","name":"profile000002","location":"Global","kind":"frontdoor","tags":{},"sku":{"name":"Standard_AzureFrontDoor"},"properties":{"originResponseTimeoutSeconds":30,"logScrubbing":null,"frontDoorId":"570330ff-ec35-4790-82e2-bf9014dd14f6","extendedProperties":{},"enablePreviewDeployment":null,"resourceState":"Creating","provisioningState":"Creating"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002","type":"Microsoft.Cdn/profiles","name":"profile000002","location":"Global","kind":"frontdoor","tags":{},"sku":{"name":"Standard_AzureFrontDoor"},"properties":{"originResponseTimeoutSeconds":30,"logScrubbing":null,"frontDoorId":"a6c841cc-2f23-4317-b8df-384bf7e9abb1","extendedProperties":{},"resourceState":"Creating","provisioningState":"Creating"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/operationresults/e379c7c9-97e4-41a3-ab14-c61713a14674?api-version=2026-09-01-preview&t=639281692909698195&c=MIIHlTCCBn2gAwIBAgIRAObv0sWV1VDnrj-MruQ0C2swDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV1VTMiBDQSAwMTAeFw0yNjA5MjIwMzExNDlaFw0yNjEyMTcwOTExNDlaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuOGh4IB8lhPUpPCo4-KPP8w1KXYnfIOkPnS5-vhsFzk2FBHysapaXcr4JtVYQOSQ4crzc5tIjAP4tUTQ3JQ92-LrEm2vFoYzvEL9lr295wsMpNUpxHyQnobp5LjIB8ORCotycPxwRPgbOELCYWDjKL2RnZzpmBShT4GPjuGVk6jCo2kZqDcdBUAZBGr8pDajVoGVrgINfzzIMc9qpxywo7tDdK-RVPEmzSqTaYUew4a_q4VCkQySc9uB_tefgHh1pYPUqpzDGAMn16V4hOVEzGjD67fBCSvdkpvWy2smUirQYrdC3TEjvRHH73oIOl0Bj0Lm-fdXA1E748LhCBav9QIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUf3paBn-JUoOQ3qDWty0SmzRtm9kwHwYDVR0jBBgwFoAUrONy-gOyc549lcjvh1uu3Ruh7WgwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzg3L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NybHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS84Ny9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzg3L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZXdlc3R1czJwa2kud2VzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0dXMyaWNhMDEvODcvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY2FjZXJ0cy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAtqUV6EtG3Lbhi_gp7j_eSVHRPF13FDx1EGP88WJa7uPnzW-FabknINa9lcRg6qAfIhUu3bbSGtTcy7EtnSJANG-s0iCdavAca-XmS4HwTuyKyVsgKDTaAfp5JLw9TnJz2HlGny2adUfoD9lx-dXRzOSfwllut6kqsxuGjIVNgbe_JoY1fwssznPswp17zdmXbSEGu1z5CdRdfQK79RGfH4pictbfq4b1R_2emC4OA-3aGijs7-GK7K4pmlv48cs4cfjKCxnfXMqyc9gm7E5tg126H0tEAcMIx14CmpsZZqFfOJLGuRbOJSytbLmeXWXBzdrA-OtASQrU5j3sTO1p9w&s=dWlj0YZFAe6Jx3U3b9M05GJz4gz0-lz0ymQ_RYbjXK8R4DtWsz-qRjhjcOtxPoQnfMDNjLug5rBVdfjGGBa-DlF6nt1PKBSjuoXXgU758DAWDjKwZegwW5SyQaqmtcfOTGc7TW9Pp1bjI6-wCzqU9wOc54gTJv_lkRN4o3r5i2_AlwPV6uTYOPDCXgtHe03LHPzPcgMHvGJr7sIArvlk56XzNyqrApxPN-B4VVkIS66ZgirIwkF2JCg0TfdYWJUKAwY0HZe7A9eimOzDizxo7N-xR3L_LVYCnLnBy605PVOHlmNW40tAzGh4vp-13zaSaAkyj8MdPLAUwMGU5sxXPg&h=-_XSXx8rhjMr5II3RYVni2AbC8xN3xqaf9Za_WSuXP8
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/operationresults/ea11210e-9bc0-452f-b9eb-cc03562e09b2?api-version=2026-10-01&t=639307851493066458&c=MIIHlTCCBn2gAwIBAgIRAJpoljMeaD94km1sRcld59UwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVVTMiBDQSAwMTAeFw0yNjExMDIyMjQ1MTdaFw0yNzAxMjkwNDQ1MTdaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2vUDjtwI_wLvRFgdWxDl9_oAyoyKuEA5c5c5XHjIN28FtbfO-MtPOWWulkxq72VArCHS5h__40MUe-7AlwLPJDXhlUpL18ESHtUoDXHvazSArlu6PqKxkm75JOXOMAxN5qQZcuB1iHjlv790JlUPmLs1edMzYTzD8CGKlvUJ5sneD9PTKmU3nvTkVVGPmtYzn9Lds-y4rLbpCE3Dwht8c5QHbpfhD3o9dykXrEA_a-zxfgY-AXosnw0WDckagHVJLVic5nb6TzWjVF9kW3JHO-n_WMBehbibRTW0cRpCXNDoPXrBOWfPRkzWXGYp_v8CTuSMZqy0KT6li5_x88mSLQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUx4KCVFbCG3vKdtnxOwhM_IHdoLIwHwYDVR0jBBgwFoAU_Ow-26p8H4IeBbihBvlD5wKzCrkwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzI1L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NybHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS8yNS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzI1L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZWVhc3R1czJwa2kuZWFzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyaWNhMDEvMjUvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY2FjZXJ0cy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAdUrRGlZSh2Um14EA9BN8Tw81jeZr5paJ5sIzOOPhBEjGForZbEgO07eJ0BmzSFyh63tZFL-61HOv7nHjCahaKJexDBVAWf0POKOp8TsSOwJvdVVon4ZfhqXX2MjbgEWGeFPqfZlleWI0I-Vx3dijCnKB3sIYsRqxTaHme8a7syK-f0znegxGUzXSPnHme1mMt_UCrVaaagXslJEatXFc0c231njNQ1gaDNPPESFcz0ZePvaBqG6FaBS_ub5Ama2hQ3L9zO0fVmFbpdwUOo_RbRPqK--2PNdJ6709jQXscMCSB8e9LzWf1zIg_xTVUYtLKoQ3h0X_bkMKrkYeL6Q5HQ&s=jvVo2JM3ZBi0oK84nmqRwU_6dmV2GaPorBTSRKTe3FqTS42l7eM7MeY5CR9ddmlzEJ1Rc74zNCJzLy00PniRFYyiYfdlqlVkM0IOzgkCD1Osl5suE-X0ijvVAXWkjtscvslnP5PLJ3F37NxRXzQtGWmvNrnsZlU_jysGa4heKKJOmLJjU1MYHxsMHAxiwaEQVx-usMfv4FNWu4bPdithbqNNTH1AyhEUQ6e1nhKiYQz9-_5AtQxQn_gMuL897cPEOYWXVBkNwYNiwrjUMOVOvKBARsedN0ARoY9KOu1Pb2rV5dQQsckF5iFTw0Q2YYrOKtu_v0qJpBDH4k6ltaVRaQ&h=BKdB2ZrlXbU46nEftXOBVyt736oRe6GQjG5Xtk3y5n8
       cache-control:
       - no-cache
       content-length:
-      - '519'
+      - '488'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Oct 2026 08:48:10 GMT
+      - Fri, 20 Nov 2026 15:25:49 GMT
       expires:
       - '-1'
       pragma:
@@ -91,13 +45,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/southeastasia/3d49b7f4-7235-4789-be51-a0995f2cb3de
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/southeastasia/d244458b-747c-4d52-8334-5bbd4435c4cb
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 18E59A31828F42F1A24F2EBE31306506 Ref B: SG2AA1070301052 Ref C: 2026-10-21T08:48:06Z'
+      - 'Ref A: 03A164B1B9C742F592E0A140589CF6B9 Ref B: SG2AA1040518040 Ref C: 2026-11-20T15:25:44Z'
     status:
       code: 201
       message: Created
@@ -117,7 +71,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/operationresults/e379c7c9-97e4-41a3-ab14-c61713a14674?api-version=2026-09-01-preview&t=639281692909698195&c=MIIHlTCCBn2gAwIBAgIRAObv0sWV1VDnrj-MruQ0C2swDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV1VTMiBDQSAwMTAeFw0yNjA5MjIwMzExNDlaFw0yNjEyMTcwOTExNDlaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuOGh4IB8lhPUpPCo4-KPP8w1KXYnfIOkPnS5-vhsFzk2FBHysapaXcr4JtVYQOSQ4crzc5tIjAP4tUTQ3JQ92-LrEm2vFoYzvEL9lr295wsMpNUpxHyQnobp5LjIB8ORCotycPxwRPgbOELCYWDjKL2RnZzpmBShT4GPjuGVk6jCo2kZqDcdBUAZBGr8pDajVoGVrgINfzzIMc9qpxywo7tDdK-RVPEmzSqTaYUew4a_q4VCkQySc9uB_tefgHh1pYPUqpzDGAMn16V4hOVEzGjD67fBCSvdkpvWy2smUirQYrdC3TEjvRHH73oIOl0Bj0Lm-fdXA1E748LhCBav9QIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUf3paBn-JUoOQ3qDWty0SmzRtm9kwHwYDVR0jBBgwFoAUrONy-gOyc549lcjvh1uu3Ruh7WgwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzg3L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NybHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS84Ny9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzg3L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZXdlc3R1czJwa2kud2VzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0dXMyaWNhMDEvODcvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY2FjZXJ0cy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAtqUV6EtG3Lbhi_gp7j_eSVHRPF13FDx1EGP88WJa7uPnzW-FabknINa9lcRg6qAfIhUu3bbSGtTcy7EtnSJANG-s0iCdavAca-XmS4HwTuyKyVsgKDTaAfp5JLw9TnJz2HlGny2adUfoD9lx-dXRzOSfwllut6kqsxuGjIVNgbe_JoY1fwssznPswp17zdmXbSEGu1z5CdRdfQK79RGfH4pictbfq4b1R_2emC4OA-3aGijs7-GK7K4pmlv48cs4cfjKCxnfXMqyc9gm7E5tg126H0tEAcMIx14CmpsZZqFfOJLGuRbOJSytbLmeXWXBzdrA-OtASQrU5j3sTO1p9w&s=dWlj0YZFAe6Jx3U3b9M05GJz4gz0-lz0ymQ_RYbjXK8R4DtWsz-qRjhjcOtxPoQnfMDNjLug5rBVdfjGGBa-DlF6nt1PKBSjuoXXgU758DAWDjKwZegwW5SyQaqmtcfOTGc7TW9Pp1bjI6-wCzqU9wOc54gTJv_lkRN4o3r5i2_AlwPV6uTYOPDCXgtHe03LHPzPcgMHvGJr7sIArvlk56XzNyqrApxPN-B4VVkIS66ZgirIwkF2JCg0TfdYWJUKAwY0HZe7A9eimOzDizxo7N-xR3L_LVYCnLnBy605PVOHlmNW40tAzGh4vp-13zaSaAkyj8MdPLAUwMGU5sxXPg&h=-_XSXx8rhjMr5II3RYVni2AbC8xN3xqaf9Za_WSuXP8
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/operationresults/ea11210e-9bc0-452f-b9eb-cc03562e09b2?api-version=2026-10-01&t=639307851493066458&c=MIIHlTCCBn2gAwIBAgIRAJpoljMeaD94km1sRcld59UwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVVTMiBDQSAwMTAeFw0yNjExMDIyMjQ1MTdaFw0yNzAxMjkwNDQ1MTdaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2vUDjtwI_wLvRFgdWxDl9_oAyoyKuEA5c5c5XHjIN28FtbfO-MtPOWWulkxq72VArCHS5h__40MUe-7AlwLPJDXhlUpL18ESHtUoDXHvazSArlu6PqKxkm75JOXOMAxN5qQZcuB1iHjlv790JlUPmLs1edMzYTzD8CGKlvUJ5sneD9PTKmU3nvTkVVGPmtYzn9Lds-y4rLbpCE3Dwht8c5QHbpfhD3o9dykXrEA_a-zxfgY-AXosnw0WDckagHVJLVic5nb6TzWjVF9kW3JHO-n_WMBehbibRTW0cRpCXNDoPXrBOWfPRkzWXGYp_v8CTuSMZqy0KT6li5_x88mSLQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUx4KCVFbCG3vKdtnxOwhM_IHdoLIwHwYDVR0jBBgwFoAU_Ow-26p8H4IeBbihBvlD5wKzCrkwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzI1L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NybHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS8yNS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzI1L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZWVhc3R1czJwa2kuZWFzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyaWNhMDEvMjUvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY2FjZXJ0cy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAdUrRGlZSh2Um14EA9BN8Tw81jeZr5paJ5sIzOOPhBEjGForZbEgO07eJ0BmzSFyh63tZFL-61HOv7nHjCahaKJexDBVAWf0POKOp8TsSOwJvdVVon4ZfhqXX2MjbgEWGeFPqfZlleWI0I-Vx3dijCnKB3sIYsRqxTaHme8a7syK-f0znegxGUzXSPnHme1mMt_UCrVaaagXslJEatXFc0c231njNQ1gaDNPPESFcz0ZePvaBqG6FaBS_ub5Ama2hQ3L9zO0fVmFbpdwUOo_RbRPqK--2PNdJ6709jQXscMCSB8e9LzWf1zIg_xTVUYtLKoQ3h0X_bkMKrkYeL6Q5HQ&s=jvVo2JM3ZBi0oK84nmqRwU_6dmV2GaPorBTSRKTe3FqTS42l7eM7MeY5CR9ddmlzEJ1Rc74zNCJzLy00PniRFYyiYfdlqlVkM0IOzgkCD1Osl5suE-X0ijvVAXWkjtscvslnP5PLJ3F37NxRXzQtGWmvNrnsZlU_jysGa4heKKJOmLJjU1MYHxsMHAxiwaEQVx-usMfv4FNWu4bPdithbqNNTH1AyhEUQ6e1nhKiYQz9-_5AtQxQn_gMuL897cPEOYWXVBkNwYNiwrjUMOVOvKBARsedN0ARoY9KOu1Pb2rV5dQQsckF5iFTw0Q2YYrOKtu_v0qJpBDH4k6ltaVRaQ&h=BKdB2ZrlXbU46nEftXOBVyt736oRe6GQjG5Xtk3y5n8
   response:
     body:
       string: '{"status":"InProgress","error":{"code":"None","message":null}}'
@@ -129,7 +83,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Oct 2026 08:48:12 GMT
+      - Fri, 20 Nov 2026 15:25:50 GMT
       expires:
       - '-1'
       pragma:
@@ -141,11 +95,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/southeastasia/379c5e82-0fc9-43f8-a5b0-a8d038d361bd
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/southeastasia/9ee42290-3bf3-4e0b-93a5-d2fcbd3ab33d
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 30CC65C2998A4FB5A225E4ED2F8533C8 Ref B: SG2AA1040517029 Ref C: 2026-10-21T08:48:11Z'
+      - 'Ref A: 866A8F15E63242C996D92F1F53D18F76 Ref B: SG2AA1040513036 Ref C: 2026-11-20T15:25:50Z'
     status:
       code: 200
       message: OK
@@ -165,7 +119,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/operationresults/e379c7c9-97e4-41a3-ab14-c61713a14674?api-version=2026-09-01-preview&t=639281692909698195&c=MIIHlTCCBn2gAwIBAgIRAObv0sWV1VDnrj-MruQ0C2swDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV1VTMiBDQSAwMTAeFw0yNjA5MjIwMzExNDlaFw0yNjEyMTcwOTExNDlaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuOGh4IB8lhPUpPCo4-KPP8w1KXYnfIOkPnS5-vhsFzk2FBHysapaXcr4JtVYQOSQ4crzc5tIjAP4tUTQ3JQ92-LrEm2vFoYzvEL9lr295wsMpNUpxHyQnobp5LjIB8ORCotycPxwRPgbOELCYWDjKL2RnZzpmBShT4GPjuGVk6jCo2kZqDcdBUAZBGr8pDajVoGVrgINfzzIMc9qpxywo7tDdK-RVPEmzSqTaYUew4a_q4VCkQySc9uB_tefgHh1pYPUqpzDGAMn16V4hOVEzGjD67fBCSvdkpvWy2smUirQYrdC3TEjvRHH73oIOl0Bj0Lm-fdXA1E748LhCBav9QIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUf3paBn-JUoOQ3qDWty0SmzRtm9kwHwYDVR0jBBgwFoAUrONy-gOyc549lcjvh1uu3Ruh7WgwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzg3L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NybHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS84Ny9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzg3L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZXdlc3R1czJwa2kud2VzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0dXMyaWNhMDEvODcvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY2FjZXJ0cy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAtqUV6EtG3Lbhi_gp7j_eSVHRPF13FDx1EGP88WJa7uPnzW-FabknINa9lcRg6qAfIhUu3bbSGtTcy7EtnSJANG-s0iCdavAca-XmS4HwTuyKyVsgKDTaAfp5JLw9TnJz2HlGny2adUfoD9lx-dXRzOSfwllut6kqsxuGjIVNgbe_JoY1fwssznPswp17zdmXbSEGu1z5CdRdfQK79RGfH4pictbfq4b1R_2emC4OA-3aGijs7-GK7K4pmlv48cs4cfjKCxnfXMqyc9gm7E5tg126H0tEAcMIx14CmpsZZqFfOJLGuRbOJSytbLmeXWXBzdrA-OtASQrU5j3sTO1p9w&s=dWlj0YZFAe6Jx3U3b9M05GJz4gz0-lz0ymQ_RYbjXK8R4DtWsz-qRjhjcOtxPoQnfMDNjLug5rBVdfjGGBa-DlF6nt1PKBSjuoXXgU758DAWDjKwZegwW5SyQaqmtcfOTGc7TW9Pp1bjI6-wCzqU9wOc54gTJv_lkRN4o3r5i2_AlwPV6uTYOPDCXgtHe03LHPzPcgMHvGJr7sIArvlk56XzNyqrApxPN-B4VVkIS66ZgirIwkF2JCg0TfdYWJUKAwY0HZe7A9eimOzDizxo7N-xR3L_LVYCnLnBy605PVOHlmNW40tAzGh4vp-13zaSaAkyj8MdPLAUwMGU5sxXPg&h=-_XSXx8rhjMr5II3RYVni2AbC8xN3xqaf9Za_WSuXP8
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/operationresults/ea11210e-9bc0-452f-b9eb-cc03562e09b2?api-version=2026-10-01&t=639307851493066458&c=MIIHlTCCBn2gAwIBAgIRAJpoljMeaD94km1sRcld59UwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVVTMiBDQSAwMTAeFw0yNjExMDIyMjQ1MTdaFw0yNzAxMjkwNDQ1MTdaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2vUDjtwI_wLvRFgdWxDl9_oAyoyKuEA5c5c5XHjIN28FtbfO-MtPOWWulkxq72VArCHS5h__40MUe-7AlwLPJDXhlUpL18ESHtUoDXHvazSArlu6PqKxkm75JOXOMAxN5qQZcuB1iHjlv790JlUPmLs1edMzYTzD8CGKlvUJ5sneD9PTKmU3nvTkVVGPmtYzn9Lds-y4rLbpCE3Dwht8c5QHbpfhD3o9dykXrEA_a-zxfgY-AXosnw0WDckagHVJLVic5nb6TzWjVF9kW3JHO-n_WMBehbibRTW0cRpCXNDoPXrBOWfPRkzWXGYp_v8CTuSMZqy0KT6li5_x88mSLQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUx4KCVFbCG3vKdtnxOwhM_IHdoLIwHwYDVR0jBBgwFoAU_Ow-26p8H4IeBbihBvlD5wKzCrkwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzI1L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NybHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS8yNS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzI1L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZWVhc3R1czJwa2kuZWFzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyaWNhMDEvMjUvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY2FjZXJ0cy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAdUrRGlZSh2Um14EA9BN8Tw81jeZr5paJ5sIzOOPhBEjGForZbEgO07eJ0BmzSFyh63tZFL-61HOv7nHjCahaKJexDBVAWf0POKOp8TsSOwJvdVVon4ZfhqXX2MjbgEWGeFPqfZlleWI0I-Vx3dijCnKB3sIYsRqxTaHme8a7syK-f0znegxGUzXSPnHme1mMt_UCrVaaagXslJEatXFc0c231njNQ1gaDNPPESFcz0ZePvaBqG6FaBS_ub5Ama2hQ3L9zO0fVmFbpdwUOo_RbRPqK--2PNdJ6709jQXscMCSB8e9LzWf1zIg_xTVUYtLKoQ3h0X_bkMKrkYeL6Q5HQ&s=jvVo2JM3ZBi0oK84nmqRwU_6dmV2GaPorBTSRKTe3FqTS42l7eM7MeY5CR9ddmlzEJ1Rc74zNCJzLy00PniRFYyiYfdlqlVkM0IOzgkCD1Osl5suE-X0ijvVAXWkjtscvslnP5PLJ3F37NxRXzQtGWmvNrnsZlU_jysGa4heKKJOmLJjU1MYHxsMHAxiwaEQVx-usMfv4FNWu4bPdithbqNNTH1AyhEUQ6e1nhKiYQz9-_5AtQxQn_gMuL897cPEOYWXVBkNwYNiwrjUMOVOvKBARsedN0ARoY9KOu1Pb2rV5dQQsckF5iFTw0Q2YYrOKtu_v0qJpBDH4k6ltaVRaQ&h=BKdB2ZrlXbU46nEftXOBVyt736oRe6GQjG5Xtk3y5n8
   response:
     body:
       string: '{"status":"InProgress","error":{"code":"None","message":null}}'
@@ -177,7 +131,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Oct 2026 08:48:43 GMT
+      - Fri, 20 Nov 2026 15:26:21 GMT
       expires:
       - '-1'
       pragma:
@@ -189,11 +143,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/b552c018-a6fc-424c-a4de-99373535ec59
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/southeastasia/cfe165cf-e487-45ac-9bb5-a16d4477b760
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 3BBB9C90A862421AB7798A486D9D2C55 Ref B: SG2AA1070302036 Ref C: 2026-10-21T08:48:43Z'
+      - 'Ref A: 06BBC0171A4C426E919F108105AFC202 Ref B: SG2AA1040519042 Ref C: 2026-11-20T15:26:21Z'
     status:
       code: 200
       message: OK
@@ -213,7 +167,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/operationresults/e379c7c9-97e4-41a3-ab14-c61713a14674?api-version=2026-09-01-preview&t=639281692909698195&c=MIIHlTCCBn2gAwIBAgIRAObv0sWV1VDnrj-MruQ0C2swDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV1VTMiBDQSAwMTAeFw0yNjA5MjIwMzExNDlaFw0yNjEyMTcwOTExNDlaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuOGh4IB8lhPUpPCo4-KPP8w1KXYnfIOkPnS5-vhsFzk2FBHysapaXcr4JtVYQOSQ4crzc5tIjAP4tUTQ3JQ92-LrEm2vFoYzvEL9lr295wsMpNUpxHyQnobp5LjIB8ORCotycPxwRPgbOELCYWDjKL2RnZzpmBShT4GPjuGVk6jCo2kZqDcdBUAZBGr8pDajVoGVrgINfzzIMc9qpxywo7tDdK-RVPEmzSqTaYUew4a_q4VCkQySc9uB_tefgHh1pYPUqpzDGAMn16V4hOVEzGjD67fBCSvdkpvWy2smUirQYrdC3TEjvRHH73oIOl0Bj0Lm-fdXA1E748LhCBav9QIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUf3paBn-JUoOQ3qDWty0SmzRtm9kwHwYDVR0jBBgwFoAUrONy-gOyc549lcjvh1uu3Ruh7WgwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzg3L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NybHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS84Ny9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzg3L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZXdlc3R1czJwa2kud2VzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0dXMyaWNhMDEvODcvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY2FjZXJ0cy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAtqUV6EtG3Lbhi_gp7j_eSVHRPF13FDx1EGP88WJa7uPnzW-FabknINa9lcRg6qAfIhUu3bbSGtTcy7EtnSJANG-s0iCdavAca-XmS4HwTuyKyVsgKDTaAfp5JLw9TnJz2HlGny2adUfoD9lx-dXRzOSfwllut6kqsxuGjIVNgbe_JoY1fwssznPswp17zdmXbSEGu1z5CdRdfQK79RGfH4pictbfq4b1R_2emC4OA-3aGijs7-GK7K4pmlv48cs4cfjKCxnfXMqyc9gm7E5tg126H0tEAcMIx14CmpsZZqFfOJLGuRbOJSytbLmeXWXBzdrA-OtASQrU5j3sTO1p9w&s=dWlj0YZFAe6Jx3U3b9M05GJz4gz0-lz0ymQ_RYbjXK8R4DtWsz-qRjhjcOtxPoQnfMDNjLug5rBVdfjGGBa-DlF6nt1PKBSjuoXXgU758DAWDjKwZegwW5SyQaqmtcfOTGc7TW9Pp1bjI6-wCzqU9wOc54gTJv_lkRN4o3r5i2_AlwPV6uTYOPDCXgtHe03LHPzPcgMHvGJr7sIArvlk56XzNyqrApxPN-B4VVkIS66ZgirIwkF2JCg0TfdYWJUKAwY0HZe7A9eimOzDizxo7N-xR3L_LVYCnLnBy605PVOHlmNW40tAzGh4vp-13zaSaAkyj8MdPLAUwMGU5sxXPg&h=-_XSXx8rhjMr5II3RYVni2AbC8xN3xqaf9Za_WSuXP8
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/operationresults/ea11210e-9bc0-452f-b9eb-cc03562e09b2?api-version=2026-10-01&t=639307851493066458&c=MIIHlTCCBn2gAwIBAgIRAJpoljMeaD94km1sRcld59UwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVVTMiBDQSAwMTAeFw0yNjExMDIyMjQ1MTdaFw0yNzAxMjkwNDQ1MTdaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2vUDjtwI_wLvRFgdWxDl9_oAyoyKuEA5c5c5XHjIN28FtbfO-MtPOWWulkxq72VArCHS5h__40MUe-7AlwLPJDXhlUpL18ESHtUoDXHvazSArlu6PqKxkm75JOXOMAxN5qQZcuB1iHjlv790JlUPmLs1edMzYTzD8CGKlvUJ5sneD9PTKmU3nvTkVVGPmtYzn9Lds-y4rLbpCE3Dwht8c5QHbpfhD3o9dykXrEA_a-zxfgY-AXosnw0WDckagHVJLVic5nb6TzWjVF9kW3JHO-n_WMBehbibRTW0cRpCXNDoPXrBOWfPRkzWXGYp_v8CTuSMZqy0KT6li5_x88mSLQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUx4KCVFbCG3vKdtnxOwhM_IHdoLIwHwYDVR0jBBgwFoAU_Ow-26p8H4IeBbihBvlD5wKzCrkwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzI1L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NybHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS8yNS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzI1L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZWVhc3R1czJwa2kuZWFzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyaWNhMDEvMjUvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY2FjZXJ0cy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAdUrRGlZSh2Um14EA9BN8Tw81jeZr5paJ5sIzOOPhBEjGForZbEgO07eJ0BmzSFyh63tZFL-61HOv7nHjCahaKJexDBVAWf0POKOp8TsSOwJvdVVon4ZfhqXX2MjbgEWGeFPqfZlleWI0I-Vx3dijCnKB3sIYsRqxTaHme8a7syK-f0znegxGUzXSPnHme1mMt_UCrVaaagXslJEatXFc0c231njNQ1gaDNPPESFcz0ZePvaBqG6FaBS_ub5Ama2hQ3L9zO0fVmFbpdwUOo_RbRPqK--2PNdJ6709jQXscMCSB8e9LzWf1zIg_xTVUYtLKoQ3h0X_bkMKrkYeL6Q5HQ&s=jvVo2JM3ZBi0oK84nmqRwU_6dmV2GaPorBTSRKTe3FqTS42l7eM7MeY5CR9ddmlzEJ1Rc74zNCJzLy00PniRFYyiYfdlqlVkM0IOzgkCD1Osl5suE-X0ijvVAXWkjtscvslnP5PLJ3F37NxRXzQtGWmvNrnsZlU_jysGa4heKKJOmLJjU1MYHxsMHAxiwaEQVx-usMfv4FNWu4bPdithbqNNTH1AyhEUQ6e1nhKiYQz9-_5AtQxQn_gMuL897cPEOYWXVBkNwYNiwrjUMOVOvKBARsedN0ARoY9KOu1Pb2rV5dQQsckF5iFTw0Q2YYrOKtu_v0qJpBDH4k6ltaVRaQ&h=BKdB2ZrlXbU46nEftXOBVyt736oRe6GQjG5Xtk3y5n8
   response:
     body:
       string: '{"status":"Succeeded","error":{"code":"None","message":null}}'
@@ -225,7 +179,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Oct 2026 08:49:14 GMT
+      - Fri, 20 Nov 2026 15:26:53 GMT
       expires:
       - '-1'
       pragma:
@@ -237,11 +191,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/462d2a79-0bb2-4913-9cd1-7811976a13b6
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/650bdac4-ab9d-4fd0-be0d-f2e0d3812015
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: F0B95B6D42D048509F77955D3A918632 Ref B: SG2AA1040518025 Ref C: 2026-10-21T08:49:14Z'
+      - 'Ref A: 3AB7356E0F3C48A9B7A8F7983265C05F Ref B: SG2AA1040513040 Ref C: 2026-11-20T15:26:53Z'
     status:
       code: 200
       message: OK
@@ -261,19 +215,19 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002?api-version=2026-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002","type":"Microsoft.Cdn/profiles","name":"profile000002","location":"Global","kind":"frontdoor","tags":{},"sku":{"name":"Standard_AzureFrontDoor"},"properties":{"originResponseTimeoutSeconds":30,"logScrubbing":null,"frontDoorId":"570330ff-ec35-4790-82e2-bf9014dd14f6","extendedProperties":{},"enablePreviewDeployment":null,"resourceState":"Active","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002","type":"Microsoft.Cdn/profiles","name":"profile000002","location":"Global","kind":"frontdoor","tags":{},"sku":{"name":"Standard_AzureFrontDoor"},"properties":{"originResponseTimeoutSeconds":30,"logScrubbing":null,"frontDoorId":"a6c841cc-2f23-4317-b8df-384bf7e9abb1","extendedProperties":{},"resourceState":"Active","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '518'
+      - '487'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Oct 2026 08:49:16 GMT
+      - Fri, 20 Nov 2026 15:26:55 GMT
       expires:
       - '-1'
       pragma:
@@ -287,7 +241,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: AC43E422D11A46AE9118F7D97B1B861B Ref B: SG2AA1040515025 Ref C: 2026-10-21T08:49:15Z'
+      - 'Ref A: 7795D16DFC674326893CA34C0B76FF36 Ref B: SG2AA1070302062 Ref C: 2026-11-20T15:26:54Z'
     status:
       code: 200
       message: OK
@@ -311,7 +265,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003?api-version=2026-10-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/rulesets/ruleset000003","type":"Microsoft.Cdn/profiles/rulesets","name":"ruleset000003","properties":{"provisioningState":"Succeeded","deploymentStatus":"NotStarted"}}'
@@ -323,7 +277,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Oct 2026 08:49:18 GMT
+      - Fri, 20 Nov 2026 15:26:57 GMT
       expires:
       - '-1'
       pragma:
@@ -335,13 +289,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/ae4c5b33-360e-40fc-8b41-f49fcb936617
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/26660a54-3205-42cd-ab27-5c51c9af786e
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: BD6D9B24DE4A4E33901E91498BB4F6E6 Ref B: SG2AA1070304054 Ref C: 2026-10-21T08:49:17Z'
+      - 'Ref A: DB78F7D4B8714CB5B1999138607BCF6B Ref B: SG2AA1040512031 Ref C: 2026-11-20T15:26:56Z'
     status:
       code: 201
       message: Created
@@ -361,7 +315,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules?api-version=2026-10-01
   response:
     body:
       string: '{"value":[]}'
@@ -373,7 +327,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Oct 2026 08:49:20 GMT
+      - Fri, 20 Nov 2026 15:26:59 GMT
       expires:
       - '-1'
       pragma:
@@ -385,11 +339,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/f7b054d1-6eb8-4577-92dc-d35b56fc652d
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/221b3461-9b92-4e83-a28a-ddecdf12a9e8
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: AB35B8E1FA58443F857572B20CFDE482 Ref B: SG2AA1070303042 Ref C: 2026-10-21T08:49:19Z'
+      - 'Ref A: E7D0F9A6CAAC461EABB758D39974B5E9 Ref B: SG2AA1070306060 Ref C: 2026-11-20T15:26:58Z'
     status:
       code: 200
       message: OK
@@ -418,7 +372,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000004?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000004?api-version=2026-10-01
   response:
     body:
       string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
@@ -432,7 +386,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 21 Oct 2026 08:49:22 GMT
+      - Fri, 20 Nov 2026 15:27:01 GMT
       expires:
       - '-1'
       pragma:
@@ -444,13 +398,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/bdb14d1c-63b5-40a2-aaf1-debf97cc2631
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/fa7cfb78-8796-48be-a2a6-4a953e23bf27
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 46E3CFFF14664B5C8EAEBD16C0CE0279 Ref B: SG2AA1040520062 Ref C: 2026-10-21T08:49:21Z'
+      - 'Ref A: 9BAA941320F743ACB5F19B702BE9C857 Ref B: SG2AA1070303036 Ref C: 2026-11-20T15:27:00Z'
     status:
       code: 400
       message: Bad Request
@@ -479,7 +433,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000005?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000005?api-version=2026-10-01
   response:
     body:
       string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
@@ -493,7 +447,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 21 Oct 2026 08:49:23 GMT
+      - Fri, 20 Nov 2026 15:27:03 GMT
       expires:
       - '-1'
       pragma:
@@ -505,13 +459,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/498e039c-9adf-4699-96d6-b8add3f7fa84
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/b1b0ea7f-8b5f-416e-a46f-54bd4d6effd3
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 0D882125A42E420CAA53958A4703B837 Ref B: SG2AA1070301062 Ref C: 2026-10-21T08:49:23Z'
+      - 'Ref A: 67AA296C789D490480011DA6CC748545 Ref B: SG2AA1040516054 Ref C: 2026-11-20T15:27:02Z'
     status:
       code: 400
       message: Bad Request
@@ -541,7 +495,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000006?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000006?api-version=2026-10-01
   response:
     body:
       string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
@@ -556,7 +510,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 21 Oct 2026 08:49:25 GMT
+      - Fri, 20 Nov 2026 15:27:05 GMT
       expires:
       - '-1'
       pragma:
@@ -568,13 +522,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/8a51ef11-ae09-4353-93f9-d55c4ed1221d
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/764c2e1f-14af-4a89-9339-73064e5bcd36
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 12BCE63695E04D8C877955E178E210EF Ref B: SG2AA1040518023 Ref C: 2026-10-21T08:49:24Z'
+      - 'Ref A: 06C1967EED7645B5BE4B3B8D0952017A Ref B: SG2AA1070304040 Ref C: 2026-11-20T15:27:04Z'
     status:
       code: 400
       message: Bad Request
@@ -604,7 +558,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000007?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000007?api-version=2026-10-01
   response:
     body:
       string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
@@ -619,7 +573,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 21 Oct 2026 08:49:26 GMT
+      - Fri, 20 Nov 2026 15:27:06 GMT
       expires:
       - '-1'
       pragma:
@@ -631,13 +585,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/2f6e7b22-9219-4e7f-95fb-f504bf5b78ce
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/e45a95df-bee1-455b-8505-74012a05c5ce
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 62B77C687C824997A9647C7B96799C21 Ref B: SG2AA1070302062 Ref C: 2026-10-21T08:49:26Z'
+      - 'Ref A: 4D16339E47E34874BA9BCABB302D289D Ref B: SG2AA1070304029 Ref C: 2026-11-20T15:27:06Z'
     status:
       code: 400
       message: Bad Request
@@ -667,7 +621,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000008?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000008?api-version=2026-10-01
   response:
     body:
       string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
@@ -682,7 +636,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 21 Oct 2026 08:49:29 GMT
+      - Fri, 20 Nov 2026 15:27:09 GMT
       expires:
       - '-1'
       pragma:
@@ -694,13 +648,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/9a08dd29-ac2c-412a-a50c-cfef21394e9e
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/2a37bfcf-895e-4752-bc3b-bd366c6de8ac
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 87334AC58E4B47BFB9BB1054C44EAF6B Ref B: SG2AA1070301062 Ref C: 2026-10-21T08:49:28Z'
+      - 'Ref A: 8D1016CAEE9E487383408F1234EBEF13 Ref B: SG2AA1070305062 Ref C: 2026-11-20T15:27:08Z'
     status:
       code: 400
       message: Bad Request
@@ -730,7 +684,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000009?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000009?api-version=2026-10-01
   response:
     body:
       string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
@@ -745,7 +699,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 21 Oct 2026 08:49:31 GMT
+      - Fri, 20 Nov 2026 15:27:11 GMT
       expires:
       - '-1'
       pragma:
@@ -757,13 +711,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/46d2e7c8-e650-468c-bc84-eea834a8ed66
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/ae807079-01b0-4868-85b8-ac2c4acc647c
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 689A00757A754F3B8AE21D36E1100CA9 Ref B: SG2AA1070302025 Ref C: 2026-10-21T08:49:30Z'
+      - 'Ref A: 5762E1FE0A82478E8CF41C7C5A13B135 Ref B: SG2AA1070301054 Ref C: 2026-11-20T15:27:10Z'
     status:
       code: 400
       message: Bad Request
@@ -793,7 +747,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000010?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000010?api-version=2026-10-01
   response:
     body:
       string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
@@ -808,7 +762,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 21 Oct 2026 08:49:33 GMT
+      - Fri, 20 Nov 2026 15:27:13 GMT
       expires:
       - '-1'
       pragma:
@@ -820,13 +774,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/324638e3-f180-467b-9193-92614020ea01
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/377bf4e5-0b38-4773-8e1f-180cde3e9393
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 6BEC215BED5C4524A54B89C04BF3C4E3 Ref B: SG2AA1070304040 Ref C: 2026-10-21T08:49:32Z'
+      - 'Ref A: 324281627E924853A9BB7AD26E0C0D8D Ref B: SG2AA1070304023 Ref C: 2026-11-20T15:27:13Z'
     status:
       code: 400
       message: Bad Request
@@ -855,7 +809,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000011?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000011?api-version=2026-10-01
   response:
     body:
       string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
@@ -869,7 +823,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 21 Oct 2026 08:49:35 GMT
+      - Fri, 20 Nov 2026 15:27:16 GMT
       expires:
       - '-1'
       pragma:
@@ -881,13 +835,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/30f98f2e-cba6-4bf1-936a-8afd519acfc1
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/4e52f4a8-4390-420b-84b3-1b98ae00c1e3
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: B1763B77B58D401291F88EE2000DF79A Ref B: SG2AA1040520036 Ref C: 2026-10-21T08:49:34Z'
+      - 'Ref A: 3A234184076A4B16BC971233A90F8F7E Ref B: SG2AA1040512023 Ref C: 2026-11-20T15:27:15Z'
     status:
       code: 400
       message: Bad Request
@@ -916,7 +870,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000012?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000012?api-version=2026-10-01
   response:
     body:
       string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
@@ -931,7 +885,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 21 Oct 2026 08:49:37 GMT
+      - Fri, 20 Nov 2026 15:27:18 GMT
       expires:
       - '-1'
       pragma:
@@ -943,13 +897,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/bac7210d-5476-4488-b129-9946ce60c454
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/c9ba0376-7601-4ee9-bbc3-f59055616f01
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 7AE3B4FBA73C4CC092C83C1C4E9C70EF Ref B: SG2AA1040519031 Ref C: 2026-10-21T08:49:36Z'
+      - 'Ref A: 05FB900C57344272AE7D94E9ADCAA045 Ref B: SG2AA1040518036 Ref C: 2026-11-20T15:27:18Z'
     status:
       code: 400
       message: Bad Request
@@ -979,7 +933,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000013?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000013?api-version=2026-10-01
   response:
     body:
       string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
@@ -994,7 +948,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 21 Oct 2026 08:49:38 GMT
+      - Fri, 20 Nov 2026 15:27:21 GMT
       expires:
       - '-1'
       pragma:
@@ -1006,13 +960,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/6b9809a9-a4f1-4768-b447-8efc2bbef03b
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/612c09ac-03ba-4a9a-a573-8d268e09fe30
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 31268B94712D4ED7BC225239BE0EB784 Ref B: SG2AA1070306060 Ref C: 2026-10-21T08:49:38Z'
+      - 'Ref A: 9B2F838D12D144AEB2251184EE65E88B Ref B: SG2AA1040512054 Ref C: 2026-11-20T15:27:20Z'
     status:
       code: 400
       message: Bad Request
@@ -1042,7 +996,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000014?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000014?api-version=2026-10-01
   response:
     body:
       string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
@@ -1057,7 +1011,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 21 Oct 2026 08:49:40 GMT
+      - Fri, 20 Nov 2026 15:27:22 GMT
       expires:
       - '-1'
       pragma:
@@ -1069,13 +1023,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/ef06119d-ec85-46fc-b77c-6851202f289e
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/3b2e6e65-d824-445a-8a19-a651515846ae
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 7DACC3BDF9514EDFAEBC7ABEE367D422 Ref B: SG2AA1070304036 Ref C: 2026-10-21T08:49:40Z'
+      - 'Ref A: 106680482C3448BA8FF7E9B3885E9CDF Ref B: SG2AA1070305023 Ref C: 2026-11-20T15:27:22Z'
     status:
       code: 400
       message: Bad Request
@@ -1104,7 +1058,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000015?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000015?api-version=2026-10-01
   response:
     body:
       string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
@@ -1118,7 +1072,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 21 Oct 2026 08:49:42 GMT
+      - Fri, 20 Nov 2026 15:27:24 GMT
       expires:
       - '-1'
       pragma:
@@ -1130,13 +1084,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/cb464253-f68a-456d-b9df-45bcfbdaa932
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/0261477e-b6f4-4929-8eec-d8021eb31ef6
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 8E18F0635C9741DFACC13DE87FE9C5C5 Ref B: SG2AA1040513042 Ref C: 2026-10-21T08:49:41Z'
+      - 'Ref A: 8EBCB40CD24147588094D484264ADE6A Ref B: SG2AA1070304040 Ref C: 2026-11-20T15:27:24Z'
     status:
       code: 400
       message: Bad Request
@@ -1166,7 +1120,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000016?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000016?api-version=2026-10-01
   response:
     body:
       string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
@@ -1181,7 +1135,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 21 Oct 2026 08:49:43 GMT
+      - Fri, 20 Nov 2026 15:27:26 GMT
       expires:
       - '-1'
       pragma:
@@ -1193,13 +1147,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/358a9b59-ece2-4a91-95a6-fc472b84e59e
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/9ec7203d-c455-4bfe-9175-3424657af75b
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 1651ED1A5CFE423793CC208012F9A3B2 Ref B: SG2AA1070306025 Ref C: 2026-10-21T08:49:43Z'
+      - 'Ref A: 1D0FAF36B8E0413ABC39D0CEC3156A15 Ref B: SG2AA1040512029 Ref C: 2026-11-20T15:27:26Z'
     status:
       code: 400
       message: Bad Request
@@ -1228,7 +1182,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000017?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000017?api-version=2026-10-01
   response:
     body:
       string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
@@ -1242,7 +1196,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 21 Oct 2026 08:49:47 GMT
+      - Fri, 20 Nov 2026 15:27:28 GMT
       expires:
       - '-1'
       pragma:
@@ -1254,13 +1208,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/523dddd3-cf41-4097-a4c6-006d77776663
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/fdd68a6d-cb4e-48f1-b252-7f29a7dc4c55
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: BA8199B7E22046C09C5ABFF047943FB1 Ref B: SG2AA1040518031 Ref C: 2026-10-21T08:49:45Z'
+      - 'Ref A: 16D69F8328014254B490528C6A534D90 Ref B: SG2AA1070304054 Ref C: 2026-11-20T15:27:28Z'
     status:
       code: 400
       message: Bad Request
@@ -1289,7 +1243,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000018?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000018?api-version=2026-10-01
   response:
     body:
       string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
@@ -1303,7 +1257,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 21 Oct 2026 08:49:48 GMT
+      - Fri, 20 Nov 2026 15:27:30 GMT
       expires:
       - '-1'
       pragma:
@@ -1315,13 +1269,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/d69cd25c-caf1-4e24-b702-790bb6babcb5
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/a2b7fe97-97c5-422b-b876-51fbe95abd84
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: FA0F37231AC146DFAA4CDAC743BA61D2 Ref B: SG2AA1040517023 Ref C: 2026-10-21T08:49:48Z'
+      - 'Ref A: 056E18FDD37E48E1A6FEE52F230A28BF Ref B: SG2AA1040517011 Ref C: 2026-11-20T15:27:30Z'
     status:
       code: 400
       message: Bad Request
@@ -1350,7 +1304,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000019?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000019?api-version=2026-10-01
   response:
     body:
       string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
@@ -1365,7 +1319,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 21 Oct 2026 08:49:49 GMT
+      - Fri, 20 Nov 2026 15:27:32 GMT
       expires:
       - '-1'
       pragma:
@@ -1377,13 +1331,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/bf0e538e-8a36-4ce9-a9b1-8f120b4484d6
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/72c78e38-15ed-4c9c-ba0b-84e803e3c7c9
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 3DBCF416B7C1436FB5D2256F682B3E05 Ref B: SG2AA1040513052 Ref C: 2026-10-21T08:49:49Z'
+      - 'Ref A: 17A8B58BCC0647DAA7C3A11CFC5A72AD Ref B: SG2AA1040520062 Ref C: 2026-11-20T15:27:32Z'
     status:
       code: 400
       message: Bad Request
@@ -1412,7 +1366,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000020?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000020?api-version=2026-10-01
   response:
     body:
       string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
@@ -1427,7 +1381,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 21 Oct 2026 08:49:52 GMT
+      - Fri, 20 Nov 2026 15:27:35 GMT
       expires:
       - '-1'
       pragma:
@@ -1439,13 +1393,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/29f2f6d2-006d-43a2-9759-b8653bfae6ab
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/c07cd397-c731-4953-a07d-28f56c54a63b
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 438008F99BE54EA9BE87DC60C1A47E1F Ref B: SG2AA1070304040 Ref C: 2026-10-21T08:49:51Z'
+      - 'Ref A: AAB9333B74F644138070B1D44E96A3C6 Ref B: SG2AA1070305062 Ref C: 2026-11-20T15:27:34Z'
     status:
       code: 400
       message: Bad Request
@@ -1475,7 +1429,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000021?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000021?api-version=2026-10-01
   response:
     body:
       string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
@@ -1490,7 +1444,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 21 Oct 2026 08:49:53 GMT
+      - Fri, 20 Nov 2026 15:27:36 GMT
       expires:
       - '-1'
       pragma:
@@ -1502,13 +1456,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/94e1bb3d-c111-427c-89fd-986d8b325c64
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/6db2fdc7-341c-49fd-89bf-1e8a3a4792a8
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: DB2AF39F721E49DEAE3AC3DFF72ADBFF Ref B: SG2AA1040512036 Ref C: 2026-10-21T08:49:53Z'
+      - 'Ref A: A6FFA6A8BD9E45559C8624E8A63113F6 Ref B: SG2AA1070304062 Ref C: 2026-11-20T15:27:36Z'
     status:
       code: 400
       message: Bad Request
@@ -1537,7 +1491,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000022?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000022?api-version=2026-10-01
   response:
     body:
       string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
@@ -1551,7 +1505,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 21 Oct 2026 08:49:55 GMT
+      - Fri, 20 Nov 2026 15:27:38 GMT
       expires:
       - '-1'
       pragma:
@@ -1563,13 +1517,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/f3cc1786-3469-4113-b92f-dac2e005dc76
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/097af3be-b34d-497c-acc5-9f6676f9be05
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 5C3CA0C87DC74C59B02F3BD26EB05B72 Ref B: SG2AA1070304036 Ref C: 2026-10-21T08:49:55Z'
+      - 'Ref A: BCD588DBC9BF4C36886DDB219FA402A7 Ref B: SG2AA1070301054 Ref C: 2026-11-20T15:27:38Z'
     status:
       code: 400
       message: Bad Request
@@ -1589,7 +1543,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules?api-version=2026-10-01
   response:
     body:
       string: '{"value":[]}'
@@ -1601,7 +1555,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Oct 2026 08:49:57 GMT
+      - Fri, 20 Nov 2026 15:27:41 GMT
       expires:
       - '-1'
       pragma:
@@ -1613,11 +1567,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/16aa18b7-a5a6-452d-806f-acf9940dfdca
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/ecd622e2-64d8-411a-94f4-4b3c4c57b648
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 5A43D2B3A61E494AADC7E530D322B5EA Ref B: SG2AA1040520025 Ref C: 2026-10-21T08:49:56Z'
+      - 'Ref A: FFBAFF76789641018C0367B7950A3D99 Ref B: SG2AA1040517054 Ref C: 2026-11-20T15:27:40Z'
     status:
       code: 200
       message: OK
@@ -1639,7 +1593,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003?api-version=2026-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003?api-version=2026-10-01
   response:
     body:
       string: ''
@@ -1649,7 +1603,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 21 Oct 2026 08:49:59 GMT
+      - Fri, 20 Nov 2026 15:27:43 GMT
       expires:
       - '-1'
       pragma:
@@ -1661,13 +1615,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/7ea46196-4346-4e7a-9bde-243b9dba5834
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8871dc6f-c573-4e06-8461-b5924fcedf31/westus/07b72485-b6ea-49fc-a098-a60e5bdbdb8f
       x-ms-ratelimit-remaining-subscription-deletes:
       - '799'
       x-ms-ratelimit-remaining-subscription-global-deletes:
       - '11999'
       x-msedge-ref:
-      - 'Ref A: 80934C3C7DAC466BBAFFE73857F610F8 Ref B: SG2AA1040512052 Ref C: 2026-10-21T08:49:58Z'
+      - 'Ref A: 3620F83B44BC43D0B033E3A909579C0E Ref B: SG2AA1040512036 Ref C: 2026-11-20T15:27:42Z'
     status:
       code: 200
       message: OK

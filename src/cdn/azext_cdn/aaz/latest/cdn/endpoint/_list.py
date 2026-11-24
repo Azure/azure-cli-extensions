@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-04-01-preview",
+        "version": "2026-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/endpoints", "2026-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/endpoints", "2026-10-01"],
         ]
     }
 
@@ -126,7 +126,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-01-preview",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }
@@ -307,30 +307,6 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"required": True},
             )
-
-            disc_afd_url_signing = cls._schema_on_200.value.Element.properties.delivery_policy.rules.Element.actions.Element.discriminate_by("name", "AfdUrlSigning")
-            disc_afd_url_signing.parameters = AAZObjectType(
-                flags={"required": True},
-            )
-
-            parameters = cls._schema_on_200.value.Element.properties.delivery_policy.rules.Element.actions.Element.discriminate_by("name", "AfdUrlSigning").parameters
-            parameters.algorithm = AAZStrType()
-            parameters.key_group_reference = AAZObjectType(
-                serialized_name="keyGroupReference",
-                flags={"required": True},
-            )
-            _ListHelper._build_schema_resource_reference_read(parameters.key_group_reference)
-            parameters.parameter_name_override = AAZListType(
-                serialized_name="parameterNameOverride",
-            )
-            parameters.type_name = AAZStrType(
-                serialized_name="typeName",
-                flags={"required": True},
-            )
-
-            parameter_name_override = cls._schema_on_200.value.Element.properties.delivery_policy.rules.Element.actions.Element.discriminate_by("name", "AfdUrlSigning").parameters.parameter_name_override
-            parameter_name_override.Element = AAZObjectType()
-            _ListHelper._build_schema_url_signing_param_identifier_read(parameter_name_override.Element)
 
             disc_cache_expiration = cls._schema_on_200.value.Element.properties.delivery_policy.rules.Element.actions.Element.discriminate_by("name", "CacheExpiration")
             disc_cache_expiration.parameters = AAZObjectType(
@@ -533,7 +509,16 @@ class List(AAZCommand):
 
             parameter_name_override = cls._schema_on_200.value.Element.properties.delivery_policy.rules.Element.actions.Element.discriminate_by("name", "UrlSigning").parameters.parameter_name_override
             parameter_name_override.Element = AAZObjectType()
-            _ListHelper._build_schema_url_signing_param_identifier_read(parameter_name_override.Element)
+
+            _element = cls._schema_on_200.value.Element.properties.delivery_policy.rules.Element.actions.Element.discriminate_by("name", "UrlSigning").parameters.parameter_name_override.Element
+            _element.param_indicator = AAZStrType(
+                serialized_name="paramIndicator",
+                flags={"required": True},
+            )
+            _element.param_name = AAZStrType(
+                serialized_name="paramName",
+                flags={"required": True},
+            )
 
             conditions = cls._schema_on_200.value.Element.properties.delivery_policy.rules.Element.conditions
             conditions.Element = AAZObjectType()
@@ -1302,30 +1287,6 @@ class _ListHelper:
         resource_reference_read.id = AAZStrType()
 
         _schema.id = cls._schema_resource_reference_read.id
-
-    _schema_url_signing_param_identifier_read = None
-
-    @classmethod
-    def _build_schema_url_signing_param_identifier_read(cls, _schema):
-        if cls._schema_url_signing_param_identifier_read is not None:
-            _schema.param_indicator = cls._schema_url_signing_param_identifier_read.param_indicator
-            _schema.param_name = cls._schema_url_signing_param_identifier_read.param_name
-            return
-
-        cls._schema_url_signing_param_identifier_read = _schema_url_signing_param_identifier_read = AAZObjectType()
-
-        url_signing_param_identifier_read = _schema_url_signing_param_identifier_read
-        url_signing_param_identifier_read.param_indicator = AAZStrType(
-            serialized_name="paramIndicator",
-            flags={"required": True},
-        )
-        url_signing_param_identifier_read.param_name = AAZStrType(
-            serialized_name="paramName",
-            flags={"required": True},
-        )
-
-        _schema.param_indicator = cls._schema_url_signing_param_identifier_read.param_indicator
-        _schema.param_name = cls._schema_url_signing_param_identifier_read.param_name
 
 
 __all__ = ["List"]

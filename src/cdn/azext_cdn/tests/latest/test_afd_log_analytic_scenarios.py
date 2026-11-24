@@ -5,7 +5,6 @@
 from azure.cli.testsdk import ResourceGroupPreparer, JMESPathCheck
 from azure.cli.testsdk import ScenarioTest, record_only
 from .afdx_scenario_mixin import CdnAfdScenarioMixin
-import datetime
 
 
 class CdnAfdLogAnalyticScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
@@ -26,11 +25,7 @@ class CdnAfdLogAnalyticScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
         endpoint = self.afd_endpoint_show_cmd(resource_group, profile_name, endpoint_name).get_output_in_json()
         domain = endpoint["hostName"]  
 
-        start_time = datetime.datetime.now().astimezone().replace(microsecond=0)
-        if self.is_playback_mode():
-            start_time = datetime.datetime(2026, 10, 21, 8, 54, 38, tzinfo=datetime.timezone.utc)
-
-        end_time = start_time + datetime.timedelta(seconds=300)
+        start_time, end_time = self.analytics_time_range('getLogAnalyticsMetrics')
 
         location_list_commands = f"afd log-analytic location list -g {resource_group} --profile-name {profile_name}"
         self.cmd(location_list_commands, expect_failure=False)
@@ -62,11 +57,7 @@ class CdnAfdLogAnalyticScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                                      enabled_state,
                                      checks=checks)
 
-        start_time = datetime.datetime.now().astimezone().replace(microsecond=0)
-        if self.is_playback_mode():
-            start_time = datetime.datetime(2026, 10, 21, 8, 6, 46, tzinfo=datetime.timezone.utc)
-
-        end_time = start_time + datetime.timedelta(seconds=300)
+        start_time, end_time = self.analytics_time_range('getWafLogAnalyticsMetrics')
 
         metric_list_commands = f"afd waf-log-analytic metric list -g {resource_group} --profile-name {profile_name} --metrics clientRequestCount " + \
                                f"--date-time-begin {start_time.isoformat()} --date-time-end {end_time.isoformat()} --granularity PT5M --rule-types managed"
