@@ -65,6 +65,11 @@ class command_helper:
         self.warnings = []
         self.warning_codes = []
 
+        # Set by combined commands when the repair script they ran returned an error, so telemetry
+        # attributes the failure to the script instead of to the combined command itself.
+        self.nested_script_failed = False
+        self.nested_script_diagnostic = None
+
         # Return error message
         self.error_message = ''
 
@@ -103,11 +108,16 @@ class command_helper:
             self.cmd.cli_ctx.get_progress_controller().end()
         # Track telemetry data
         elapsed_time = timeit.default_timer() - self.start_time
-        script_failed = self.command_name == VM_REPAIR_RUN_COMMAND and self.script.status == STATUS_ERROR
+        run_script_failed = self.command_name == VM_REPAIR_RUN_COMMAND and self.script.status == STATUS_ERROR
+        script_failed = run_script_failed or self.nested_script_failed
         command_failed = self.status == STATUS_ERROR
         failure_owner = 'REPAIR_SCRIPT' if script_failed else ('VM_REPAIR_COMMAND' if command_failed else None)
-        diagnostic = self.script.output if script_failed else '{} {} {}'.format(
-            self.message, self.error_message, self.error_stack_trace)
+        if run_script_failed:
+            diagnostic = self.script.output
+        elif self.nested_script_failed:
+            diagnostic = self.nested_script_diagnostic
+        else:
+            diagnostic = '{} {} {}'.format(self.message, self.error_message, self.error_stack_trace)
         has_diagnostic = bool(diagnostic and diagnostic.strip())
         script_source = None
         if self.command_name == VM_REPAIR_RUN_COMMAND:
@@ -141,6 +151,11 @@ class command_helper:
             self.repair_vm_disk_controller_type = repair_vm_disk_controller_type
         if hyperv_generation is not None:
             self.hyperv_generation = hyperv_generation
+
+    def set_nested_script_failure(self, diagnostic=None):
+        """Record that a repair script run by this combined command returned an error."""
+        self.nested_script_failed = True
+        self.nested_script_diagnostic = diagnostic
 
     def set_status_success(self):
         """ Set command status to success """

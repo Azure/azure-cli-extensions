@@ -48,6 +48,7 @@ from .repair_utils import (
     _fetch_source_disk_controller_type,
     _fetch_sku_disk_controller_types,
     _select_repair_disk_controller_type,
+    NVME_ONLY_REPAIR_VM_WARNING,
     _list_resource_ids_in_rg,
     _get_repair_resource_tag,
     _validate_tags_for_command,
@@ -92,16 +93,46 @@ PREVIEW_URL_PATTERN = re.compile(
     r'^https://github\.com/(?P<fork>[^/]+)/repair-script-library/(?:blob|tree)/(?P<branch>[^/]+)/map\.json$')
 
 
-def _append_command_warning(command, message):
-    if not hasattr(command, 'warnings'):
-        command.warnings = []
-    command.warnings.append(message)
+YES_DEPRECATION_WARNING = 'The --yes parameter is deprecated and will be removed in a future release. There is currently no behavior change associated with this parameter.'
+
+# Stable internal telemetry codes for advisory warnings. They are never part of command output, so
+# nested commands recover them from the warning text they receive from the command they invoked.
+WARNING_CODES = {
+    YES_DEPRECATION_WARNING: 'YES_PARAMETER_DEPRECATED',
+    NVME_ONLY_REPAIR_VM_WARNING: 'REPAIR_VM_NVME_ONLY',
+}
+UNCLASSIFIED_WARNING_CODE = 'ADVISORY_WARNING'
 
 
 def _extend_command_warnings(command, warnings):
+    """Record advisory warnings with their telemetry codes, keeping both lists aligned."""
     if not hasattr(command, 'warnings'):
         command.warnings = []
-    command.warnings.extend(warnings)
+    if not hasattr(command, 'warning_codes'):
+        command.warning_codes = []
+    for message in warnings:
+        command.warnings.append(message)
+        command.warning_codes.append(WARNING_CODES.get(message, UNCLASSIFIED_WARNING_CODE))
+
+
+def _append_command_warning(command, message):
+    _extend_command_warnings(command, [message])
+
+
+def _record_nested_script_failure(command, run_out):
+    """Attribute a failed combined command to the repair script that returned the error."""
+    if hasattr(command, 'set_nested_script_failure'):
+        command.set_nested_script_failure(run_out.get('output') or run_out.get('logs'))
+
+
+def _merge_warnings_into_failure(command, failure_out):
+    """Keep advisory warnings on a child failure payload without changing its failure details."""
+    failure_out = dict(failure_out)
+    warnings = list(failure_out.get('warnings', []))
+    warnings.extend(warning for warning in getattr(command, 'warnings', []) if warning not in warnings)
+    if warnings:
+        failure_out['warnings'] = warnings
+    return failure_out
 
 
 def _parse_preview_url(preview):
@@ -227,9 +258,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     try:
         # Deprecation warning for --yes parameter
         if yes:
-            message = 'The --yes parameter is deprecated and will be removed in a future release. There is currently no behavior change associated with this parameter.'
-            logger.warning(message)
-            _append_command_warning(command, message)
+            logger.warning(YES_DEPRECATION_WARNING)
+            _append_command_warning(command, YES_DEPRECATION_WARNING)
 
         # TODO: add permissions checks - can user create VMs, disks, resource groups, etc.
         # Set parameters used in exception handling to avoid Unbound errors:
@@ -1256,7 +1286,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
             _clean_up_resources(repair_group_name, confirm=True, skip_cleanup=no_cleanup)
         else:
             _clean_up_resources(repair_group_name, confirm=False, skip_cleanup=no_cleanup)
-        return
+        return command.init_return_dict()
 
     # Log the output of the run command
     logger.info('run_out: %s', run_out)
@@ -1264,11 +1294,15 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     # If the fstab script returned an error, log the error and clean up resources
     if run_out['script_status'] == 'ERROR':
         logger.error('fstab script returned an error.')
+        command.set_status_error()
+        command.error_message = 'The fstab script returned an error.'
+        command.message = 'The fstab script returned an error.'
+        _record_nested_script_failure(command, run_out)
         if existing_rg:
             _clean_up_resources(repair_group_name, confirm=True, skip_cleanup=no_cleanup)
         else:
             _clean_up_resources(repair_group_name, confirm=False, skip_cleanup=no_cleanup)
-        return
+        return command.init_return_dict()
 
     # Run the restore command
     logger.info('Running restore command')
@@ -1282,8 +1316,8 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
         command.set_status_error()
         command.message = restore_out['message']
         command.error_message = restore_out.get('error_message', '')
-        command.return_dict = restore_out
-        return restore_out
+        command.return_dict = _merge_warnings_into_failure(command, restore_out)
+        return command.return_dict
 
     # Set the success message
     repair_vm_fate = 'the repair resources were kept' if no_cleanup else 'the repair VM was then deleted'
@@ -1321,9 +1355,8 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
 
     # Deprecation warning for --yes parameter
     if yes:
-        message = 'The --yes parameter is deprecated and will be removed in a future release. There is currently no behavior change associated with this parameter.'
-        logger.warning(message)
-        _append_command_warning(command, message)
+        logger.warning(YES_DEPRECATION_WARNING)
+        _append_command_warning(command, YES_DEPRECATION_WARNING)
 
     password_length = 30
     password_characters = string.ascii_lowercase + string.digits + string.ascii_uppercase
@@ -1363,18 +1396,22 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
             _clean_up_resources(repair_group_name, confirm=True, skip_cleanup=no_cleanup)
         else:
             _clean_up_resources(repair_group_name, confirm=False, skip_cleanup=no_cleanup)
-        return
+        return command.init_return_dict()
 
     # log run_out
     logger.info('run_out: %s', run_out)
 
     if run_out['script_status'] == 'ERROR':
         logger.error(' script returned an error.')
+        command.set_status_error()
+        command.error_message = 'The repair script returned an error.'
+        command.message = 'The repair script returned an error.'
+        _record_nested_script_failure(command, run_out)
         if existing_rg:
             _clean_up_resources(repair_group_name, confirm=True, skip_cleanup=no_cleanup)
         else:
             _clean_up_resources(repair_group_name, confirm=False, skip_cleanup=no_cleanup)
-        return
+        return command.init_return_dict()
 
     logger.info('Running restore command')
     show_vm_id = 'az vm show -g {g} -n {n} --query id -o tsv' \
@@ -1387,8 +1424,8 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
         command.set_status_error()
         command.message = restore_out['message']
         command.error_message = restore_out.get('error_message', '')
-        command.return_dict = restore_out
-        return restore_out
+        command.return_dict = _merge_warnings_into_failure(command, restore_out)
+        return command.return_dict
 
     repair_vm_fate = 'the repair resources were kept' if no_cleanup else 'the repair VM was then deleted'
     command.message = 'script has been applied to the source VM. A new repair VM \'{n}\' was created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \

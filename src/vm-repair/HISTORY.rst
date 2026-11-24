@@ -4,7 +4,7 @@ Release History
 
 2.5.2
 +++++
-Add structured quality telemetry that identifies command versus repair-script failures, correlates each invocation, reports diagnostics and warning counts, and distinguishes default, preview, and custom repair script sources. Command output continues to return warnings as messages only, without exposing internal warning codes.
+Add structured quality telemetry that identifies command versus repair-script failures, correlates each invocation, reports diagnostics and warning counts, and distinguishes default, preview, and custom repair script sources. Command output continues to return warnings as messages only, without exposing internal warning codes. ``az vm repair repair-and-restore`` and ``az vm repair repair-button`` now return a result with the failure details and any advisory warnings when the repair script or restore step fails, instead of returning nothing after a script error.
 
 2.5.1
 ++++++

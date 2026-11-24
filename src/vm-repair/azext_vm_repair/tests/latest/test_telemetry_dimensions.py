@@ -139,6 +139,8 @@ class TelemetryDimensionTests(unittest.TestCase):
         helper.return_dict = {}
         helper.warnings = ['advisory warning']
         helper.warning_codes = ['ADVISORY_WARNING']
+        helper.nested_script_failed = False
+        helper.nested_script_diagnostic = None
         helper.invocation_id = 'invocation-id'
         helper.is_verbose = True
         helper.script = script_data()
@@ -177,6 +179,8 @@ class TelemetryDimensionTests(unittest.TestCase):
         helper.return_dict = {}
         helper.warnings = []
         helper.warning_codes = []
+        helper.nested_script_failed = False
+        helper.nested_script_diagnostic = None
         helper.invocation_id = 'invocation-id'
         helper.is_verbose = True
         helper.script = script_data()
@@ -195,6 +199,73 @@ class TelemetryDimensionTests(unittest.TestCase):
         self.assertEqual('REPAIR_SCRIPT', track_run.call_args.kwargs['failure_owner'])
         self.assertTrue(track_run.call_args.kwargs['has_diagnostic'])
         self.assertEqual('PREVIEW', track_run.call_args.kwargs['script_source'])
+
+    @patch('azext_vm_repair.command_helper_class.get_subscription_id', return_value='subscription')
+    @patch('azext_vm_repair.command_helper_class._track_command_telemetry_repair_and_restore')
+    def test_combined_command_script_failure_is_owned_by_repair_script(self, track_combined, _):
+        helper = command_helper.__new__(command_helper)
+        helper.start_time = 0
+        helper.logger = self.logger
+        helper.cmd = Mock()
+        helper.command_name = 'vm repair repair-and-restore'
+        helper.command_params = {}
+        helper.status = 'ERROR'
+        helper.message = 'The fstab script returned an error.'
+        helper.error_message = 'The fstab script returned an error.'
+        helper.error_stack_trace = ''
+        helper.return_dict = {}
+        helper.warnings = ['advisory warning']
+        helper.warning_codes = ['REPAIR_VM_NVME_ONLY']
+        helper.invocation_id = 'invocation-id'
+        helper.is_verbose = True
+        helper.nested_script_failed = False
+        helper.nested_script_diagnostic = None
+        helper.os_family = None
+        helper.vm_size = None
+        helper.disk_controller_type = None
+        helper.repair_vm_disk_controller_type = None
+        helper.hyperv_generation = None
+
+        helper.set_nested_script_failure('script failed')
+
+        del helper
+        gc.collect()
+
+        kwargs = track_combined.call_args.kwargs
+        self.assertEqual('REPAIR_SCRIPT', kwargs['failure_owner'])
+        self.assertTrue(kwargs['has_diagnostic'])
+        self.assertEqual(['REPAIR_VM_NVME_ONLY'], kwargs['warning_codes'])
+
+    @patch('azext_vm_repair.command_helper_class.get_subscription_id', return_value='subscription')
+    @patch('azext_vm_repair.command_helper_class._track_command_telemetry_repair_and_restore')
+    def test_combined_command_without_script_failure_is_owned_by_command(self, track_combined, _):
+        helper = command_helper.__new__(command_helper)
+        helper.start_time = 0
+        helper.logger = self.logger
+        helper.cmd = Mock()
+        helper.command_name = 'vm repair repair-and-restore'
+        helper.command_params = {}
+        helper.status = 'ERROR'
+        helper.message = 'restore failed'
+        helper.error_message = ''
+        helper.error_stack_trace = ''
+        helper.return_dict = {}
+        helper.warnings = []
+        helper.warning_codes = []
+        helper.invocation_id = 'invocation-id'
+        helper.is_verbose = True
+        helper.nested_script_failed = False
+        helper.nested_script_diagnostic = None
+        helper.os_family = None
+        helper.vm_size = None
+        helper.disk_controller_type = None
+        helper.repair_vm_disk_controller_type = None
+        helper.hyperv_generation = None
+
+        del helper
+        gc.collect()
+
+        self.assertEqual('VM_REPAIR_COMMAND', track_combined.call_args.kwargs['failure_owner'])
 
 
 class SourceResourceContextTests(unittest.TestCase):

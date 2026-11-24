@@ -255,7 +255,7 @@ def test_combined_repair_propagates_restore_failure(combined_repair, failure_sta
 
     assert result['status'] == 'ERROR'
     assert result['error_message'] == str(error)
-    assert result is combined_repair.helpers[1].return_dict
+    assert result == combined_repair.helpers[1].return_dict
     assert combined_repair.helpers[0].status == 'ERROR'
     assert combined_repair.helpers[0].message == result['message']
     assert combined_repair.helpers[0].error_message == str(error)
