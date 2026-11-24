@@ -1973,13 +1973,14 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         acr = self.create_random_name(prefix='acr', length=24)
         image_source = "mcr.microsoft.com/k8se/quickstart:latest"
         image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
+        subnet_id = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='vnet', length=24), location=location)
 
         # prepare env
         user_identity_name = self.create_random_name(prefix='env-msi', length=24)
         identity_json = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
         user_identity_id = identity_json["id"]
 
-        self.cmd('containerapp env create -g {} -n {} --mi-system-assigned --mi-user-assigned {} --logs-destination none'.format(resource_group, env_name, user_identity_id))
+        self.cmd('containerapp env create -g {} -n {} --mi-system-assigned --mi-user-assigned {} --logs-destination none --infrastructure-subnet-resource-id {}'.format(resource_group, env_name, user_identity_id, subnet_id))
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
         while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
             time.sleep(5)
@@ -3314,7 +3315,7 @@ properties:
 
 class ContainerappOtherPropertyTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=True, recording_processors=[LogAnalyticsSharedKeyReplacer()], **kwargs)
 
     @live_only() # Pass lively, failed in playback mode because in the playback mode the cloud is AzureCloud, not AzureChinaCloud
     @AllowLargeResponse(8192)
