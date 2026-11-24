@@ -18,17 +18,17 @@ class Create(AAZCommand):
     """Create a Internal Network resource
 
     :example: Create an Internal Network
-        az networkfabric internalnetwork create --resource-group "example-rg" --l3-isolation-domain-name "example-l3domain" --resource-name "example-internalNetwork" --vlan-id "2600" --mtu "1500" --extension "NoExtension" --is-monitoring-enabled "True" --connected-ipv4-subnets "[{prefix:'10.0.0.1/21'},{prefix:'10.1.1.1/22'}]" --connected-ipv6-subnets "[{prefix:'2fff::/64'}]" --static-route-configuration "{extension:NPB,bfdConfiguration:{multiplier:5,intervalInMilliSeconds:300},ipv4Routes:[{prefix:'10.1.0.0/24',nextHop:['10.0.0.1','10.0.0.2']},{prefix:'10.1.0.0/24',nextHop:['10.0.0.1','10.0.0.2']}],ipv6Routes:[{prefix:'2fff::/64',nextHop:['3fff::1']}]}" --bgp-configuration "{bfdConfiguration:{multiplier:5,intervalInMilliSeconds:300},defaultRouteOriginate:True,allowAS:2,allowASOverride:Enable,peerASN:65047,ipv4ListenRangePrefixes:['10.1.1.1/28','10.0.0.1/28'],ipv6ListenRangePrefixes:['2fff::/66'],ipv4NeighborAddress:[{address:'10.0.0.11'},{address:'10.0.0.12'}],ipv6NeighborAddress:[{address:'2fff::'}],v4OverV6BgpSession:'Enabled',v6OverV4BgpSession:'Enabled'}" --import-route-policy "{importIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy',importIpv6RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}" --export-route-policy "{exportIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy',exportIpv6RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}" --native-ipv4-prefix-limit "{prefixLimits:[{idleTimeExpiry:60,maximumRoutes:5,threshold:50},{idleTimeExpiry:80,maximumRoutes:10,threshold:60}]}" --native-ipv6-prefix-limit "{prefixLimits:[{idleTimeExpiry:60,maximumRoutes:5,threshold:50},{idleTimeExpiry:80,maximumRoutes:10,threshold:60}]}"
+        az networkfabric internalnetwork create --resource-group "example-rg" --l3-isolation-domain-name "example-l3domain" --resource-name "example-internalNetwork" --vlan-id "2600" --mtu "1500" --extension "NoExtension" --is-monitoring-enabled "True" --connected-ipv4-subnets "[{prefix:'10.0.0.1/21'},{prefix:'10.1.1.1/22'}]" --connected-ipv6-subnets "[{prefix:'2fff::/64'}]" --bgp-configuration "{bfdConfiguration:{multiplier:5,intervalInMilliSeconds:300},defaultRouteOriginate:True,allowAS:2,allowASOverride:Enable,peerASN:65047,ipv4ListenRangePrefixes:['10.1.1.1/28','10.0.0.1/28'],ipv6ListenRangePrefixes:['2fff::/66'],ipv4NeighborAddress:[{address:'10.0.0.11'},{address:'10.0.0.12'}],ipv6NeighborAddress:[{address:'2fff::'}],v4OverV6BgpSession:'Enabled',v6OverV4BgpSession:'Enabled'}" --import-route-policy "{importIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy',importIpv6RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}" --export-route-policy "{exportIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy',exportIpv6RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}" --native-ipv4-prefix-limit "{prefixLimits:[{idleTimeExpiry:60,maximumRoutes:5,threshold:50},{idleTimeExpiry:80,maximumRoutes:10,threshold:60}]}" --native-ipv6-prefix-limit "{prefixLimits:[{idleTimeExpiry:60,maximumRoutes:5,threshold:50},{idleTimeExpiry:80,maximumRoutes:10,threshold:60}]}" --annotation "example-annotation" --ingress-acl-id "/subscriptions/example-subscription-id/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/accessControlLists/example-ingress-acl" --egress-acl-id "/subscriptions/example-subscription-id/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/accessControlLists/example-egress-acl" --static-route-config "{bfdConfiguration:{intervalInMilliSeconds:300,multiplier:10},ipv4Routes:[{prefix:'10.0.0.1/24',nextHop:['10.0.0.1']}],ipv6Routes:[{prefix:'2fff::/64',nextHop:['3ffe::1']}]}"
 
-    :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
+    :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax
         az networkfabric internalnetwork create --static-route-configuration "??"
         az networkfabric internalnetwork create --static-route-configuration "{ipv4-routes:??"
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/internalnetworks/{}", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/internalnetworks/{}", "2026-07-15-preview"],
         ]
     }
 
@@ -604,7 +604,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }
@@ -960,7 +960,30 @@ class Create(AAZCommand):
             )
 
             last_operation = cls._schema_on_200_201.properties.last_operation
+            last_operation.completed_at = AAZStrType(
+                serialized_name="completedAt",
+                flags={"read_only": True},
+            )
+            last_operation.correlation_id = AAZStrType(
+                serialized_name="correlationId",
+                flags={"read_only": True},
+            )
             last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
+            last_operation.operation_type = AAZStrType(
+                serialized_name="operationType",
+                flags={"read_only": True},
+            )
+            last_operation.result_blob_url = AAZStrType(
+                serialized_name="resultBlobUrl",
+                flags={"read_only": True},
+            )
+            last_operation.started_at = AAZStrType(
+                serialized_name="startedAt",
+                flags={"read_only": True},
+            )
+            last_operation.status = AAZStrType(
                 flags={"read_only": True},
             )
 

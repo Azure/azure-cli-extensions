@@ -18,14 +18,22 @@ class HorizonDBCommandsLoader(AzCommandsLoader):
             args=args
         )
         from .aaz.latest.horizondb.cluster.custom import ClusterCreate, ClusterUpdate
+        from .aaz.latest.horizondb.cluster.authentication.password.custom import PasswordCreate, PasswordUpdate
         from .aaz.latest.horizondb.cluster.custom_restore import ClusterRestore
         from .aaz.latest.horizondb.cluster.pool.custom import PoolCreate, PoolUpdate
+        from .aaz.latest.horizondb.cluster.pool.firewall_rule.custom import FirewallRuleCreate, FirewallRuleUpdate
+        from .aaz.latest.horizondb.cluster.pool.maintenance_event.custom import MaintenanceEventList
         from .aaz.latest.horizondb.cluster.private_link_resource.custom import PrivateLinkResourceShow
         self.command_table['horizondb cluster create'] = ClusterCreate(loader=self)
         self.command_table['horizondb cluster restore'] = ClusterRestore(loader=self)
         self.command_table['horizondb cluster update'] = ClusterUpdate(loader=self)
+        self.command_table['horizondb cluster authentication password create'] = PasswordCreate(loader=self)
+        self.command_table['horizondb cluster authentication password update'] = PasswordUpdate(loader=self)
         self.command_table['horizondb cluster pool create'] = PoolCreate(loader=self)
         self.command_table['horizondb cluster pool update'] = PoolUpdate(loader=self)
+        self.command_table['horizondb cluster pool firewall-rule create'] = FirewallRuleCreate(loader=self)
+        self.command_table['horizondb cluster pool firewall-rule update'] = FirewallRuleUpdate(loader=self)
+        self.command_table['horizondb cluster pool maintenance-event list'] = MaintenanceEventList(loader=self)
         self.command_table['horizondb cluster private-link-resource show'] = PrivateLinkResourceShow(loader=self)
         return self.command_table
 

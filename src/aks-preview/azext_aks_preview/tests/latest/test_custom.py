@@ -2,9 +2,11 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import io
 import json
 import os
 import subprocess
+import sys
 import tempfile
 import unittest
 from types import SimpleNamespace
@@ -65,16 +67,91 @@ class TestGetCredentialsExecutablePath(unittest.TestCase):
 
     def test_executes_resolved_kubelogin_and_preserves_arguments(self):
         executable = os.path.join(tempfile.gettempdir(), "installed tools", "kubelogin")
+        default_path = os.path.join(os.path.expanduser("~"), ".kube", "config")
+        for path, environment, selected_path in (
+            ("config", "inherited-config", "config"),
+            (os.path.join("config dir", "config"), "inherited-config", os.path.join("config dir", "config")),
+            (self.path, "inherited-config", self.path),
+            (default_path, os.pathsep.join(("env-config", "unused-config")), "env-config"),
+        ):
+            with (
+                self.subTest(path=path),
+                patch.dict(os.environ, {"KUBECONFIG": environment}),
+                patch("azext_aks_preview.custom.print_or_merge_credentials") as merge,
+                patch("azext_aks_preview.custom.which", return_value=executable) as resolve,
+                patch("azext_aks_preview.custom.subprocess.run") as run,
+            ):
+                aks_get_credentials(None, self.client, "rg", "cluster", path=path)
+                merge.assert_called_once_with(
+                    selected_path, self.client.list_cluster_user_credentials.return_value.kubeconfigs[0].value.decode(),
+                    False, None,
+                )
+                resolve.assert_called_once_with("kubelogin")
+                run.assert_called_once_with(
+                    [executable, "convert-kubeconfig", "-l", "azurecli",
+                     "--kubeconfig", os.path.realpath(selected_path)],
+                    check=True,
+                )
+
+    def test_stdout_export_does_not_convert_another_kubeconfig(self):
+        with (
+            patch("sys.stdout", new_callable=io.StringIO) as stdout,
+            patch("azext_aks_preview.custom.which") as resolve,
+            patch("azext_aks_preview.custom.subprocess.run") as run,
+        ):
+            aks_get_credentials(None, self.client, "rg", "cluster", path="-")
+        expected = self.client.list_cluster_user_credentials.return_value.kubeconfigs[0].value.decode()
+        self.assertEqual(stdout.getvalue(), expected + "\n")
+        resolve.assert_not_called()
+        run.assert_not_called()
+
+    @unittest.skipIf(os.name == "nt", "Requires a POSIX executable script and directory symlinks")
+    def test_converts_selected_files_without_changing_inherited_config(self):
+        kubeconfig = self.client.list_cluster_user_credentials.return_value.kubeconfigs[0].value.decode()
+        with tempfile.TemporaryDirectory() as directory:
+            tools = os.path.join(directory, "tools")
+            os.mkdir(tools)
+            executable = os.path.join(tools, "kubelogin")
+            with open(executable, "w", encoding="utf-8") as stream:
+                stream.write(
+                    "#!{}\n"
+                    "import os, sys\n"
+                    "from pathlib import Path\n"
+                    "path = (sys.argv[sys.argv.index('--kubeconfig') + 1] if '--kubeconfig' in sys.argv\n"
+                    "        else os.environ['KUBECONFIG'])\n"
+                    "config = Path(path)\n"
+                    "config.write_text(config.read_text().replace('devicecode', 'azurecli'))\n".format(sys.executable)
+                )
+            os.chmod(executable, 0o700)
+            os.makedirs(os.path.join(directory, "actual", "nested"))
+            os.symlink(os.path.join(directory, "actual", "nested"), os.path.join(directory, "linked"),
+                       target_is_directory=True)
+            inherited = os.path.join(directory, "inherited-config")
+            old_cwd = os.getcwd()
+            try:
+                os.chdir(directory)
+                for selected in ("config", os.path.join("config dir", "config"),
+                                 os.path.join("linked", "..", "symlink-config")):
+                    with self.subTest(selected=selected):
+                        with open(inherited, "w", encoding="utf-8") as stream:
+                            stream.write(kubeconfig)
+                        with patch.dict(os.environ, {"PATH": tools, "KUBECONFIG": inherited}):
+                            aks_get_credentials(None, self.client, "rg", "cluster", path=selected)
+                        with open(selected, encoding="utf-8") as stream:
+                            self.assertIn("azurecli", stream.read())
+                        with open(inherited, encoding="utf-8") as stream:
+                            self.assertEqual(stream.read(), kubeconfig)
+            finally:
+                os.chdir(old_cwd)
+
+    def test_launch_failure_keeps_existing_warning_behavior(self):
         with patch("azext_aks_preview.custom.print_or_merge_credentials"), patch(
-            "azext_aks_preview.custom.which", return_value=executable
-        ) as resolve, patch("azext_aks_preview.custom.subprocess.run") as run:
+            "azext_aks_preview.custom.which", return_value="/installed/kubelogin"
+        ), patch("azext_aks_preview.custom.subprocess.run", side_effect=OSError("Cannot execute kubelogin")), patch(
+            "azext_aks_preview.custom.logger.warning"
+        ) as warning:
             aks_get_credentials(None, self.client, "rg", "cluster", path=self.path)
-        resolve.assert_called_once_with("kubelogin")
-        run.assert_called_once_with(
-            [executable, "convert-kubeconfig", "-l", "azurecli"],
-            cwd=os.path.dirname(self.path),
-            check=True,
-        )
+        self.assertIn("Error running kubelogin", warning.call_args.args[0])
 
     def test_missing_kubelogin_warns_without_execution(self):
         with patch("azext_aks_preview.custom.print_or_merge_credentials"), patch(

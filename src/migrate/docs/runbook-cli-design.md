@@ -226,6 +226,7 @@ src/migrate/
 │   ├── shared/                      # NEW cross-feature access layer (used by EVERY migrate feature group)
 │   │   ├── __init__.py
 │   │   ├── arm_client.py            # ArmClient — generic ARM REST wrapper (send_raw_request)
+│   │   ├── execution_endpoint_client.py # ExecutionEndpointClient — development execution REST client
 │   │   ├── arm_ids.py               # generic ID/URL builders, --ids parsing, api-version join
 │   │   ├── constants.py             # provider namespace, base ID templates, api-version registry
 │   │   ├── errors.py                # ARM error → azclierror mapping
@@ -412,6 +413,7 @@ per §14).
 | `runbook/validators.py` | Enforce the spec's **Argument constraints** (Azure CLI has no parameter-sets). | `constants`, azclierror |
 | `runbook/transformers.py` | `--output table` transformers (definition, execution status, list). | — |
 | `shared/arm_client.py` | **Single, cross-feature** ARM REST surface: `get/list/put/patch/delete/post_action` via `send_raw_request`; header/body serialization; delegates error mapping to `errors`. | `errors`, `arm_ids`, azcli.util |
+| `shared/execution_endpoint_client.py` | Development-only execution REST client, separate from ARM authentication and transport. | requests, azclierror |
 | `shared/arm_ids.py` | Generic resource-ID/URL builders; join `api-version`; parse `--ids`. | `constants` |
 | `shared/polling.py` | Poll GET until terminal status; back `generate`/`execution start` `--no-wait`; power `wait`; `--watch`. | `arm_client`, `constants` |
 | `shared/errors.py` | Map ARM error bodies + status codes to `azclierror` types with actionable messages. | azclierror, telemetry |
@@ -527,6 +529,11 @@ No global argument context is modified except adding new contexts.
 A single `ArmClient` (in `shared/arm_client.py`) centralizes every ARM interaction (spec Objective +
 Reusability §8). It wraps
 the existing proven `send_raw_request` helpers rather than reinventing them.
+
+Development execution commands use `ExecutionEndpointClient` from
+`shared/execution_endpoint_client.py` when `AZURE_MIGRATE_EXECUTION_ENDPOINT` is set.
+It calls the loopback runner directly without ARM credentials; the ARM client remains
+dedicated to Azure Resource Manager.
 
 ```text
 cmds/*     ──►  ArmClient (shared/)  ──►  send_raw_request(cli_ctx, method, url, body, headers)

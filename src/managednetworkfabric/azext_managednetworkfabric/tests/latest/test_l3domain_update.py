@@ -57,10 +57,10 @@ def step_update_scenario2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric l3domain update --resource-group {rg} --resource-name {name} --export-policy-config {exportPolicyConfig}"
+        "az networkfabric l3domain update --resource-group {rg} --resource-name {name} --export-policy-configuration {exportPolicyConfig}"
         " --redist-conn-subnets {redistributeConnectedSubnets} --redist-static-routes {redistributeStaticRoutes}"
         " --aggr-route-config {aggregateRouteConf} --cs-route-policy {connectedSubnetRoutePolicy}"
-        " --sr-route-policy {staticRouteRoutePolicy} --annotation {annotation}--v4route-prefix-limit {ipv4RoutePrefixLimit}"
+        " --sr-route-policy {staticRouteRoutePolicy} --annotation {annotation} --v4route-prefix-limit {ipv4RoutePrefixLimit}"
         " --v6route-prefix-limit {ipv6RoutePrefixLimit} --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity}",
         checks=checks,
     )
@@ -117,3 +117,8 @@ class GA_L3DomainUpdateScenarioTest1(ScenarioTest):
     def test_GA_l3domain_update_scenario1(self):
         """test scenario for L3 Domain CRUD operations"""
         call_scenario1(self)
+
+    def test_GA_l3domain_update_scenario2(self):
+        """Test scenario 2 with alternate command parameters."""
+        call_scenario2(self)
+        self.assertTrue(self.cassette.all_played)

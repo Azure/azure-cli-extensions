@@ -12,6 +12,7 @@ NF post tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.output_checks import attr
 
 
 def setup_scenario1(test):
@@ -27,7 +28,12 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario1(test)
-    step_deprovision(test)
+    step_deprovision(
+        test,
+        checks=[
+            test.check("status", attr(test, "expectedStatus")),
+        ],
+    )
     cleanup_scenario1(test)
 
 
@@ -36,7 +42,8 @@ def step_deprovision(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric deprovision --resource-name {name} --resource-group {resourceGroup}"
+        "az networkfabric fabric deprovision --resource-name {name} --resource-group {resourceGroup}",
+        checks=checks,
     )
 
 
@@ -49,6 +56,7 @@ class GA_NFDeProvisionScenarioTest1(ScenarioTest):
             {
                 "name": CONFIG.get("NETWORK_FABRIC", "name"),
                 "resourceGroup": CONFIG.get("NETWORK_FABRIC", "resource_group"),
+                "expectedStatus": CONFIG.get("NETWORK_FABRIC", "expected_status"),
             }
         )
 

@@ -18,16 +18,16 @@ class Create(AAZCommand):
     """Create a Ip Prefix resource
 
     :example: Create an Ip Prefix
-        az networkfabric ipprefix create --resource-group "example-rg" --location "westus3" --resource-name "example-ipprefix" --ip-prefix-rules "[{action:Permit,sequenceNumber:1234,networkPrefix:'1.1.1.0/24',condition:EqualTo,subnetMaskLength:24}]"
+        az networkfabric ipprefix create --resource-group "example-rg" --location "westus3" --resource-name "example-ipprefix" --ip-prefix-rules "[{action:Permit,sequenceNumber:1234,networkPrefix:'1.1.1.0/24',condition:EqualTo,subnetMaskLength:24}]" --tags "{key:value}" --annotation "example-annotation"
 
-    :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
+    :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax
         az networkfabric ipprefix create --ip-prefix-rules "??"
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipprefixes/{}", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipprefixes/{}", "2026-07-15-preview"],
         ]
     }
 
@@ -211,7 +211,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }
@@ -351,7 +351,30 @@ class Create(AAZCommand):
             )
 
             last_operation = cls._schema_on_200_201.properties.last_operation
+            last_operation.completed_at = AAZStrType(
+                serialized_name="completedAt",
+                flags={"read_only": True},
+            )
+            last_operation.correlation_id = AAZStrType(
+                serialized_name="correlationId",
+                flags={"read_only": True},
+            )
             last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
+            last_operation.operation_type = AAZStrType(
+                serialized_name="operationType",
+                flags={"read_only": True},
+            )
+            last_operation.result_blob_url = AAZStrType(
+                serialized_name="resultBlobUrl",
+                flags={"read_only": True},
+            )
+            last_operation.started_at = AAZStrType(
+                serialized_name="startedAt",
+                flags={"read_only": True},
+            )
+            last_operation.status = AAZStrType(
                 flags={"read_only": True},
             )
 

@@ -1,0 +1,210 @@
+interactions:
+- request:
+    body: '{"identity": {"userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1": {}}, "type": "SystemAssigned,UserAssigned"}, "location": "eastus", "properties": {"annotation": "test-annotation", "destination": {"ipv4Addresses": ["10.10.10.12"]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric neighborgroup create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '361'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --location --resource-name --destination --annotation --user-assigned --system-assigned
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/neighborGroups/nfa-tool-ts-5-0-cli-neighborGroup?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/neighborGroups/nfa-tool-ts-5-0-cli-neighborGroup","name":"nfa-tool-ts-5-0-cli-neighborGroup","type":"microsoft.managednetworkfabric/neighborgroups","location":"eastus","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-02-04T13:33:24.4797688Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-02-04T13:33:24.4797688Z"},"properties":{"destination":{"ipv4Addresses":["10.10.10.12"]},"provisioningState":"Accepted","annotation":"test-annotation"},"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1":{}},"type":"SystemAssigned,UserAssigned"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-21c2999cfc03*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638426504056984856&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '865'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 04 Feb 2024 13:33:25 GMT
+      etag:
+      - '"00000000-0000-0000-0000-81bc461716cd"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-534835e1b0c0
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 6946B958FA014150B81A21BACAC4BEA7 Ref B: MAA201060513033 Ref C: 2024-02-04T13:33:23Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric neighborgroup create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --resource-name --destination --annotation --user-assigned --system-assigned
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-21c2999cfc03*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638426504056984856&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-21c2999cfc03*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-21c2999cfc03*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/neighborGroups/nfa-tool-ts-5-0-cli-neighborGroup","status":"Succeeded","startTime":"2024-02-04T13:33:25.0397101Z","endTime":"2024-02-04T13:33:25.6517495Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '660'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 04 Feb 2024 13:33:25 GMT
+      etag:
+      - '"00000000-0000-0000-0000-a8ec66b66840"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 8FA899751F7A410D8F045B57809EE2A2 Ref B: MAA201060516049 Ref C: 2024-02-04T13:33:26Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric neighborgroup create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --resource-name --destination --annotation --user-assigned --system-assigned
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/neighborGroups/nfa-tool-ts-5-0-cli-neighborGroup?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/neighborGroups/nfa-tool-ts-5-0-cli-neighborGroup","name":"nfa-tool-ts-5-0-cli-neighborGroup","type":"microsoft.managednetworkfabric/neighborgroups","location":"eastus","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-02-04T13:33:24.4797688Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-02-04T13:33:24.4797688Z"},"properties":{"destination":{"ipv4Addresses":["10.10.10.12"]},"provisioningState":"Succeeded","annotation":"test-annotation"},"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1":{}},"type":"SystemAssigned,UserAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '866'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 04 Feb 2024 13:33:26 GMT
+      etag:
+      - '"00000000-0000-0000-0000-38af297bb9fd"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 32A2AEAF1BCD4DAD877753F26C6ED2AC Ref B: MAA201060513049 Ref C: 2024-02-04T13:33:26Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1": {}}, "type": "SystemAssigned,UserAssigned"}, "properties": {"annotation": "test-annotation", "destination": {"ipv4Addresses": ["10.10.10.12", "10.10.10.13"]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric neighborgroup update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '354'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --resource-name --destination --annotation --user-assigned --system-assigned
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/neighborGroups/nfa-tool-ts-5-0-cli-neighborGroup?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/neighborGroups/nfa-tool-ts-5-0-cli-neighborGroup","name":"nfa-tool-ts-5-0-cli-neighborGroup","type":"microsoft.managednetworkfabric/neighborgroups","location":"eastus","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-02-04T13:33:24.4797688Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-02-04T13:33:45.1273052Z"},"properties":{"destination":{"ipv4Addresses":["10.10.10.12","10.10.10.13"]},"provisioningState":"Succeeded","annotation":"test-annotation"},"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNFC-5-1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1":{}},"type":"SystemAssigned,UserAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '880'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 04 Feb 2024 13:33:45 GMT
+      etag:
+      - '"00000000-0000-0000-0000-55e7ced6f79e"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-2f04e581a57c
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 28679116C349486E851D9143D87C1E8A Ref B: MAA201060516051 Ref C: 2024-02-04T13:33:44Z'
+    status:
+      code: 200
+      message: OK
+version: 1

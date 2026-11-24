@@ -1,0 +1,306 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "properties": {"aclType": "ControlPlaneTrafficPolicy", "aclsUrl": "https://ACL-Storage-URL", "annotation": "test-annotation", "configurationType": "Inline", "controlPlaneAclConfiguration": [{"ipAddressType": "IPv4", "matchConfigurations": [{"action": {"remarkComment": "Control plane access rule", "type": "Permit"}, "matchCondition": {"flags": ["TCP", "Established"], "ipCondition": {"destinationIpPrefix": "192.168.1.0/24", "sourceIpPrefix": "10.0.0.0/8"}, "portCondition": {"destinationPorts": {"portMatchType": "range", "ports": ["22", "80", "443"]}, "sourcePorts": {"portMatchType": "eq", "ports": []}}}}]}], "defaultAction": "Permit", "deviceRole": "CE", "dynamicMatchConfigurations": [{"ipGroups": [{"ipAddressType": "IPv4", "ipPrefixes": ["10.20.3.1/20"], "name": "example-ipGroup"}], "vlanGroups": [{"name": "example-vlanGroup", "vlans": ["20-30"]}]}], "globalAccessControlListActions": {"enableCount": "True"}, "matchConfigurations": [{"actions": [{"type": "Count"}], "ipAddressType": "IPv4", "matchConditions": [{"ipCondition": {"ipPrefixValues": ["10.30.0.124/30", "10.30.0.128/30"], "prefixType": "Prefix", "type": "SourceIP"}}, {"ipCondition": {"ipPrefixValues": ["10.30.0.124/30", "10.30.0.128/30"], "prefixType": "Prefix", "type": "DestinationIP"}}], "matchConfigurationName": "example-match", "sequenceNumber": 1234}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric acl create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1359'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --location --resource-name --configuration-type --acl-type --acls-url --default-action --device-role --annotation --dynamic-match-configs --global-acl-actions --match-configs --cp-acl-config
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-cluster/providers/Microsoft.ManagedNetworkFabric/accessControlLists/nfa-tool-ts-4-2-cli-acl?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-cluster/providers/Microsoft.ManagedNetworkFabric/accessControlLists/nfa-tool-ts-4-2-cli-acl","name":"nfa-tool-ts-4-2-cli-acl","type":"microsoft.managednetworkfabric/accesscontrollists","location":"eastus","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-02-02T06:20:10.4841812Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-02-02T06:20:10.4841812Z"},"properties":{"configurationState":"Succeeded","provisioningState":"Succeeded","administrativeState":"Disabled","configurationType":"Inline","aclsUrl":"https://ACL-Storage-URL","defaultAction":"Permit","matchConfigurations":[{"actions":[{"type":"Count"}],"ipAddressType":"IPv4","matchConditions":[{"ipCondition":{"ipPrefixValues":["10.30.0.124/30","10.30.0.128/30"],"prefixType":"Prefix","type":"SourceIP"}},{"ipCondition":{"ipPrefixValues":["10.30.0.124/30","10.30.0.128/30"],"prefixType":"Prefix","type":"DestinationIP"}}],"matchConfigurationName":"example-match","sequenceNumber":1234}],"dynamicMatchConfigurations":[{"ipGroups":[{"ipAddressType":"IPv4","ipPrefixes":["10.20.3.1/20"],"name":"example-ipGroup"}],"vlanGroups":[{"name":"example-vlanGroup","vlans":["20-30"]}]}],"aclType":"ControlPlaneTrafficPolicy","deviceRole":"CE","globalAccessControlListActions":{"enableCount":"True"},"annotation":"test-annotation","controlPlaneAclConfiguration":[{"ipAddressType":"IPv4","matchConfigurations":[{"action":{"remarkComment":"Control plane access rule","type":"Permit"},"matchCondition":{"flags":["TCP","Established"],"ipCondition":{"destinationIpPrefix":"192.168.1.0/24","sourceIpPrefix":"10.0.0.0/8"},"portCondition":{"destinationPorts":{"portMatchType":"range","ports":["22","80","443"]},"sourcePorts":{"portMatchType":"eq","ports":[]}}}}]}]}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2df0ef62e455*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424516117809895&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '1841'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 06:20:11 GMT
+      etag:
+      - '"00000000-0000-0000-0000-bfcfc951403e"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-d5d3151e9c70
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 6895E80B5B9A49DD89137C78E4A3E2EA Ref B: MAA201060514009 Ref C: 2024-02-02T06:20:09Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric acl create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --resource-name --configuration-type --acl-type --acls-url --default-action --device-role --annotation --dynamic-match-configs --global-acl-actions --match-configs --cp-acl-config
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2df0ef62e455*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424516117809895&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-2df0ef62e455*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-2df0ef62e455*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-cluster/providers/Microsoft.ManagedNetworkFabric/accessControlLists/nfa-tool-ts-4-2-cli-acl","status":"Succeeded","startTime":"2024-02-02T06:20:11.2566067Z","endTime":"2024-02-02T06:20:11.7564002Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '652'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 06:20:11 GMT
+      etag:
+      - '"00000000-0000-0000-0000-3073ff06fe2d"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 6691C8F185A844378B9404C04ED36983 Ref B: MAA201060513031 Ref C: 2024-02-02T06:20:11Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric acl create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --resource-name --configuration-type --acl-type --acls-url --default-action --device-role --annotation --dynamic-match-configs --global-acl-actions --match-configs --cp-acl-config
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-cluster/providers/Microsoft.ManagedNetworkFabric/accessControlLists/nfa-tool-ts-4-2-cli-acl?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-cluster/providers/Microsoft.ManagedNetworkFabric/accessControlLists/nfa-tool-ts-4-2-cli-acl","name":"nfa-tool-ts-4-2-cli-acl","type":"microsoft.managednetworkfabric/accesscontrollists","location":"eastus","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-02-02T06:20:10.4841812Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-02-02T06:20:10.4841812Z"},"properties":{"configurationState":"Succeeded","provisioningState":"Succeeded","administrativeState":"Disabled","configurationType":"Inline","aclsUrl":"https://ACL-Storage-URL","defaultAction":"Permit","matchConfigurations":[{"actions":[{"type":"Count"}],"ipAddressType":"IPv4","matchConditions":[{"ipCondition":{"ipPrefixValues":["10.30.0.124/30","10.30.0.128/30"],"prefixType":"Prefix","type":"SourceIP"}},{"ipCondition":{"ipPrefixValues":["10.30.0.124/30","10.30.0.128/30"],"prefixType":"Prefix","type":"DestinationIP"}}],"matchConfigurationName":"example-match","sequenceNumber":1234}],"dynamicMatchConfigurations":[{"ipGroups":[{"ipAddressType":"IPv4","ipPrefixes":["10.20.3.1/20"],"name":"example-ipGroup"}],"vlanGroups":[{"name":"example-vlanGroup","vlans":["20-30"]}]}],"aclType":"ControlPlaneTrafficPolicy","deviceRole":"CE","globalAccessControlListActions":{"enableCount":"True"},"annotation":"test-annotation","controlPlaneAclConfiguration":[{"ipAddressType":"IPv4","matchConfigurations":[{"action":{"remarkComment":"Control plane access rule","type":"Permit"},"matchCondition":{"flags":["TCP","Established"],"ipCondition":{"destinationIpPrefix":"192.168.1.0/24","sourceIpPrefix":"10.0.0.0/8"},"portCondition":{"destinationPorts":{"portMatchType":"range","ports":["22","80","443"]},"sourcePorts":{"portMatchType":"eq","ports":[]}}}}]}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1841'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 06:20:13 GMT
+      etag:
+      - '"00000000-0000-0000-0000-398ae82ba56a"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: A4E5EAC13825401889F0640212885111 Ref B: MAA201060515027 Ref C: 2024-02-02T06:20:12Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"aclType": "ControlPlaneTrafficPolicy", "aclsUrl": "https://ACL-Storage-URL", "annotation": "test-annotation", "configurationType": "Inline", "controlPlaneAclConfiguration": [{"ipAddressType": "IPv4", "matchConfigurations": [{"action": {"remarkComment": "Control plane access rule", "type": "Permit"}, "matchCondition": {"flags": ["TCP", "Established"], "ipCondition": {"destinationIpPrefix": "192.168.1.0/24", "sourceIpPrefix": "10.0.0.0/8"}, "portCondition": {"destinationPorts": {"portMatchType": "range", "ports": ["22", "80", "443"]}, "sourcePorts": {"portMatchType": "eq", "ports": []}}}}]}], "defaultAction": "Permit", "deviceRole": "CE", "dynamicMatchConfigurations": [{"ipGroups": [{"ipAddressType": "IPv4", "ipPrefixes": ["10.20.3.1/20"], "name": "example-ipGroup"}], "vlanGroups": [{"name": "example-vlanGroup", "vlans": ["20-30"]}]}], "globalAccessControlListActions": {"enableCount": "True"}, "matchConfigurations": [{"actions": [{"type": "Count"}], "ipAddressType": "IPv4", "matchConditions": [{"ipCondition": {"ipPrefixValues": ["10.30.0.124/30", "10.30.0.128/30", "10.30.0.129/30"], "prefixType": "Prefix", "type": "SourceIP"}}, {"ipCondition": {"ipPrefixValues": ["10.30.0.124/30", "10.30.0.128/30", "10.30.0.129/30"], "prefixType": "Prefix", "type": "DestinationIP"}}], "matchConfigurationName": "example-match", "sequenceNumber": 1234}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric acl update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1373'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --resource-name --configuration-type --acl-type --acls-url --default-action --device-role --annotation --dynamic-match-configs --global-acl-actions --match-configs --cp-acl-config
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-cluster/providers/Microsoft.ManagedNetworkFabric/accessControlLists/nfa-tool-ts-4-2-cli-acl?api-version=2026-07-15-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-abb5b395dca0*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424516167656452&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 06:20:15 GMT
+      etag:
+      - '"00000000-0000-0000-0000-3079f4da7a65"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-abb5b395dca0*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424516167656452&c=REDACTED&s=REDACTED&h=REDACTED
+      mise-correlation-id:
+      - 00000000-0000-0000-0000-182f69e0dc07
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-msedge-ref:
+      - 'Ref A: 96D7DC2734F246C7B53EAA47572921F1 Ref B: MAA201060516027 Ref C: 2024-02-02T06:20:15Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric acl update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --configuration-type --acl-type --acls-url --default-action --device-role --annotation --dynamic-match-configs --global-acl-actions --match-configs --cp-acl-config
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-abb5b395dca0*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424516167656452&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-abb5b395dca0*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-abb5b395dca0*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-cluster/providers/Microsoft.ManagedNetworkFabric/accessControlLists/nfa-tool-ts-4-2-cli-acl","status":"Succeeded","startTime":"2024-02-02T06:20:16.4512362Z","endTime":"2024-02-02T06:20:16.7696201Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '652'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 06:20:17 GMT
+      etag:
+      - '"00000000-0000-0000-0000-4a396b3bc418"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: F12A169D9EDE4FF4B362619FC414BB27 Ref B: MAA201060513027 Ref C: 2024-02-02T06:20:16Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric acl update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --configuration-type --acl-type --acls-url --default-action --device-role --annotation --dynamic-match-configs --global-acl-actions --match-configs --cp-acl-config
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-abb5b395dca0*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-07-15-preview&t=638424516167656452&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/00000000-0000-0000-0000-abb5b395dca0*0000000000000000000000000000000000000000000000000000000000000000","name":"00000000-0000-0000-0000-abb5b395dca0*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gfab1-cluster/providers/Microsoft.ManagedNetworkFabric/accessControlLists/nfa-tool-ts-4-2-cli-acl","status":"Succeeded","startTime":"2024-02-02T06:20:16.4512362Z","endTime":"2024-02-02T06:20:16.7696201Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '652'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Feb 2024 06:20:17 GMT
+      etag:
+      - '"00000000-0000-0000-0000-4a396b3bc418"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: D68E4730D5464E73843CE63F1EE5801D Ref B: MAA201060513011 Ref C: 2024-02-02T06:20:17Z'
+    status:
+      code: 200
+      message: OK
+version: 1

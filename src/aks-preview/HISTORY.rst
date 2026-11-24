@@ -11,6 +11,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks nodepool update`: Remove the stale feature registration note from the `--node-vm-size` VMSS resize example. Resizing a VMSS node pool no longer requires the `Microsoft.ContainerService/AgentPoolVMSSResize` feature registration.
+
+22.0.0b18
++++++++++
+* `az aks get-credentials`: Convert the selected kubeconfig file without changing unrelated files, and skip conversion for stdout-only output.
+* Use the CLI core safe executable resolver for AKS tools, preserving explicit executable paths and directory symlink semantics.
+* Require Azure CLI 2.93.0 or later for hardened executable lookup.
 
 22.0.0b17
 +++++++++

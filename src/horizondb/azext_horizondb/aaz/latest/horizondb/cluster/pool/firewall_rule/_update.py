@@ -19,7 +19,7 @@ class Update(AAZCommand):
     """Update a HorizonDB pool firewall rule.
 
     :example: Update a firewall rule on a HorizonDB pool
-        az horizon-db cluster pool firewall-rule update --resource-group example-resource-group --cluster-name example-cluster --pool-name example-pool-01 --firewall-rule-name example-firewall-rule-01 --start-ip-address 10.0.0.1 --end-ip-address 10.0.0.254 --description Allow access from the corporate network
+        az horizondb cluster pool firewall-rule update --resource-group example-resource-group --cluster-name example-cluster --pool-name example-pool-01 --firewall-rule-name example-firewall-rule-01 --end-ip-address 10.0.0.254 --description "Allow access from the corporate network"
     """
 
     _aaz_info = {

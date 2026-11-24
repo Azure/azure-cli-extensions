@@ -31,24 +31,7 @@ def call_scenario1(test):
     cleanup_scenario(test)
 
 
-def call_scenario1(test):
-    """Testcase: scenario1"""
-    setup_scenario(test)
-    step_update_scenario2(test, checks=[])
-    cleanup_scenario(test)
-
-
 def step_update_scenario1(test, checks=None):
-    """Network Monitor delete operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
-        "az networkfabric networkmonitor update --network-monitor-name {name} --resource-group {rg} --bmp-configuration {updatedBmpConfiguration}",
-        checks=checks,
-    )
-
-
-def step_update_scenario2(test, checks=None):
     """Network Monitor delete operation"""
     if checks is None:
         checks = []
