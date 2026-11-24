@@ -428,6 +428,39 @@ class NonProductionProfileFixtureUnitTest(TestCase):
 
 class ByocIdentityFixtureUnitTest(TestCase):
 
+    def test_vault_api_is_pinned_without_affecting_other_clients(self):
+        from azure.cli.command_modules.keyvault._client_factory import get_client_factory
+        from azure.cli.core.commands import client_factory
+        from azure.cli.core.profiles import ResourceType
+
+        scenario = Mock()
+        scenario.assertTrue = self.assertTrue
+        scenario.in_recording = False
+        scenario.is_live = False
+        scenario.recording_processors = []
+        scenario.get_subscription_id.return_value = SUBSCRIPTION
+        scenario.cmd.return_value.get_output_in_json.return_value = {
+            'principalId': '11111111-1111-1111-1111-111111111111',
+            'tenantId': '22222222-2222-2222-2222-222222222222',
+        }
+        vault_client = get_client_factory(ResourceType.MGMT_KEYVAULT, 'vaults')
+
+        def invoke(command):
+            if command.startswith('keyvault '):
+                vault_client(scenario.cli_ctx, None)
+            return scenario.cmd.return_value
+
+        scenario.cmd.side_effect = invoke
+        other_client = object()
+        with patch.object(client_factory, 'get_mgmt_service_client') as get_client:
+            with CdnAfdScenarioMixin.afd_byoc_identity(scenario, 'rg', 'profile'):
+                client_factory.get_mgmt_service_client(scenario.cli_ctx, other_client, api_version=API_VERSION)
+            self.assertIs(get_client, client_factory.get_mgmt_service_client)
+        self.assertEqual(3, get_client.call_count)
+        for call in get_client.call_args_list:
+            expected = '2026-02-01' if call.args[1] == ResourceType.MGMT_KEYVAULT else API_VERSION
+            self.assertEqual(expected, call.kwargs['api_version'])
+
     def test_shared_vault_recording_preserves_fixture_and_scrubs_other_identities(self):
         principal_id = '11111111-1111-1111-1111-111111111111'
         other_id = '22222222-2222-2222-2222-222222222222'

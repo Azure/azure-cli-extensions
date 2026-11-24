@@ -8,8 +8,11 @@ import hashlib
 import json
 from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
+from unittest.mock import patch
 from urllib.parse import parse_qs, urlsplit
 
+from azure.cli.core.commands import client_factory
+from azure.cli.core.profiles import ResourceType
 from azure.cli.testsdk import JMESPathCheck
 from azure.cli.testsdk.scenario_tests.recording_processors import RecordingProcessor
 
@@ -200,15 +203,24 @@ class CdnAfdScenarioMixin:
             f'--name {vault_name} --resource-group {vault_resource_group} --subscription {vault_subscription} '
             f'--object-id {principal_id}'
         )
+        get_client = client_factory.get_mgmt_service_client
+
+        def fixture_client(cli_ctx, resource_type, *args, **kwargs):
+            # Keep auxiliary vault requests aligned with the BYOC recordings as CLI core evolves.
+            if resource_type == ResourceType.MGMT_KEYVAULT:
+                kwargs['api_version'] = '2026-02-01'
+            return get_client(cli_ctx, resource_type, *args, **kwargs)
+
         # The built-in commands serialize the shared vault's other policies as well.
         processor = ByocVaultRecordingProcessor(principal_id)
         self.recording_processors.append(processor)
         try:
-            self.cmd(f'keyvault set-policy {policy_args} --secret-permissions get')
-            try:
-                yield
-            finally:
-                self.cmd(f'keyvault delete-policy {policy_args}')
+            with patch.object(client_factory, 'get_mgmt_service_client', side_effect=fixture_client):
+                self.cmd(f'keyvault set-policy {policy_args} --secret-permissions get')
+                try:
+                    yield
+                finally:
+                    self.cmd(f'keyvault delete-policy {policy_args}')
         finally:
             self.recording_processors.remove(processor)
 
