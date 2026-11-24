@@ -1,0 +1,1822 @@
+interactions:
+- request:
+    body: '{"location": "japaneast", "properties": {"backup": {"geoRedundancy": "Disabled",
+      "retentionDays": 7}, "network": {"publicAccess": "Disabled"}, "postgreSqlVersion":
+      "17"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '170'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7},"provisioningState":"Provisioning"},"location":"japaneast","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-827583feeee716e1?api-version=2026-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '450'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:23:19 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/operationResults/recorded-operation-827583feeee716e1?api-version=2026-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-827583feeee716e1?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"d1197959-2f2d-46c6-8bdb-5697bcb093e6","status":"InProgress","startTime":"2026-11-23T22:23:20.343Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:23:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-827583feeee716e1?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"d1197959-2f2d-46c6-8bdb-5697bcb093e6","status":"InProgress","startTime":"2026-11-23T22:23:20.343Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:24:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-827583feeee716e1?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"d1197959-2f2d-46c6-8bdb-5697bcb093e6","status":"InProgress","startTime":"2026-11-23T22:23:20.343Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:25:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-827583feeee716e1?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"d1197959-2f2d-46c6-8bdb-5697bcb093e6","status":"InProgress","startTime":"2026-11-23T22:23:20.343Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:26:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-827583feeee716e1?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"d1197959-2f2d-46c6-8bdb-5697bcb093e6","status":"InProgress","startTime":"2026-11-23T22:23:20.343Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:27:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-827583feeee716e1?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"d1197959-2f2d-46c6-8bdb-5697bcb093e6","status":"InProgress","startTime":"2026-11-23T22:23:20.343Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:28:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-827583feeee716e1?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"d1197959-2f2d-46c6-8bdb-5697bcb093e6","status":"InProgress","startTime":"2026-11-23T22:23:20.343Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:29:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-827583feeee716e1?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"d1197959-2f2d-46c6-8bdb-5697bcb093e6","status":"Succeeded","startTime":"2026-11-23T22:23:20.343Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:30:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-23T22:23:23.6105826+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Ready","provisioningState":"Succeeded"},"location":"japaneast","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '602'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:30:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-23T22:23:23.6105826+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Ready","provisioningState":"Succeeded"},"location":"japaneast","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '602'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:30:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-23T22:23:23.6105826+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Ready","provisioningState":"Succeeded"},"location":"japaneast","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '602'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:30:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"computeModel": {"computeGeneration": 1, "computeProcessor":
+      "Intel", "vCores": 2, "type": "Provisioned"}, "highAvailability": {"mode": "Disabled"},
+      "nodeCount": 1}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster pool create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '181'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --cluster-name -n --compute-generation --compute-processor --v-cores --node-count
+        --high-availability-mode
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002/pools/authpool?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"properties":{"computeModel":{"type":"Provisioned","computeProcessor":"Intel","computeGeneration":1,"vCores":2},"nodeCount":1,"highAvailability":{"mode":"Disabled"},"state":"Provisioning","provisioningState":"Provisioning"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002/pools/authpool","name":"authpool","type":"Microsoft.HorizonDb/clusters/pools"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-b6c901722fc85aba?api-version=2026-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '467'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:30:33 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/operationResults/recorded-operation-b6c901722fc85aba?api-version=2026-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster pool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name -n --compute-generation --compute-processor --v-cores --node-count
+        --high-availability-mode
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-b6c901722fc85aba?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"dfe276b2-4ab0-4635-a856-c9276a1f161b","status":"InProgress","startTime":"2026-11-23T22:30:33.853Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:30:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster pool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name -n --compute-generation --compute-processor --v-cores --node-count
+        --high-availability-mode
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-b6c901722fc85aba?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"dfe276b2-4ab0-4635-a856-c9276a1f161b","status":"InProgress","startTime":"2026-11-23T22:30:33.853Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:31:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster pool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name -n --compute-generation --compute-processor --v-cores --node-count
+        --high-availability-mode
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-b6c901722fc85aba?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"dfe276b2-4ab0-4635-a856-c9276a1f161b","status":"InProgress","startTime":"2026-11-23T22:30:33.853Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:32:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster pool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name -n --compute-generation --compute-processor --v-cores --node-count
+        --high-availability-mode
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-b6c901722fc85aba?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"dfe276b2-4ab0-4635-a856-c9276a1f161b","status":"InProgress","startTime":"2026-11-23T22:30:33.853Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:33:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster pool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name -n --compute-generation --compute-processor --v-cores --node-count
+        --high-availability-mode
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-b6c901722fc85aba?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"dfe276b2-4ab0-4635-a856-c9276a1f161b","status":"InProgress","startTime":"2026-11-23T22:30:33.853Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:34:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster pool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name -n --compute-generation --compute-processor --v-cores --node-count
+        --high-availability-mode
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-b6c901722fc85aba?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"dfe276b2-4ab0-4635-a856-c9276a1f161b","status":"InProgress","startTime":"2026-11-23T22:30:33.853Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:35:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster pool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name -n --compute-generation --compute-processor --v-cores --node-count
+        --high-availability-mode
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-b6c901722fc85aba?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"dfe276b2-4ab0-4635-a856-c9276a1f161b","status":"Succeeded","startTime":"2026-11-23T22:30:33.853Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:36:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster pool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name -n --compute-generation --compute-processor --v-cores --node-count
+        --high-availability-mode
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002/pools/authpool?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"properties":{"computeModel":{"type":"Provisioned","computeProcessor":"Intel","computeGeneration":1,"vCores":2},"nodeCount":1,"highAvailability":{"mode":"Disabled"},"parameterGroup":{"parameterGroupResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/parameterGroups/default_pg17","applyMethod":"PendingReboot","syncStatus":"InSync"},"scheduledMaintenance":{"maintenanceManagementType":"System"},"state":"Ready","provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002/pools/authpool","name":"authpool","type":"Microsoft.HorizonDb/clusters/pools"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '750'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:36:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster authentication list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002/authentications?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"state":"Enabled"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002/authentications/passwordMethod","name":"passwordMethod","type":"Microsoft.HorizonDb/clusters/authentications"},{"properties":{"state":"Disabled"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002/authentications/microsoftEntra","name":"microsoftEntra","type":"Microsoft.HorizonDb/clusters/authentications"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '630'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:36:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"administratorLogin": "scenarioadmin", "administratorLoginPassword":
+      "REDACTED-password-1!", "state": "Enabled"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster authentication password create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '129'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --cluster-name --state --administrator-login --admin-password
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002/authentications/passwordMethod?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"properties":{"state":"Enabled","provisioningState":"Provisioning","administratorLogin":"scenarioadmin"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002/authentications/passwordMethod","name":"passwordMethod","type":"Microsoft.HorizonDb/clusters/authentications"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-d00556d19c9709cf?api-version=2026-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '380'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:36:45 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/operationResults/recorded-operation-d00556d19c9709cf?api-version=2026-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster authentication password create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name --state --administrator-login --admin-password
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-d00556d19c9709cf?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"d6b8652e-1b82-48a8-afeb-d39b69e1cc60","status":"InProgress","startTime":"2026-11-23T22:36:45.897Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:36:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster authentication password create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name --state --administrator-login --admin-password
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-d00556d19c9709cf?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"d6b8652e-1b82-48a8-afeb-d39b69e1cc60","status":"Succeeded","startTime":"2026-11-23T22:36:45.897Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:36:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster authentication password create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name --state --administrator-login --admin-password
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002/authentications/passwordMethod?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"properties":{"state":"Enabled","administratorLogin":"scenarioadmin"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002/authentications/passwordMethod","name":"passwordMethod","type":"Microsoft.HorizonDb/clusters/authentications"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '345'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:36:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster authentication password wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name --custom --timeout
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002/authentications/passwordMethod?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"properties":{"state":"Enabled","administratorLogin":"scenarioadmin"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002/authentications/passwordMethod","name":"passwordMethod","type":"Microsoft.HorizonDb/clusters/authentications"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '345'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:37:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster authentication password show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002/authentications/passwordMethod?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"properties":{"state":"Enabled","administratorLogin":"scenarioadmin"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002/authentications/passwordMethod","name":"passwordMethod","type":"Microsoft.HorizonDb/clusters/authentications"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '345'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:37:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"administratorLoginPassword": "REDACTED-password-1!"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster authentication password update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '70'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --cluster-name --admin-password
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002/authentications/passwordMethod?api-version=2026-10-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-2d2ece5fcd92cae9?api-version=2026-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 23 Nov 2026 22:37:05 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/operationResults/recorded-operation-2d2ece5fcd92cae9?api-version=2026-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster authentication password update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name --admin-password
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-2d2ece5fcd92cae9?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"a59bee08-a9f0-4658-b16f-53bbaaed1141","status":"InProgress","startTime":"2026-11-23T22:37:05.613Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:37:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster authentication password update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name --admin-password
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-2d2ece5fcd92cae9?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"a59bee08-a9f0-4658-b16f-53bbaaed1141","status":"Succeeded","startTime":"2026-11-23T22:37:05.613Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:37:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster authentication password update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name --admin-password
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002/authentications/passwordMethod?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"properties":{"state":"Enabled","administratorLogin":"scenarioadmin"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002/authentications/passwordMethod","name":"passwordMethod","type":"Microsoft.HorizonDb/clusters/authentications"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '345'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:37:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster pool delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --cluster-name -n --yes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002/pools/authpool?api-version=2026-10-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-e4b456167f6d98f8?api-version=2026-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 23 Nov 2026 22:37:20 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/operationResults/recorded-operation-e4b456167f6d98f8?api-version=2026-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster pool delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name -n --yes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-e4b456167f6d98f8?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"e2af0f54-f8d7-4167-a730-82e0acece35c","status":"InProgress","startTime":"2026-11-23T22:37:21.19Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:37:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster pool delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name -n --yes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/recorded-operation-e4b456167f6d98f8?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"e2af0f54-f8d7-4167-a730-82e0acece35c","status":"Succeeded","startTime":"2026-11-23T22:37:21.19Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '106'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:38:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster pool delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name -n --yes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/operationResults/recorded-operation-e4b456167f6d98f8?api-version=2026-10-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 23 Nov 2026 22:38:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_auth_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/Japan%20East/azureAsyncOperation/recorded-operation-b935467649d6eb9d?api-version=2026-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 23 Nov 2026 22:38:25 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/Japan%20East/operationResults/recorded-operation-b935467649d6eb9d?api-version=2026-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/Japan%20East/azureAsyncOperation/recorded-operation-b935467649d6eb9d?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"c92be59f-a0e5-4658-bfe4-32bd40dd01c2","status":"InProgress","startTime":"2026-11-23T22:38:25.92Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:38:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/Japan%20East/azureAsyncOperation/recorded-operation-b935467649d6eb9d?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"name":"c92be59f-a0e5-4658-bfe4-32bd40dd01c2","status":"Succeeded","startTime":"2026-11-23T22:38:25.92Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '106'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 22:38:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/Japan%20East/operationResults/recorded-operation-b935467649d6eb9d?api-version=2026-10-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 23 Nov 2026 22:38:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+version: 1
