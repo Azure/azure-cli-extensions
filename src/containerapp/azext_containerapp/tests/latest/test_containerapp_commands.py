@@ -1207,21 +1207,21 @@ class ContainerappServiceBindingTests(ScenarioTest):
         self.cmd('containerapp add-on qdrant create -g {} -n {} --environment {}'.format(
             resource_group, qdrant_ca_name, env_name))
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis'.format(
+        self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgresbinding redis'.format(
             resource_group, ca_name, env_name, image), checks=[
-            JMESPathCheck('properties.template.serviceBinds[0].name', "postgres_binding"),
+            JMESPathCheck('properties.template.serviceBinds[0].name', "postgresbinding"),
             JMESPathCheck('properties.template.serviceBinds[1].name', "redis")
         ])
 
-        self.cmd('containerapp update -g {} -n {} --unbind postgres_binding'.format(
+        self.cmd('containerapp update -g {} -n {} --unbind postgresbinding'.format(
             resource_group, ca_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
         ])
 
-        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb qdrant'.format(
+        self.cmd('containerapp update -g {} -n {} --bind postgres:postgresbinding kafka mariadb qdrant'.format(
             resource_group, ca_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
-            JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding"),
+            JMESPathCheck('properties.template.serviceBinds[1].name', "postgresbinding"),
             JMESPathCheck('properties.template.serviceBinds[2].name', "kafka"),
             JMESPathCheck('properties.template.serviceBinds[3].name', "mariadb"),
             JMESPathCheck('properties.template.serviceBinds[4].name', "qdrant")
@@ -1252,7 +1252,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
             JMESPathCheck('length(@)', 0),
         ])
 
-        self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes')
+        self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes --no-wait')
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
@@ -1274,9 +1274,9 @@ class ContainerappServiceBindingTests(ScenarioTest):
         milvus_ca_name = "milvus"
         ADDON_LIST = ["redis", "postgres", "kafka", "mariadb", "qdrant", "weaviate", "milvus"]
 
-        env_id = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
-        env_rg = parse_resource_id(env_id).get('resource_group')
-        env_name = parse_resource_id(env_id).get('name')
+        env_rg = resource_group
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        create_containerapp_env(self, env_name, env_rg, location=location)
 
         self.cmd('containerapp add-on redis create -g {} -n {} --environment {}'.format(
             env_rg, redis_ca_name, env_name))
@@ -1303,22 +1303,22 @@ class ContainerappServiceBindingTests(ScenarioTest):
             self.cmd(f'containerapp show -g {env_rg} -n {addon}', checks=[
                 JMESPathCheck("properties.provisioningState", "Succeeded")])
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis'.format(
+        self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgresbinding redis'.format(
             env_rg, ca_name, env_name, image), checks=[
-            JMESPathCheck('properties.template.serviceBinds[0].name', "postgres_binding"),
+            JMESPathCheck('properties.template.serviceBinds[0].name', "postgresbinding"),
             JMESPathCheck('properties.template.serviceBinds[1].name', "redis")
         ])
 
-        self.cmd('containerapp update -g {} -n {} --unbind postgres_binding'.format(
+        self.cmd('containerapp update -g {} -n {} --unbind postgresbinding'.format(
             env_rg, ca_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
         ])
 
-        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb qdrant weaviate milvus'.format(
+        self.cmd('containerapp update -g {} -n {} --bind postgres:postgresbinding kafka mariadb qdrant weaviate milvus'.format(
             env_rg, ca_name, image), checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
-            JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding"),
+            JMESPathCheck('properties.template.serviceBinds[1].name', "postgresbinding"),
             JMESPathCheck('properties.template.serviceBinds[2].name', "kafka"),
             JMESPathCheck('properties.template.serviceBinds[3].name', "mariadb"),
             JMESPathCheck('properties.template.serviceBinds[4].name', "qdrant"),
