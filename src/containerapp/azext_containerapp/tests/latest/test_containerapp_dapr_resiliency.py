@@ -198,6 +198,7 @@ class DaprComponentResiliencyTests(ScenarioTest):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        app_name = self.create_random_name(prefix='daprapp', length=24)
         dapr_comp_name = self.create_random_name(prefix='daprcomp', length=24)
         resil_name = self.create_random_name(prefix='resil', length=24)
         bad_rg = "bad-rg"
@@ -206,6 +207,8 @@ class DaprComponentResiliencyTests(ScenarioTest):
         resil_policy_count = 1
 
         create_containerapp_env(self, env_name, resource_group, subnetId=subnet_id)
+        self.cmd('containerapp create -g {} -n {} --environment {} --enable-dapr --dapr-app-id {} --dapr-app-port 80'.format(
+            resource_group, app_name, env_name, app_name))
 
         file_ref, dapr_file = tempfile.mkstemp(suffix=".yml")
 
@@ -216,10 +219,12 @@ class DaprComponentResiliencyTests(ScenarioTest):
         metadata:
         - name: accountName
           secretRef: storage-account-name
+        scopes:
+        - {}
         secrets:
         - name: storage-account-name
           value: storage-account-name
-        """
+        """.format(app_name)
 
         daprloaded = yaml.safe_load(dapr_yaml)
 

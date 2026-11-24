@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import json
 import sys
 import time
 import requests
@@ -12,6 +13,49 @@ from azure.cli.core.azclierror import MutuallyExclusiveArgumentError, RequiredAr
 from azure.mgmt.core.tools import parse_resource_id
 
 from azure.cli.testsdk import (JMESPathCheck)
+from azure.cli.testsdk.scenario_tests import RecordingProcessor
+
+
+class LogAnalyticsSharedKeyReplacer(RecordingProcessor):
+    _SHARED_KEY_FIELDS = {"sharedKey", "primarySharedKey", "secondarySharedKey"}
+
+    @classmethod
+    def _sanitize_body(cls, body):
+        if not body:
+            return body
+
+        try:
+            payload = json.loads(body)
+        except (TypeError, ValueError):
+            return body
+
+        changed = False
+
+        def sanitize(value):
+            nonlocal changed
+            if isinstance(value, dict):
+                for key, child in value.items():
+                    if key in cls._SHARED_KEY_FIELDS and isinstance(child, str):
+                        value[key] = "fake-log-analytics-key"
+                        changed = True
+                    else:
+                        sanitize(child)
+            elif isinstance(value, list):
+                for child in value:
+                    sanitize(child)
+
+        sanitize(payload)
+        return json.dumps(payload, separators=(",", ":")) if changed else body
+
+    def process_request(self, request):
+        request.body = self._sanitize_body(request.body)
+        return request
+
+    def process_response(self, response):
+        body = response.get("body", {})
+        if isinstance(body, dict):
+            body["string"] = self._sanitize_body(body.get("string"))
+        return response
 
 
 def prepare_containerapp_env_for_app_e2e_tests(test_cls, location=TEST_LOCATION):

@@ -19,14 +19,15 @@ from azure.mgmt.core.tools import parse_resource_id
 from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
 from .common import TEST_LOCATION, STAGE_LOCATION
 from .custom_preparers import SubnetPreparer
-from .utils import create_containerapp_env, prepare_containerapp_env_for_app_e2e_tests
+from .utils import (LogAnalyticsSharedKeyReplacer, create_containerapp_env, create_vnet_subnet,
+                    prepare_containerapp_env_for_app_e2e_tests)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ContainerappIdentityTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=True, recording_processors=[LogAnalyticsSharedKeyReplacer()], **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
@@ -87,11 +88,12 @@ class ContainerappIdentityTests(ScenarioTest):
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
+        subnet_id = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='vnet', length=24), location=location)
 
         logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
         logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
-        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --infrastructure-subnet-resource-id {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key, subnet_id))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -309,10 +311,10 @@ class ContainerappIngressTests(ScenarioTest):
         # wait for the first revision to come up and populate in traffic.
         ingress = self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
         for _ in range(100):
-            if ingress["traffic"] != None:
+            if ingress["traffic"]:
                 break
             time.sleep(5)
-            traffic = self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
+            ingress = self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
 
         self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('external', True),
@@ -636,7 +638,7 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('allowedMethods[0]', "GET"),
             JMESPathCheck('length(allowedHeaders)', 1),
             JMESPathCheck('allowedHeaders[0]', "header1"),
-            JMESPathCheck('exposeHeaders', None),
+            JMESPathCheck('exposeHeaders', []),
             JMESPathCheck('allowCredentials', False),
             JMESPathCheck('maxAge', 0),
         ])
@@ -648,7 +650,7 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('allowedMethods[0]', "GET"),
             JMESPathCheck('length(allowedHeaders)', 1),
             JMESPathCheck('allowedHeaders[0]', "header1"),
-            JMESPathCheck('exposeHeaders', None),
+            JMESPathCheck('exposeHeaders', []),
             JMESPathCheck('allowCredentials', False),
             JMESPathCheck('maxAge', 0),
         ])
