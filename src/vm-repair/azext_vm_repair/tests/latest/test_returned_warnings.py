@@ -21,7 +21,6 @@ class TestCommandHelper(command_helper):
         self.status = ''
         self.return_dict = {}
         self.warnings = []
-        self.warning_codes = []
 
     def __del__(self):
         pass
@@ -48,9 +47,9 @@ class ReturnedWarningsTest(unittest.TestCase):
     def test_warnings_are_returned_when_raised(self):
         helper = self._helper()
         helper.warnings.append('The repair VM size only supports NVMe.')
-        helper.warning_codes.append('REPAIR_VM_NVME_ONLY')
-        self.assertEqual(['The repair VM size only supports NVMe.'], helper.init_return_dict()['warnings'])
-        self.assertEqual(['REPAIR_VM_NVME_ONLY'], helper.return_dict['warning_codes'])
+        returned = helper.init_return_dict()
+        self.assertEqual(['The repair VM size only supports NVMe.'], returned['warnings'])
+        self.assertNotIn('warning_codes', returned)
 
     def test_returned_warnings_are_a_copy(self):
         helper = self._helper()
@@ -64,20 +63,16 @@ class ReturnedWarningsTest(unittest.TestCase):
 class CreateWarningsTest(unittest.TestCase):
 
     def test_nvme_warning_is_returned_by_create(self):
-        source_vm = mock.MagicMock()
-        source_vm.storage_profile.os_disk.name = 'source-osdisk'
-        source_vm.tags = {}
-        source_vm.location = 'westus2'
-
-        class StopAfterControllerSelection:
-            def __bool__(self):
-                raise RuntimeError('stop after controller selection')
-
-        source_vm.zones = StopAfterControllerSelection()
+        source_vm = {
+            'storageProfile': {'osDisk': {'name': 'source-osdisk'}},
+            'hardwareProfile': {'vmSize': 'Standard_D2ds_v6'},
+            'tags': {},
+            'location': 'westus2'
+        }
         warning = 'The repair VM size only supports NVMe.'
 
-        with mock.patch('azext_vm_repair.custom.get_vm', side_effect=[source_vm, mock.MagicMock()]), \
-                mock.patch('azext_vm_repair.custom._is_linux_os', return_value=False), \
+        with mock.patch('azext_vm_repair.custom.get_vm_by_aaz', side_effect=[source_vm, mock.MagicMock()]), \
+                mock.patch('azext_vm_repair.custom._is_linux_os_aaz', return_value=False), \
                 mock.patch('azext_vm_repair.custom._is_gen2', return_value=True), \
                 mock.patch('azext_vm_repair.custom._fetch_source_disk_controller_type', return_value='NVMe'), \
                 mock.patch('azext_vm_repair.custom._set_source_resource_context'), \
@@ -87,13 +82,18 @@ class CreateWarningsTest(unittest.TestCase):
                 mock.patch('azext_vm_repair.custom._fetch_compatible_sku', return_value='Standard_D2ds_v6'), \
                 mock.patch('azext_vm_repair.custom._fetch_sku_disk_controller_types', return_value=['NVMe']), \
                 mock.patch('azext_vm_repair.custom._select_repair_disk_controller_type', return_value=(None, 'warning', warning)), \
+                mock.patch('azext_vm_repair.custom._check_existing_rg', side_effect=RuntimeError('stop after warning')), \
                 mock.patch('azext_vm_repair.custom._clean_up_resources'):
-            result = custom.create(mock.MagicMock(), 'source-vm', 'source-rg')
+            result = custom.create(
+                mock.MagicMock(), 'source-vm', 'source-rg',
+                repair_username='repair-user', repair_password='repair-password',
+                repair_vm_name='repair-vm', copy_disk_name='disk-copy',
+                repair_group_name='repair-rg')
 
         self.assertEqual([warning], result['warnings'])
 
     def test_yes_deprecation_warning_is_returned_by_create(self):
-        with mock.patch('azext_vm_repair.custom.get_vm', side_effect=RuntimeError('stop after warning')), \
+        with mock.patch('azext_vm_repair.custom.get_vm_by_aaz', side_effect=RuntimeError('stop after warning')), \
                 mock.patch('azext_vm_repair.custom._clean_up_resources'):
             result = custom.create(mock.MagicMock(), 'source-vm', 'source-rg', yes=True)
 
@@ -110,20 +110,18 @@ class NestedCommandWarningsTest(unittest.TestCase):
             'copied_disk_name': 'disk-copy',
             'repair_resource_group': 'repair-rg',
             'warnings': ['create warning'],
-            'warning_codes': ['CREATE_WARNING'],
         }
-        with mock.patch('azext_vm_repair.custom.get_vm', side_effect=RuntimeError('telemetry unavailable')), \
+        with mock.patch('azext_vm_repair.custom.get_vm_by_aaz', side_effect=RuntimeError('telemetry unavailable')), \
                 mock.patch('azext_vm_repair.custom._check_existing_rg', return_value=False), \
                 mock.patch('azext_vm_repair.custom.create', return_value=create_result), \
                 mock.patch('azext_vm_repair.custom.run', return_value={'script_status': 'SUCCESS'}), \
-                mock.patch('azext_vm_repair.custom.restore'), \
+                mock.patch('azext_vm_repair.custom.restore', return_value={'status': 'SUCCESS'}), \
                 mock.patch('azext_vm_repair.custom._call_az_command', return_value='repair-vm-id'):
             return command(mock.MagicMock(), 'source-vm', 'source-rg', **kwargs)
 
     def test_repair_and_restore_propagates_create_warnings(self):
         result = self._run_nested_command(custom.repair_and_restore)
         self.assertEqual(['create warning'], result['warnings'])
-        self.assertEqual(['CREATE_WARNING'], result['warning_codes'])
 
     def test_repair_button_propagates_create_and_deprecation_warnings(self):
         result = self._run_nested_command(custom.repair_button, button_command='fstab', yes=True)

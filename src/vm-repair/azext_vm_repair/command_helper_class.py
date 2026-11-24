@@ -160,7 +160,6 @@ class command_helper:
         self.return_dict["message"] = self.message
         if self.warnings:
             self.return_dict["warnings"] = list(self.warnings)
-            self.return_dict["warning_codes"] = list(self.warning_codes)
         if not self.is_status_success():
             self.return_dict["error_message"] = self.error_message
             if self.error_message:

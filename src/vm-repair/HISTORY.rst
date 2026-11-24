@@ -2,6 +2,10 @@
 Release History
 ===============
 
+2.5.2
++++++
+Add structured quality telemetry that identifies command versus repair-script failures, correlates each invocation, reports diagnostics and warning counts, and distinguishes default, preview, and custom repair script sources. Command output continues to return warnings as messages only, without exposing internal warning codes.
+
 2.5.1
 ++++++
 Ship read-only guest probe scripts that report whether a VM has a MANA or Mellanox accelerated-networking device and whether its operating system has the MANA network driver. They are groundwork for MANA migration diagnostics and are not run by any command yet, so command behavior, parameters, and output are unchanged.
@@ -31,7 +35,6 @@ Migrate code from Azure SDK to AAZ based commands for compute operations
 2.4.3
 ++++++
 Advisory warnings raised by ``az vm repair create`` are now also returned in its output under a ``warnings`` key, including the NVMe-only repair VM warning and the ``--yes`` deprecation warning. ``az vm repair repair-and-restore`` and ``az vm repair repair-button`` also return warnings raised while creating their repair VM, so scripts and portal experiences no longer need to parse the log to detect them. The key is only present when a warning was raised, so existing output is unchanged otherwise.
-Adding structured release-quality telemetry dimensions for invocation correlation, failure ownership, diagnostic availability, warning codes, and repair script source. These dimensions distinguish vm-repair command failures from repair-script failures without parsing exception text and do not record Azure resource identity or customer content.
 
 2.4.2
 ++++++

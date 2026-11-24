@@ -92,6 +92,18 @@ PREVIEW_URL_PATTERN = re.compile(
     r'^https://github\.com/(?P<fork>[^/]+)/repair-script-library/(?:blob|tree)/(?P<branch>[^/]+)/map\.json$')
 
 
+def _append_command_warning(command, message):
+    if not hasattr(command, 'warnings'):
+        command.warnings = []
+    command.warnings.append(message)
+
+
+def _extend_command_warnings(command, warnings):
+    if not hasattr(command, 'warnings'):
+        command.warnings = []
+    command.warnings.extend(warnings)
+
+
 def _parse_preview_url(preview):
     """Extract the fork and branch from a preview map.json URL.
 
@@ -217,8 +229,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         if yes:
             message = 'The --yes parameter is deprecated and will be removed in a future release. There is currently no behavior change associated with this parameter.'
             logger.warning(message)
-            command.warnings.append(message)
-            command.warning_codes.append('YES_PARAMETER_DEPRECATED')
+            _append_command_warning(command, message)
 
         # TODO: add permissions checks - can user create VMs, disks, resource groups, etc.
         # Set parameters used in exception handling to avoid Unbound errors:
@@ -340,8 +351,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             source_controller, supported_controllers, disk_controller_type)
         getattr(logger, level)(message)
         if level == 'warning':
-            command.warnings.append(message)
-            command.warning_codes.append('REPAIR_VM_NVME_ONLY')
+            _append_command_warning(command, message)
         if selected_controller:
             create_repair_vm_command['disk_controller_type'] = selected_controller
         if hasattr(command, 'set_resource_context'):
@@ -1215,8 +1225,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
 
     # Create a repair VM, copy of the disk, and a new resource group
     create_out = create(cmd, vm_name, resource_group_name, repair_password, repair_username, repair_vm_name=repair_vm_name, copy_disk_name=copy_disk_name, repair_group_name=repair_group_name, associate_public_ip=False, tags=tags, copy_tags=copy_tags, size=size)
-    command.warnings.extend(create_out.get('warnings', []))
-    command.warning_codes.extend(create_out.get('warning_codes', []))
+    _extend_command_warnings(command, create_out.get('warnings', []))
 
     # Log the output of the create operation
     logger.info('create_out: %s', create_out)
@@ -1314,8 +1323,7 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
     if yes:
         message = 'The --yes parameter is deprecated and will be removed in a future release. There is currently no behavior change associated with this parameter.'
         logger.warning(message)
-        command.warnings.append(message)
-        command.warning_codes.append('YES_PARAMETER_DEPRECATED')
+        _append_command_warning(command, message)
 
     password_length = 30
     password_characters = string.ascii_lowercase + string.digits + string.ascii_uppercase
@@ -1332,8 +1340,7 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
     existing_rg = _check_existing_rg(repair_group_name)
 
     create_out = create(cmd, vm_name, resource_group_name, repair_password, repair_username, repair_vm_name=repair_vm_name, copy_disk_name=copy_disk_name, repair_group_name=repair_group_name, associate_public_ip=False, tags=tags, copy_tags=copy_tags, size=size)
-    command.warnings.extend(create_out.get('warnings', []))
-    command.warning_codes.extend(create_out.get('warning_codes', []))
+    _extend_command_warnings(command, create_out.get('warnings', []))
 
     # log create_out
     logger.info('create_out: %s', create_out)
