@@ -95,6 +95,14 @@ class ContainerappFunctionTests(ScenarioTest):
             recording_processors=[FunctionSecretsReplacer()],
             **kwargs)
 
+    def wait_for_healthy_revision(self, resource_group, app):
+        for _ in range(60):
+            revisions = self.cmd(f'az containerapp revision list -g {resource_group} -n {app}').get_output_in_json()
+            if any(r["properties"]["active"] and r["properties"]["healthState"] == "Healthy" for r in revisions):
+                return
+            time.sleep(10)
+        self.fail(f"Timed out waiting for a healthy revision of {app}")
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_function_list_show_basic(self, resource_group):
@@ -115,9 +123,7 @@ class ContainerappFunctionTests(ScenarioTest):
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("kind", "functionapp")
         ])
-        time.sleep(30)
-        rev_status = self.cmd(f'az containerapp revision list -g {resource_group} -n {ca_name}').get_output_in_json()
-        assert any(r["properties"]["active"] and r["properties"]["healthState"] == "Healthy" for r in rev_status)
+        self.wait_for_healthy_revision(resource_group, ca_name)
         
         time.sleep(30)
         result = self.cmd(f'containerapp function list -g {resource_group} -n {ca_name}').get_output_in_json()
@@ -163,11 +169,8 @@ class ContainerappFunctionTests(ScenarioTest):
         ])
         time.sleep(60)
 
-        rev_status = self.cmd(f'az containerapp revision list -g {resource_group} -n {ca_name}').get_output_in_json()
-        assert any(r["properties"]["active"] and r["properties"]["healthState"] == "Healthy" for r in rev_status)
-
-        rev_status = self.cmd(f'az containerapp revision list -g {resource_group} -n {ca_func_name}').get_output_in_json()
-        assert any(r["properties"]["active"] and r["properties"]["healthState"] == "Healthy" for r in rev_status)
+        self.wait_for_healthy_revision(resource_group, ca_name)
+        self.wait_for_healthy_revision(resource_group, ca_func_name)
 
         # Test: List functions from a regular app should fail
         with self.assertRaisesRegex(Exception, ".*"):
