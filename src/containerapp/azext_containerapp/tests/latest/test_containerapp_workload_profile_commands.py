@@ -322,8 +322,9 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
         app2 = self.create_random_name(prefix='app2', length=24)
 
         location = "eastus"
+        subnet_id = create_vnet_subnet(self, resource_group, vnet, location=location)
 
-        self.cmd('containerapp env create -g {} -n {} --location {}  --logs-destination none --enable-workload-profiles'.format(resource_group, env, location))
+        self.cmd('containerapp env create -g {} -n {} --location {} --logs-destination none --enable-workload-profiles -s {}'.format(resource_group, env, location, subnet_id))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
