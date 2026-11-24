@@ -1,5 +1,40 @@
 # NVMe Conversion Extension — Live Test Tracker
 
+## RHEL 7 standalone EFI regression update (2026-11-23)
+
+The embedded Linux script now repairs the resolved RHEL 7 standalone EFI
+configuration even when defaults or another generated file already contain
+`nvme_core.io_timeout=240`. It checks every kernel entry, rejects incorrect,
+duplicate, or conflicting timeout arguments, and preserves dry-run and repeat
+behavior. Modern redirect stubs are not overwritten.
+
+Run the 13 isolated regressions from the repository root on Linux as root:
+
+```bash
+python3 -B -m unittest discover \
+  -s src/nvme-conversion/azext_nvme_conversion/tests/latest \
+  -p test_linux_efi_timeout.py -v
+```
+
+Result: **13 passed**. The tests execute the actual embedded timeout functions
+in temporary chroots with existing Bash/coreutils/awk tools and stubbed GRUB
+generation. They make no Azure calls, mounts, or package installations, and
+require no ALAR checkout. Other hosts explicitly skip them.
+
+The existing documented extension unit command also passed: **58 tests passed,
+2 live scenario tests deselected**. Separately, ALAR/shared-script validation
+passed **37 unit tests and 191 differential fixtures**.
+
+Live validation used the exact image `RedHat:RHEL:79-gen2:7.9.2023030110`.
+A rebuilt ALAR candidate embedding the corrected script completed actual
+check/dry-run/apply/repeat, SCSI/NVMe/second-NVMe/SCSI rollback, runtime timeout
+240 on both NVMe boots, repeat identity, and a native missing-timeout fault
+repair. This is shared-script/ALAR validation, not a new end-to-end execution
+of `az nvme-conversion convert`. Both existing VMs were deallocated afterward;
+no new VMs were created. Stable public SSH acceptance remains separate.
+
+The historical live tracker below is retained unchanged.
+
 **Date**: 2026-05-10
 **Resource Group**: `nvme-conversion-test`
 **Location**: `westus3`

@@ -5,6 +5,7 @@ Release History
 
 1.0.0b1
 ++++++
+* Fix RHEL 7 standalone EFI timeout readiness and regeneration when GRUB defaults already contain the required value.
 * Initial preview release
 * Convert VMs between SCSI and NVMe disk controllers
 * Pre-flight validation checks (SKU, OS, generation, ADE)

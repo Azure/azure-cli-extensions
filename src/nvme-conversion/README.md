@@ -58,3 +58,15 @@ az nvme-conversion convert --resource-group myRG --vm-name myVM --fix-os --start
 | `--sleep-seconds` | Delay before starting VM (default: 15) | No |
 | `--yes -y` | Skip confirmation prompts | No |
 | `--no-wait` | Do not wait for VM start to complete | No |
+
+
+## RHEL 7 standalone EFI timeout handling
+
+For RHEL/redhat/CentOS 7 guests with `/etc/grub2-efi.cfg`, Linux readiness checks
+the resolved standalone EFI kernel entries rather than accepting a timeout token
+from `/etc/default/grub` or an unrelated generated configuration. `--fix-os`
+regenerates the verified standalone target and requires exact timeout 240 on every
+kernel entry. Dry-run does not rebuild or modify boot files. Broken links, modern
+redirect stubs in this old-layout branch, and failed/ineffective generation are
+reported explicitly rather than overwritten or treated as ready. Other release
+and BIOS branches retain their existing behavior. No encryption/ADE policy is changed.

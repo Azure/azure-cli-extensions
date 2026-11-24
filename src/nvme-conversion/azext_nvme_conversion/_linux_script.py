@@ -291,8 +291,59 @@ check_nvme_driver() {
 }
 
 # Function to check nvme_core.io_timeout parameter
+nvme_timeout_entries_ready() {
+    awk '
+        /^[[:space:]]*linux(efi|16)?[[:space:]]+/ {
+            seen = 1
+            count = 0
+            for (i = 1; i <= NF; i++) {
+                if ($i ~ /^nvme_core[.]io_timeout=/) {
+                    count++
+                    if ($i != "nvme_core.io_timeout=240") bad = 1
+                }
+            }
+            if (count != 1) bad = 1
+        }
+        END { exit !(seen && !bad) }
+    ' "$1"
+}
+
+set_rhel7_timeout_defaults() {
+    if ! grep -q '^GRUB_CMDLINE_LINUX="' "$1"; then
+        echo "[ERROR] Expected quoted GRUB_CMDLINE_LINUX in $1."
+        return 1
+    fi
+    if ! sed -i -E '/^GRUB_CMDLINE_LINUX="/ { s/(^|[[:space:]"])nvme_core[.]io_timeout=[^[:space:]"]+/\1/g; s/^(GRUB_CMDLINE_LINUX=")/\1nvme_core.io_timeout=240 /; }' "$1"; then
+        echo "[ERROR] Failed to update timeout defaults in $1."
+        return 1
+    fi
+}
+
 check_nvme_timeout() {
     echo "[INFO] Checking nvme_core.io_timeout parameter..."
+
+    local _rhel7_efi_config=""
+    case "$distro" in
+        redhat|rhel|centos)
+            if [ -r /etc/os-release ] &&
+               ( . /etc/os-release; [ "${VERSION_ID%%.*}" = 7 ] ) &&
+               { [ -e /etc/grub2-efi.cfg ] || [ -L /etc/grub2-efi.cfg ]; }; then
+                if ! _rhel7_efi_config=$(readlink -e /etc/grub2-efi.cfg); then
+                    echo "[ERROR] Cannot resolve guest EFI configuration /etc/grub2-efi.cfg."
+                    return 1
+                fi
+                case "$_rhel7_efi_config" in
+                    /boot/efi/EFI/*/grub.cfg) ;;
+                    *) echo "[ERROR] Unsupported guest EFI configuration: $_rhel7_efi_config"; return 1 ;;
+                esac
+                # Older RHEL EFI uses a full config, not the modern redirect stub.
+                if ! grep -Eq '^[[:space:]]*linux(efi|16)?[[:space:]]+' "$_rhel7_efi_config"; then
+                    echo "[ERROR] Expected standalone kernel entries in $_rhel7_efi_config; refusing to overwrite."
+                    return 1
+                fi
+            fi
+            ;;
+    esac
 
     # Build grub file list dynamically for verification
     _grub_check_files="/etc/default/grub"
@@ -302,14 +353,15 @@ check_nvme_timeout() {
         _grub_check_files="$_grub_check_files /boot/grub/grub.cfg"
     fi
 
-    if grep -q "nvme_core.io_timeout=240" $_grub_check_files 2>/dev/null; then
+    if { [ -n "$_rhel7_efi_config" ] && nvme_timeout_entries_ready "$_rhel7_efi_config"; } ||
+       { [ -z "$_rhel7_efi_config" ] && grep -q "nvme_core.io_timeout=240" $_grub_check_files 2>/dev/null; }; then
         echo "[INFO] nvme_core.io_timeout is set to 240."
         if $dry_run && $fix; then
             echo "[DRYRUN] nvme_core.io_timeout already set to 240. No grub changes needed."
             echo "nvme_core_io_timeout=240" > "$staging_dir/modified/nvme-timeout-status.txt"
             echo "status=already_configured" >> "$staging_dir/modified/nvme-timeout-status.txt"
         fi
-    elif command -v grubby &>/dev/null && grubby --info=ALL 2>/dev/null | grep -q "nvme_core.io_timeout=240"; then
+    elif [ -z "$_rhel7_efi_config" ] && command -v grubby &>/dev/null && grubby --info=ALL 2>/dev/null | grep -q "nvme_core.io_timeout=240"; then
         echo "[INFO] nvme_core.io_timeout is set to 240 (BLS entries)."
     else
         echo "[WARNING] nvme_core.io_timeout is not set to 240."
@@ -338,7 +390,12 @@ check_nvme_timeout() {
                             sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="/GRUB_CMDLINE_LINUX_DEFAULT="nvme_core.io_timeout=240 /g' "$staging_dir/modified/grub"
                             ;;
                         *)
-                            sed -i 's/GRUB_CMDLINE_LINUX="/GRUB_CMDLINE_LINUX="nvme_core.io_timeout=240 /g' "$staging_dir/modified/grub"
+                            if [ -n "$_rhel7_efi_config" ]; then
+                                set_rhel7_timeout_defaults "$staging_dir/modified/grub" || return 1
+                                echo "[DRYRUN] Would regenerate $_rhel7_efi_config"
+                            else
+                                sed -i 's/GRUB_CMDLINE_LINUX="/GRUB_CMDLINE_LINUX="nvme_core.io_timeout=240 /g' "$staging_dir/modified/grub"
+                            fi
                             ;;
                     esac
                     diff -u "$staging_dir/original/grub" "$staging_dir/modified/grub" > "$staging_dir/diffs/grub.diff" 2>&1 || true
@@ -382,8 +439,16 @@ check_nvme_timeout() {
                         ;;
                     redhat|rhel|centos|rocky|almalinux)
                         if [ -f /etc/default/grub ]; then
-                            sed -i 's/GRUB_CMDLINE_LINUX="/GRUB_CMDLINE_LINUX="nvme_core.io_timeout=240 /g' /etc/default/grub
-                            GRUB_DISABLE_OS_PROBER=true grub2-mkconfig -o /boot/grub2/grub.cfg
+                            if [ -n "$_rhel7_efi_config" ]; then
+                                set_rhel7_timeout_defaults /etc/default/grub || return 1
+                                if ! GRUB_DISABLE_OS_PROBER=true grub2-mkconfig -o "$_rhel7_efi_config"; then
+                                    echo "[ERROR] Failed to regenerate $_rhel7_efi_config."
+                                    return 1
+                                fi
+                            else
+                                sed -i 's/GRUB_CMDLINE_LINUX="/GRUB_CMDLINE_LINUX="nvme_core.io_timeout=240 /g' /etc/default/grub
+                                GRUB_DISABLE_OS_PROBER=true grub2-mkconfig -o /boot/grub2/grub.cfg
+                            fi
                             # Update BLS entries if applicable (RHEL 8+, AlmaLinux 8+)
                             if grep -q "GRUB_ENABLE_BLSCFG=true" /etc/default/grub 2>/dev/null; then
                                 if command -v grubby &>/dev/null; then
@@ -418,12 +483,14 @@ check_nvme_timeout() {
                         ;;
                 esac
 
-                if grep -q "nvme_core.io_timeout=240" $_grub_check_files 2>/dev/null; then
+                if { [ -n "$_rhel7_efi_config" ] && nvme_timeout_entries_ready "$_rhel7_efi_config"; } ||
+       { [ -z "$_rhel7_efi_config" ] && grep -q "nvme_core.io_timeout=240" $_grub_check_files 2>/dev/null; }; then
                     echo "[INFO] nvme_core.io_timeout set successfully."
-                elif command -v grubby &>/dev/null && grubby --info=ALL 2>/dev/null | grep -q "nvme_core.io_timeout=240"; then
+                elif [ -z "$_rhel7_efi_config" ] && command -v grubby &>/dev/null && grubby --info=ALL 2>/dev/null | grep -q "nvme_core.io_timeout=240"; then
                     echo "[INFO] nvme_core.io_timeout set successfully (BLS entries)."
                 else
                     echo "[ERROR] Failed to set nvme_core.io_timeout."
+                    if [ -n "$_rhel7_efi_config" ]; then return 1; fi
                 fi
             fi
         else
