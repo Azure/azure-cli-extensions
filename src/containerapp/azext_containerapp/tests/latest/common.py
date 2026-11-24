@@ -27,6 +27,40 @@ class AuthTokenReplacer(RecordingProcessor):
         return response
 
 
+class RegistryPasswordReplacer(RecordingProcessor):
+    def __init__(self):
+        self._passwords = {}
+
+    def _replace(self, body):
+        if isinstance(body, bytes):
+            for value, replacement in self._passwords.items():
+                body = body.replace(value.encode(), replacement.encode())
+        elif isinstance(body, str):
+            for value, replacement in self._passwords.items():
+                body = body.replace(value, replacement)
+        return body
+
+    def process_request(self, request):
+        request.body = self._replace(request.body)
+        return request
+
+    def process_response(self, response):
+        body = response.get("body", {}).get("string")
+        try:
+            payload = json.loads(body)
+        except (TypeError, ValueError):
+            payload = None
+        if isinstance(payload, dict) and isinstance(payload.get("passwords"), list):
+            for password in payload["passwords"]:
+                if isinstance(password, dict) and isinstance(password.get("value"), str) and password["value"]:
+                    value = password["value"]
+                    if value not in self._passwords:
+                        self._passwords[value] = "fake-registry-password-{}".format(len(self._passwords) + 1)
+        if body is not None:
+            response["body"]["string"] = self._replace(body)
+        return response
+
+
 def write_test_file(filename, content):
     test_file = open(filename, "w", encoding='utf-8')
     _ = test_file.write(content)
