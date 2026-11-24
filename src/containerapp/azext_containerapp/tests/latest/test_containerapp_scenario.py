@@ -19,13 +19,16 @@ from knack.util import CLIError
 
 from azext_containerapp.tests.latest.common import TEST_LOCATION
 
-from .common import STAGE_LOCATION
+from .common import AuthTokenReplacer, STAGE_LOCATION
 from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ContainerappScenarioTest(ScenarioTest):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, recording_processors=[AuthTokenReplacer()], **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_e2e(self, resource_group):

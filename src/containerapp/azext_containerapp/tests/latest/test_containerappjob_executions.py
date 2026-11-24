@@ -3,15 +3,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import json
 import os
 import time
 
 from azure.mgmt.core.tools import parse_resource_id
 
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse, RecordingProcessor
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
-from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
+from azext_containerapp.tests.latest.common import (AuthTokenReplacer, write_test_file, clean_up_test_file)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -19,23 +18,9 @@ from azext_containerapp.tests.latest.common import TEST_LOCATION
 from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 
-class JobAuthTokenReplacer(RecordingProcessor):
-    def process_response(self, response):
-        body = response.get("body", {}).get("string")
-        try:
-            payload = json.loads(body)
-        except (TypeError, ValueError):
-            return response
-        properties = payload.get("properties") if isinstance(payload, dict) else None
-        if isinstance(properties, dict) and "token" in properties:
-            properties["token"] = "fake-token"
-            response["body"]["string"] = json.dumps(payload, separators=(",", ":"))
-        return response
-
-
 class ContainerAppJobsExecutionsTest(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, recording_processors=[JobAuthTokenReplacer()], **kwargs)
+        super().__init__(*arg, recording_processors=[AuthTokenReplacer()], **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")

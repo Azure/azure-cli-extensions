@@ -5,13 +5,13 @@
 
 import json
 
-from .test_containerappjob_executions import JobAuthTokenReplacer
+from .common import AuthTokenReplacer
 
 
 def test_job_auth_token_replacer():
     response = {"body": {"string": json.dumps({"properties": {"token": "real-token", "expires": "later"}})}}
 
-    result = JobAuthTokenReplacer().process_response(response)
+    result = AuthTokenReplacer().process_response(response)
 
     assert json.loads(result["body"]["string"]) == {"properties": {"token": "fake-token", "expires": "later"}}
 
@@ -19,4 +19,4 @@ def test_job_auth_token_replacer():
 def test_job_auth_token_replacer_preserves_non_json():
     response = {"body": {"string": "not json"}}
 
-    assert JobAuthTokenReplacer().process_response(response) == response
+    assert AuthTokenReplacer().process_response(response) == response
