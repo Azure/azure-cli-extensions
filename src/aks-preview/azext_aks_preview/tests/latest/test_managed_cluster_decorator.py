@@ -1686,6 +1686,37 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         self.assertIsNotNone(profile)
         self.assertTrue(profile.enabled)
 
+    def test_get_oidc_issuer_profile__create_disable(self):
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_oidc_issuer": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        profile = ctx.get_oidc_issuer_profile()
+        self.assertIsNotNone(profile)
+        self.assertFalse(profile.enabled)
+
+    def test_get_oidc_issuer_profile__create_enable_and_disable(self):
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_oidc_issuer": True, "disable_oidc_issuer": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx.get_oidc_issuer_profile()
+
+    def test_get_workload_identity_profile__create_enable_with_disable_oidc_issuer(self):
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_workload_identity": True, "disable_oidc_issuer": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx.get_workload_identity_profile()
+
     def test_get_workload_identity_profile__create_no_set(self):
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
