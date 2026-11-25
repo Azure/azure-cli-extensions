@@ -177,6 +177,7 @@
   textarea { min-height: 64px; font-family: var(--mono); font-size: var(--fs-200); line-height: var(--lh-200); }
   .bad { background: #fdf4f4 !important; border-color: var(--err) !important; }
   .err { color: var(--err); font-size: var(--fs-200); line-height: var(--lh-200); margin-top: 4px; }
+  .err.warning { color: var(--warn); }
   .row-acts { display: flex; gap: 14px; margin-top: 7px; flex-wrap: wrap; }
   .lnk { font: inherit; font-size: var(--fs-200); line-height: var(--lh-200);
     background: none; border: 0; padding: 0; color: var(--brand); cursor: pointer;
@@ -479,7 +480,7 @@ function stepLabel(sid) {
 // Snapshot of what was downloaded, to flag changed (dirty) fields + reset.
 const ORIGINAL = JSON.parse(JSON.stringify(DOC.stepInputs));
 const SCHEMA_EDITOR = Object.prototype.hasOwnProperty.call(BOOT, 'parameterSchema')
-  ? parameterSchemaEditor(BOOT.parameterSchema, BOOT.inputsRoot, entitiesFor) : null;
+  ? parameterSchemaEditor(BOOT.parameterSchema, BOOT.inputsRoot, entitiesFor, exportWithExclusions) : null;
 const INPUTLESS_STEP_REFS = new Set(BOOT.inputlessStepRefs || []);
 function stepIds() {
   const inputs = Object.keys(DOC.stepInputs);
@@ -613,6 +614,7 @@ function effective(sid, eid, f) {
     (has(DOC.stepInputs[sid], f) ? DOC.stepInputs[sid][f] : undefined);
 }
 function inputState(sid, eid = null) {
+  if (SCHEMA_EDITOR) return { required: new Set(), excluded: SCHEMA_EDITOR.excluded(DOC.stepInputs, sid, eid) };
   const prepared = preparedSchema(sid), required = new Set(), excluded = new Set();
   const value = f => effective(sid, eid, f);
   prepared.conditions.forEach(rule => {
@@ -951,7 +953,7 @@ function inputRow(sid, kind, f, r, data) {
     </div>
     ${isComplex(r) ? complexCtrl(path, r, data[f], !locked) : scalarCtrl(path, r, data[f], dis)}
     ${r.description ? `<div class="irow__desc" title="${esc(r.description)}">${esc(r.description)}</div>` : ''}
-    <div class="err" data-err="${esc(path)}"></div></div>`;
+    <div class="err" data-err="${esc(path)}" role="status"></div></div>`;
 }
 // Legacy optional inputs start collapsed; split schemas keep all inputs visible.
 function renderGroup(title, sub, sid, kind, fields, rules, data) {
@@ -1042,9 +1044,9 @@ function overrideRow(sid, eid, f, r, data, sect) {
       <span class="tag" ${ov ? '' : 'hidden'}>override</span>
       <span class="mod-chip" hidden>modified</span></div>
     ${ctrl}
-    <div class="inh" data-inh="${esc(sid)}|${esc(eid)}|${esc(f)}"></div>
+    <div class="inh" data-inh="${esc(sid)}|${esc(eid)}|${esc(f)}" role="status"></div>
     <div class="row-acts" ${acts ? '' : 'hidden'}>${acts}</div>
-    <div class="err" data-err="${esc(path)}"></div>
+    <div class="err" data-err="${esc(path)}" role="status"></div>
   </div>`;
 }
 function renderOverrides() {
@@ -1238,29 +1240,41 @@ function updateRowState() {
   });
 }
 function ctrlEl(path) { return document.querySelector(`[data-path="${path}"]`); }
-function mark(path, err) {
+function mark(path, err, warning = '') {
   const el = ctrlEl(path); if (el) el.classList.toggle('bad', !!err);
-  const e = document.querySelector(`[data-err="${path}"]`); if (e) e.textContent = err || '';
+  const e = document.querySelector(`[data-err="${path}"]`);
+  if (e) {
+    e.textContent = err || warning;
+    e.classList.toggle('warning', !err && !!warning);
+  }
 }
 function refreshValidation() {
   const sid = current, issues = stepIssues(sid);
   const errorFor = (f, eid) => issues.filter(i => i.f === f && i.eid === eid).map(i => i.msg).join('; ');
+  const warnings = SCHEMA_EDITOR ? SCHEMA_EDITOR.warnings(DOC.stepInputs).filter(i => i.sid === sid) : [];
+  const ignored = 'Not used with the current inputs. This value will be saved as null, but kept here if you change the inputs.';
+  const warningFor = (f, eid) => warnings.some(i => i.f === f && i.eid === eid) ? ignored : '';
   const kind = stepIsEntity(sid) ? 'D' : 'A';
   Object.entries(contextRules(sid)).forEach(([f, rule]) => {
     const shared = SCHEMA_EDITOR ? [...new Set(issues
       .filter(i => i.f === f && (i.eid === null || !hasOverride(sid, i.eid, f)))
       .map(i => i.detail || i.msg))].join('; ') : fieldError(rule, DOC.stepInputs[sid][f]);
-    mark(`${kind}|${sid}|${f}`, shared);
+    const affected = warnings.filter(i => i.f === f);
+    const warning = !isEmpty(DOC.stepInputs[sid][f]) && affected.length
+      ? affected.some(i => i.eid === null) || entitiesFor(sid).every(e => affected.some(i => i.eid === e.id))
+        ? ignored : 'Not used by some workloads with their current inputs. The value is kept for workloads that still use it.'
+      : '';
+    mark(`${kind}|${sid}|${f}`, shared, warning);
   });
   entityFields(sid).forEach(f => {
     // right pane shows the selected entity's inputs
-    const ov = hasOverride(sid, selEntity, f), err = errorFor(f, selEntity);
-    mark(`O|${sid}|${selEntity}|${f}`, ov ? err : null);
+    const ov = hasOverride(sid, selEntity, f), err = errorFor(f, selEntity), warning = warningFor(f, selEntity);
+    mark(`O|${sid}|${selEntity}|${f}`, ov ? err : null, ov ? warning : '');
     const inh = document.querySelector(`[data-inh="${sid}|${selEntity}|${f}"]`);
     if (inh) {
-      // The value itself is already on the control; this line is only for errors.
-      inh.textContent = ov ? '' : (err || '');
-      inh.style.color = 'var(--err)';
+      // The inherited value is already on the control; show its validation feedback here.
+      inh.textContent = ov ? '' : (err || warning);
+      inh.style.color = err ? 'var(--err)' : 'var(--warn)';
     }
   });
   const summary = document.getElementById('stepConditions');
@@ -1347,27 +1361,27 @@ function revealField(path, altPath) {
 
 // ---- toolbar / popover ----------------------------------------------------
 function firstFailingStep() { return Object.keys(DOC.stepInputs).find(s => stepErrors(s) > 0); }
-function exportedInputs() {
-  const result = JSON.parse(JSON.stringify(DOC.stepInputs));
+function exportWithExclusions(stepInputs, excludedFor) {
+  const result = JSON.parse(JSON.stringify(stepInputs));
   Object.keys(result).forEach(sid => {
-    if (!preparedSchema(sid).conditions.length) return;
-    const data = DOC.stepInputs[sid], output = result[sid];
+    const data = stepInputs[sid], output = result[sid];
     const ids = [...new Set([...entitiesFor(sid).map(e => e.id), ...Object.keys(data.workloadOverrides || {})])];
-    const base = inputState(sid);
+    const base = excludedFor(sid, null);
     const overrides = Object.assign(Object.create(null), output.workloadOverrides || {});
     const states = ids.map(eid => ({
-      eid, excluded: inputState(sid, eid).excluded,
+      eid, excluded: excludedFor(sid, eid),
       values: Object.assign(Object.create(null), overrides[eid] || {})
     }));
+    if (!base.size && !states.some(e => e.excluded.size)) return;
     Object.keys(rulesFor(sid)).forEach(f => {
       // Move shared values into allowed workloads to prevent excluded workloads
       // from inheriting them, retaining inactive property names as null.
-      if (!base.excluded.has(f) && !states.some(e => e.excluded.has(f))) return;
+      if (!base.has(f) && !states.some(e => e.excluded.has(f))) return;
       const value = output[f];
       output[f] = null;
       states.forEach(({ eid, excluded, values }) => {
         if (excluded.has(f)) values[f] = null;
-        else if (!hasOverride(sid, eid, f) && !isEmpty(data[f])) values[f] = value;
+        else if ((!has(values, f) || isEmpty(values[f])) && !isEmpty(data[f])) values[f] = value;
       });
     });
     states.forEach(({ eid, values }) => {
@@ -1376,6 +1390,10 @@ function exportedInputs() {
     if (has(output, 'workloadOverrides') || Object.keys(overrides).length) output.workloadOverrides = overrides;
   });
   return result;
+}
+function exportedInputs() {
+  return SCHEMA_EDITOR ? SCHEMA_EDITOR.exported(DOC.stepInputs)
+    : exportWithExclusions(DOC.stepInputs, (sid, eid) => inputState(sid, eid).excluded);
 }
 function buildInputsJson() {
   const root = JSON.parse(JSON.stringify(BOOT.inputsRoot || {}));

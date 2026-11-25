@@ -1,11 +1,12 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root.
-function parameterSchemaEditor(schema, original, entitiesFor) {
+function parameterSchemaEditor(schema, original, entitiesFor, exportExcluded) {
   const own = (value, key) => value != null && Object.prototype.hasOwnProperty.call(value, key);
   const empty = value => value === null || value === undefined || value === '';
   const clone = value => JSON.parse(JSON.stringify(value));
   const parts = pointer => pointer.slice(2).split('/').map(p => decodeURIComponent(p).replace(/~1/g, '/').replace(/~0/g, '~'));
   const pointer = ref => parts(ref).reduce((value, key) => own(value, key) ? value[key] : undefined, schema);
+  const location = path => '#/' + path.map(key => key.replace(/~/g, '~0').replace(/\//g, '~1')).join('/');
   let validator, error, cached;
   const layouts = new Map();
   function resolve(value) {
@@ -17,7 +18,25 @@ function parameterSchemaEditor(schema, original, entitiesFor) {
       value = pointer(ref);
       if (value === undefined) throw new Error('Unresolved editor reference: ' + ref);
     }
-    return value || {};
+    return value ?? {};
+  }
+  function excludedProperty(errors, index, field) {
+    if (!errors[index - 1] || !['properties', '$ref'].includes(errors[index - 1].keyword)) return false;
+    // SDK false errors use instance paths; the enclosing evaluation path identifies the actual schema.
+    const container = errors[index].instanceLocation.replace(/\/[^/]*$/, '');
+    for (let i = index - 1; i >= 0; i--) {
+      const parent = errors[i];
+      if (parent.keyword !== 'properties' || parent.instanceLocation !== container ||
+          parent.error !== `Property "${field}" does not match schema.`) continue;
+      let rule = schema;
+      for (const key of parts(parent.keywordLocation)) {
+        if (['anyOf', 'oneOf'].includes(key) && Array.isArray((rule || {})[key])) return false;
+        rule = key === '$ref' && typeof (rule || {}).$ref === 'string' ? pointer(rule.$ref)
+          : own(rule, key) ? rule[key] : undefined;
+      }
+      return own(rule, field) && resolve(rule[field]) === false;
+    }
+    return false;
   }
   const scalarChoices = rule => (rule.enum || (own(rule, 'const') ? [rule.const] : []))
     .filter(value => value !== null && ['string', 'number', 'boolean'].includes(typeof value));
@@ -133,7 +152,7 @@ function parameterSchemaEditor(schema, original, entitiesFor) {
       const info = layout(sid), stamp = JSON.stringify(stepInputs);
       const contexts = info.contexts || (info.contexts = new Map());
       if (contexts.has(eid) && contexts.get(eid).stamp === stamp) return contexts.get(eid).fields;
-      const document = effectiveDocument(stepInputs), step = document.inputs.stepInputs[sid];
+      const document = effectiveDocument(report(stepInputs).output), step = document.inputs.stepInputs[sid];
       let targets = [step], paths = [['inputs', 'stepInputs', sid]];
       if (info.hasEntities) {
         const overrides = step.workloadOverrides, id = eid === null ? Object.keys(overrides)[0] || '' : eid;
@@ -145,8 +164,7 @@ function parameterSchemaEditor(schema, original, entitiesFor) {
         targets.push(overrides[id]);
         paths.push(['inputs', 'stepInputs', sid, 'workloadOverrides', id]);
       }
-      const locations = new Set(paths.map(path => '#/' + path
-        .map(key => key.replace(/~/g, '~0').replace(/\//g, '~1')).join('/')));
+      const locations = new Set(paths.map(location));
       let unchanged;
       const result = Object.fromEntries(Object.entries(base).map(([field, rule]) => {
         if (rule.required) return [field, rule];
@@ -171,14 +189,47 @@ function parameterSchemaEditor(schema, original, entitiesFor) {
       return base;
     }
   }
-  function issues(stepInputs) {
+  function report(stepInputs) {
     const stamp = JSON.stringify(stepInputs);
-    if (cached && cached.stamp === stamp) return cached.issues;
+    if (cached && cached.stamp === stamp) return cached;
     const first = Object.keys(stepInputs)[0];
-    let result;
+    const exclusions = new Map(), warnings = [];
+    const excluded = (sid, eid) => exclusions.get(JSON.stringify([sid, eid])) || new Set();
+    const describe = e => {
+      const path = parts(e.instanceLocation);
+      const sid = path[0] === 'inputs' && path[1] === 'stepInputs' && own(stepInputs, path[2]) ? path[2] : first;
+      const eid = path[3] === 'workloadOverrides' ? path[4] || null : null;
+      let field = path[eid === null ? 3 : 5];
+      if (!field) field = missingField(e, Object.keys(fields(sid)));
+      return {
+        sid, eid, f: own(fields(sid), field) ? field : null,
+        name: eid === null ? null : (entitiesFor(sid).find(entity => entity.id === eid) || {}).name || eid,
+        msg: `${e.instanceLocation}: ${e.error}`, detail: e.error, condition: true
+      };
+    };
+    let result, output = clone(stepInputs);
     try {
       if (error) throw new Error(error);
-      const checked = validator.validate(effectiveDocument(stepInputs));
+      let checked;
+      for (;;) {
+        checked = validator.validate(effectiveDocument(output));
+        let changed = false;
+        checked.errors.forEach((e, index) => {
+          if (e.keyword !== 'false') return;
+          const issue = describe(e), { sid, eid, f } = issue;
+          if (f === null || !excludedProperty(checked.errors, index, f) || e.instanceLocation !== location(
+            ['inputs', 'stepInputs', sid, ...(eid === null ? [] : ['workloadOverrides', eid]), f])) return;
+          const key = JSON.stringify([sid, eid]), fields = excluded(sid, eid);
+          if (fields.has(f)) return;
+          fields.add(f);
+          exclusions.set(key, fields);
+          warnings.push({ ...issue, condition: false });
+          changed = true;
+        });
+        if (!changed) break;
+        // Revalidate the actual save projection; never just suppress SDK failures.
+        output = exportExcluded(stepInputs, excluded);
+      }
       result = checked.errors.filter(e => {
         const location = e.keyword === 'if' ? e.keywordLocation.slice(0, -3) : e.keywordLocation;
         const aggregate = ['allOf', 'anyOf', 'oneOf', 'if', '$ref', 'properties',
@@ -186,23 +237,19 @@ function parameterSchemaEditor(schema, original, entitiesFor) {
         return !checked.errors.some(child => child !== e &&
           (child.keywordLocation.startsWith(location + '/') ||
             (aggregate && child.instanceLocation.startsWith(e.instanceLocation + '/'))));
-      }).map(e => {
-        const path = parts(e.instanceLocation);
-        const sid = path[0] === 'inputs' && path[1] === 'stepInputs' && own(stepInputs, path[2]) ? path[2] : first;
-        const eid = path[3] === 'workloadOverrides' ? path[4] || null : null;
-        let field = path[eid === null ? 3 : 5];
-        if (!field) field = missingField(e, Object.keys(fields(sid)));
-        return {
-          sid, eid, f: own(fields(sid), field) ? field : null,
-          name: eid === null ? null : (entitiesFor(sid).find(entity => entity.id === eid) || {}).name || eid,
-          msg: `${e.instanceLocation}: ${e.error}`, detail: e.error, condition: true
-        };
-      });
+      }).map(describe);
     } catch (e) {
+      output = clone(stepInputs);
+      exclusions.clear();
+      warnings.length = 0;
       result = [{ sid: first, eid: null, f: null, name: null, msg: e.message, condition: true }];
     }
-    cached = { stamp, issues: result };
-    return result;
+    cached = { stamp, issues: result, output, excluded, warnings };
+    return cached;
   }
-  return { fields, contextFields, issues };
+  return { fields, contextFields,
+    issues: inputs => report(inputs).issues,
+    warnings: inputs => report(inputs).warnings,
+    excluded: (inputs, sid, eid) => report(inputs).excluded(sid, eid),
+    exported: inputs => clone(report(inputs).output) };
 }

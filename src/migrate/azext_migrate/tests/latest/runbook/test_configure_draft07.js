@@ -273,16 +273,109 @@ test('new nested conditions, dependencies and array assertions need no CLI evalu
   assert.equal(e.run('uploadBlocked()'), false);
 });
 
-test('false schemas reject supplied values but ignore unset service placeholders in the validation view', () => {
+test('excluded values warn without blocking and save as null without erasing editor values', () => {
   const e = editor();
-  e.data.name = 'stale';
-  assert.equal(e.run('uploadBlocked()'), true);
-  e.run(`setValue('D|${sid}|name', '')`);
+  e.run(`setValue('D|${sid}|name', 'x')`);
   assert.equal(e.run('uploadBlocked()'), false);
-  const exported = JSON.parse(e.run('buildInputsJson()'));
+  assert.equal(e.run(`stepErrors('${sid}')`), 0);
+  assert.equal(e.nodes.get('copyBtn').disabled, false);
+  const warning = e.nodes.get(`[data-err="D|${sid}|name"]`).textContent;
+  assert.match(warning, /not used|ignored/i);
+  assert.doesNotMatch(warning, /False boolean schema/);
+  let exported = JSON.parse(e.run('buildInputsJson()'));
   assert.equal(exported.inputs.stepInputs[sid].name, null);
   assert.equal(exported.$schema, './parameters.schema.json');
   assert.equal(Object.hasOwn(exported.inputs, 'schema'), false);
+  assert.equal(e.data.name, 'x');
+  e.run(`setValue('D|${sid}|action', 'Create')`);
+  assert.equal(e.run('uploadBlocked()'), true);
+  assert.equal(e.run(`stepIssues('${sid}').some(i => i.f === 'name')`), true);
+  e.run(`setValue('D|${sid}|name', 'valid'); setValue('D|${sid}|size', '2')`);
+  assert.equal(e.run('uploadBlocked()'), false);
+  exported = JSON.parse(e.run('buildInputsJson()'));
+  assert.equal(exported.inputs.stepInputs[sid].resourceId, null);
+  assert.equal(exported.inputs.stepInputs[sid].name, 'valid');
+  assert.equal(e.data.resourceId, '/resource/id');
+  e.run(`setValue('D|${sid}|action', 'Validate')`);
+  assert.equal(e.run('uploadBlocked()'), false);
+  exported = JSON.parse(e.run('buildInputsJson()'));
+  assert.equal(exported.inputs.stepInputs[sid].resourceId, '/resource/id');
+  assert.equal(exported.inputs.stepInputs[sid].name, null);
+});
+
+test('ignored shared values remain available to workloads that still use them', () => {
+  const e = editor({ action: 'Validate', resourceId: '/resource/id', workloadOverrides: {
+    a: { action: 'Create', source: 'one', name: 'valid', size: 2 }, b: { source: 'two' }
+  } });
+  assert.equal(e.run('uploadBlocked()'), false);
+  const output = JSON.parse(e.run('buildInputsJson()')).inputs.stepInputs[sid];
+  assert.equal(output.resourceId, null);
+  assert.equal(output.workloadOverrides.a.resourceId, null);
+  assert.equal(output.workloadOverrides.b.resourceId, '/resource/id');
+  assert.equal(e.data.resourceId, '/resource/id');
+  assert.equal(Object.hasOwn(e.data.workloadOverrides.b, 'resourceId'), false);
+  assert.equal(editor(output).run('uploadBlocked()'), false);
+  e.run(`setValue('O|${sid}|a|action', 'Validate')`);
+  const restored = JSON.parse(e.run('buildInputsJson()')).inputs.stepInputs[sid];
+  assert.equal(restored.resourceId, '/resource/id');
+  assert.equal(restored.workloadOverrides.a.name, null);
+  assert.equal(e.data.workloadOverrides.a.name, 'valid');
+});
+
+test('referenced false property schemas are exclusions, not false branches of alternatives', () => {
+  const documentSchema = schema();
+  documentSchema.definitions.excluded = false;
+  documentSchema.definitions.entity.allOf[0].else.properties.name = { $ref: '#/definitions/excluded' };
+  documentSchema.definitions.entity.properties.ratio.anyOf = [
+    { $ref: '#/definitions/excluded' }, { minimum: 4 }
+  ];
+  const e = editor(undefined, documentSchema);
+  e.run(`setValue('D|${sid}|name', 'ignored')`);
+  assert.equal(e.run('uploadBlocked()'), false);
+  assert.equal(JSON.parse(e.run('buildInputsJson()')).inputs.stepInputs[sid].name, null);
+  e.run(`setValue('D|${sid}|ratio', '2')`);
+  assert.equal(e.run('uploadBlocked()'), true);
+  assert.equal(JSON.parse(e.run('buildInputsJson()')).inputs.stepInputs[sid].ratio, 2);
+  e.run(`setValue('D|${sid}|ratio', '4')`);
+  assert.equal(e.run('uploadBlocked()'), false);
+  delete documentSchema.definitions.entity.properties.ratio.anyOf;
+  documentSchema.definitions.entity.anyOf = [
+    { properties: { ratio: { $ref: '#/definitions/excluded' } } },
+    { properties: { ratio: { minimum: 4 } } }
+  ];
+  const ambiguous = editor(undefined, documentSchema);
+  ambiguous.run(`setValue('D|${sid}|ratio', '2')`);
+  assert.equal(ambiguous.run('uploadBlocked()'), true);
+  assert.equal(JSON.parse(ambiguous.run('buildInputsJson()')).inputs.stepInputs[sid].ratio, 2);
+});
+
+test('optional invalid values, unknown properties and nested false schemas still block', () => {
+  const e = editor();
+  e.run(`setValue('D|${sid}|ratio', '0.5')`);
+  assert.equal(e.run('uploadBlocked()'), false);
+  assert.equal(JSON.parse(e.run('buildInputsJson()')).inputs.stepInputs[sid].ratio, 0.5);
+  assert.equal(e.nodes.get(`[data-err="D|${sid}|ratio"]`).textContent, '');
+  e.run(`setValue('D|${sid}|ratio', '-1')`);
+  assert.equal(e.run('uploadBlocked()'), true);
+  e.run(`setValue('D|${sid}|ratio', '')`);
+  e.data.unknown = 'invalid';
+  assert.equal(e.run('uploadBlocked()'), true);
+  const documentSchema = schema();
+  documentSchema.definitions.entity.properties.names.items = false;
+  const nested = editor(undefined, documentSchema);
+  nested.run(`setValue('D|${sid}|names', '["invalid"]')`);
+  assert.equal(nested.run('uploadBlocked()'), true);
+  assert.deepEqual(JSON.parse(nested.run('buildInputsJson()')).inputs.stepInputs[sid].names, ['invalid']);
+});
+
+test('SDK revalidates the actual saved projection instead of merely suppressing false errors', () => {
+  const documentSchema = schema();
+  documentSchema.definitions.step.allOf = [
+    { required: ['resourceId'], properties: { resourceId: false } }
+  ];
+  const e = editor(undefined, documentSchema);
+  assert.equal(e.run('uploadBlocked()'), true);
+  assert.equal(e.run(`stepIssues('${sid}').some(i => i.f === 'resourceId' && /required/.test(i.msg))`), true);
 });
 
 test('missing conditional required fields are attributed to their workload controls', () => {
