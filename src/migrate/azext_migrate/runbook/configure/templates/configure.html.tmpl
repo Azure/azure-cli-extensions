@@ -940,7 +940,7 @@ function inputRow(sid, kind, f, r, data) {
     ${r.description ? `<div class="irow__desc" title="${esc(r.description)}">${esc(r.description)}</div>` : ''}
     <div class="err" data-err="${esc(path)}"></div></div>`;
 }
-// Required and optional get the same section treatment; required stays open.
+// Legacy optional inputs start collapsed; split schemas keep all inputs visible.
 function renderGroup(title, sub, sid, kind, fields, rules, data) {
   if (!fields.length) return '';
   const req = fields.filter(f => rules[f].required), opt = fields.filter(f => !rules[f].required);
@@ -957,7 +957,7 @@ function renderGroup(title, sub, sid, kind, fields, rules, data) {
       ${req.length ? req.map(f => inputRow(sid, kind, f, rules[f], data)).join('')
                    : note(noneRequired, 'required')}
     </details>
-    <details class="adv" data-sec="opt" ${fieldFilter ? 'open' : ''}>
+    <details class="adv" data-sec="opt" ${fieldFilter || SCHEMA_EDITOR ? 'open' : ''}>
       <summary>Optional inputs <span class="adv-n">${opt.length}</span></summary>
       ${opt.length ? opt.map(f => inputRow(sid, kind, f, rules[f], data)).join('')
                    : note(noneOptional, 'optional')}

@@ -81,6 +81,28 @@ test('Draft-07 references, enum, scope and readOnly drive existing controls', ()
   assert.match(e.nodes.get('form').innerHTML, /data-row="D\|target-1\|name"/);
 });
 
+test('shared controls show workload requirements even when only overrides supply required values', () => {
+  const e = editor();
+  assert.equal(e.run(`contextRules('${sid}').action.required`), true);
+  assert.equal(e.run(`contextRules('${sid}').source.required`), true);
+  assert.equal(e.run(`contextRules('${sid}').name.required`), false);
+  const required = /data-sec="req"[^>]*>([\s\S]*?)<\/details>/.exec(e.nodes.get('form').innerHTML)[1];
+  assert.match(required, /data-row="D\|target-1\|action"/);
+  assert.match(required, /data-row="D\|target-1\|source"/);
+  assert.doesNotMatch(required, /data-row="D\|target-1\|name"/);
+  assert.equal(Object.hasOwn(e.data, 'source'), false);
+  assert.equal(e.run('uploadBlocked()'), false, e.run('JSON.stringify(allIssues())'));
+});
+
+test('split-schema optional inputs and their descriptions are expanded without a search', () => {
+  const documentSchema = schema();
+  documentSchema.definitions.entity.properties.name.description = 'Name needed when creating a resource.';
+  const e = editor(undefined, documentSchema);
+  assert.match(e.nodes.get('form').innerHTML, /<details[^>]*data-sec="opt"\s+open>/);
+  assert.match(e.nodes.get('form').innerHTML, /Name needed when creating a resource\./);
+  assert.match(e.nodes.get('form').innerHTML, /data-row="D\|target-1\|resourceId"/);
+});
+
 test('shared defaults and nonempty workload values validate independently', () => {
   const e = editor();
   const before = e.nodes.get('form').innerHTML;

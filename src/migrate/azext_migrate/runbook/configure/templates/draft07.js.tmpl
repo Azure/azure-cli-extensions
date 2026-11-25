@@ -71,8 +71,11 @@ function parameterSchemaEditor(schema, original, entitiesFor) {
       if (info[cacheKey]) return info[cacheKey];
       const properties = { ...info.entity.properties, ...info.step.properties };
       delete properties.workloadOverrides;
+      // Shared controls also supply required effective workload values.
+      const required = new Set([...(shape.required || []),
+        ...(eid === null ? info.entity.required || [] : [])]);
       info[cacheKey] = Object.fromEntries(Object.entries(properties).map(([key, value]) =>
-        [key, descriptor(value, (shape.required || []).includes(key), info.hasEntities)]));
+        [key, descriptor(value, required.has(key), info.hasEntities)]));
       return info[cacheKey];
     } catch (e) {
       error = 'Could not render parameters schema: ' + e.message;
