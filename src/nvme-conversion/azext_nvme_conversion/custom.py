@@ -15,6 +15,9 @@ Orchestrates the full SCSI<->NVMe conversion flow:
 
 import logging
 import sys
+from datetime import datetime, timezone
+from azure.core.exceptions import AzureError
+from azure.mgmt.core.tools import parse_resource_id
 from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
     ResourceNotFoundError,
@@ -54,6 +57,8 @@ def nvme_conversion_convert(cmd, resource_group_name, vm_name, vm_size=None,
 
     # Auto-detect target controller type if not specified
     new_controller_type = _resolve_controller_type(vm, new_controller_type)
+    if (new_controller_type or _get_current_controller(vm)) == 'NVMe':
+        _check_ade_eligibility(compute_client, resource_group_name, vm_name, vm)
     if new_controller_type is None:
         return {'status': 'no-change', 'vm': vm_name, 'message': 'VM is already on the desired controller type.'}
 
@@ -79,7 +84,6 @@ def nvme_conversion_convert(cmd, resource_group_name, vm_name, vm_size=None,
             raise SystemExit('Aborted by user.')
 
     _status('[3/8] Checking prerequisites (ADE, generation, power state)...')
-    _check_ade_extension(compute_client, resource_group_name, vm_name, os_type)
     _check_vm_generation(compute_client, vm)
 
     vm_is_running = _check_vm_power_state(compute_client, resource_group_name, vm_name, fix_os)
@@ -203,6 +207,7 @@ def nvme_conversion_check(cmd, resource_group_name, vm_name, vm_size=None,
 
     results = {
         'vm': vm_name,
+        'vmResourceId': vm.id,
         'resourceGroup': resource_group_name,
         'currentControllerType': _get_current_controller(vm),
         'targetControllerType': new_controller_type or _get_current_controller(vm),
@@ -211,6 +216,20 @@ def nvme_conversion_check(cmd, resource_group_name, vm_name, vm_size=None,
         'currentSize': vm.hardware_profile.vm_size,
         'checks': {'vmExists': {'status': 'passed'}},
     }
+
+    if results['targetControllerType'] == 'NVMe':
+        _status('[2/7] Checking ADE on the VM and all attached disks...')
+        try:
+            results['nvmeEligibility'] = _check_ade_eligibility(
+                compute_client, resource_group_name, vm_name, vm)
+            results['checks']['adeCheck'] = {'status': 'passed'}
+        except ValidationError as e:
+            results['checks']['adeCheck'] = {'status': 'failed', 'message': str(e)}
+            results['overallStatus'] = 'failed'
+            return results
+    else:
+        results['checks']['adeCheck'] = {
+            'status': 'info', 'message': 'ADE exclusion applies to NVMe, not a return to SCSI.'}
 
     if new_controller_type is None:
         results['checks']['controllerCheck'] = {
@@ -222,14 +241,6 @@ def nvme_conversion_check(cmd, resource_group_name, vm_name, vm_size=None,
         return results
 
     results['checks']['controllerCheck'] = {'status': 'passed'}
-
-    # ADE check
-    _status('[2/7] Checking ADE extension...')
-    try:
-        _check_ade_extension(compute_client, resource_group_name, vm_name, os_type)
-        results['checks']['adeCheck'] = {'status': 'passed'}
-    except ValidationError as e:
-        results['checks']['adeCheck'] = {'status': 'failed', 'message': str(e)}
 
     # Generation check
     _status('[3/7] Checking VM generation...')
@@ -319,26 +330,86 @@ def _detect_os_type(vm):
     return 'Linux'
 
 
-def _check_ade_extension(compute_client, resource_group_name, vm_name, os_type):
-    """Block conversion if Azure Disk Encryption for Linux is installed."""
-    if os_type != 'Linux':
-        return
+def _assert_no_ade_settings(settings, disk_id):
+    """Only absent settings or explicitly disabled, empty ADE settings are eligible."""
+    if settings is not None and (
+            getattr(settings, 'enabled', None) is not False or
+            any(getattr(settings, field, None) for field in (
+                'encryption_settings', 'disk_encryption_key', 'key_encryption_key'))):
+        raise ValidationError(
+            f'ADE is enabled or its state is unknown on attached disk {disk_id}. '
+            'NVMe preparation and conversion are refused.')
+
+
+def _check_ade_eligibility(compute_client, resource_group_name, vm_name, vm):
+    """Verify VM-wide ADE absence; API failures and incomplete inventory deny NVMe."""
+    vm_id = getattr(vm, 'id', None)
+    if not isinstance(vm_id, str) or not vm_id:
+        raise ValidationError('Cannot verify ADE eligibility without the source VM resource ID.')
+    vm_parts = parse_resource_id(vm_id)
+    if vm_parts.get('namespace', '').lower() != 'microsoft.compute' or \
+            vm_parts.get('type', '').lower() != 'virtualmachines':
+        raise ValidationError('Cannot verify ADE eligibility: invalid source VM resource ID.')
     try:
-        ext = compute_client.virtual_machine_extensions.get(
-            resource_group_name, vm_name, 'AzureDiskEncryptionForLinux')
-        if ext and ext.provisioning_state == 'Succeeded':
+        extensions = compute_client.virtual_machine_extensions.list(resource_group_name, vm_name)
+        if hasattr(extensions, 'value'):
+            extensions = extensions.value
+        if extensions is None:
+            raise ValidationError('Cannot verify ADE eligibility: VM extension inventory is unknown.')
+        extensions = list(extensions)
+    except AzureError as e:
+        raise ValidationError(f'Cannot verify ADE extension inventory for VM {vm_name}: {e}') from e
+    except TypeError as e:
+        raise ValidationError('Cannot verify ADE eligibility: invalid VM extension inventory.') from e
+    for extension in extensions:
+        publisher = getattr(extension, 'publisher', None)
+        handler = getattr(extension, 'type_properties_type', None)
+        if not isinstance(publisher, str) or not isinstance(handler, str) or not publisher or not handler:
+            raise ValidationError('Cannot verify ADE eligibility: incomplete VM extension metadata.')
+        if publisher.lower() == 'microsoft.azure.security' and handler.lower() in (
+                'azurediskencryption', 'azurediskencryptionforlinux'):
             raise ValidationError(
-                f'Azure Disk Encryption for Linux is installed on VM {vm_name}. '
-                'ADE does not support NVMe disks. Remove the extension first.')
-        if ext:
-            raise ValidationError(
-                f'Azure Disk Encryption for Linux extension is installed but provisioning state is: '
-                f'{ext.provisioning_state}. Remove the extension if the VM has not been encrypted.')
-    except ValidationError:
-        raise
-    except Exception:  # pylint: disable=broad-exception-caught
-        # Extension not found — this is the expected case
-        pass
+                f'ADE extension {extension.name} is present on VM {vm_name}. NVMe is unsupported '
+                'with ADE. Unlocking a disk or removing the extension does not decrypt the disks.')
+
+    data_disks = vm.storage_profile.data_disks
+    if not isinstance(data_disks, list):
+        raise ValidationError('Cannot verify ADE eligibility: attached data-disk inventory is unknown.')
+    disks = [vm.storage_profile.os_disk, *data_disks]
+    verified = []
+    seen = set()
+    for attached in disks:
+        managed = getattr(attached, 'managed_disk', None)
+        disk_id = getattr(managed, 'id', None)
+        if not isinstance(disk_id, str) or not disk_id:
+            raise ValidationError('Cannot verify ADE eligibility for an unmanaged or unidentified attached disk.')
+        parts = parse_resource_id(disk_id)
+        if parts.get('namespace', '').lower() != 'microsoft.compute' or \
+                parts.get('type', '').lower() != 'disks' or \
+                parts.get('subscription', '').lower() != vm_parts.get('subscription', '').lower() or \
+                not parts.get('resource_group') or not parts.get('name'):
+            raise ValidationError(f'Cannot verify ADE eligibility: invalid attached disk ID {disk_id}.')
+        if disk_id.lower() in seen:
+            raise ValidationError('Cannot verify ADE eligibility: duplicate attached disk identity.')
+        seen.add(disk_id.lower())
+        _assert_no_ade_settings(getattr(attached, 'encryption_settings', None), disk_id)
+        try:
+            disk = compute_client.disks.get(parts['resource_group'], parts['name'])
+        except AzureError as e:
+            raise ValidationError(f'Cannot verify ADE on attached disk {disk_id}: {e}') from e
+        returned_id = getattr(disk, 'id', None)
+        if not isinstance(returned_id, str) or returned_id.lower() != disk_id.lower():
+            raise ValidationError(f'Cannot verify ADE eligibility: disk response identity mismatch for {disk_id}.')
+        _assert_no_ade_settings(getattr(disk, 'encryption_settings_collection', None), disk_id)
+        verified.append({'id': disk_id, 'adeEnabled': False})
+    return {
+        'schemaVersion': 1,
+        'sourceVmId': vm_id,
+        'checkedAt': datetime.now(timezone.utc).isoformat(),
+        'osDisk': verified[0],
+        'dataDisks': verified[1:],
+        'dataDiskCount': len(data_disks),
+    }
 
 
 def _check_vm_power_state(compute_client, resource_group_name, vm_name, fix_os):

@@ -151,7 +151,7 @@ and error handling.
 | Error type | When used |
 |---|---|
 | `ResourceNotFoundError` | VM not found |
-| `ValidationError` | Gen1, ADE installed, OS not ready, VM not deallocated |
+| `ValidationError` | Gen1, ADE on OS/data disks, unknown encryption inventory/API failure, OS not ready, VM not deallocated |
 | `InvalidArgumentValueError` | Bad SKU, SKU doesn't support target controller, invalid --vm-size |
 
 ### SKU DiskControllerTypes behavior

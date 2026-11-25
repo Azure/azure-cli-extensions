@@ -41,6 +41,40 @@ az nvme-conversion convert --resource-group myRG --vm-name myVM --dry-run
 az nvme-conversion convert --resource-group myRG --vm-name myVM --fix-os --start-vm --yes
 ```
 
+## ADE exclusion and offline recovery handoff
+
+NVMe is refused when ADE is present on the OS disk or any attached data disk,
+or when the VM extension/disk inventory cannot be verified. The preflight checks
+Linux and Windows ADE handler identities, VM disk encryption settings and every
+managed disk's ADE metadata. Extension names need not be the default, and API
+errors are not treated as "not installed". Unlocking a disk or removing the
+extension does not prove that the disks are decrypted.
+
+This gate cannot be bypassed with OS/SKU skip flags or dry-run. A return to SCSI
+is not blocked by the NVMe ADE exclusion. SSE, customer-managed server-side keys
+and encryption at host are not ADE.
+
+For an offline repair workflow, generate the full source-VM check JSON before
+recovery, with guest commands disabled:
+
+```bash
+az nvme-conversion check -g SOURCE_RG -n SOURCE_VM --controller-type NVMe \
+  --ignore-os-check --ignore-sku-check --ignore-windows-version-check \
+  -o json > nvme-eligibility.json
+```
+
+Successful checks include `vmResourceId` and a versioned `nvmeEligibility` object
+with source VM identity, UTC check time, OS/data disk IDs and explicit ADE-free
+states. Failed/unknown ADE checks return no eligibility object and stop before
+guest RunCommand. Consumers must require `overallStatus: passed`, not just a
+zero process exit. Do not remove fields with `--query`.
+
+The trusted repair workflow must associate that report with the actual recovery
+disk and prevent source-VM disk/encryption changes during preparation. This is
+a private workflow handoff, not signed Azure attestation. ALAR's `nvme` action
+requires the report through `ALAR_NVME_ELIGIBILITY_FILE`, root ownership and
+non-writable group/other permissions, and a check no more than 15 minutes old.
+
 ## Parameters
 
 | Parameter | Description | Required |
@@ -69,4 +103,5 @@ regenerates the verified standalone target and requires exact timeout 240 on eve
 kernel entry. Dry-run does not rebuild or modify boot files. Broken links, modern
 redirect stubs in this old-layout branch, and failed/ineffective generation are
 reported explicitly rather than overwritten or treated as ready. Other release
-and BIOS branches retain their existing behavior. No encryption/ADE policy is changed.
+and BIOS branches retain their existing behavior. This GRUB correction does not
+alter encryption; the separate ADE eligibility gate described above still applies.

@@ -1,5 +1,27 @@
 # NVMe Conversion Extension — Live Test Tracker
 
+## VM-wide ADE exclusion regression update (2026-11-24)
+
+The control-plane preflight now rejects ADE on OS or data disks, custom-named
+Linux/Windows ADE handlers, unknown or residual encryption settings, incomplete
+inventory and API failures. Guest commands and controller/disk writes must not
+run after rejection. SSE/encryption at host and returning to SCSI remain separate
+from the NVMe ADE exclusion.
+
+Run the existing workflow tests and unchanged EFI regressions with:
+
+```bash
+python3 -B -m pytest \
+  azext_nvme_conversion/tests/latest/test_nvme_conversion.py \
+  azext_nvme_conversion/tests/latest/test_linux_efi_timeout.py \
+  -k "not NvmeConversionCheckTest and not NvmeConversionConvertTest" -v
+```
+
+The new tests use mocked Azure responses, not encrypted live VMs. The versioned
+`nvmeEligibility` output is additionally exercised against ALAR's report parser
+in a separately retained external harness. These are ADE-refusal tests, not
+successful ADE conversion or decryption certification. No new VMs are deployed.
+
 ## RHEL 7 standalone EFI regression update (2026-11-23)
 
 The embedded Linux script now repairs the resolved RHEL 7 standalone EFI

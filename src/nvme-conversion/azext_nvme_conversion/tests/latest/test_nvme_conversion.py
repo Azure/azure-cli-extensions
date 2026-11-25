@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import unittest
+from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 from azure.cli.testsdk import ScenarioTest
 
@@ -368,6 +369,7 @@ def _make_vm(os_type='Linux', controller='SCSI', size='Standard_E4bds_v5',
     """Create a MagicMock VM with realistic attributes."""
     vm = MagicMock()
     vm.name = 'testvm'
+    vm.id = '/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Compute/virtualMachines/testvm'
     vm.location = 'eastus'
     vm.hardware_profile.vm_size = size
     vm.storage_profile.os_disk.os_type = os_type
@@ -375,6 +377,8 @@ def _make_vm(os_type='Linux', controller='SCSI', size='Standard_E4bds_v5',
     vm.storage_profile.os_disk.managed_disk.id = (
         '/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Compute/disks/osdisk1'
     )
+    vm.storage_profile.data_disks = []
+    vm.storage_profile.os_disk.encryption_settings = None
     vm.storage_profile.disk_controller_type = controller
     vm.storage_profile.image_reference.publisher = publisher or (
         'MicrosoftWindowsServer' if os_type == 'Windows' else 'Canonical'
@@ -402,10 +406,11 @@ def _make_compute_client(vm, generation='V2', controller_types='SCSI, NVMe'):
     # Disk — generation
     disk = MagicMock()
     disk.hyper_v_generation = generation
+    disk.id = vm.storage_profile.os_disk.managed_disk.id
+    disk.encryption_settings_collection = None
     client.disks.get.return_value = disk
 
-    # Extension — not found (no ADE)
-    client.virtual_machine_extensions.get.side_effect = Exception('Not found')
+    client.virtual_machine_extensions.list.return_value = []
 
     # SKU list
     sku_cap_resource = MagicMock()
@@ -610,11 +615,164 @@ class ConvertEndToEndTests(unittest.TestCase):
         client = _make_compute_client(vm)
         # Simulate ADE extension found
         ext = MagicMock()
-        ext.provisioning_state = 'Succeeded'
-        client.virtual_machine_extensions.get.side_effect = None
-        client.virtual_machine_extensions.get.return_value = ext
+        ext.publisher = 'Microsoft.Azure.Security'
+        ext.type_properties_type = 'AzureDiskEncryptionForLinux'
+        client.virtual_machine_extensions.list.return_value = [ext]
         with self.assertRaises(ValidationError):
             self._run_convert(vm=vm, client=client)
+
+
+class AdeEligibilityTests(unittest.TestCase):
+    """ADE denial must precede OS preparation, even when other checks are skipped."""
+
+    def setUp(self):
+        self.vm = _make_vm()
+        self.client = _make_compute_client(self.vm)
+
+    def verify(self):
+        from azext_nvme_conversion.custom import _check_ade_eligibility
+        return _check_ade_eligibility(self.client, 'rg1', 'testvm', self.vm)
+
+    def test_plaintext_report_includes_complete_inventory(self):
+        report = self.verify()
+        self.assertEqual(report['sourceVmId'], self.vm.id)
+        self.assertEqual(report['osDisk']['adeEnabled'], False)
+        self.assertEqual(report['dataDisks'], [])
+        self.assertEqual(report['dataDiskCount'], 0)
+        self.assertIn('checkedAt', report)
+
+    def test_extension_list_result_wrapper_is_supported(self):
+        self.client.virtual_machine_extensions.list.return_value = SimpleNamespace(value=[])
+        self.assertEqual(self.verify()['dataDiskCount'], 0)
+
+    def test_missing_extension_inventory_is_refused(self):
+        from azure.cli.core.azclierror import ValidationError
+        self.client.virtual_machine_extensions.list.return_value = SimpleNamespace(value=None)
+        with self.assertRaisesRegex(ValidationError, 'inventory is unknown'):
+            self.verify()
+
+    def test_custom_named_linux_and_windows_handlers_are_blocked(self):
+        from azure.cli.core.azclierror import ValidationError
+        for handler in ('AzureDiskEncryptionForLinux', 'AzureDiskEncryption'):
+            with self.subTest(handler=handler):
+                self.client.virtual_machine_extensions.list.return_value = [SimpleNamespace(
+                    name='custom-name', publisher='Microsoft.Azure.Security',
+                    type_properties_type=handler, provisioning_state='Failed')]
+                with self.assertRaisesRegex(ValidationError, 'ADE extension'):
+                    self.verify()
+
+    def test_api_errors_are_not_absence(self):
+        from azure.core.exceptions import HttpResponseError
+        from azure.cli.core.azclierror import ValidationError
+        self.client.virtual_machine_extensions.list.side_effect = HttpResponseError('Forbidden')
+        with self.assertRaisesRegex(ValidationError, 'Cannot verify'):
+            self.verify()
+        self.client.virtual_machine_extensions.list.side_effect = None
+        self.client.disks.get.side_effect = HttpResponseError('Disk lookup failed')
+        with self.assertRaisesRegex(ValidationError, 'Cannot verify'):
+            self.verify()
+
+    def test_os_ade_is_blocked_without_extension(self):
+        from azure.cli.core.azclierror import ValidationError
+        self.client.disks.get.return_value.encryption_settings_collection = SimpleNamespace(
+            enabled=True, encryption_settings=[])
+        with self.assertRaisesRegex(ValidationError, 'ADE is enabled'):
+            self.verify()
+
+    def test_vm_profile_ade_is_not_overridden_by_empty_disk_settings(self):
+        from azure.cli.core.azclierror import ValidationError
+        self.vm.storage_profile.os_disk.encryption_settings = SimpleNamespace(enabled=True)
+        with self.assertRaisesRegex(ValidationError, 'ADE is enabled'):
+            self.verify()
+
+    def test_data_disk_only_ade_is_blocked(self):
+        from azure.cli.core.azclierror import ValidationError
+        os_disk = self.client.disks.get.return_value
+        disk_id = self.vm.storage_profile.os_disk.managed_disk.id.replace('osdisk1', 'data1')
+        self.vm.storage_profile.data_disks = [SimpleNamespace(managed_disk=SimpleNamespace(id=disk_id))]
+        self.client.disks.get.side_effect = [
+            os_disk, SimpleNamespace(id=disk_id, encryption_settings_collection=SimpleNamespace(
+                enabled=True, encryption_settings=[]))]
+        with self.assertRaisesRegex(ValidationError, 'ADE is enabled'):
+            self.verify()
+
+    def test_unknown_or_residual_settings_are_refused(self):
+        from azure.cli.core.azclierror import ValidationError
+        for enabled, settings in ((None, []), ('false', []), (False, [object()])):
+            with self.subTest(enabled=enabled):
+                self.client.disks.get.return_value.encryption_settings_collection = SimpleNamespace(
+                    enabled=enabled, encryption_settings=settings)
+                with self.assertRaises(ValidationError):
+                    self.verify()
+
+    def test_platform_encryption_does_not_mean_ade(self):
+        self.vm.security_profile.encryption_at_host = True
+        self.client.disks.get.return_value.encryption = SimpleNamespace(
+            type='EncryptionAtRestWithCustomerKey', disk_encryption_set_id='/diskEncryptionSets/des')
+        self.client.disks.get.return_value.encryption_settings_collection = SimpleNamespace(
+            enabled=False, encryption_settings=[])
+        self.assertFalse(self.verify()['osDisk']['adeEnabled'])
+
+    def test_missing_inventory_or_disk_identity_is_refused(self):
+        from azure.cli.core.azclierror import ValidationError
+        self.vm.storage_profile.data_disks = None
+        with self.assertRaisesRegex(ValidationError, 'inventory is unknown'):
+            self.verify()
+        self.vm.storage_profile.data_disks = [SimpleNamespace(managed_disk=None)]
+        with self.assertRaisesRegex(ValidationError, 'unmanaged or unidentified'):
+            self.verify()
+
+    def test_disk_response_identity_mismatch_is_refused(self):
+        from azure.cli.core.azclierror import ValidationError
+        self.client.disks.get.return_value.id = '/different/disk'
+        with self.assertRaisesRegex(ValidationError, 'identity mismatch'):
+            self.verify()
+
+    @patch('azext_nvme_conversion._client_factory.cf_compute')
+    def test_check_denial_does_not_run_guest_command(self, mock_cf):
+        from azext_nvme_conversion.custom import nvme_conversion_check
+        self.client.disks.get.return_value.encryption_settings_collection = SimpleNamespace(enabled=True)
+        mock_cf.return_value = self.client
+        result = nvme_conversion_check(MagicMock(), 'rg1', 'testvm',
+                                       ignore_sku_check=True, ignore_os_check=False)
+        self.assertEqual(result['overallStatus'], 'failed')
+        self.assertNotIn('nvmeEligibility', result)
+        self.client.virtual_machines.begin_run_command.assert_not_called()
+
+    @patch('azext_nvme_conversion._client_factory.cf_compute')
+    def test_already_nvme_is_still_checked(self, mock_cf):
+        from azext_nvme_conversion.custom import nvme_conversion_check
+        self.vm.storage_profile.disk_controller_type = 'NVMe'
+        self.client.disks.get.return_value.encryption_settings_collection = SimpleNamespace(enabled=True)
+        mock_cf.return_value = self.client
+        result = nvme_conversion_check(MagicMock(), 'rg1', 'testvm', new_controller_type='NVMe',
+                                       ignore_sku_check=True, ignore_os_check=True)
+        self.assertEqual(result['overallStatus'], 'failed')
+        self.assertNotIn('nvmeEligibility', result)
+
+    @patch('azext_nvme_conversion._client_factory.cf_compute')
+    def test_conversion_denial_precedes_all_writes(self, mock_cf):
+        from azure.cli.core.azclierror import ValidationError
+        from azext_nvme_conversion.custom import nvme_conversion_convert
+        self.client.disks.get.return_value.encryption_settings_collection = SimpleNamespace(enabled=True)
+        mock_cf.return_value = self.client
+        with self.assertRaises(ValidationError):
+            nvme_conversion_convert(MagicMock(), 'rg1', 'testvm', new_controller_type='NVMe',
+                                    ignore_sku_check=True, ignore_os_check=True, yes=True)
+        self.client.virtual_machines.begin_run_command.assert_not_called()
+        self.client.virtual_machines.begin_deallocate.assert_not_called()
+        self.client.virtual_machines.begin_create_or_update.assert_not_called()
+        self.client.disks.begin_update.assert_not_called()
+
+    @patch('azext_nvme_conversion._client_factory.cf_compute')
+    def test_scsi_rollback_does_not_require_nvme_eligibility(self, mock_cf):
+        from azext_nvme_conversion.custom import nvme_conversion_convert
+        self.vm.storage_profile.disk_controller_type = 'NVMe'
+        mock_cf.return_value = self.client
+        result = nvme_conversion_convert(MagicMock(), 'rg1', 'testvm', new_controller_type='SCSI',
+                                         ignore_sku_check=True, ignore_os_check=True, yes=True)
+        self.assertEqual(result['status'], 'succeeded')
+        self.client.virtual_machine_extensions.list.assert_not_called()
 
 
 class CheckEndToEndTests(unittest.TestCase):
@@ -665,9 +823,9 @@ class CheckEndToEndTests(unittest.TestCase):
         vm = _make_vm(os_type='Linux', controller='SCSI')
         client = _make_compute_client(vm)
         ext = MagicMock()
-        ext.provisioning_state = 'Succeeded'
-        client.virtual_machine_extensions.get.side_effect = None
-        client.virtual_machine_extensions.get.return_value = ext
+        ext.publisher = 'Microsoft.Azure.Security'
+        ext.type_properties_type = 'AzureDiskEncryptionForLinux'
+        client.virtual_machine_extensions.list.return_value = [ext]
         result = self._run_check(vm=vm, client=client)
         self.assertEqual(result['checks']['adeCheck']['status'], 'failed')
 
