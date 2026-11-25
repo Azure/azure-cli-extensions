@@ -319,13 +319,13 @@ def extract_parameters_file(zip_bytes):
     return _classify_archive(zip_bytes)['parameters']
 
 
-def read_parameters_json(zip_bytes):
-    """Return the parsed ``inputs`` object from the ZIP, or None."""
+def read_parameters_json(zip_bytes, preserve_envelope=False):
+    """Return parsed parameters, optionally retaining their schema reference."""
     found = extract_parameters_file(zip_bytes)
     if not found:
         return None
     parsed = json.loads(found[1].decode('utf-8'))
-    if isinstance(parsed, dict) and isinstance(
+    if not preserve_envelope and isinstance(parsed, dict) and isinstance(
             parsed.get('inputs'), dict):
         return parsed['inputs']
     return parsed

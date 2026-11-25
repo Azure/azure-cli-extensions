@@ -1920,6 +1920,7 @@ class SplitParameterSchemaTests(unittest.TestCase):
         archive = self.archive()
         self.assertEqual(files.read_schema_json(archive), self.schema)
         self.assertEqual(files.read_parameters_json(archive), self.parameters['inputs'])
+        self.assertEqual(files.read_parameters_json(archive, preserve_envelope=True), self.parameters)
         for extract in (files.extract_parameter_files, files.extract_definition_files):
             with self.subTest(extract=extract.__name__), tempfile.TemporaryDirectory() as tmp:
                 written = extract(archive, tmp)
@@ -2007,6 +2008,38 @@ class SplitParameterSchemaTests(unittest.TestCase):
             for module in (parameter_cmds, execution_parameter_cmds):
                 with self.subTest(command=module.__name__), self.assertRaises(InvalidArgumentValueError):
                     module.configure(mock.Mock(), from_file=source, file=tmp)
+
+    def test_definition_loaders_use_paired_schema(self):
+        self.schema['properties']['inputs']['properties']['stepInputs']['properties']['target-1'][
+            'required'] = ['name']
+        spec = {'steps': [{'stepId': 'target-1', 'stepRef': 'target'}]}
+        for value, expected in ((None, 'NotConfigured'), ('configured', 'Configured')):
+            with self.subTest(value=value), tempfile.TemporaryDirectory() as tmp:
+                self.parameters['inputs']['stepInputs']['target-1']['name'] = value
+                source = files.write_text(os.path.join(tmp, 'parameters.json'), json.dumps(self.parameters))
+                files.write_parameter_schema(source, self.parameters, self.schema)
+                spec_path = files.write_text(os.path.join(tmp, 'spec.json'), json.dumps({'spec': spec}))
+                local = definition_cmds._load_definition_from_file(spec_path, source)
+                archive = _make_zip({
+                    'parameters.json': json.dumps(self.parameters),
+                    'parameters.schema.json': json.dumps(self.schema),
+                    'spec.json': json.dumps({'spec': spec})})
+                with mock.patch.object(definition_cmds, '_artifact_download_url', return_value='https://blob/a'), \
+                        mock.patch.object(files, 'download_bytes', return_value=archive):
+                    remote = definition_cmds._load_definition(mock.Mock(), RG, PROJECT, RUNBOOK)
+                for definition in (local, remote):
+                    self.assertEqual(definition['steps'][0]['configurationStatus'], expected)
+
+    def test_definition_loaders_reject_missing_split_schema(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source = files.write_text(os.path.join(tmp, 'parameters.json'), json.dumps(self.parameters))
+            spec_path = files.write_text(os.path.join(tmp, 'spec.json'), '{"steps":[]}')
+            with self.assertRaises(InvalidArgumentValueError):
+                definition_cmds._load_definition_from_file(spec_path, source)
+        with mock.patch.object(definition_cmds, '_artifact_download_url', return_value='https://blob/a'), \
+                mock.patch.object(files, 'download_bytes', return_value=self.archive(include_schema=False)), \
+                self.assertRaises(InvalidArgumentValueError):
+            definition_cmds._load_definition(mock.Mock(), RG, PROJECT, RUNBOOK)
 
     def test_draft07_client_validation(self):
         import shutil
@@ -3282,6 +3315,172 @@ class ConfigStatusTests(unittest.TestCase):
             statuses["vm.agentless.prepareEntity-1"], "Partial (1/2)")
         self.assertEqual(statuses["vm.agentless.migration-1"], "Configured")
         self.assertEqual(statuses["common.approval-1"], "NA")
+
+
+class SplitConfigStatusTests(unittest.TestCase):
+
+    def setUp(self):
+        self.step = {'stepId': 'target-1', 'stepRef': 'target', 'entities': ['a', 'b']}
+        self.definition = {'workstreams': [{'steps': [self.step]}]}
+        self.entity = {
+            'type': 'object',
+            'properties': {key: {'type': 'string'} for key in
+                           ('action', 'source', 'name', 'resourceId', 'secret', 'password')},
+            'required': ['action', 'source'],
+            'allOf': [
+                {'if': {'properties': {'action': {'const': 'Create'}}, 'required': ['action']},
+                 'then': {'required': ['name', 'size'], 'properties': {'resourceId': False}}},
+                {'if': {'properties': {'action': {'const': 'Validate'}}, 'required': ['action']},
+                 'then': {'required': ['resourceId'], 'properties': {'name': False, 'size': False}}}]}
+        self.entity['properties']['size'] = {'type': 'integer'}
+        self.step_schema = {
+            'type': 'object',
+            'properties': {**self.entity['properties'], 'workloadOverrides': {
+                'type': 'object', 'additionalProperties': {'$ref': '#/definitions/entity'}}}}
+        self.schemas = {'type': 'object', 'patternProperties': {'^target-1$': self.step_schema}}
+        self.schema = {
+            '$schema': 'http://json-schema.org/draft-07/schema#',
+            'type': 'object', 'definitions': {'entity': self.entity},
+            'properties': {'inputs': {'type': 'object', 'properties': {'stepInputs': self.schemas}}}}
+        self.values = {
+            'action': 'Validate', 'resourceId': '/resource/id', 'name': None, 'size': None,
+            'workloadOverrides': {'a': {'source': 'first'}, 'b': {'source': 'second'}}}
+        self.parameters = {
+            '$schema': './parameters.schema.json',
+            'inputs': {'stepInputs': {'target-1': self.values}}}
+
+    def status(self):
+        config_status_mod.annotate(self.definition, self.parameters, self.schema)
+        return self.step['configurationStatus']
+
+    def test_conditional_requirements_and_ignored_values(self):
+        self.assertEqual(self.status(), 'Configured')
+        self.values['resourceId'] = None
+        self.assertEqual(self.status(), 'Partial (2/3)')
+        self.values['action'] = 'Create'
+        self.values['resourceId'] = 'ignored, not a required input'
+        self.assertEqual(self.status(), 'Partial (2/4)')
+        self.values.update(name='instance', size=0)
+        self.assertEqual(self.status(), 'Configured')
+        self.values['size'] = ' '
+        self.assertEqual(self.status(), 'Partial (3/4)')
+
+    def test_empty_values_and_missing_steps_are_not_configured(self):
+        self.parameters['inputs']['stepInputs'] = {}
+        self.assertEqual(self.status(), 'NotConfigured')
+        self.parameters['inputs']['stepInputs']['target-1'] = {
+            'action': None, 'source': '', 'name': [], 'size': {},
+            'workloadOverrides': {'a': {'action': ''}, 'b': {'source': None}}}
+        self.assertEqual(self.status(), 'NotConfigured')
+
+    def test_mixed_workloads_require_only_applicable_fields(self):
+        self.values['workloadOverrides']['a'].update(action='Create', resourceId='ignored')
+        self.assertEqual(self.status(), 'Partial (3/5)')
+        self.values.update(name='inherited', size=8)
+        self.assertEqual(self.status(), 'Configured')
+        self.values['resourceId'] = None
+        self.assertEqual(self.status(), 'Partial (4/5)')
+        self.values['workloadOverrides']['b']['resourceId'] = '/override'
+        self.assertEqual(self.status(), 'Configured')
+
+    def test_all_spec_and_stored_workloads_must_be_complete(self):
+        self.values['source'] = 'shared source'
+        self.values['workloadOverrides']['b']['source'] = None
+        self.assertEqual(self.status(), 'Configured')
+        self.values['source'] = None
+        self.assertEqual(self.status(), 'Partial (2/3)')
+        self.values['source'] = 'shared source'
+        self.values['workloadOverrides']['extra'] = {'action': 'Create'}
+        self.assertEqual(self.status(), 'Partial (3/5)')
+
+    def test_sdk_anyof_oneof_and_dependencies(self):
+        for keyword in ('anyOf', 'oneOf'):
+            with self.subTest(keyword=keyword):
+                self.entity[keyword] = [{'required': ['secret']}, {'required': ['password']}]
+                self.assertEqual(self.status(), 'Partial (3/5)')
+                self.values['secret'] = 'one alternative'
+                self.assertEqual(self.status(), 'Configured')
+                self.values.pop('secret')
+                self.entity.pop(keyword)
+        self.entity['dependencies'] = {'secret': ['password']}
+        self.values['secret'] = 'username'
+        self.assertEqual(self.status(), 'Partial (3/4)')
+        self.values['password'] = 'password'
+        self.assertEqual(self.status(), 'Configured')
+
+    def test_numeric_allof_condition_can_require_shared_alternatives(self):
+        self.step_schema['allOf'] = [{
+            'if': {'properties': {'size': {'minimum': 8}}, 'required': ['size']},
+            'then': {'anyOf': [{'required': ['secret']}, {'required': ['password']}]}}]
+        self.values.update(action='Create', name='instance', size=4)
+        self.assertEqual(self.status(), 'Configured')
+        self.values['size'] = 8
+        self.assertEqual(self.status(), 'Partial (4/6)')
+        self.values['secret'] = 'shared credential'
+        self.assertEqual(self.status(), 'Configured')
+
+    def test_schemas_match_instance_ids_not_step_refs(self):
+        self.schemas['patternProperties']['^target-2$'] = {
+            'type': 'object', 'properties': {'label': {'type': 'string'}}, 'required': ['label']}
+        other = {'stepId': 'target-2', 'stepRef': 'target'}
+        self.definition['steps'] = [other]
+        self.parameters['inputs']['stepInputs']['target-2'] = {'label': None}
+        self.assertEqual(self.status(), 'Configured')
+        self.assertEqual(other['configurationStatus'], 'NotConfigured')
+        self.parameters['inputs']['stepInputs']['target-2']['label'] = 'filled'
+        self.status()
+        self.assertEqual(other['configurationStatus'], 'Configured')
+
+    def test_inputless_and_optional_steps_remain_na(self):
+        self.entity.pop('required')
+        self.entity.pop('allOf')
+        self.assertEqual(self.status(), 'NA')
+        for step_ref in ('common.manual', 'common.approval', 'status'):
+            self.step.update(stepId='no-inputs', stepRef=step_ref)
+            self.assertEqual(self.status(), 'NA')
+
+    def test_entity_step_without_entities_is_not_configured(self):
+        self.step['entities'] = []
+        self.values['workloadOverrides'] = {}
+        self.values['source'] = 'shared'
+        self.assertEqual(self.status(), 'NotConfigured')
+
+    def test_status_does_not_modify_parameters_or_schema(self):
+        parameters = copy.deepcopy(self.parameters)
+        schema = copy.deepcopy(self.schema)
+        self.assertEqual(self.status(), 'Configured')
+        self.assertEqual(self.parameters, parameters)
+        self.assertEqual(self.schema, schema)
+
+    def test_schema_errors_do_not_become_na_or_fetch_remote_references(self):
+        for reference in ('#/definitions/missing', 'https://example.invalid/schema.json'):
+            with self.subTest(reference=reference):
+                self.entity['allOf'].append({'$ref': reference})
+                with mock.patch('urllib.request.urlopen') as retrieve, \
+                        self.assertRaises(InvalidArgumentValueError):
+                    self.status()
+                retrieve.assert_not_called()
+                self.entity['allOf'].pop()
+        self.schema['$schema'] = 'https://json-schema.org/draft/2020-12/schema'
+        with self.assertRaisesRegex(InvalidArgumentValueError, 'Draft-07'):
+            self.status()
+        self.schema['$schema'] = 'http://json-schema.org/draft-07/schema#'
+        self.entity['type'] = 'invalid-type'
+        with self.assertRaisesRegex(InvalidArgumentValueError, 'Invalid parameters schema'):
+            self.status()
+
+    def test_invalid_inputs_and_editor_references_fail_clearly(self):
+        for parameters in ({}, {'inputs': {'stepInputs': []}}):
+            with self.subTest(parameters=parameters), self.assertRaises(InvalidArgumentValueError):
+                config_status_mod.annotate(self.definition, parameters, self.schema)
+        for overrides in ('not an object', {'a': 'not an object'}):
+            with self.subTest(overrides=overrides), self.assertRaises(InvalidArgumentValueError):
+                self.values['workloadOverrides'] = overrides
+                self.status()
+        for reference in ('#/definitions/missing', '#/properties/inputs'):
+            with self.subTest(reference=reference), self.assertRaises(InvalidArgumentValueError):
+                self.schema['properties']['inputs'] = {'$ref': reference}
+                self.status()
 
 
 class DefinitionGraphMergedDepsTests(unittest.TestCase):
