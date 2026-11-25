@@ -44,7 +44,7 @@ function schema() {
   };
 }
 function editor(data = { action: 'Validate', resourceId: '/resource/id', name: null,
-  workloadOverrides: { a: { source: 'one' }, b: { source: 'two' } } }, documentSchema = schema()) {
+  workloadOverrides: { a: { source: 'one' }, b: { source: 'two' } } }, documentSchema = schema(), spec = {}) {
   const root = { $schema: './parameters.schema.json', inputs: { stepInputs: { [sid]: data } } };
   const nodes = new Map();
   const element = id => {
@@ -59,7 +59,7 @@ function editor(data = { action: 'Validate', resourceId: '/resource/id', name: n
   };
   const context = vm.createContext({
     boot: { doc: { schema: {}, stepInputs: root.inputs.stepInputs },
-      parameterSchema: documentSchema, inputsRoot: root, spec: {}, meta: {} },
+      parameterSchema: documentSchema, inputsRoot: root, spec, meta: {} },
     document: {
       getElementById: element, querySelector() { return null; }, querySelectorAll() { return []; },
       addEventListener() {}
@@ -101,6 +101,26 @@ test('split-schema optional inputs and their descriptions are expanded without a
   assert.match(e.nodes.get('form').innerHTML, /<details[^>]*data-sec="opt"\s+open>/);
   assert.match(e.nodes.get('form').innerHTML, /Name needed when creating a resource\./);
   assert.match(e.nodes.get('form').innerHTML, /data-row="D\|target-1\|resourceId"/);
+});
+
+test('spec-only steps remain visible and selectable without inventing parameter entries', () => {
+  const documentSchema = schema();
+  const steps = documentSchema.properties.inputs.properties.stepInputs;
+  steps.patternProperties['^.+$'] = steps.patternProperties['^target-1$'];
+  delete steps.patternProperties['^target-1$'];
+  const status = { stepId: 'status-1', displayName: 'Update migration status' };
+  const e = editor(undefined, documentSchema, { workstreams: [{ steps: [status, status] }] });
+  const tabs = [...e.nodes.get('steps').innerHTML.matchAll(/data-sid="([^"]+)"/g)].map(match => match[1]);
+  assert.deepEqual(tabs, ['status-1', sid]);
+  assert.match(e.nodes.get('form').innerHTML, /Update migration status/);
+  assert.match(e.nodes.get('form').innerHTML, /This step has no configurable inputs/);
+  assert.doesNotMatch(e.nodes.get('form').innerHTML, /data-path=/);
+  assert.equal(e.run('uploadBlocked()'), false, e.run('JSON.stringify(allIssues())'));
+  e.run(`selectStep('${sid}')`);
+  assert.match(e.nodes.get('form').innerHTML, /data-row="D\|target-1\|action"/);
+  e.run("selectStep('status-1')");
+  assert.equal(e.run("Object.hasOwn(DOC.stepInputs, 'status-1')"), false);
+  assert.equal(e.run('buildInputsJson()'), JSON.stringify(e.root, null, 2));
 });
 
 test('shared defaults and nonempty workload values validate independently', () => {

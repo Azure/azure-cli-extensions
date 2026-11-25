@@ -479,6 +479,10 @@ function stepLabel(sid) {
 const ORIGINAL = JSON.parse(JSON.stringify(DOC.stepInputs));
 const SCHEMA_EDITOR = Object.prototype.hasOwnProperty.call(BOOT, 'parameterSchema')
   ? parameterSchemaEditor(BOOT.parameterSchema, BOOT.inputsRoot, entitiesFor) : null;
+function stepIds() {
+  const inputs = Object.keys(DOC.stepInputs);
+  return SCHEMA_EDITOR ? [...new Set([...Object.keys(STEP_ENTITIES), ...inputs])] : inputs;
+}
 
 // ---- helpers --------------------------------------------------------------
 const stepType = sid => sid.replace(/-\d+$/, '');
@@ -715,7 +719,7 @@ function accessor(path) {
 function ruleForPath(path) { const p = path.split('|'); return rulesFor(p[1])[p[0] === 'O' ? p[3] : p[2]] || {}; }
 
 // ---- state ----------------------------------------------------------------
-let current = Object.keys(DOC.stepInputs)[0];
+let current = stepIds()[0];
 let selEntity = null;
 let fieldFilter = '';
 let displayedLayout;
@@ -750,7 +754,7 @@ function renderTabs() {
   const nav = document.getElementById('steps');
   nav.setAttribute('role', 'tablist');
   nav.setAttribute('aria-orientation', 'vertical');
-  nav.innerHTML = Object.keys(DOC.stepInputs).map((sid, i) => {
+  nav.innerHTML = stepIds().map((sid, i) => {
     const n = stepErrors(sid), on = sid === current;
     const badge = n > 0
       ? `<span class="badge err" title="${n} input(s) still needed">${n}</span>` : '';
@@ -976,16 +980,20 @@ function renderForm() {
     sync();
     return;
   }
-  const sid = current, rules = contextRules(sid), data = DOC.stepInputs[sid];
+  const sid = current, hasInputs = has(DOC.stepInputs, sid);
+  // Spec-only steps are navigation, not synthetic editable parameter entries.
+  const rules = hasInputs ? contextRules(sid) : {}, data = DOC.stepInputs[sid];
   const es = entitiesFor(sid), all = Object.keys(rules);
-  displayedLayout = inputLayout(sid);
+  displayedLayout = hasInputs ? inputLayout(sid) : null;
   let html = `<h2 class="step-h">${esc(stepLabel(sid))}</h2>
     <p class="step-sub">Step id <code>${esc(sid)}</code> &middot; ${
       es.length ? `${es.length} ${es.length === 1 ? 'workload' : 'workloads'}` : 'no per-workload inputs'}</p>
     <div class="err" id="stepConditions" role="status"></div>`;
   if (!all.length) {
     host.innerHTML = html + `<p class="step-sub">This step has no configurable inputs.</p>`;
-    renderOverrides(); refreshValidation(); return;
+    renderOverrides();
+    if (hasInputs) refreshValidation(); else sync();
+    return;
   }
   const app = applianceFields(sid).filter(f => has(rules, f) && matchField(rules, f));
   const ent = entityFields(sid).filter(f => has(rules, f) && matchField(rules, f));
@@ -1034,7 +1042,7 @@ function renderOverrides() {
   const pane = document.getElementById('ovPane');
   const sid = current, data = DOC.stepInputs[sid];
   const head = '<h2 class="aside-h" id="asideH">Workload level overrides</h2>';
-  const fields = entityFields(sid);
+  const fields = has(DOC.stepInputs, sid) ? entityFields(sid) : [];
   if (!fields.length) { pane.innerHTML = head + `<section class="card"><div class="ov-empty">This step has no per-workload inputs.</div></section>`; return; }
   const es = entitiesFor(sid);
   if (!es.length) { pane.innerHTML = head + `<section class="card"><div class="ov-empty">This step has no workloads.</div></section>`; return; }
