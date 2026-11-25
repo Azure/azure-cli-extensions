@@ -18,8 +18,8 @@ python3 -B -m pytest \
 ```
 
 The new tests use mocked Azure responses, not encrypted live VMs. The versioned
-`nvmeEligibility` output is additionally exercised against ALAR's report parser
-in a separately retained external harness. These are ADE-refusal tests, not
+`nvmeEligibility` output is diagnostic metadata; ALAR no longer consumes or
+requires it. Its local BEK/encryption guard is validated separately. These are ADE-refusal tests, not
 successful ADE conversion or decryption certification. No new VMs are deployed.
 
 ## RHEL 7 standalone EFI regression update (2026-11-23)

@@ -5,7 +5,7 @@ Release History
 
 1.0.0b1
 ++++++
-* Refuse NVMe for OS/data-disk ADE and unknown encryption inventory; return source-VM eligibility metadata for offline recovery.
+* Refuse NVMe for OS/data-disk ADE and unknown encryption inventory; return diagnostic encryption inventory.
 * Fix RHEL 7 standalone EFI timeout readiness and regeneration when GRUB defaults already contain the required value.
 * Initial preview release
 * Convert VMs between SCSI and NVMe disk controllers

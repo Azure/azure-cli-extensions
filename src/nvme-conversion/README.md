@@ -41,7 +41,7 @@ az nvme-conversion convert --resource-group myRG --vm-name myVM --dry-run
 az nvme-conversion convert --resource-group myRG --vm-name myVM --fix-os --start-vm --yes
 ```
 
-## ADE exclusion and offline recovery handoff
+## ADE exclusion
 
 NVMe is refused when ADE is present on the OS disk or any attached data disk,
 or when the VM extension/disk inventory cannot be verified. The preflight checks
@@ -54,26 +54,13 @@ This gate cannot be bypassed with OS/SKU skip flags or dry-run. A return to SCSI
 is not blocked by the NVMe ADE exclusion. SSE, customer-managed server-side keys
 and encryption at host are not ADE.
 
-For an offline repair workflow, generate the full source-VM check JSON before
-recovery, with guest commands disabled:
-
-```bash
-az nvme-conversion check -g SOURCE_RG -n SOURCE_VM --controller-type NVMe \
-  --ignore-os-check --ignore-sku-check --ignore-windows-version-check \
-  -o json > nvme-eligibility.json
-```
-
 Successful checks include `vmResourceId` and a versioned `nvmeEligibility` object
 with source VM identity, UTC check time, OS/data disk IDs and explicit ADE-free
 states. Failed/unknown ADE checks return no eligibility object and stop before
 guest RunCommand. Consumers must require `overallStatus: passed`, not just a
-zero process exit. Do not remove fields with `--query`.
-
-The trusted repair workflow must associate that report with the actual recovery
-disk and prevent source-VM disk/encryption changes during preparation. This is
-a private workflow handoff, not signed Azure attestation. ALAR's `nvme` action
-requires the report through `ALAR_NVME_ELIGIBILITY_FILE`, root ownership and
-non-writable group/other permissions, and a check no more than 15 minutes old.
+zero process exit. This is diagnostic control-plane metadata, not signed Azure
+attestation or an ALAR prerequisite. ALAR does not require this extension or its
+JSON output; its separate local guard checks recovery-key/encryption evidence.
 
 ## Parameters
 
