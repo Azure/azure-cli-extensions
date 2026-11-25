@@ -5,7 +5,9 @@ const { readFileSync } = require('node:fs');
 const { test } = require('node:test');
 const vm = require('node:vm');
 
-const script = /<script nonce="[^"]+">([\s\S]*?)<\/script>/.exec(readFileSync(0, 'utf8'))[1]
+const html = readFileSync(0, 'utf8');
+const renderedBoot = JSON.parse(/const BOOT = (.*);\r?\n/.exec(html)[1]);
+const script = /<script nonce="[^"]+">([\s\S]*?)<\/script>/.exec(html)[1]
   .replace(/const BOOT = .*;\r?\n/, 'const BOOT = boot;\n');
 const sid = 'target-1';
 function schema() {
@@ -59,7 +61,8 @@ function editor(data = { action: 'Validate', resourceId: '/resource/id', name: n
   };
   const context = vm.createContext({
     boot: { doc: { schema: {}, stepInputs: root.inputs.stepInputs },
-      parameterSchema: documentSchema, inputsRoot: root, spec, meta: {} },
+      parameterSchema: documentSchema, inputsRoot: root, spec, meta: {},
+      inputlessStepRefs: renderedBoot.inputlessStepRefs },
     document: {
       getElementById: element, querySelector() { return null; }, querySelectorAll() { return []; },
       addEventListener() {}
@@ -79,6 +82,45 @@ test('Draft-07 references, enum, scope and readOnly drive existing controls', ()
   assert.match(e.nodes.get('form').innerHTML, /<option value="Create"/);
   assert.match(e.nodes.get('ovPane').innerHTML, /data-path="O\|target-1\|a\|source"[^>]+disabled/);
   assert.match(e.nodes.get('form').innerHTML, /data-row="D\|target-1\|name"/);
+  assert.equal(e.run(`contextRules('${sid}').action.suggestedValues`), undefined);
+});
+
+test('Draft-07 conditional selector choices become dropdowns without becoming validation restrictions', () => {
+  const documentSchema = schema();
+  delete documentSchema.definitions.entity.properties.action.enum;
+  const create = documentSchema.definitions.entity.allOf[0];
+  const validate = { if: { properties: { action: { enum: ['Validate'] } }, required: ['action'] },
+    then: create.else };
+  delete create.else;
+  documentSchema.definitions.branches = { allOf: [create, validate] };
+  documentSchema.definitions.entity.allOf = [{ $ref: '#/definitions/branches' }];
+  const before = JSON.stringify(documentSchema);
+  const e = editor(undefined, documentSchema);
+  assert.deepEqual(Array.from(e.run(`contextRules('${sid}').action.suggestedValues`)), ['Create', 'Validate']);
+  assert.equal(e.run(`contextRules('${sid}').action.allowedValues`), undefined);
+  assert.match(e.nodes.get('form').innerHTML, /<select data-path="D\|target-1\|action"/);
+  assert.match(e.nodes.get('ovPane').innerHTML, /<select data-path="O\|target-1\|a\|action"/);
+  assert.equal(e.run('uploadBlocked()'), false);
+  e.run(`setValue('D|${sid}|action', 'Create')`);
+  assert.equal(e.run(`stepIssues('${sid}').some(i => i.f === 'name')`), true);
+  const custom = editor({ action: 'Custom', workloadOverrides: { a: { source: 'one' } } }, documentSchema);
+  assert.match(custom.nodes.get('form').innerHTML, /<option value="Custom" selected>Custom<\/option>/);
+  assert.equal(custom.run('uploadBlocked()'), false);
+  assert.equal(custom.run('buildInputsJson()'), JSON.stringify(custom.root, null, 2));
+  assert.equal(JSON.stringify(documentSchema), before);
+});
+
+test('Draft-07 scalar const properties map to dropdowns with SDK numeric coercion', () => {
+  const documentSchema = schema();
+  documentSchema.definitions.entity.properties.ratio.const = 1.5;
+  const e = editor(undefined, documentSchema);
+  assert.match(e.nodes.get('form').innerHTML, /<select data-path="D\|target-1\|ratio"/);
+  assert.match(e.nodes.get('form').innerHTML, /<option value="1.5"/);
+  e.run(`setValue('D|${sid}|ratio', '1.5')`);
+  assert.equal(e.data.ratio, 1.5);
+  assert.equal(e.run('uploadBlocked()'), false);
+  e.run(`setValue('D|${sid}|ratio', '2')`);
+  assert.equal(e.run('uploadBlocked()'), true);
 });
 
 test('shared controls show workload requirements even when only overrides supply required values', () => {
@@ -109,7 +151,10 @@ test('spec-only steps remain visible and selectable without inventing parameter 
   steps.patternProperties['^.+$'] = steps.patternProperties['^target-1$'];
   delete steps.patternProperties['^target-1$'];
   const status = { stepId: 'status-1', displayName: 'Update migration status' };
-  const e = editor(undefined, documentSchema, { workstreams: [{ steps: [status, status] }] });
+  const e = editor(undefined, documentSchema, { workstreams: [{ steps: [
+    { stepId: 'gate-1', stepRef: 'common.manual', isRequired: true }, status, status,
+    { stepId: 'gate-2', stepRef: 'common.approval', isRequired: false }
+  ] }] });
   const tabs = [...e.nodes.get('steps').innerHTML.matchAll(/data-sid="([^"]+)"/g)].map(match => match[1]);
   assert.deepEqual(tabs, ['status-1', sid]);
   assert.match(e.nodes.get('form').innerHTML, /Update migration status/);

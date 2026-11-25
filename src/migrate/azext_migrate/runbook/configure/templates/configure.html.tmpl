@@ -439,9 +439,10 @@ const META = BOOT.meta || {
 // User-parameters file name (service renamed inputs.json -> parameters.json;
 // the CLI passes the actual name so the shown upload command matches).
 const PARAM_FILE = META.parametersFileName || 'inputs.json';
-const STEP_ENTITIES = {}, STEP_DISPLAY = {};
+const STEP_ENTITIES = {}, STEP_DISPLAY = {}, STEP_REFS = {};
 (SPEC.workstreams || []).forEach(w => (w.steps || []).forEach(s => {
   STEP_ENTITIES[s.stepId] = s.entities || [];
+  STEP_REFS[s.stepId] = s.stepRef;
   if (s.displayName) STEP_DISPLAY[s.stepId] = s.displayName;
 }));
 // Entities are keyed by their short name in workloadOverrides; the spec carries
@@ -479,9 +480,11 @@ function stepLabel(sid) {
 const ORIGINAL = JSON.parse(JSON.stringify(DOC.stepInputs));
 const SCHEMA_EDITOR = Object.prototype.hasOwnProperty.call(BOOT, 'parameterSchema')
   ? parameterSchemaEditor(BOOT.parameterSchema, BOOT.inputsRoot, entitiesFor) : null;
+const INPUTLESS_STEP_REFS = new Set(BOOT.inputlessStepRefs || []);
 function stepIds() {
   const inputs = Object.keys(DOC.stepInputs);
-  return SCHEMA_EDITOR ? [...new Set([...Object.keys(STEP_ENTITIES), ...inputs])] : inputs;
+  return SCHEMA_EDITOR ? [...new Set([...Object.keys(STEP_ENTITIES), ...inputs])]
+    .filter(sid => !INPUTLESS_STEP_REFS.has(STEP_REFS[sid] || stepType(sid))) : inputs;
 }
 
 // ---- helpers --------------------------------------------------------------
@@ -810,7 +813,7 @@ function bindSearch(id, set) {
 }
 function scalarCtrl(path, rule, value, dis) {
   const v = value == null ? '' : value;
-  if (rule.allowedValues) return selCtrl(path, rule, v, dis, '-- unset --', '');
+  if (rule.allowedValues || rule.suggestedValues) return selCtrl(path, rule, v, dis, '-- unset --', '');
   if (rule.type === 'boolean') return boolCtrl(path, v, dis, '-- unset --', '');
   return `<input type="text" data-path="${esc(path)}" value="${esc(v)}" ${dis} />`;
 }
@@ -818,15 +821,19 @@ function overrideCtrl(path, rule, value, defVal, hasOvr, dis) {
   // A dropdown option must read as a choice, so it stays labelled; a text
   // placeholder can just show the value it would fall back to.
   const opt = isEmpty(defVal) ? 'Inherit' : `Inherit (${short(fmt(defVal), 32)})`;
-  if (rule.allowedValues) return selCtrl(path, rule, hasOvr ? value : '__inh__', dis, opt, '__inh__');
+  if (rule.allowedValues || rule.suggestedValues)
+    return selCtrl(path, rule, hasOvr ? value : '__inh__', dis, opt, '__inh__');
   if (rule.type === 'boolean') return boolCtrl(path, hasOvr ? value : '__inh__', dis, opt, '__inh__');
   return `<input type="text" data-path="${esc(path)}" value="${hasOvr ? esc(value) : ''}" ${dis}
     placeholder="${esc(short(fmt(defVal), 48))}" />`;
 }
 function selCtrl(path, rule, v, dis, firstLabel, firstVal) {
+  const values = [...(rule.allowedValues || rule.suggestedValues)];
+  if (SCHEMA_EDITOR && !isEmpty(v) && String(v) !== String(firstVal) &&
+      !values.some(o => String(o) === String(v))) values.push(v);
   return `<select data-path="${esc(path)}" ${dis}>
     <option value="${esc(firstVal)}">${esc(firstLabel)}</option>` +
-    rule.allowedValues.map(o => `<option value="${esc(o)}" ${String(o) === String(v) ? 'selected' : ''}>${esc(o)}</option>`).join('') +
+    values.map(o => `<option value="${esc(o)}" ${String(o) === String(v) ? 'selected' : ''}>${esc(o)}</option>`).join('') +
     `</select>`;
 }
 function boolCtrl(path, v, dis, firstLabel, firstVal) {

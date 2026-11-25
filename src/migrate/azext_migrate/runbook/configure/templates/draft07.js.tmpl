@@ -19,6 +19,22 @@ function parameterSchemaEditor(schema, original, entitiesFor) {
     }
     return value || {};
   }
+  const scalarChoices = rule => (rule.enum || (own(rule, 'const') ? [rule.const] : []))
+    .filter(value => value !== null && ['string', 'number', 'boolean'].includes(typeof value));
+  // Conditional selector values are UI hints, not an exhaustive enum assertion.
+  function choiceHints(value, hints = Object.create(null), seen = new Set(), predicate = false) {
+    const rule = resolve(value);
+    if (typeof rule !== 'object' || seen.has(rule)) return hints;
+    const next = new Set([...seen, rule]);
+    if (predicate) Object.entries(rule.properties || {}).forEach(([key, test]) => {
+      hints[key] = [...new Set([...(hints[key] || []), ...scalarChoices(resolve(test))])];
+    });
+    if (own(rule, 'if')) choiceHints(rule.if, hints, next, true);
+    ['allOf', 'anyOf', 'oneOf'].forEach(key =>
+      (rule[key] || []).forEach(child => choiceHints(child, hints, next, predicate)));
+    ['then', 'else'].forEach(key => { if (own(rule, key)) choiceHints(rule[key], hints, next); });
+    return hints;
+  }
   try {
     if (!schema || !/^https?:\/\/json-schema\.org\/draft-07\/schema#?$/.test(schema.$schema || ''))
       throw new Error('The parameters schema must declare JSON Schema Draft-07.');
@@ -43,7 +59,8 @@ function parameterSchemaEditor(schema, original, entitiesFor) {
     const step = resolve(candidates[0]);
     const overrides = resolve((step.properties || {}).workloadOverrides);
     const entity = resolve(overrides.additionalProperties);
-    const result = { step, entity, hasEntities: own(step.properties, 'workloadOverrides') };
+    const result = { step, entity, hasEntities: own(step.properties, 'workloadOverrides'),
+      hints: choiceHints(entity, choiceHints(step)) };
     layouts.set(sid, result);
     return result;
   }
@@ -57,7 +74,8 @@ function parameterSchemaEditor(schema, original, entitiesFor) {
       required, scope: entityScope ? 'Entity' : source.scope,
       isEditable: rule.readOnly !== true && source.editable !== false
     };
-    if (rule.enum) result.allowedValues = rule.enum;
+    const choices = scalarChoices(rule);
+    if (choices.length) result.allowedValues = choices;
     if (rule.properties) result.properties = Object.fromEntries(Object.entries(rule.properties)
       .map(([key, child]) => [key, descriptor(child, (rule.required || []).includes(key), entityScope, next)]));
     if (rule.items && !Array.isArray(rule.items)) result.items = descriptor(rule.items, false, entityScope, next);
@@ -74,8 +92,11 @@ function parameterSchemaEditor(schema, original, entitiesFor) {
       // Shared controls also supply required effective workload values.
       const required = new Set([...(shape.required || []),
         ...(eid === null ? info.entity.required || [] : [])]);
-      info[cacheKey] = Object.fromEntries(Object.entries(properties).map(([key, value]) =>
-        [key, descriptor(value, required.has(key), info.hasEntities)]));
+      info[cacheKey] = Object.fromEntries(Object.entries(properties).map(([key, value]) => {
+        const field = descriptor(value, required.has(key), info.hasEntities);
+        if (!field.allowedValues && (info.hints[key] || []).length) field.suggestedValues = info.hints[key];
+        return [key, field];
+      }));
       return info[cacheKey];
     } catch (e) {
       error = 'Could not render parameters schema: ' + e.message;

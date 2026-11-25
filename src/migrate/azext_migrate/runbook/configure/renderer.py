@@ -22,6 +22,7 @@ import re
 import secrets
 
 from azext_migrate.shared.files import parameter_schema_name
+from azext_migrate.runbook.constants import INPUTLESS_STEP_REFS
 
 _TEMPLATE_PATH = os.path.join(
     os.path.dirname(__file__), 'templates', 'configure.html.tmpl')
@@ -124,6 +125,7 @@ def render(inputs_root, spec_doc, meta, schema_doc=None):
     validator = ''
     if split_schema:
         payload['parameterSchema'] = schema_doc
+        payload['inputlessStepRefs'] = sorted(INPUTLESS_STEP_REFS)
         with open(_VALIDATOR_PATH, encoding='utf-8') as handle:
             validator = handle.read()
         with open(_ADAPTER_PATH, encoding='utf-8') as handle:
