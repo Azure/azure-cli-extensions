@@ -5,16 +5,9 @@ Release History
 
 3.0.0b7
 +++++++++++++++
-* Support separate Draft-07 schemas for runbook and execution parameters,
-  including schema downloads and offline editing, while preserving legacy
-  embedded-schema artifacts.
-* Use standard JSON Schema validation for live conditional requirements,
-  including ``allOf``, ``anyOf``, and dependencies, with schema-defined
-  dropdown choices and shared/workload input inheritance.
-* Warn about conditionally ignored input values without blocking Save; retain
-  their keys as null in saved parameters and their values in the editor.
-* Read separate parameter schemas when computing definition configuration
-  status for downloaded artifacts and local visualization.
+* Add support for Draft-07 conditional schema validation in the HTML editor
+  using a standard JSON Schema SDK and read separate schema files when
+  present, preserving backward compatibility.
 * Support inline conditional input rules in runbook and execution parameter
   editors: const-based conditions select required inputs and exclude fields
   marked false from controls, validation, and saved parameters.
