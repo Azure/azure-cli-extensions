@@ -64,7 +64,9 @@ function editor(data = { action: 'Validate', resourceId: '/resource/id', name: n
       parameterSchema: documentSchema, inputsRoot: root, spec, meta: {},
       inputlessStepRefs: renderedBoot.inputlessStepRefs },
     document: {
-      getElementById: element, querySelector() { return null; }, querySelectorAll() { return []; },
+      getElementById: element,
+      querySelector(selector) { return selector.startsWith('[data-err=') ? element(selector) : null; },
+      querySelectorAll() { return []; },
       addEventListener() {}
     },
     window: { addEventListener() {} }, navigator: {}, URL, setTimeout() {}, clearTimeout() {}
@@ -170,14 +172,77 @@ test('spec-only steps remain visible and selectable without inventing parameter 
 
 test('shared defaults and nonempty workload values validate independently', () => {
   const e = editor();
-  const before = e.nodes.get('form').innerHTML;
+  const before = e.run(`JSON.stringify(contextRules('${sid}'))`);
   e.run(`setValue('O|${sid}|a|action', 'Create')`);
   assert.equal(e.run(`entityErrors('${sid}', 'a')`) > 0, true);
   assert.equal(e.run(`entityErrors('${sid}', 'b')`), 0);
-  assert.equal(e.nodes.get('form').innerHTML, before);
+  assert.equal(e.run(`JSON.stringify(contextRules('${sid}'))`), before);
   e.run(`setValue('O|${sid}|a|action', 'Validate')`);
   assert.equal(e.run('uploadBlocked()'), false);
   assert.equal(e.data.action, 'Validate');
+});
+
+test('SDK-required groups update for missing and filled values while editing action choices', () => {
+  const e = editor();
+  const required = field => e.run(`contextRules('${sid}').${field}.required`);
+  assert.equal(required('resourceId'), true);
+  assert.equal(required('name'), false);
+  e.run(`setValue('D|${sid}|action', 'Create')`);
+  assert.equal(required('name'), true);
+  assert.equal(required('size'), true);
+  assert.equal(required('resourceId'), false);
+  const group = /data-sec="req"[^>]*>([\s\S]*?)<\/details>/.exec(e.nodes.get('form').innerHTML)[1];
+  assert.match(group, /data-row="D\|target-1\|name"/);
+  assert.doesNotMatch(group, /data-row="D\|target-1\|resourceId"/);
+  e.run(`setValue('D|${sid}|name', 'valid'); setValue('D|${sid}|size', '2')`);
+  assert.equal(required('name'), true);
+  assert.equal(required('size'), true);
+  assert.equal(e.run(`contextRules('${sid}', 'a').name.required`), true);
+  e.run(`setValue('D|${sid}|action', 'Validate')`);
+  assert.equal(required('name'), false);
+  assert.equal(required('size'), false);
+  assert.equal(required('resourceId'), true);
+});
+
+test('SDK projections follow nested non-const conditions and independent workload values', () => {
+  const documentSchema = schema();
+  documentSchema.definitions.branch = {
+    if: { anyOf: [
+      { properties: { ratio: { minimum: 4 } }, required: ['ratio'] },
+      { properties: { names: { contains: { const: 'large' } } }, required: ['names'] }
+    ] }, then: { required: ['size'] }
+  };
+  documentSchema.definitions.entity.allOf.push({ $ref: '#/definitions/branch' });
+  documentSchema.definitions.entity.dependencies = { size: ['ratio'] };
+  const e = editor(undefined, documentSchema);
+  assert.equal(e.run(`contextRules('${sid}').size.required`), false);
+  e.run(`setValue('D|${sid}|ratio', '5')`);
+  assert.equal(e.run(`contextRules('${sid}').size.required`), true);
+  e.run(`setValue('D|${sid}|ratio', '0.5')`);
+  assert.equal(e.run(`contextRules('${sid}').size.required`), false);
+  e.run(`setValue('D|${sid}|names', '["large"]')`);
+  assert.equal(e.run(`contextRules('${sid}').size.required`), true);
+  e.run(`setValue('O|${sid}|a|names', '["small"]')`);
+  assert.equal(e.run(`contextRules('${sid}', 'a').size.required`), false);
+  assert.equal(e.run(`contextRules('${sid}', 'b').size.required`), true);
+  assert.equal(e.run(`entityErrors('${sid}', 'a')`), 0);
+  assert.ok(e.run(`entityErrors('${sid}', 'b')`) > 0);
+  e.run(`setValue('D|${sid}|ratio', ''); setValue('D|${sid}|size', '2')`);
+  assert.equal(e.run(`contextRules('${sid}').ratio.required`), true);
+  assert.equal(e.run(`stepIssues('${sid}').some(i => i.f === 'ratio')`), true);
+});
+
+test('inherited SDK failures appear once at shared controls, not override-only failures', () => {
+  const e = editor();
+  e.run(`setValue('D|${sid}|resourceId', '')`);
+  const error = e.nodes.get(`[data-err="D|${sid}|resourceId"]`);
+  assert.match(error.textContent, /required property "resourceId"/);
+  assert.equal((error.textContent.match(/required property/g) || []).length, 1);
+  e.run(`setValue('D|${sid}|resourceId', '/resource/id')`);
+  assert.equal(error.textContent, '');
+  e.run(`setValue('O|${sid}|a|resourceId', 'invalid')`);
+  assert.equal(error.textContent, '');
+  assert.match(e.nodes.get(`[data-err="O|${sid}|a|resourceId"]`).textContent, /pattern/);
 });
 
 test('SDK constraints validate values rather than accepting truncated numbers', () => {
@@ -235,6 +300,27 @@ test('full-document root assertions are also evaluated by the SDK', () => {
   const e = editor(undefined, documentSchema);
   assert.equal(e.run('uploadBlocked()'), true);
   assert.match(e.nodes.get('stepConditions').textContent, /approval/);
+});
+
+test('live requiredness also honors full-document conditions on non-workload inputs', () => {
+  const documentSchema = schema();
+  delete documentSchema.definitions.step.properties.workloadOverrides;
+  documentSchema.allOf = [{
+    if: { properties: { inputs: { properties: { stepInputs: { properties: {
+      [sid]: { properties: { action: { const: 'Create' } } }
+    } } } } } },
+    then: { properties: { inputs: { properties: { stepInputs: { properties: {
+      [sid]: { required: ['name'] }
+    } } } } } }
+  }];
+  const e = editor({ action: 'Validate' }, documentSchema);
+  assert.equal(e.run(`contextRules('${sid}').name.required`), false);
+  e.run(`setValue('A|${sid}|action', 'Create')`);
+  assert.equal(e.run(`contextRules('${sid}').name.required`), true);
+  assert.equal(e.run('uploadBlocked()'), true);
+  e.run(`setValue('A|${sid}|name', 'valid')`);
+  assert.equal(e.run(`contextRules('${sid}').name.required`), true);
+  assert.equal(e.run('uploadBlocked()'), false);
 });
 
 test('step instance schemas are not conflated by their common step type', () => {

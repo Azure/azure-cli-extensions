@@ -625,13 +625,15 @@ function inputState(sid, eid = null) {
   return { required, excluded };
 }
 function contextRules(sid, eid = null) {
-  if (SCHEMA_EDITOR) return SCHEMA_EDITOR.fields(sid, eid);
+  if (SCHEMA_EDITOR) return SCHEMA_EDITOR.contextFields(sid, eid, DOC.stepInputs);
   const state = inputState(sid, eid);
   return Object.fromEntries(Object.entries(rulesFor(sid)).filter(([f]) => !state.excluded.has(f))
     .map(([f, r]) => [f, { ...r, required: !!r.required || state.required.has(f) }]));
 }
 function inputLayout(sid) {
-  return JSON.stringify([contextRules(sid), ...entitiesFor(sid).map(e => contextRules(sid, e.id))]
+  const entities = entitiesFor(sid);
+  const visible = SCHEMA_EDITOR ? [entities.find(e => e.id === selEntity) || entities[0]].filter(Boolean) : entities;
+  return JSON.stringify([contextRules(sid), ...visible.map(e => contextRules(sid, e.id))]
     .map(rules => Object.entries(rules).map(([f, r]) => [f, r.required])));
 }
 function overrideCount(sid, f) {
@@ -1244,8 +1246,12 @@ function refreshValidation() {
   const sid = current, issues = stepIssues(sid);
   const errorFor = (f, eid) => issues.filter(i => i.f === f && i.eid === eid).map(i => i.msg).join('; ');
   const kind = stepIsEntity(sid) ? 'D' : 'A';
-  Object.entries(contextRules(sid)).forEach(([f, rule]) =>
-    mark(`${kind}|${sid}|${f}`, SCHEMA_EDITOR ? errorFor(f, null) : fieldError(rule, DOC.stepInputs[sid][f])));
+  Object.entries(contextRules(sid)).forEach(([f, rule]) => {
+    const shared = SCHEMA_EDITOR ? [...new Set(issues
+      .filter(i => i.f === f && (i.eid === null || !hasOverride(sid, i.eid, f)))
+      .map(i => i.detail || i.msg))].join('; ') : fieldError(rule, DOC.stepInputs[sid][f]);
+    mark(`${kind}|${sid}|${f}`, shared);
+  });
   entityFields(sid).forEach(f => {
     // right pane shows the selected entity's inputs
     const ov = hasOverride(sid, selEntity, f), err = errorFor(f, selEntity);

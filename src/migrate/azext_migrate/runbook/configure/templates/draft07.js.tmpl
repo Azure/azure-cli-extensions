@@ -21,6 +21,8 @@ function parameterSchemaEditor(schema, original, entitiesFor) {
   }
   const scalarChoices = rule => (rule.enum || (own(rule, 'const') ? [rule.const] : []))
     .filter(value => value !== null && ['string', 'number', 'boolean'].includes(typeof value));
+  const missingField = (issue, keys) => ['required', 'dependencies'].includes(issue.keyword)
+    ? keys.find(key => issue.error.endsWith(`"${key}".`)) : undefined;
   // Conditional selector values are UI hints, not an exhaustive enum assertion.
   function choiceHints(value, hints = Object.create(null), seen = new Set(), predicate = false) {
     const rule = resolve(value);
@@ -124,6 +126,51 @@ function parameterSchemaEditor(schema, original, entitiesFor) {
     return JSON.parse(JSON.stringify(document), (_, value) =>
       value && typeof value === 'object' && !Array.isArray(value) ? Object.assign(Object.create(null), value) : value);
   }
+  function contextFields(sid, eid, stepInputs) {
+    const base = fields(sid, eid);
+    if (error || !Object.keys(base).length) return base;
+    try {
+      const info = layout(sid), stamp = JSON.stringify(stepInputs);
+      const contexts = info.contexts || (info.contexts = new Map());
+      if (contexts.has(eid) && contexts.get(eid).stamp === stamp) return contexts.get(eid).fields;
+      const document = effectiveDocument(stepInputs), step = document.inputs.stepInputs[sid];
+      let targets = [step], paths = [['inputs', 'stepInputs', sid]];
+      if (info.hasEntities) {
+        const overrides = step.workloadOverrides, id = eid === null ? Object.keys(overrides)[0] || '' : eid;
+        if (eid === null) {
+          // Project shared defaults through the same workload schema, without changing saved inputs.
+          overrides[id] = Object.assign(Object.create(null), step);
+          delete overrides[id].workloadOverrides;
+        } else { targets = []; paths = []; }
+        targets.push(overrides[id]);
+        paths.push(['inputs', 'stepInputs', sid, 'workloadOverrides', id]);
+      }
+      const locations = new Set(paths.map(path => '#/' + path
+        .map(key => key.replace(/~/g, '~0').replace(/\//g, '~1')).join('/')));
+      let unchanged;
+      const result = Object.fromEntries(Object.entries(base).map(([field, rule]) => {
+        if (rule.required) return [field, rule];
+        const saved = targets.map(value => [value, own(value, field), value[field]]);
+        targets.forEach(value => { delete value[field]; });
+        let required;
+        try {
+          // Ask the SDK whether absence is required; do not interpret conditional keywords.
+          const checked = saved.some(([, present]) => present) ? validator.validate(document)
+            : unchanged || (unchanged = validator.validate(document));
+          required = checked.errors.some(e =>
+            locations.has(e.instanceLocation) && missingField(e, [field]) === field);
+        } finally {
+          saved.forEach(([value, present, previous]) => { if (present) value[field] = previous; });
+        }
+        return [field, { ...rule, required }];
+      }));
+      contexts.set(eid, { stamp, fields: result });
+      return result;
+    } catch (e) {
+      error = 'Could not project parameters schema requirements: ' + e.message;
+      return base;
+    }
+  }
   function issues(stepInputs) {
     const stamp = JSON.stringify(stepInputs);
     if (cached && cached.stamp === stamp) return cached.issues;
@@ -144,13 +191,11 @@ function parameterSchemaEditor(schema, original, entitiesFor) {
         const sid = path[0] === 'inputs' && path[1] === 'stepInputs' && own(stepInputs, path[2]) ? path[2] : first;
         const eid = path[3] === 'workloadOverrides' ? path[4] || null : null;
         let field = path[eid === null ? 3 : 5];
-        if (!field && e.keyword === 'required') {
-          field = Object.keys(fields(sid)).find(key => e.error.endsWith(`"${key}".`));
-        }
+        if (!field) field = missingField(e, Object.keys(fields(sid)));
         return {
           sid, eid, f: own(fields(sid), field) ? field : null,
           name: eid === null ? null : (entitiesFor(sid).find(entity => entity.id === eid) || {}).name || eid,
-          msg: `${e.instanceLocation}: ${e.error}`, condition: true
+          msg: `${e.instanceLocation}: ${e.error}`, detail: e.error, condition: true
         };
       });
     } catch (e) {
@@ -159,5 +204,5 @@ function parameterSchemaEditor(schema, original, entitiesFor) {
     cached = { stamp, issues: result };
     return result;
   }
-  return { fields, issues };
+  return { fields, contextFields, issues };
 }
