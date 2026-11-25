@@ -58,7 +58,7 @@ def prepare_base(base):
 
 @unittest.skipUnless(sys.platform == 'linux' and os.geteuid() == 0, 'Linux root required')
 class EfiTimeoutTests(unittest.TestCase):
-    """Keep stale EFI/defaults, exact token checks and other loader layouts safe."""
+    """Keep stale EFI/defaults, exact argument checks and other loader layouts safe."""
     @classmethod
     def setUpClass(cls):
         """Read the actual embedded script without importing Azure CLI packages."""
@@ -73,7 +73,7 @@ class EfiTimeoutTests(unittest.TestCase):
         cls.scripts = (original,)
 
     def run_case(self, script, mode='fix', version='7.9', efi=True, ready=False,
-                 token='', broken=False, redirect=False, failure=False,
+                 timeout_argument='', broken=False, redirect=False, failure=False,
                  missing_defaults=False, silent_failure=False, other_kernel_missing=False):
         """Run actual function definitions against synthetic boot entries and logged rebuilds."""
         temporary = tempfile.TemporaryDirectory(dir=self.tmp.name)
@@ -88,7 +88,8 @@ class EfiTimeoutTests(unittest.TestCase):
         entry = 'linuxefi /vmlinuz root=/dev/mapper/rootvg-rootlv quiet console=ttyS0'
         write(root, 'boot/grub2/grub.cfg', entry + ' nvme_core.io_timeout=240\n')
         if efi:
-            arguments = ' nvme_core.io_timeout=240' if ready else (' ' + token if token else '')
+            arguments = ' nvme_core.io_timeout=240' if ready else (
+                ' ' + timeout_argument if timeout_argument else '')
             configuration = entry + arguments + '\n'
             if other_kernel_missing:
                 configuration += entry.replace('/vmlinuz', '/vmlinuz-older') + '\n'
@@ -148,8 +149,8 @@ class EfiTimeoutTests(unittest.TestCase):
 
     def test_partial_or_wrong_argument_is_not_ready(self):
         """2400 and a conflicting timeout must not be accepted as 240."""
-        for token in ('nvme_core.io_timeout=2400', 'nvme_core.io_timeout=240 nvme_core.io_timeout=30'):
-            for root, result, _ in self.each_source(mode='check', token=token):
+        for timeout_argument in ('nvme_core.io_timeout=2400', 'nvme_core.io_timeout=240 nvme_core.io_timeout=30'):
+            for root, result, _ in self.each_source(mode='check', timeout_argument=timeout_argument):
                 self.assertIn('[ERROR] nvme_core.io_timeout is not set to 240.', result.stdout)
 
     def test_dryrun_does_not_change_boot_files(self):
@@ -203,8 +204,8 @@ class EfiTimeoutTests(unittest.TestCase):
 
     def test_every_standalone_kernel_entry_requires_timeout(self):
         """One ready entry cannot mask an older kernel without the required flag."""
-        for root, result, _ in self.each_source(mode='check', token='nvme_core.io_timeout=240',
-                                               other_kernel_missing=True):
+        for root, result, _ in self.each_source(
+                mode='check', timeout_argument='nvme_core.io_timeout=240', other_kernel_missing=True):
             self.assertIn('[ERROR] nvme_core.io_timeout is not set to 240.', result.stdout)
 
     def test_successful_generator_without_repair_is_rejected(self):

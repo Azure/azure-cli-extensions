@@ -142,7 +142,7 @@ CRUD operations. Custom orchestration with `custom.py` is required.
 
 ### SDK vs Raw REST
 
-The original PowerShell script uses `Invoke-RestMethod` with a bearer token for the disk PATCH.
+The original PowerShell script uses `Invoke-RestMethod` with a Bearer authorization header for the disk PATCH.
 We use `ComputeManagementClient.disks.begin_update()` which provides automatic auth, retry,
 and error handling.
 

@@ -100,7 +100,7 @@ JSON output; its separate local guard checks recovery-key/encryption evidence.
 ## RHEL 7 standalone EFI timeout handling
 
 For RHEL/redhat/CentOS 7 guests with `/etc/grub2-efi.cfg`, Linux readiness checks
-the resolved standalone EFI kernel entries rather than accepting a timeout token
+the resolved standalone EFI kernel entries rather than accepting a timeout argument
 from `/etc/default/grub` or an unrelated generated configuration. `--fix-os`
 regenerates the verified standalone target and requires exact timeout 240 on every
 kernel entry. Dry-run does not rebuild or modify boot files. Broken links, modern
