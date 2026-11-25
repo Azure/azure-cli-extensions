@@ -64,17 +64,24 @@ def prepare_linux(compute_client, resource_group_name, vm_name, fix_os, dry_run)
         resource_group_name, vm_name, run_input).result(timeout=600)
 
     errors = []
+    confirmations = set()
     for output in (result.value or []):
         message = output.message or ''
         for line in message.split('\n'):
             line = line.strip()
             if line:
+                confirmations.add(line)
                 if '[ERROR]' in line:
                     errors.append(line)
                 logger.warning('  OS check: %s', line)
 
-    if errors and not fix_os and not dry_run:
+    expected = 'NVME_PREPARATION_RESULT:DRYRUN' if dry_run else 'NVME_PREPARATION_RESULT:READY'
+    if 'NVME_PREPARATION_RESULT:FAILED' in confirmations or expected not in confirmations:
         raise ValidationError(
-            'Linux OS is not ready for NVMe. Issues found:\n' +
+            'Linux NVMe preparation did not confirm successful completion. '
+            'RunCommand output was empty, incomplete, or the guest checks/repairs failed.')
+    if errors and not dry_run:
+        raise ValidationError(
+            'Linux OS is not ready for NVMe after preparation. Issues found:\n' +
             '\n'.join(f'  - {e}' for e in errors) +
-            '\nUse --fix-os to automatically fix or --dry-run to stage changes.')
+            '\nResolve the reported failures before converting the controller.')

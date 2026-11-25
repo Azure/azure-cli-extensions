@@ -53,6 +53,8 @@ def nvme_conversion_convert(cmd, resource_group_name, vm_name, vm_size=None,
     # Phase 1: Validation
     vm = _validate_vm(compute_client, resource_group_name, vm_name)
     os_type = _detect_os_type(vm)
+    if dry_run and os_type != 'Linux':
+        raise ValidationError('--dry-run is supported only for Linux; no guest preparation was performed.')
     original_vm_size = vm.hardware_profile.vm_size
 
     # Auto-detect target controller type if not specified
@@ -115,11 +117,11 @@ def nvme_conversion_convert(cmd, resource_group_name, vm_name, vm_size=None,
         return {'status': 'dry-run-complete', 'vm': vm_name}
 
     # Phase 4: Conversion
-    if vm_is_running:
+    if vm_is_running or _get_vm_power_state(compute_client, resource_group_name, vm_name) != 'PowerState/deallocated':
         _status(f'[6/8] Shutting down VM {vm_name} (1-3 minutes)...')
         _stop_vm(compute_client, resource_group_name, vm_name)
     else:
-        _status(f'[6/8] VM {vm_name} is already stopped. Skipping shutdown.')
+        _status(f'[6/8] VM {vm_name} is confirmed deallocated. Skipping shutdown.')
 
     _status('[7/8] Updating OS disk capabilities and VM size...')
     _update_disk_capabilities(compute_client, vm, new_controller_type)
@@ -414,13 +416,7 @@ def _check_ade_eligibility(compute_client, resource_group_name, vm_name, vm):
 
 def _check_vm_power_state(compute_client, resource_group_name, vm_name, fix_os):
     """Verify the VM is running (required for OS checks). Returns True if running."""
-    vm_status = compute_client.virtual_machines.instance_view(resource_group_name, vm_name)
-    power_state = None
-    for status in vm_status.statuses:
-        if status.code.startswith('PowerState/'):
-            power_state = status.code
-            break
-
+    power_state = _get_vm_power_state(compute_client, resource_group_name, vm_name)
     if power_state != 'PowerState/running':
         if fix_os:
             raise ValidationError(
@@ -429,6 +425,18 @@ def _check_vm_power_state(compute_client, resource_group_name, vm_name, fix_os):
         _status(f'       VM is not running (state: {power_state}). OS checks will be skipped.')
         return False
     return True
+
+
+def _get_vm_power_state(compute_client, resource_group_name, vm_name):
+    """Read an explicit power-state code; missing status is unknown, not deallocated."""
+    vm_status = compute_client.virtual_machines.instance_view(resource_group_name, vm_name)
+    power_state = None
+    for status in (vm_status.statuses or []):
+        if status.code.startswith('PowerState/'):
+            power_state = status.code
+            break
+
+    return power_state
 
 
 def _check_vm_generation(compute_client, vm):

@@ -55,7 +55,7 @@ azext_nvme_conversion/
 ├── _format.py               # Table output formatters for -o table
 ├── _client_factory.py       # ComputeManagementClient factory
 ├── custom.py                # Core orchestration logic (convert + check)
-├── _windows_checks.py       # Windows: version check + stornvme driver
+├── _windows_checks.py       # Windows: version check + stornvme/vpci drivers
 ├── _linux_checks.py         # Linux: RunCommand wrapper
 ├── _linux_script.py         # Embedded 500-line bash script
 ├── azext_metadata.json      # Extension metadata (preview, min CLI version)
@@ -176,10 +176,12 @@ when `azure-vm-utils` is later installed.
 
 ## Testing
 
-### Unit tests (56 tests)
+### Unit and isolated guest tests
 
 ```bash
-python3 -m pytest azext_nvme_conversion/tests/latest/test_nvme_conversion.py -v \
+python -B -m pytest azext_nvme_conversion/tests/latest/test_nvme_conversion.py \
+    azext_nvme_conversion/tests/latest/test_linux_efi_timeout.py \
+    azext_nvme_conversion/tests/latest/test_readiness_failures.py -q -p no:cacheprovider \
     -k "not NvmeConversionCheckTest and not NvmeConversionConvertTest"
 ```
 
@@ -191,6 +193,10 @@ Test categories:
 - **ResolveVmSizeTests** (8): Auto-size resolution, SKU capability handling
 - **ConvertEndToEndTests** (11): Full mocked convert flow
 - **CheckEndToEndTests** (6): Full mocked check flow
+- **Readiness failures**: explicit completion, both Windows drivers, dry-run
+  mutation prevention, confirmed deallocation, and synthetic Linux boot-image,
+  UUID, rebuild and mutation failures. Chroot tests require Linux root and existing
+  system tools; they use no real guest disks, mounts or Azure operations.
 
 ### Live tests
 

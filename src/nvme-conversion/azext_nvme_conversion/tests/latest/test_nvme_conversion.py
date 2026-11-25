@@ -171,7 +171,9 @@ class WindowsChecksUnitTests(unittest.TestCase):
         from azext_nvme_conversion._windows_checks import prepare_windows
         compute_client = MagicMock()
         output_value = MagicMock()
-        output_value.message = 'Start:OK\nStartOverride:OK\n'
+        output_value.message = ('stornvme:Start:OK\nstornvme:StartOverride:OK\n'
+                                'vpci:Start:OK\nvpci:StartOverride:OK\n'
+                                'NVME_WINDOWS_PREPARATION_RESULT:READY\n')
         result = MagicMock()
         result.value = [output_value]
         poller = MagicMock()
@@ -212,6 +214,9 @@ class WindowsChecksUnitTests(unittest.TestCase):
         from azext_nvme_conversion._windows_checks import prepare_windows
         compute_client = MagicMock()
         poller = MagicMock()
+        poller.result.return_value.value = [MagicMock(message=(
+            'stornvme:Start:OK\nstornvme:StartOverride:OK\n'
+            'vpci:Start:OK\nvpci:StartOverride:OK\nNVME_WINDOWS_PREPARATION_RESULT:READY\n'))]
         compute_client.virtual_machines.begin_run_command.return_value = poller
         prepare_windows(compute_client, 'rg', 'vm', fix_os=True)
         compute_client.virtual_machines.begin_run_command.assert_called_once()
@@ -251,7 +256,7 @@ class LinuxChecksUnitTests(unittest.TestCase):
         from azext_nvme_conversion._linux_checks import prepare_linux
         compute_client = MagicMock()
         output_value = MagicMock()
-        output_value.message = '[INFO] NVMe driver found\n[INFO] io_timeout set\n'
+        output_value.message = '[INFO] NVMe driver found\n[INFO] io_timeout set\nNVME_PREPARATION_RESULT:READY\n'
         result = MagicMock()
         result.value = [output_value]
         poller = MagicMock()
@@ -274,24 +279,25 @@ class LinuxChecksUnitTests(unittest.TestCase):
         with self.assertRaises(ValidationError):
             prepare_linux(compute_client, 'rg', 'vm', fix_os=False, dry_run=False)
 
-    def test_prepare_linux_fix_does_not_raise_on_errors(self):
+    def test_prepare_linux_fix_rejects_remaining_errors(self):
         from azext_nvme_conversion._linux_checks import prepare_linux
+        from azure.cli.core.azclierror import ValidationError
         compute_client = MagicMock()
         output_value = MagicMock()
-        output_value.message = '[ERROR] NVMe driver not found\n[INFO] Adding NVMe driver\n'
+        output_value.message = '[ERROR] NVMe driver not found\nNVME_PREPARATION_RESULT:READY\n'
         result = MagicMock()
         result.value = [output_value]
         poller = MagicMock()
         poller.result.return_value = result
         compute_client.virtual_machines.begin_run_command.return_value = poller
-        # With fix_os=True, should not raise even if errors are present
-        prepare_linux(compute_client, 'rg', 'vm', fix_os=True, dry_run=False)
+        with self.assertRaises(ValidationError):
+            prepare_linux(compute_client, 'rg', 'vm', fix_os=True, dry_run=False)
 
     def test_prepare_linux_dryrun_does_not_raise_on_errors(self):
         from azext_nvme_conversion._linux_checks import prepare_linux
         compute_client = MagicMock()
         output_value = MagicMock()
-        output_value.message = '[ERROR] fstab issue\n[DRYRUN] Staged fix\n'
+        output_value.message = '[ERROR] fstab issue\n[DRYRUN] Staged fix\nNVME_PREPARATION_RESULT:DRYRUN\n'
         result = MagicMock()
         result.value = [output_value]
         poller = MagicMock()
@@ -305,7 +311,7 @@ class LinuxChecksUnitTests(unittest.TestCase):
         compute_client = MagicMock()
         poller = MagicMock()
         result = MagicMock()
-        result.value = []
+        result.value = [MagicMock(message='NVME_PREPARATION_RESULT:READY\n')]
         poller.result.return_value = result
         compute_client.virtual_machines.begin_run_command.return_value = poller
         prepare_linux(compute_client, 'rg', 'vm', fix_os=True, dry_run=False)

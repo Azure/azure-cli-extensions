@@ -7,7 +7,7 @@
 
 Steps performed:
   1. check_windows_version  — Verify Windows Server >= 2019 (or Win10 >= 1809)
-  2. prepare_windows        — Check/fix stornvme driver via RunCommand
+  2. prepare_windows        — Check/fix stornvme and vpci via RunCommand
 
 To add a new Windows check:
   - Define a function here following the same pattern
@@ -40,53 +40,71 @@ def check_windows_version(vm):
 
 
 def prepare_windows(compute_client, resource_group_name, vm_name, fix_os):
-    """Check/fix Windows stornvme driver settings via RunCommand.
+    """Check/fix stornvme and vpci in every Windows ControlSet via RunCommand.
 
     Checks:
-      - stornvme driver Start registry value must be 0 (boot start)
+      - Both drivers' Start registry values must be 0 (boot start)
       - StartOverride key must not exist
 
-    If fix_os is True, sets stornvme to boot start automatically.
+    If fix_os is True, sets both drivers to boot start and verifies the result.
     """
     from azure.mgmt.compute.models import RunCommandInput
 
+    logger.warning('%s Windows NVMe and virtual PCI drivers...', 'Preparing' if fix_os else 'Checking')
+    script = [
+        "$ErrorActionPreference = 'Stop'",
+        'try {',
+        "$controlSets = @(Get-ChildItem HKLM:\\SYSTEM | Where-Object { $_.PSChildName -match '^ControlSet[0-9]+$' })",
+        'if ($controlSets.Count -eq 0) { throw "No Windows ControlSets were found" }',
+    ]
     if fix_os:
-        logger.warning('Fixing Windows stornvme driver settings...')
-        script = (
-            'Start-Process -FilePath "C:\\Windows\\System32\\sc.exe" '
-            '-ArgumentList "config stornvme start=boot"'
-        )
-        run_input = RunCommandInput(command_id='RunPowerShellScript', script=[script])
-        compute_client.virtual_machines.begin_run_command(
-            resource_group_name, vm_name, run_input).result(timeout=600)
-        logger.warning('Windows stornvme driver set to boot start.')
-    else:
-        logger.warning('Checking Windows stornvme driver settings...')
-        check_script = [
-            '$start = (Get-ItemProperty -Path '
-            'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\stornvme -Name Start).Start',
-            'if ($start -eq 0) { Write-Host "Start:OK" } '
-            'else { Write-Host "Start:ERROR" }',
-            '$so = Get-ItemProperty -Path '
-            'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\stornvme\\StartOverride '
-            '-ErrorAction SilentlyContinue',
-            'if ($so) { Write-Host "StartOverride:ERROR" } '
-            'else { Write-Host "StartOverride:OK" }',
+        script += [
+            "foreach ($driver in @('stornvme', 'vpci')) {",
+            '$process = Start-Process -FilePath "$env:SystemRoot\\System32\\sc.exe" '
+            '-ArgumentList @("config", $driver, "start=", "boot") -Wait -PassThru',
+            'if ($process.ExitCode -ne 0) { throw "sc.exe failed for $driver with exit $($process.ExitCode)" }',
+            'foreach ($controlSet in $controlSets) {',
+            '$service = Join-Path $controlSet.PSPath "Services\\$driver"',
+            'Set-ItemProperty -Path $service -Name Start -Value 0 -ErrorAction Stop',
+            '$override = Join-Path $service "StartOverride"',
+            'if (Test-Path $override) { Remove-Item $override -Recurse -Force -ErrorAction Stop }',
+            '}',
+            '}',
         ]
-        run_input = RunCommandInput(command_id='RunPowerShellScript', script=check_script)
-        result = compute_client.virtual_machines.begin_run_command(
-            resource_group_name, vm_name, run_input).result(timeout=600)
-
-        errors = []
-        for output in (result.value or []):
-            message = output.message or ''
-            for line in message.split('\n'):
-                if 'ERROR' in line:
-                    errors.append(line.strip())
-                logger.warning('  OS check: %s', line.strip())
-
-        if errors:
-            raise ValidationError(
-                'Windows OS is not ready for NVMe. Issues found:\n' +
-                '\n'.join(f'  - {e}' for e in errors) +
-                '\nUse --fix-os to automatically fix these issues.')
+    script += [
+        '$ready = $true',
+        "foreach ($driver in @('stornvme', 'vpci')) {",
+        '$startOK = $true; $overrideOK = $true',
+        'foreach ($controlSet in $controlSets) {',
+        '$service = Join-Path $controlSet.PSPath "Services\\$driver"',
+        '$start = (Get-ItemProperty -Path $service -Name Start -ErrorAction Stop).Start',
+        'if ($start -ne 0) { $startOK = $false }',
+        'if (Test-Path (Join-Path $service "StartOverride")) { $overrideOK = $false }',
+        '}',
+        'if ($startOK) { Write-Host "${driver}:Start:OK" } '
+        'else { Write-Host "${driver}:Start:ERROR"; $ready = $false }',
+        'if ($overrideOK) { Write-Host "${driver}:StartOverride:OK" } '
+        'else { Write-Host "${driver}:StartOverride:ERROR"; $ready = $false }',
+        '}',
+        'if (-not $ready) { Write-Host "NVME_WINDOWS_PREPARATION_RESULT:FAILED"; exit 1 }',
+        'Write-Host "NVME_WINDOWS_PREPARATION_RESULT:READY"',
+        '} catch { Write-Host "[ERROR] $($_.Exception.Message)"; '
+        'Write-Host "NVME_WINDOWS_PREPARATION_RESULT:FAILED"; exit 1 }',
+    ]
+    run_input = RunCommandInput(command_id='RunPowerShellScript', script=script)
+    result = compute_client.virtual_machines.begin_run_command(
+        resource_group_name, vm_name, run_input).result(timeout=600)
+    lines = set()
+    for output in (result.value or []):
+        for line in (output.message or '').splitlines():
+            line = line.strip()
+            if line:
+                lines.add(line)
+                logger.warning('  OS check: %s', line)
+    required = {'NVME_WINDOWS_PREPARATION_RESULT:READY'}
+    required.update(f'{driver}:{check}:OK'
+                    for driver in ('stornvme', 'vpci') for check in ('Start', 'StartOverride'))
+    if not required.issubset(lines) or any('ERROR' in line or line.endswith(':FAILED') for line in lines):
+        raise ValidationError(
+            'Windows NVMe preparation failed or returned incomplete confirmations for stornvme/vpci. '
+            'Do not convert until both drivers are verified in every ControlSet.')

@@ -13,11 +13,11 @@ The built-in `az vm update --disk-controller-type` only sets the controller prop
 | Pre-flight validation (Gen2, ADE, SKU) | Manual | Automatic |
 | OS readiness check & fix (drivers, grub, fstab) | Manual RunCommand per distro | `--fix-os` |
 | OS disk `supportedCapabilities` update | Separate `az disk update` | Automatic |
-| VM deallocate | Separate `az vm deallocate` | Automatic (skips if already stopped) |
+| VM deallocate | Separate `az vm deallocate` | Automatic (skips only if confirmed deallocated) |
 | VM resize + controller change | `az vm update` | Combined in one step |
 | VM start | Separate `az vm start` | `--start-vm` |
 | Rollback instructions | None | Provided in output |
-| Dry-run mode | None | `--dry-run` |
+| Dry-run mode | None | `--dry-run` (Linux only) |
 
 ## Usage
 
@@ -40,6 +40,22 @@ az nvme-conversion convert --resource-group myRG --vm-name myVM --dry-run
 # Auto-fix OS settings during conversion
 az nvme-conversion convert --resource-group myRG --vm-name myVM --fix-os --start-vm --yes
 ```
+
+## Preparation safety
+
+Linux preparation verifies the actual NVMe PCI and Hyper-V PCI modules for each
+installed kernel, using its distribution-specific boot images. Empty inventories,
+failed inspections/rebuilds and remaining errors block conversion, including with
+`--fix-os`. Multi-letter SCSI names are supported; UUID queries do not depend on
+`blkid` field order. Unresolved legacy fstab entries fail without replacing fstab.
+
+Windows preparation verifies `stornvme` and `vpci` in every installed ControlSet.
+Fixes wait for `sc.exe`, check its exit code and recheck registry values. Both
+platforms require explicit, complete RunCommand confirmations. Windows rejects
+`--dry-run` before guest preparation, even when `--fix-os` is supplied.
+
+Disk and controller updates require confirmed deallocation. A stopped,
+transitional or unknown power state is not treated as deallocated.
 
 ## ADE exclusion
 
