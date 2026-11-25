@@ -6,6 +6,7 @@ Release History
 2.4.1
 +++++
 * Retain Windows exec argument arrays and additionally emit Windows-quoted command lines to work around hcsshim passing CommandLine as one argument, including probes and lifecycle hooks
+* Add MacOS support for Linux-container policy generation
 
 2.4.0
 +++++
