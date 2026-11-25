@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.0.0b12
+++++++++
+* Add ``az horizondb parameter-group default list`` and ``show`` to discover
+  regional default parameter groups and inspect their engine-defined parameters.
+
 1.0.0b11
 ++++++++
 * Require both IPv4 bounds on ``cluster pool firewall-rule create``. Reject invalid

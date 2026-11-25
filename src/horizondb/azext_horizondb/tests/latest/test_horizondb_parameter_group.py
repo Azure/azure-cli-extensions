@@ -9,6 +9,24 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .constants import JAPANEAST, CLUSTER_NAME_PREFIX, CLUSTER_NAME_MAX_LENGTH
 
 
+class HorizonDBDefaultParameterGroupScenarioTest(ScenarioTest):
+
+    @AllowLargeResponse()
+    def test_horizondb_default_parameter_group_mgmt(self):
+        self.kwargs['location'] = JAPANEAST
+        groups = self.cmd('horizondb parameter-group default list --location {location}', checks=[
+            self.check('length(@) > `0`', True),
+        ]).get_output_in_json()
+
+        for group in groups:
+            self.kwargs['name'] = group['name']
+            self.cmd('horizondb parameter-group default show --location {location} --name {name}', checks=[
+                self.check('name', group['name']),
+                self.check('properties.postgreSqlVersion', group['properties']['postgreSqlVersion']),
+                self.check('length(properties.parameters) > `0`', True),
+            ])
+
+
 class HorizonDBParameterGroupMgmtScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
