@@ -1,0 +1,46 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - aldo log-collection show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --job-id
+      User-Agent:
+      - python/3.14.9 (Windows-11-10.0.26300-SP0) AZURECLI/2.92.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/logCollections/00000000-0000-0000-0000-000000000001?api-version=2026-06-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"ResourceReadFailed","message":"Failed to read resource
+        ''/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/logCollections/00000000-0000-0000-0000-000000000001''
+        with error: Not Found"}}'
+    headers:
+      content-length:
+      - '236'
+      content-type:
+      - application/json
+      date:
+      - Tue, 10 Nov 2026 19:12:32 GMT
+      server:
+      - Kestrel Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-response-source:
+      - OperatorRPHost
+    status:
+      code: 404
+      message: Not Found
+version: 1

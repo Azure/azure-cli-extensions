@@ -4,6 +4,8 @@ Release History
 1.0.0b4
 ++++++++
 * Add the ``aldo log-collection collect``, ``collect-indirect``, ``show``, ``list``, and ``wait`` commands.
+* Return an operation status URL with ``--no-wait`` and support polling it with
+  ``aldo log-collection wait --operation-status-url``, ``--timeout``, and ``--interval``.
 
 1.0.0b3
 ++++++++

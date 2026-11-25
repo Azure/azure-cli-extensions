@@ -3,7 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import io
 import json
+import tempfile
+from copy import deepcopy
 
 from unittest import TestCase
 from unittest.mock import MagicMock, Mock, call, patch
@@ -12,6 +15,7 @@ from azure.cli.core.azclierror import (
     AzureResponseError,
     InvalidArgumentValueError,
     RequiredArgumentMissingError,
+    MutuallyExclusiveArgumentError,
 )
 
 from azext_edgeoperator._format import transform_log_collection_list
@@ -22,6 +26,7 @@ from azext_edgeoperator.custom import (
     collect_logs_indirect,
     list_log_collections,
     show_log_collection,
+    wait_log_collection,
 )
 
 SUBSCRIPTION_ID = "00000000-0000-0000-0000-000000000000"
@@ -42,12 +47,20 @@ def _response(body=None, headers=None):
     response = Mock()
     response.headers = headers or {}
     response.json.return_value = body
+    response.content = json.dumps(body).encode("utf-8") if body is not None else b""
     return response
 
 
 class LogCollectionCustomTest(TestCase):
 
     def setUp(self):
+        from azure.cli.core import _session
+        # CLI invocation tests initialize global sessions with temporary configuration paths.
+        for session in vars(_session).values():
+            if isinstance(session, _session.Session):
+                session_patch = patch.dict(vars(session), deepcopy(vars(session)), clear=True)
+                session_patch.start()
+                self.addCleanup(session_patch.stop)
         subscription_patch = patch("azext_edgeoperator.custom.get_subscription_id")
         subscription_patch.start().return_value = SUBSCRIPTION_ID
         self.addCleanup(subscription_patch.stop)
@@ -67,8 +80,17 @@ class LogCollectionCustomTest(TestCase):
     def _accepted(self, retry_after="5"):
         return _response(headers={"Azure-AsyncOperation": STATUS_URL, "Retry-After": retry_after})
 
+    def _completed_collection(self):
+        job = {"id": JOB_RESOURCE_ID, "name": JOB_ID, "properties": {"provisioningState": "Succeeded"}}
+        self.send_raw_request.side_effect = [
+            self._accepted(),
+            _response({"status": "Succeeded", "properties": {"resourceId": JOB_RESOURCE_ID}}),
+            _response(job),
+        ]
+        return job
+
     def test_collect_waits_and_returns_resulting_job(self):
-        job = {"id": JOB_RESOURCE_ID, "properties": {"provisioningState": "Succeeded"}}
+        job = {"id": JOB_RESOURCE_ID, "name": JOB_ID, "properties": {"provisioningState": "Succeeded"}}
         self.send_raw_request.side_effect = [
             self._accepted(),
             _response({"status": "InProgress"}, {"Retry-After": "2"}),
@@ -102,15 +124,204 @@ class LogCollectionCustomTest(TestCase):
 
         self.sleep.assert_called_once_with(30)
 
-    def test_collect_no_wait_returns_after_acceptance(self):
-        self.send_raw_request.return_value = self._accepted()
+    def test_collect_accepts_json_null_body(self):
+        job = self._completed_collection()
+        accepted = self._accepted()
+        accepted.content = b"null"
+        self.send_raw_request.side_effect = [
+            accepted,
+            _response({"status": "Succeeded", "properties": {"resourceId": JOB_RESOURCE_ID}}),
+            _response(job),
+        ]
 
-        result = collect_logs(self.cmd, "2026-01-01T00:00:00Z", "2026-01-02T00:00:00Z", no_wait=True)
+        result = collect_logs(self.cmd, "2026-01-01T00:00:00Z", "2026-01-02T00:00:00Z")
 
-        self.assertIsNone(result)
+        self.assertEqual(result, job)
+        accepted.json.assert_not_called()
+        self.assertEqual(self.send_raw_request.call_count, 3)
+
+    def test_collect_no_wait_sanitizes_operation_url(self):
+        base = "https://management.example.com/providers/Microsoft.EdgeOperator/locations/local/operationStatuses/op1*ABC123"
+        for query, expected in (
+            ("?api-version=2026-06-01-preview&sig=secret&token=secret#fragment",
+             "?api-version=2026-06-01-preview"),
+            ("?sig=secret", "?api-version=" + API_VERSION),
+        ):
+            for body in (None, {"properties": {"resourceId": JOB_RESOURCE_ID}}):
+                with self.subTest(query=query, body=body):
+                    accepted = _response(body, {"Azure-AsyncOperation": base + query})
+                    if body is None:
+                        accepted.content = b"null"
+                    self.send_raw_request.reset_mock(side_effect=True)
+                    self.send_raw_request.return_value = accepted
+
+                    result = collect_logs(
+                        self.cmd, "2026-01-01T00:00:00Z", "2026-01-02T00:00:00Z", no_wait=True,
+                    )
+
+                    self.assertEqual(result, {"status": "Accepted", "operationStatusUrl": base + expected})
+                    self.send_raw_request.assert_called_once()
+                    accepted.json.assert_not_called()
+                    self.sleep.assert_not_called()
+
+    def test_collect_no_wait_requires_operation_url(self):
+        self.send_raw_request.return_value = _response()
+        with self.assertRaisesRegex(AzureResponseError, "Azure-AsyncOperation"):
+            collect_logs(self.cmd, "2026-01-01T00:00:00Z", "2026-01-02T00:00:00Z", no_wait=True)
         self.send_raw_request.assert_called_once()
         self.sleep.assert_not_called()
-        self.assertNotIn("filterRoles", self._sent_body())
+
+    def test_cli_returns_completed_job_or_acceptance(self):
+        from azure.cli.core import AzCli, MainCommandsLoader
+        from azure.cli.core.commands import AzCliCommandInvoker
+        from azure.cli.core.parser import AzCliCommandParser
+        from azure.cli.core._help import AzCliHelp
+        from azure.cli.core._output import AzOutputProducer
+        from azext_edgeoperator import AldoCommandsLoader
+
+        class LocalCommandsLoader(MainCommandsLoader):
+            def load_command_table(self, args):
+                loader = AldoCommandsLoader(self.cli_ctx)
+                self.command_table.update(loader.load_command_table(args))
+                self.cmd_to_loader_map = {name: [loader] for name in self.command_table}
+                return self.command_table
+
+        for command in ("collect", "collect-indirect"):
+            for no_wait in (False, True):
+                with self.subTest(command=command, no_wait=no_wait), \
+                        tempfile.TemporaryDirectory(prefix="aldo-cli-test-") as config:
+                    cli = AzCli(
+                        cli_name="az", config_dir=config, config_env_var_prefix="AZURE",
+                        commands_loader_cls=LocalCommandsLoader, invocation_cls=AzCliCommandInvoker,
+                        parser_cls=AzCliCommandParser, output_cls=AzOutputProducer, help_cls=AzCliHelp,
+                    )
+                    cli.cloud.endpoints.resource_manager = "https://management.example.com/"
+                    self.send_raw_request.reset_mock()
+                    self.sleep.reset_mock()
+                    job = self._completed_collection()
+                    args = [
+                        "aldo", "log-collection", command,
+                        "--from-date", "2026-01-01T00:00:00Z", "--to-date", "2026-01-02T00:00:00Z",
+                        "--output", "json",
+                    ]
+                    if command == "collect-indirect":
+                        args.extend(["--save-to-path", "C:\\Logs"])
+                    output = io.StringIO()
+
+                    if no_wait:
+                        args.append("--no-wait")
+                        self.assertEqual(cli.invoke(args, out_file=output), 0)
+                        self.assertEqual(json.loads(output.getvalue()), {
+                            "status": "Accepted", "operationStatusUrl": STATUS_URL.split("&")[0],
+                        })
+                        self.send_raw_request.assert_called_once()
+                        self.sleep.assert_not_called()
+                        self.send_raw_request.reset_mock()
+                        self.send_raw_request.side_effect = [
+                            _response({"status": "Running"}, {"Retry-After": "2"}),
+                            _response({"status": "Succeeded", "properties": {"resourceId": JOB_RESOURCE_ID}}),
+                            _response(job),
+                        ]
+                        output = io.StringIO()
+                        self.assertEqual(cli.invoke([
+                            "aldo", "log-collection", "wait", "--operation-status-url",
+                            STATUS_URL.split("&")[0], "--output", "json",
+                        ], out_file=output), 0)
+                        self.assertEqual(json.loads(output.getvalue()), job)
+                        self.assertEqual(self.send_raw_request.call_count, 3)
+                        self.sleep.assert_called_once_with(2)
+                        continue
+
+                    self.assertEqual(cli.invoke(args, out_file=output), 0)
+
+                    self.assertEqual(json.loads(output.getvalue()), job)
+                    self.assertNotIn(STATUS_URL, output.getvalue())
+                    self.assertEqual(self.send_raw_request.call_count, 3)
+                    self.assertEqual(self.send_raw_request.call_args_list[1].args[1:], ("GET", STATUS_URL))
+                    self.sleep.assert_called_once_with(5)
+                    self.send_raw_request.reset_mock(side_effect=True)
+                    self.send_raw_request.return_value = _response(job)
+                    output = io.StringIO()
+                    self.assertEqual(cli.invoke([
+                        "aldo", "log-collection", "wait", "--job-id", JOB_ID, "--created",
+                    ], out_file=output), 0)
+                    self.send_raw_request.assert_called_once()
+
+    def test_wait_operation_uses_active_cloud_and_preserves_operation_name(self):
+        operation_url = (
+            "https://armmanagement.example.com/providers/Microsoft.EdgeOperator/locations/local/"
+            "operationStatuses/op1*ABC123?api-version=2026-06-01-preview&sig=secret"
+        )
+        job = {"id": JOB_RESOURCE_ID, "name": JOB_ID}
+        self.send_raw_request.side_effect = [
+            _response({"status": "Running"}, {"Retry-After": "7"}),
+            _response({
+                "status": "Succeeded", "resourceId": "/not-the-collection",
+                "properties": {"resourceId": JOB_RESOURCE_ID},
+            }),
+            _response(job),
+        ]
+        result = wait_log_collection(self.cmd, operation_status_url=operation_url)
+        expected = operation_url.replace("armmanagement.example.com", "management.example.com").split("&")[0]
+        self.assertEqual(result, job)
+        self.assertEqual(self.send_raw_request.call_args_list, [
+            call(self.cli_ctx, "GET", expected), call(self.cli_ctx, "GET", expected),
+            call(self.cli_ctx, "GET", JOB_RESOURCE_ID + "?api-version=" + API_VERSION),
+        ])
+        self.sleep.assert_called_once_with(7)
+
+    def test_wait_operation_reports_failures_and_missing_results(self):
+        for operation, message in (
+            ({"status": "Failed", "error": {"code": "CollectionFailed", "message": "Disk full."}}, "Disk full"),
+            ({"status": "Canceled"}, "Canceled"),
+            ({"status": "Succeeded"}, "properties.resourceId"),
+            (None, "did not contain a status"),
+        ):
+            with self.subTest(operation=operation):
+                self.send_raw_request.reset_mock(side_effect=True)
+                self.send_raw_request.return_value = _response(operation)
+                with self.assertRaisesRegex(AzureResponseError, message):
+                    wait_log_collection(self.cmd, operation_status_url=STATUS_URL)
+                self.send_raw_request.assert_called_once()
+
+    def test_wait_validates_arguments_before_requesting(self):
+        for args, error in (
+            ({}, RequiredArgumentMissingError),
+            ({"job_id": JOB_ID, "operation_status_url": STATUS_URL}, MutuallyExclusiveArgumentError),
+            ({"operation_status_url": STATUS_URL, "created": True}, MutuallyExclusiveArgumentError),
+            ({"operation_status_url": STATUS_URL, "timeout": 0}, InvalidArgumentValueError),
+            ({"operation_status_url": STATUS_URL, "interval": 0}, InvalidArgumentValueError),
+            ({"operation_status_url": "http://example.com/anything"}, InvalidArgumentValueError),
+            ({"operation_status_url": "https://example.com/subscriptions/test"}, InvalidArgumentValueError),
+        ):
+            with self.subTest(args=args), self.assertRaises(error):
+                wait_log_collection(self.cmd, **args)
+        self.send_raw_request.assert_not_called()
+
+    @patch("azext_edgeoperator.custom.time.monotonic", side_effect=[0, 0, 2])
+    def test_wait_operation_timeout(self, _):
+        self.send_raw_request.return_value = _response({"status": "Running"})
+        with self.assertRaisesRegex(AzureResponseError, "timed out"):
+            wait_log_collection(self.cmd, operation_status_url=STATUS_URL, timeout=1)
+        self.send_raw_request.assert_called_once()
+        self.cli_ctx.get_progress_controller.return_value.end.assert_called_once()
+
+    def test_wait_operation_interval_override(self):
+        self.send_raw_request.side_effect = [
+            _response({"status": "Running"}, {"Retry-After": "7"}),
+            _response({"status": "Succeeded", "properties": {"resourceId": JOB_RESOURCE_ID}}),
+            _response({"name": JOB_ID}),
+        ]
+        wait_log_collection(self.cmd, operation_status_url=STATUS_URL, interval=3)
+        self.sleep.assert_called_once_with(3)
+
+    def test_wait_existing_job_preserves_created_condition(self):
+        self.send_raw_request.return_value = _response({"properties": {"provisioningState": "Succeeded"}})
+        result = wait_log_collection(self.cmd, job_id=JOB_ID, created=True)
+        self.assertIsNone(result)
+        self.send_raw_request.assert_called_once_with(
+            self.cli_ctx, "GET", PROVIDER_URL + "logCollections/" + JOB_ID + "?api-version=" + API_VERSION,
+        )
 
     def test_collect_raises_when_operation_fails(self):
         self.send_raw_request.side_effect = [
@@ -127,16 +338,25 @@ class LogCollectionCustomTest(TestCase):
         with self.assertRaisesRegex(AzureResponseError, "Azure-AsyncOperation"):
             collect_logs(self.cmd, "2026-01-01T00:00:00Z", "2026-01-02T00:00:00Z")
 
-    def test_collect_returns_operation_status_without_resource_id(self):
+    def test_collect_raises_without_result_resource_id(self):
         operation = {"status": "Succeeded"}
         self.send_raw_request.side_effect = [self._accepted(), _response(operation)]
 
-        self.assertEqual(collect_logs(self.cmd, "2026-01-01T00:00:00Z", "2026-01-02T00:00:00Z"), operation)
+        with self.assertRaisesRegex(AzureResponseError, "properties.resourceId"):
+            collect_logs(self.cmd, "2026-01-01T00:00:00Z", "2026-01-02T00:00:00Z")
+        self.assertEqual(self.send_raw_request.call_count, 2)
+
+    def test_collect_raises_when_operation_is_canceled(self):
+        self.send_raw_request.side_effect = [self._accepted(), _response({"status": "Canceled"})]
+
+        with self.assertRaisesRegex(AzureResponseError, "Canceled"):
+            collect_logs(self.cmd, "2026-01-01T00:00:00Z", "2026-01-02T00:00:00Z")
+        self.assertEqual(self.send_raw_request.call_count, 2)
 
     def test_collect_normalizes_dates_to_utc(self):
-        self.send_raw_request.return_value = self._accepted()
+        self._completed_collection()
 
-        collect_logs(self.cmd, "2026-01-01T02:00:00+02:00", "2026-01-02T00:00:00", no_wait=True)
+        collect_logs(self.cmd, "2026-01-01T02:00:00+02:00", "2026-01-02T00:00:00")
 
         self.assertEqual(self._sent_body(), {
             "fromDate": "2026-01-01T00:00:00Z",
@@ -155,14 +375,15 @@ class LogCollectionCustomTest(TestCase):
         self.send_raw_request.assert_not_called()
 
     def test_collect_indirect_sends_destination_and_credentials(self):
-        self.send_raw_request.return_value = self._accepted()
+        job = self._completed_collection()
 
-        collect_logs_indirect(
+        result = collect_logs_indirect(
             self.cmd, "2026-01-01T00:00:00Z", "2026-01-02T00:00:00Z", "C:\\Logs\\IndirectCollection",
-            username="operator", password="secret", filter_roles=["Agents"], no_wait=True
+            username="operator", password="secret", filter_roles=["Agents"]
         )
 
-        self.assertEqual(self.send_raw_request.call_args.args[2],
+        self.assertEqual(result, job)
+        self.assertEqual(self.send_raw_request.call_args_list[0].args[2],
                          PROVIDER_URL + "collectLogsIndirect?api-version=" + API_VERSION)
         self.assertEqual(self._sent_body(), {
             "fromDate": "2026-01-01T00:00:00Z",
@@ -174,19 +395,38 @@ class LogCollectionCustomTest(TestCase):
         })
 
     def test_collect_indirect_omits_credentials_when_not_given(self):
-        self.send_raw_request.return_value = self._accepted()
+        self._completed_collection()
 
-        collect_logs_indirect(self.cmd, "2026-01-01T00:00:00Z", "2026-01-02T00:00:00Z", "C:\\Logs", no_wait=True)
+        collect_logs_indirect(self.cmd, "2026-01-01T00:00:00Z", "2026-01-02T00:00:00Z", "C:\\Logs")
 
         self.assertNotIn("userName", self._sent_body())
         self.assertNotIn("userPassword", self._sent_body())
 
+    def test_collect_indirect_waits_and_fetches_exact_result(self):
+        job = {"id": JOB_RESOURCE_ID, "name": JOB_ID, "properties": {"provisioningState": "Succeeded"}}
+        self.send_raw_request.side_effect = [
+            self._accepted(),
+            _response({"status": "Succeeded", "properties": {"resourceId": JOB_RESOURCE_ID}}),
+            _response(job),
+        ]
+
+        result = collect_logs_indirect(
+            self.cmd, "2026-01-01T00:00:00Z", "2026-01-02T00:00:00Z", "C:\\Logs",
+        )
+
+        self.assertEqual(result, job)
+        self.assertEqual(self.send_raw_request.call_count, 3)
+        self.assertEqual(self.send_raw_request.call_args_list[1:], [
+            call(self.cli_ctx, "GET", STATUS_URL),
+            call(self.cli_ctx, "GET", JOB_RESOURCE_ID + "?api-version=" + API_VERSION),
+        ])
+
     @patch("knack.prompting.prompt_pass", return_value="prompted")
     def test_collect_indirect_prompts_for_missing_password(self, prompt_pass):
-        self.send_raw_request.return_value = self._accepted()
+        self._completed_collection()
 
         collect_logs_indirect(self.cmd, "2026-01-01T00:00:00Z", "2026-01-02T00:00:00Z", "C:\\Logs",
-                              username="operator", no_wait=True)
+                              username="operator")
 
         prompt_pass.assert_called_once()
         self.assertEqual(self._sent_body()["userPassword"], "prompted")
@@ -259,9 +499,10 @@ class LogCollectionCustomTest(TestCase):
             call("aldo log-collection"),
         ])
         group = loader.command_group.return_value.__enter__.return_value
-        group.custom_command.assert_any_call("collect", "collect_logs", supports_no_wait=True)
-        group.custom_command.assert_any_call("collect-indirect", "collect_logs_indirect", supports_no_wait=True)
+        group.custom_command.assert_any_call("collect", "collect_logs")
+        group.custom_command.assert_any_call("collect-indirect", "collect_logs_indirect")
         group.custom_show_command.assert_any_call("show", "show_log_collection")
         group.custom_command.assert_any_call("list", "list_log_collections",
                                             table_transformer=transform_log_collection_list)
-        group.custom_wait_command.assert_called_once_with("wait", "show_log_collection")
+        group.custom_command.assert_any_call("wait", "wait_log_collection")
+        group.custom_wait_command.assert_not_called()

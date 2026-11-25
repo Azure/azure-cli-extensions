@@ -18,8 +18,8 @@ def load_command_table(self, _):
         group.custom_command("create", "create_system_configuration")
 
     with self.command_group("aldo log-collection") as group:
-        group.custom_command("collect", "collect_logs", supports_no_wait=True)
-        group.custom_command("collect-indirect", "collect_logs_indirect", supports_no_wait=True)
+        group.custom_command("collect", "collect_logs")
+        group.custom_command("collect-indirect", "collect_logs_indirect")
         group.custom_show_command("show", "show_log_collection")
         group.custom_command("list", "list_log_collections", table_transformer=transform_log_collection_list)
-        group.custom_wait_command("wait", "show_log_collection")
+        group.custom_command("wait", "wait_log_collection")

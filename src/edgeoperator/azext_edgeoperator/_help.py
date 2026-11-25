@@ -73,24 +73,30 @@ helps["aldo log-collection collect"] = """
     type: command
     short-summary: Start collecting logs for a time range.
     long-summary: >-
-        Starts a log collection job and, unless --no-wait is used, waits for it to finish and returns the job.
-        Collection can take a long time. With --no-wait the job ID is not returned; use
-        'az aldo log-collection list' to find the job and 'az aldo log-collection wait' to wait for it.
+        Starts a log collection job, waits for it to finish, and returns the job.
+        Use the returned name with 'az aldo log-collection show --job-id <job ID>' to view the result later.
+        With --no-wait, returns status Accepted and operationStatusUrl.
+        Pass that URL to 'az aldo log-collection wait --operation-status-url <URL>'
+        to wait for completion and return the job.
     examples:
       - name: Collect logs for one day and wait for the job to finish.
         text: az aldo log-collection collect --from-date 2026-01-01T00:00:00Z --to-date 2026-01-02T00:00:00Z
-      - name: Collect logs from specific roles without waiting.
+      - name: Collect logs from specific roles and wait for completion.
         text: >-
             az aldo log-collection collect --from-date 2026-01-01T00:00:00Z --to-date 2026-01-02T00:00:00Z
-            --filter-roles Agents Oplets --no-wait
+            --filter-roles Agents Oplets
 """
 
 helps["aldo log-collection collect-indirect"] = """
     type: command
     short-summary: Start collecting logs to a destination path.
     long-summary: >-
-        Starts a log collection job that saves logs to --save-to-path and, unless --no-wait is used, waits for it
+        Starts a log collection job that saves logs to --save-to-path, waits for it
         to finish and returns the job. If --username is given without --password, you are prompted for the password.
+        Use the returned name with 'az aldo log-collection show --job-id <job ID>' to view the result later.
+        With --no-wait, returns status Accepted and operationStatusUrl.
+        Pass that URL to 'az aldo log-collection wait --operation-status-url <URL>'
+        to wait for completion and return the job.
     examples:
       - name: Collect logs to a destination path that requires credentials.
         text: >-
@@ -101,6 +107,8 @@ helps["aldo log-collection collect-indirect"] = """
 helps["aldo log-collection show"] = """
     type: command
     short-summary: Show a log collection job.
+    long-summary: >-
+        Pass the job's name returned by collect, wait, show, or list to --job-id.
     examples:
       - name: Show a log collection job by its GUID.
         text: az aldo log-collection show --job-id 11111111-1111-1111-1111-111111111111
@@ -119,7 +127,12 @@ helps["aldo log-collection list"] = """
 helps["aldo log-collection wait"] = """
     type: command
     short-summary: Place the CLI in a waiting state until a log collection job finishes.
+    long-summary: >-
+        Pass operationStatusUrl from collect --no-wait or collect-indirect --no-wait to --operation-status-url.
+        Waits for completion and returns the collection; reports failed or canceled operations.
+        Use the same cloud and subscription as the collection request.
+        Use the returned name with show --job-id to view the result later.
     examples:
-      - name: Wait until a log collection job succeeds.
-        text: az aldo log-collection wait --job-id 11111111-1111-1111-1111-111111111111 --created
+      - name: Wait for a collection submitted with --no-wait and return the result.
+        text: az aldo log-collection wait --operation-status-url "<operationStatusUrl>"
 """

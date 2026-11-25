@@ -11,9 +11,11 @@ from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import RecordingProcessor
 
+from ._recording_processors import ArmEndpointNormalizer, PrivateAuthRequestFilter
+
 # Fixed values keep playback requests identical to the recording. Adjust them before recording live.
-FROM_DATE = "2026-01-01T00:00:00Z"
-TO_DATE = "2026-01-01T01:00:00Z"
+FROM_DATE = "2026-11-10T19:09:00Z"
+TO_DATE = "2026-11-10T19:10:00Z"
 SAVE_TO_PATH = "C:\\Logs\\IndirectCollection"
 PASSWORD_PLACEHOLDER = "recording-placeholder"
 _JOB_NAME = re.compile(r"/logCollections/([0-9a-fA-F-]{36})$")
@@ -58,8 +60,11 @@ class LogCollectionScenarioTest(ScenarioTest):
         replay_processors = kwargs.pop("replay_processors", [])
         super().__init__(
             method_name,
-            recording_processors=[OperationStatusUrlScrubber(), PasswordBodyScrubber()] + recording_processors,
-            replay_processors=[OperationStatusUrlScrubber()] + replay_processors,
+            recording_processors=[
+                PrivateAuthRequestFilter(), ArmEndpointNormalizer(),
+                OperationStatusUrlScrubber(), PasswordBodyScrubber(),
+            ] + recording_processors,
+            replay_processors=[ArmEndpointNormalizer(), OperationStatusUrlScrubber()] + replay_processors,
             **kwargs
         )
 
@@ -86,6 +91,7 @@ class LogCollectionScenarioTest(ScenarioTest):
         ).get_output_in_json()
         self.kwargs["job"] = self._assert_job(job)
 
+        self.cmd("aldo log-collection wait --job-id {job} --created --interval 5 --timeout 600")
         self.cmd("aldo log-collection show --job-id {job}", checks=[
             self.check("name", "{job}"),
             self.check("properties.provisioningState", "Succeeded"),
