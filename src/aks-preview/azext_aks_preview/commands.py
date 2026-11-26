@@ -226,9 +226,6 @@ def load_command_table(self, _):
             "aks_get_versions",
             table_transformer=aks_versions_table_format,
         )
-        # aks-preview only
-        g.custom_command("kollect", "aks_kollect")
-        g.custom_command("kanalyze", "aks_kanalyze")
         g.custom_command(
             "operation-abort", "aks_operation_abort", supports_no_wait=True
         )

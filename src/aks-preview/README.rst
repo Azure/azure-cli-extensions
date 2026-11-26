@@ -14,6 +14,13 @@ Install this extension using the following CLI command `az extension add --name 
 
 Remove this extension using the following CLI command `az extension remove --name aks-preview`.
 
+Retired diagnostics integration
+==============================
+
+The AKS Periscope integration, including ``az aks kollect`` and ``az aks kanalyze``,
+has been removed from this extension because the upstream project is archived.
+Existing Periscope deployments are not removed from clusters.
+
 Upgrade Insights
 ================
 

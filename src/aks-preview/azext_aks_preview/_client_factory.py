@@ -101,10 +101,6 @@ def get_container_registry_client(cli_ctx, subscription_id=None):
                                    subscription_id=subscription_id)
 
 
-def get_storage_client(cli_ctx, subscription_id=None):
-    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_STORAGE, subscription_id=subscription_id)
-
-
 def get_auth_management_client(cli_ctx, scope=None, **_):
     import re
 
