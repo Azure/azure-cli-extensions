@@ -374,6 +374,35 @@ class AutomationScenarioTest(ScenarioTest):
         self.cmd('automation runtime-environment package delete -g {rg} --automation-account-name {account} --runtime-environment-name {rt} --name {rt_package} -y')
         self.cmd('automation runtime-environment delete -g {rg} --automation-account-name {account} --name {rt} -y')
 
+
+    # The built-in environment names contain periods (.), but
+    # periods are otherwise not allowed in environment names.
+    # Only test the subcommands which are valid for existing
+    # environments, as these are the only ones which will contain
+    # periods.
+    @ResourceGroupPreparer(name_prefix='cli_test_automation_runtime_environment_builtin_', location='westus2')
+    @AllowLargeResponse()
+    def test_automation_runtime_environment_builtin(self, resource_group):
+        self.kwargs.update({
+            'account': self.create_random_name('account', 15),
+            'rt': self.create_random_name('rt-3.10', 15),
+            'rt_package': self.create_random_name('rt-package', 15),
+            'rt_package_uri': 'https://teststorage.blob.core.windows.net/dsccomposite/OmsCompositeResources.zip',
+            'rt_package_uri2': 'https://teststorage.blob.core.windows.net/mycontainer/MyModule.zip',
+            'location': 'westus2',
+        })
+
+        self.cmd('automation runtime-environment show -g {rg} --automation-account-name {account} --name {rt}', checks=[
+            self.check('name', '{rt}'),
+        ])
+
+        self.cmd('automation runtime-environment package list -g {rg} --automation-account-name {account} --runtime-environment-name {rt}', checks=[
+            self.check('length(@)', 1)
+        ])
+        self.cmd('automation runtime-environment package show -g {rg} --automation-account-name {account} --runtime-environment-name {rt} --name {rt_package}', checks=[
+            self.check('name', '{rt_package}')
+        ])
+
     @ResourceGroupPreparer(name_prefix='cli_test_automation_source_control_', location='westus2')
     @AllowLargeResponse()
     def test_automation_source_control(self, resource_group):
