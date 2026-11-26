@@ -153,6 +153,8 @@ class LinuxPayloadFaultTests(unittest.TestCase):
         write(root, 'etc/default/grub', 'GRUB_CMDLINE_LINUX="nvme_core.io_timeout=240"\n')
         write(root, 'etc/fstab', fstab)
         write(root, 'lib/modules/guest-kernel/modules.builtin', builtin)
+        write(root, 'boot/vmlinuz-guest-kernel', 'fixture kernel image\n')
+        write(root, 'kernel-image-files', '/boot/vmlinuz-guest-kernel\n')
         image = ('initrd.img-guest-kernel' if distro in ('ubuntu', 'debian') else
                  'initrd-guest-kernel' if distro in ('suse', 'sles') else 'initramfs-guest-kernel.img')
         write(root, 'boot/' + image, listing)
@@ -163,9 +165,15 @@ class LinuxPayloadFaultTests(unittest.TestCase):
             'lsinitramfs': 'cat "$1"\n', 'lsinitrd': 'cat "$1"\n',
             'blkid': 'printf "%s\\n" "$*" >> /commands.log\necho correct-uuid\n',
             'update-initramfs': 'echo rebuild >> /commands.log\n'
-                               'printf "%s\\n" kernel/drivers/nvme/host/nvme.ko '
-                               'kernel/drivers/pci/host/pci-hyperv.ko > /boot/initrd.img-guest-kernel\n',
+                                'printf "%s\\n" kernel/drivers/nvme/host/nvme.ko '
+                                'kernel/drivers/pci/host/pci-hyperv.ko > /boot/initrd.img-guest-kernel\n',
             'dracut': 'exit 42\n',
+            'rpm': 'cat /kernel-image-files\n',
+            'dpkg-query': 'case "$1" in\n'
+                          '  -W) echo "installed linux-image-fixture" ;;\n'
+                          '  -L) cat /kernel-image-files ;;\n'
+                          '  *) exit 2 ;;\n'
+                          'esac\n',
         }.items():
             write(root, 'bin/' + name, '#!/bin/bash\n' + body)
             (root / 'bin' / name).chmod(0o755)
@@ -234,8 +242,85 @@ class LinuxPayloadFaultTests(unittest.TestCase):
     def test_every_installed_kernel_is_verified(self):
         root, _ = self.guest()
         write(root, 'lib/modules/older-kernel/modules.builtin', '')
+        write(root, 'boot/vmlinuz-older-kernel', 'fixture kernel image\n')
         write(root, 'boot/initrd.img-older-kernel', 'kernel/drivers/nvme/host/nvme.ko\n')
         self.assert_failed(self.run_guest(root, ''))
+
+    def test_module_only_directory_preserves_check_fix_and_dryrun(self):
+        old = '5.14.0-687.2.1.el9_8.x86_64'
+        for mode, marker in (('', 'READY'), ('-fix', 'READY'), ('-dryrun', 'DRYRUN')):
+            with self.subTest(mode=mode):
+                root, image = self.guest(distro='rhel')
+                module = f'lib/modules/{old}/extra/kmod-kvdo/vdo/kvdo.ko'
+                write(root, module, 'package-owned module fixture\n')
+                before = ((root / 'etc/fstab').read_bytes(), image.read_bytes())
+                result = self.run_guest(root, mode)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn('NVME_PREPARATION_RESULT:' + marker, result.stdout)
+                self.assertNotIn('Checking NVMe and Hyper-V PCI boot drivers for ' + old, result.stdout)
+                self.assertEqual((root / module).read_text(), 'package-owned module fixture\n')
+                if mode != '-fix':
+                    self.assertEqual(before, ((root / 'etc/fstab').read_bytes(), image.read_bytes()))
+
+    def test_multiple_ready_installed_kernels_pass(self):
+        root, _ = self.guest(distro='rhel')
+        write(root, 'lib/modules/older-kernel/modules.builtin', '')
+        write(root, 'boot/vmlinuz-older-kernel', 'fixture kernel image\n')
+        write(root, 'boot/initramfs-older-kernel.img',
+              'kernel/drivers/nvme/host/nvme.ko\nkernel/drivers/pci/host/pci-hyperv.ko\n')
+        result = self.run_guest(root, '')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        for kernel in ('guest-kernel', 'older-kernel'):
+            self.assertIn('Required boot drivers verified for ' + kernel + '.', result.stdout)
+
+    def test_missing_package_or_boot_referenced_image_is_not_skipped(self):
+        for reference in ('package', 'boot'):
+            with self.subTest(reference=reference):
+                root, _ = self.guest(distro='rhel')
+                write(root, 'lib/modules/older-kernel/modules.builtin', '')
+                if reference == 'package':
+                    write(root, 'kernel-image-files',
+                          '/boot/vmlinuz-guest-kernel\n/lib/modules/older-kernel/vmlinuz\n')
+                else:
+                    write(root, 'boot/loader/entries/older.conf',
+                          'version older-kernel\nlinux /vmlinuz-older-kernel\n')
+                result = self.run_guest(root, '')
+                self.assert_failed(result)
+                self.assertIn('No usable boot image found for kernel older-kernel.', result.stdout)
+
+    def test_kernel_package_query_failure_prevents_mutation(self):
+        for distro, command, body in (
+                ('rhel', 'rpm', '#!/bin/bash\necho RPM_QUERY_FAILED >&2\nexit 42\n'),
+                ('ubuntu', 'dpkg-query', '#!/bin/bash\n'
+                 'if [ "$1" = -W ]; then echo "installed linux-image-fixture"; '
+                 'else echo DPKG_QUERY_FAILED >&2; exit 42; fi\n')):
+            with self.subTest(distro=distro):
+                root, image = self.guest(distro=distro, fstab='/dev/sdaa1 / ext4 defaults 0 1\n')
+                before = ((root / 'etc/fstab').read_bytes(), image.read_bytes())
+                write(root, 'bin/' + command, body)
+                result = self.run_guest(root)
+                self.assert_failed(result)
+                self.assertIn('[ERROR] Cannot query', result.stderr)
+                self.assertEqual(before, ((root / 'etc/fstab').read_bytes(), image.read_bytes()))
+
+    def test_module_only_inventory_is_not_ready(self):
+        root, _ = self.guest(distro='rhel')
+        (root / 'boot/vmlinuz-guest-kernel').unlink()
+        write(root, 'kernel-image-files', '')
+        result = self.run_guest(root, '')
+        self.assert_failed(result)
+        self.assertIn('No installed or boot-referenced guest kernels found.', result.stderr)
+
+    def test_package_debug_files_and_rescue_aliases_are_not_kernels(self):
+        root, _ = self.guest(distro='rhel')
+        write(root, 'kernel-image-files', '/boot/vmlinuz-guest-kernel\n'
+              '/usr/lib/debug/boot/vmlinux-guest-kernel.debug\n'
+              '/usr/src/kernels/headers/vmlinuz-header\n')
+        write(root, 'boot/vmlinuz-0-rescue-fixture', 'rescue image alias\n')
+        write(root, 'boot/loader/entries/rescue.conf', 'linux /vmlinuz-0-rescue-fixture\n')
+        result = self.run_guest(root, '')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('NVME_PREPARATION_RESULT:READY', result.stdout)
 
     def test_multiletter_device_uses_uuid_only_blkid_output(self):
         root, _ = self.guest(fstab='/dev/sdaa1 / ext4 defaults 0 1\n')

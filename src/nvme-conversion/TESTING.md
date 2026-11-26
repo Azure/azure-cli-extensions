@@ -1,5 +1,56 @@
 # NVMe Conversion Extension — Live Test Tracker
 
+## Linux kernel-inventory regression coverage
+
+The prepared Linux script derives kernel releases from installed package files
+and boot-image/GRUB/BLS references. The package-owned RHEL `kmod-kvdo` directory
+is not another installed kernel. Genuine missing images, missing module
+inventories, or failed package queries still block readiness. Existing check,
+fix, dry-run, driver-rebuild, fstab, and EFI behavior remains covered.
+
+From `src/nvme-conversion`, run on Linux as root for the disposable chroot tests:
+
+```bash
+python3 -B -m pytest \
+  azext_nvme_conversion/tests/latest/test_readiness_failures.py \
+  azext_nvme_conversion/tests/latest/test_linux_efi_timeout.py \
+  -q -p no:cacheprovider
+```
+
+Result for the prepared patch: **42 passed, 51 subtests passed**.
+The regressions cover the extra module directory in check/fix/dry-run, multiple
+real kernels, package-listed/boot-referenced missing images, package-query
+failures, debug/header files and rescue aliases. The fixtures do not make Azure
+calls, mount real disks, or install packages.
+
+### Style and package verification
+
+Completed validation:
+
+```bash
+python3 -B -m flake8 --max-line-length=120 \
+  --ignore=E501,W503,W504,C901 \
+  azext_nvme_conversion/_linux_script.py \
+  azext_nvme_conversion/tests/latest/test_readiness_failures.py
+python3 -B setup.py bdist_wheel
+git diff --check
+```
+
+Results: **changed-file flake8 passed; preview wheel build passed; whitespace
+check passed**. The exact embedded Bash also passed `bash -n`, and changed
+documentation relative links were validated. A fixture continuation indentation
+was normalized without changing its command text.
+
+Validation limits are explicit: repository discovery in `azdev style` stalled
+and was stopped, so that attempt is not counted as passed. The broader documented
+full-package flake8 command reports `F401` for the unchanged side-effect help
+registration import in `__init__.py`; its content was verified against the PR
+baseline and was not changed as part of this fix. No lint rules, registered
+repositories, installed tools, or release metadata were modified.
+
+The older live records below are historical and are not acceptance evidence for
+this newly changed payload.
+
 ## VM-wide ADE exclusion regression update (2026-11-24)
 
 The control-plane preflight now rejects ADE on OS or data disks, custom-named

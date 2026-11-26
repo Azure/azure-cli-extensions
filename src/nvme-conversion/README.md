@@ -4,6 +4,9 @@ Convert Azure Virtual Machines between SCSI and NVMe disk controllers.
 
 For architecture, design decisions, and development setup, see [DEVELOPMENT.md](DEVELOPMENT.md).
 
+For readiness failure analysis, safety invariants, and release-scope rationale,
+see [READINESS-CHANGE-RATIONALE.md](READINESS-CHANGE-RATIONALE.md).
+
 ## Why use this extension?
 
 The built-in `az vm update --disk-controller-type` only sets the controller property on the VM — one step out of eight required for a safe conversion. This extension orchestrates the full lifecycle:
@@ -48,6 +51,12 @@ installed kernel, using its distribution-specific boot images. Empty inventories
 failed inspections/rebuilds and remaining errors block conversion, including with
 `--fix-os`. Multi-letter SCSI names are supported; UUID queries do not depend on
 `blkid` field order. Unresolved legacy fstab entries fail without replacing fstab.
+
+Kernel inventory comes from installed kernel package files and boot-image/GRUB/BLS
+references, not every `/lib/modules` directory. Module-only folders such as those
+populated by RHEL's `kmod-kvdo` are not additional kernels. Package-query failures
+and missing images for genuine installed/boot-referenced kernels remain blocking;
+check/fix/dry-run behavior is preserved.
 
 Windows preparation verifies `stornvme` and `vpci` in every installed ControlSet.
 Fixes wait for `sc.exe`, check its exit code and recheck registry values. Both

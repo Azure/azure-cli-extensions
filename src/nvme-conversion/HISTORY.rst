@@ -5,6 +5,7 @@ Release History
 
 1.0.0b1
 ++++++
+* Identify Linux kernels from installed package and boot references; ignore module-only directories without skipping genuine missing boot images or changing check/fix/dry-run behavior.
 * Reject incomplete or failed guest preparation; verify NVMe/Hyper-V PCI modules per installed Linux kernel and stornvme/vpci across Windows ControlSets.
 * Await Windows driver fixes, reject Windows dry-run before mutation, and require confirmed VM deallocation before disk/controller writes.
 * Correct fallback udev dollar escaping and multi-letter SCSI device UUID resolution; preserve fstab on unresolved entries.
