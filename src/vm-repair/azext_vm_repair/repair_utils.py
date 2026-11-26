@@ -577,6 +577,9 @@ def _fetch_sku_disk_controller_types(sku, location):
     return [part.strip() for part in raw.split(',') if part.strip()]
 
 
+NVME_ONLY_REPAIR_VM_WARNING = 'The repair VM size only supports NVMe. Repair scripts that select disks by the SCSI model string will not find the attached OS disk. Use --size to pick a size that supports SCSI, or verify the script handles NVMe.'
+
+
 def _select_repair_disk_controller_type(source_controller, supported_types, requested=None):
     """Select a repair VM controller while preserving existing SCSI-based repair scripts."""
     if requested:
@@ -588,7 +591,7 @@ def _select_repair_disk_controller_type(source_controller, supported_types, requ
     normalized_types = {controller.lower(): controller for controller in supported_types}
     if 'scsi' in normalized_types:
         return 'SCSI', 'info', 'Source VM uses the NVMe disk controller. Creating the repair VM with SCSI so repair scripts can enumerate the attached OS disk. Override with --disk-controller-type.'
-    return None, 'warning', 'The repair VM size only supports NVMe. Repair scripts that select disks by the SCSI model string will not find the attached OS disk. Use --size to pick a size that supports SCSI, or verify the script handles NVMe.'
+    return None, 'warning', NVME_ONLY_REPAIR_VM_WARNING
 
 
 def _fetch_disk_info(resource_group_name, disk_name):

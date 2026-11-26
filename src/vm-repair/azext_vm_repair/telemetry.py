@@ -27,7 +27,19 @@ def _resource_context_properties(os_family, vm_size, disk_controller_type,
     }
 
 
-def _track_command_telemetry(logger, command_name, parameters, status, message, error_message, error_stack_trace, duration, subscription_id, result_json, os_family=None, vm_size=None, disk_controller_type=None, repair_vm_disk_controller_type=None, hyperv_generation=None):
+def _quality_properties(invocation_id, failure_owner, has_diagnostic, warning_count,
+                        warning_codes, script_source):
+    return {
+        'invocation_id': invocation_id,
+        'failure_owner': failure_owner,
+        'has_diagnostic': has_diagnostic,
+        'warning_count': warning_count,
+        'warning_codes': json.dumps(warning_codes),
+        'script_source': script_source
+    }
+
+
+def _track_command_telemetry(logger, command_name, parameters, status, message, error_message, error_stack_trace, duration, subscription_id, result_json, os_family=None, vm_size=None, disk_controller_type=None, repair_vm_disk_controller_type=None, hyperv_generation=None, invocation_id=None, failure_owner=None, has_diagnostic=False, warning_count=0, warning_codes=None, script_source=None):
     try:
         properties = {
             'command_name': command_name,
@@ -50,6 +62,9 @@ def _track_command_telemetry(logger, command_name, parameters, status, message, 
                 'resetNicMode': 'legacy',
                 'postResetHealthy': 'unknown'
             })
+        properties.update(_quality_properties(
+            invocation_id, failure_owner, has_diagnostic, warning_count,
+            warning_codes or [], script_source))
         measurements = {'command_duration': duration}
         tc.track_event(command_name, properties, measurements)
         tc.flush()
@@ -57,7 +72,7 @@ def _track_command_telemetry(logger, command_name, parameters, status, message, 
         logger.error('Unexpected error sending telemetry with exception: %s', str(exception))
 
 
-def _track_run_command_telemetry(logger, command_name, parameters, status, message, error_message, error_stack_trace, duration, subscription_id, result_json, script_run_id, script_status, script_output, script_duration, os_family=None, vm_size=None, disk_controller_type=None, repair_vm_disk_controller_type=None, hyperv_generation=None):
+def _track_run_command_telemetry(logger, command_name, parameters, status, message, error_message, error_stack_trace, duration, subscription_id, result_json, script_run_id, script_status, script_output, script_duration, os_family=None, vm_size=None, disk_controller_type=None, repair_vm_disk_controller_type=None, hyperv_generation=None, invocation_id=None, failure_owner=None, has_diagnostic=False, warning_count=0, warning_codes=None, script_source=None):
     try:
         properties = {
             'command_name': command_name,
@@ -75,6 +90,9 @@ def _track_run_command_telemetry(logger, command_name, parameters, status, messa
         properties.update(_resource_context_properties(
             os_family, vm_size, disk_controller_type,
             repair_vm_disk_controller_type, hyperv_generation))
+        properties.update(_quality_properties(
+            invocation_id, failure_owner, has_diagnostic, warning_count,
+            warning_codes or [], script_source))
         measurements = {'command_duration': duration, 'script_duration': script_duration}
         tc.track_event(command_name, properties, measurements)
         tc.flush()
@@ -82,7 +100,7 @@ def _track_run_command_telemetry(logger, command_name, parameters, status, messa
         logger.error('Unexpected error sending telemetry with exception: %s', str(exception))
 
 
-def _track_command_telemetry_repair_and_restore(logger, command_name, status, message, error_message, error_stack_trace, duration, subscription_id, os_family=None, vm_size=None, disk_controller_type=None, repair_vm_disk_controller_type=None, hyperv_generation=None):
+def _track_command_telemetry_repair_and_restore(logger, command_name, status, message, error_message, error_stack_trace, duration, subscription_id, os_family=None, vm_size=None, disk_controller_type=None, repair_vm_disk_controller_type=None, hyperv_generation=None, invocation_id=None, failure_owner=None, has_diagnostic=False, warning_count=0, warning_codes=None, script_source=None):
     try:
         properties = {
             'command_name': command_name,
@@ -95,6 +113,9 @@ def _track_command_telemetry_repair_and_restore(logger, command_name, status, me
         properties.update(_resource_context_properties(
             os_family, vm_size, disk_controller_type,
             repair_vm_disk_controller_type, hyperv_generation))
+        properties.update(_quality_properties(
+            invocation_id, failure_owner, has_diagnostic, warning_count,
+            warning_codes or [], script_source))
         measurements = {'command_duration': duration}
         tc.track_event(command_name, properties, measurements)
         tc.flush()
