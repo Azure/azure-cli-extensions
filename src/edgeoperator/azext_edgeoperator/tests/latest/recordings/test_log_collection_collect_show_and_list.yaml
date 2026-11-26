@@ -1,0 +1,383 @@
+interactions:
+- request:
+    body: '{"fromDate": "2026-11-10T19:09:00Z", "toDate": "2026-11-10T19:10:00Z",
+      "filterRoles": ["Agents"]}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - aldo log-collection collect
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '97'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --from-date --to-date --filter-roles
+      User-Agent:
+      - python/3.14.9 (Windows-11-10.0.26300-SP0) AZURECLI/2.92.0
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/collectLogs?api-version=2026-06-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.EdgeOperator/locations/AUTONOMOUS/operationStatuses/a8817f5e-25db-458d-97f5-150d901168a4*598C0338595CF4E6F4CF8FAD1D9861B8F85ED772138A7F51E2EBF9BC38745E64?api-version=2026-06-01-preview
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Nov 2026 19:10:30 GMT
+      location:
+      - https://management.azure.com/providers/Microsoft.EdgeOperator/locations/AUTONOMOUS/operationStatuses/a8817f5e-25db-458d-97f5-150d901168a4*598C0338595CF4E6F4CF8FAD1D9861B8F85ED772138A7F51E2EBF9BC38745E64?api-version=2026-06-01-preview
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - P1D
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '2399'
+      x-ms-response-source:
+      - OperatorRPHost
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - aldo log-collection collect
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --from-date --to-date --filter-roles
+      User-Agent:
+      - python/3.14.9 (Windows-11-10.0.26300-SP0) AZURECLI/2.92.0
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.EdgeOperator/locations/AUTONOMOUS/operationStatuses/a8817f5e-25db-458d-97f5-150d901168a4*598C0338595CF4E6F4CF8FAD1D9861B8F85ED772138A7F51E2EBF9BC38745E64?api-version=2026-06-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.EdgeOperator/locations/AUTONOMOUS/operationStatuses/a8817f5e-25db-458d-97f5-150d901168a4*598C0338595CF4E6F4CF8FAD1D9861B8F85ED772138A7F51E2EBF9BC38745E64","name":"a8817f5e-25db-458d-97f5-150d901168a4*598C0338595CF4E6F4CF8FAD1D9861B8F85ED772138A7F51E2EBF9BC38745E64","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/","status":"Running","startTime":"2026-11-10T19:10:29.1853701Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.EdgeOperator/locations/AUTONOMOUS/operationStatuses/a8817f5e-25db-458d-97f5-150d901168a4*598C0338595CF4E6F4CF8FAD1D9861B8F85ED772138A7F51E2EBF9BC38745E64?api-version=2026-06-01-preview
+      content-length:
+      - '434'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Nov 2026 19:11:00 GMT
+      etag:
+      - '"0200f434-0000-2300-0000-6af36c260000"'
+      location:
+      - https://management.azure.com/providers/Microsoft.EdgeOperator/locations/AUTONOMOUS/operationStatuses/a8817f5e-25db-458d-97f5-150d901168a4*598C0338595CF4E6F4CF8FAD1D9861B8F85ED772138A7F51E2EBF9BC38745E64?api-version=2026-06-01-preview
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - aldo log-collection collect
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --from-date --to-date --filter-roles
+      User-Agent:
+      - python/3.14.9 (Windows-11-10.0.26300-SP0) AZURECLI/2.92.0
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.EdgeOperator/locations/AUTONOMOUS/operationStatuses/a8817f5e-25db-458d-97f5-150d901168a4*598C0338595CF4E6F4CF8FAD1D9861B8F85ED772138A7F51E2EBF9BC38745E64?api-version=2026-06-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.EdgeOperator/locations/AUTONOMOUS/operationStatuses/a8817f5e-25db-458d-97f5-150d901168a4*598C0338595CF4E6F4CF8FAD1D9861B8F85ED772138A7F51E2EBF9BC38745E64","name":"a8817f5e-25db-458d-97f5-150d901168a4*598C0338595CF4E6F4CF8FAD1D9861B8F85ED772138A7F51E2EBF9BC38745E64","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/","status":"Running","startTime":"2026-11-10T19:10:29.1853701Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.EdgeOperator/locations/AUTONOMOUS/operationStatuses/a8817f5e-25db-458d-97f5-150d901168a4*598C0338595CF4E6F4CF8FAD1D9861B8F85ED772138A7F51E2EBF9BC38745E64?api-version=2026-06-01-preview
+      content-length:
+      - '434'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Nov 2026 19:11:30 GMT
+      etag:
+      - '"0200f434-0000-2300-0000-6af36c260000"'
+      location:
+      - https://management.azure.com/providers/Microsoft.EdgeOperator/locations/AUTONOMOUS/operationStatuses/a8817f5e-25db-458d-97f5-150d901168a4*598C0338595CF4E6F4CF8FAD1D9861B8F85ED772138A7F51E2EBF9BC38745E64?api-version=2026-06-01-preview
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - aldo log-collection collect
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --from-date --to-date --filter-roles
+      User-Agent:
+      - python/3.14.9 (Windows-11-10.0.26300-SP0) AZURECLI/2.92.0
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.EdgeOperator/locations/AUTONOMOUS/operationStatuses/a8817f5e-25db-458d-97f5-150d901168a4*598C0338595CF4E6F4CF8FAD1D9861B8F85ED772138A7F51E2EBF9BC38745E64?api-version=2026-06-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.EdgeOperator/locations/AUTONOMOUS/operationStatuses/a8817f5e-25db-458d-97f5-150d901168a4*598C0338595CF4E6F4CF8FAD1D9861B8F85ED772138A7F51E2EBF9BC38745E64","name":"a8817f5e-25db-458d-97f5-150d901168a4*598C0338595CF4E6F4CF8FAD1D9861B8F85ED772138A7F51E2EBF9BC38745E64","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/","status":"Running","startTime":"2026-11-10T19:10:29.1853701Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.EdgeOperator/locations/AUTONOMOUS/operationStatuses/a8817f5e-25db-458d-97f5-150d901168a4*598C0338595CF4E6F4CF8FAD1D9861B8F85ED772138A7F51E2EBF9BC38745E64?api-version=2026-06-01-preview
+      content-length:
+      - '434'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Nov 2026 19:12:00 GMT
+      etag:
+      - '"0200f434-0000-2300-0000-6af36c260000"'
+      location:
+      - https://management.azure.com/providers/Microsoft.EdgeOperator/locations/AUTONOMOUS/operationStatuses/a8817f5e-25db-458d-97f5-150d901168a4*598C0338595CF4E6F4CF8FAD1D9861B8F85ED772138A7F51E2EBF9BC38745E64?api-version=2026-06-01-preview
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - aldo log-collection collect
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --from-date --to-date --filter-roles
+      User-Agent:
+      - python/3.14.9 (Windows-11-10.0.26300-SP0) AZURECLI/2.92.0
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.EdgeOperator/locations/AUTONOMOUS/operationStatuses/a8817f5e-25db-458d-97f5-150d901168a4*598C0338595CF4E6F4CF8FAD1D9861B8F85ED772138A7F51E2EBF9BC38745E64?api-version=2026-06-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.EdgeOperator/locations/AUTONOMOUS/operationStatuses/a8817f5e-25db-458d-97f5-150d901168a4*598C0338595CF4E6F4CF8FAD1D9861B8F85ED772138A7F51E2EBF9BC38745E64","name":"a8817f5e-25db-458d-97f5-150d901168a4*598C0338595CF4E6F4CF8FAD1D9861B8F85ED772138A7F51E2EBF9BC38745E64","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/","status":"Succeeded","startTime":"2026-11-10T19:10:29.1853701Z","endTime":"2026-11-10T19:12:18.8835951Z","properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/logCollections/54e8e0f9-8857-4da7-8d51-0b97ec8f5da3"}}'
+    headers:
+      content-length:
+      - '644'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Nov 2026 19:12:31 GMT
+      etag:
+      - '"02009935-0000-2300-0000-6af36c920000"'
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - aldo log-collection collect
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --from-date --to-date --filter-roles
+      User-Agent:
+      - python/3.14.9 (Windows-11-10.0.26300-SP0) AZURECLI/2.92.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/logCollections/54e8e0f9-8857-4da7-8d51-0b97ec8f5da3?api-version=2026-06-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/logCollections/54e8e0f9-8857-4da7-8d51-0b97ec8f5da3","name":"54e8e0f9-8857-4da7-8d51-0b97ec8f5da3","type":"Microsoft.EdgeOperator/logCollections","properties":{"provisioningState":"Succeeded","startTime":"2026-11-10T19:10:46.3430989+00:00","endTime":"2026-11-10T19:11:38.6894802+00:00","collectionTime":"2026-11-10T19:10:46.42+00:00","collectionEndTime":"2026-11-10T19:11:38.672+00:00","fromDate":"2026-11-10T19:09:00+00:00","toDate":"2026-11-10T19:10:00+00:00","jobType":"OnDemand","storageKind":"Azure","reason":"User
+        initiated","uploadDetails":{"uploadStartTime":"2026-11-10T19:10:46.416+00:00","uploadSizeInMb":791,"uploadNumberOfFiles":33}}}'
+    headers:
+      content-length:
+      - '738'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Nov 2026 19:12:31 GMT
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-response-source:
+      - OperatorRPHost
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - aldo log-collection wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --job-id --created --interval --timeout
+      User-Agent:
+      - python/3.14.9 (Windows-11-10.0.26300-SP0) AZURECLI/2.92.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/logCollections/54e8e0f9-8857-4da7-8d51-0b97ec8f5da3?api-version=2026-06-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/logCollections/54e8e0f9-8857-4da7-8d51-0b97ec8f5da3","name":"54e8e0f9-8857-4da7-8d51-0b97ec8f5da3","type":"Microsoft.EdgeOperator/logCollections","properties":{"provisioningState":"Succeeded","startTime":"2026-11-10T19:10:46.3430989+00:00","endTime":"2026-11-10T19:11:38.6894802+00:00","collectionTime":"2026-11-10T19:10:46.42+00:00","collectionEndTime":"2026-11-10T19:11:38.672+00:00","fromDate":"2026-11-10T19:09:00+00:00","toDate":"2026-11-10T19:10:00+00:00","jobType":"OnDemand","storageKind":"Azure","reason":"User
+        initiated","uploadDetails":{"uploadStartTime":"2026-11-10T19:10:46.416+00:00","uploadSizeInMb":791,"uploadNumberOfFiles":33}}}'
+    headers:
+      content-length:
+      - '738'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Nov 2026 19:12:31 GMT
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-response-source:
+      - OperatorRPHost
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - aldo log-collection show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --job-id
+      User-Agent:
+      - python/3.14.9 (Windows-11-10.0.26300-SP0) AZURECLI/2.92.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/logCollections/54e8e0f9-8857-4da7-8d51-0b97ec8f5da3?api-version=2026-06-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/logCollections/54e8e0f9-8857-4da7-8d51-0b97ec8f5da3","name":"54e8e0f9-8857-4da7-8d51-0b97ec8f5da3","type":"Microsoft.EdgeOperator/logCollections","properties":{"provisioningState":"Succeeded","startTime":"2026-11-10T19:10:46.3430989+00:00","endTime":"2026-11-10T19:11:38.6894802+00:00","collectionTime":"2026-11-10T19:10:46.42+00:00","collectionEndTime":"2026-11-10T19:11:38.672+00:00","fromDate":"2026-11-10T19:09:00+00:00","toDate":"2026-11-10T19:10:00+00:00","jobType":"OnDemand","storageKind":"Azure","reason":"User
+        initiated","uploadDetails":{"uploadStartTime":"2026-11-10T19:10:46.416+00:00","uploadSizeInMb":791,"uploadNumberOfFiles":33}}}'
+    headers:
+      content-length:
+      - '738'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Nov 2026 19:12:32 GMT
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-response-source:
+      - OperatorRPHost
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - aldo log-collection list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --from-date
+      User-Agent:
+      - python/3.14.9 (Windows-11-10.0.26300-SP0) AZURECLI/2.92.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/logCollections?api-version=2026-06-01-preview&fromDate=2026-11-10T19%3A09%3A00Z
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/logCollections/54e8e0f9-8857-4da7-8d51-0b97ec8f5da3","name":"54e8e0f9-8857-4da7-8d51-0b97ec8f5da3","type":"Microsoft.EdgeOperator/logCollections","properties":{"provisioningState":"Succeeded","startTime":"2026-11-10T19:10:46.42+00:00","endTime":"2026-11-10T19:11:38.672+00:00","collectionTime":"2026-11-10T19:10:46.42+00:00","collectionEndTime":"2026-11-10T19:11:38.672+00:00","fromDate":"2026-11-10T19:09:00+00:00","toDate":"2026-11-10T19:10:00+00:00","jobType":"OnDemand","storageKind":"Azure","reason":"User
+        initiated","uploadDetails":{"uploadStartTime":"2026-11-10T19:10:46.416+00:00","uploadSizeInMb":791,"uploadNumberOfFiles":33}}}]}'
+    headers:
+      content-length:
+      - '741'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Nov 2026 19:12:32 GMT
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-response-source:
+      - OperatorRPHost
+    status:
+      code: 200
+      message: OK
+version: 1
