@@ -66,7 +66,8 @@ from ._models import (
 from ._decorator_utils import (create_deserializer,
                                process_loaded_yaml,
                                load_yaml_file,
-                               infer_runtime_option
+                               infer_runtime_option,
+                               restore_user_assigned_identity_resource_ids
                                )
 from ._utils import parse_service_bindings, check_unique_bindings, is_registry_msi_system_environment, \
     env_has_managed_identity, create_acrpull_role_assignment_if_needed, is_cloud_supported_by_service_connector
@@ -519,6 +520,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
                 customized_keys_dict[bind["name"]] = bind["customizedKeys"]
 
         self.new_containerapp = _convert_object_from_snake_to_camel_case(_object_to_dict(self.new_containerapp))
+        self.new_containerapp = restore_user_assigned_identity_resource_ids(yaml_containerapp, self.new_containerapp)
         self.new_containerapp['tags'] = tags
 
         # Containerapp object is deserialized from 'ContainerApp' model, "Properties" level is lost after deserialization
@@ -1193,6 +1195,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
                 customized_keys_dict[bind["name"]] = bind["customizedKeys"]
 
         self.containerapp_def = _convert_object_from_snake_to_camel_case(_object_to_dict(self.containerapp_def))
+        self.containerapp_def = restore_user_assigned_identity_resource_ids(yaml_containerapp, self.containerapp_def)
         self.containerapp_def['tags'] = tags
 
         # Containerapp object is deserialized from 'ContainerApp' model, "Properties" level is lost after deserialization
