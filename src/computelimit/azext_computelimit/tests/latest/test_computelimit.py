@@ -291,3 +291,351 @@ class ComputelimitScenario(ScenarioTest):
                 'az computelimit guest-subscription add '
                 '--guest-subscription-id 11111111-1111-1111-1111-111111111111'
             )
+
+    # =============================================
+    # Trusted Host Subscription Tests
+    # =============================================
+
+    @record_only()
+    def test_computelimit_trusted_host_subscription_list(self):
+        """Test listing all trusted host subscriptions in a location."""
+        self.kwargs.update({
+            'location': 'eastus'
+        })
+
+        # List all trusted host subscriptions
+        result = self.cmd(
+            'az computelimit trusted-host-subscription list --location {location}'
+        ).get_output_in_json()
+
+        # Verify result is a list
+        self.assertIsInstance(result, list)
+
+    @record_only()
+    def test_computelimit_trusted_host_subscription_show(self):
+        """Test showing a specific trusted host subscription."""
+        self.kwargs.update({
+            'location': 'eastus',
+            'host_subscription_id': '22222222-2222-2222-2222-222222222222'
+        })
+
+        # Show a trusted host subscription
+        result = self.cmd(
+            'az computelimit trusted-host-subscription show --location {location} --host-subscription-id {host_subscription_id}',
+            checks=[
+                self.check('name', '{host_subscription_id}')
+            ]
+        ).get_output_in_json()
+
+        # Verify response contains expected fields
+        self.assertIsNotNone(result)
+        self.assertIn('name', result)
+        self.assertIn('id', result)
+        self.assertIn('type', result)
+
+    @record_only()
+    def test_computelimit_trusted_host_subscription_add(self):
+        """Test adding a trusted host subscription."""
+        self.kwargs.update({
+            'location': 'eastus',
+            'host_subscription_id': '22222222-2222-2222-2222-222222222222'
+        })
+
+        # Add a trusted host subscription
+        result = self.cmd(
+            'az computelimit trusted-host-subscription add --location {location} --host-subscription-id {host_subscription_id}',
+            checks=[
+                self.check('name', '{host_subscription_id}')
+            ]
+        ).get_output_in_json()
+
+        # Verify response contains expected fields
+        self.assertIsNotNone(result)
+        self.assertIn('name', result)
+        self.assertIn('id', result)
+
+    @record_only()
+    def test_computelimit_trusted_host_subscription_remove(self):
+        """Test removing a trusted host subscription."""
+        self.kwargs.update({
+            'location': 'eastus',
+            'host_subscription_id': '22222222-2222-2222-2222-222222222222'
+        })
+
+        # Remove a trusted host subscription (using --yes to skip confirmation)
+        self.cmd(
+            'az computelimit trusted-host-subscription remove --location {location} --host-subscription-id {host_subscription_id} --yes'
+        )
+
+    @record_only()
+    def test_computelimit_trusted_host_subscription_crud(self):
+        """Test complete CRUD workflow for trusted host subscriptions."""
+        self.kwargs.update({
+            'location': 'eastus',
+            'host_subscription_id': '22222222-2222-2222-2222-222222222222'
+        })
+
+        # Add a trusted host subscription
+        add_result = self.cmd(
+            'az computelimit trusted-host-subscription add --location {location} --host-subscription-id {host_subscription_id}',
+            checks=[
+                self.check('name', '{host_subscription_id}')
+            ]
+        ).get_output_in_json()
+        self.assertIsNotNone(add_result)
+
+        # Show the trusted host subscription
+        show_result = self.cmd(
+            'az computelimit trusted-host-subscription show --location {location} --host-subscription-id {host_subscription_id}',
+            checks=[
+                self.check('name', '{host_subscription_id}')
+            ]
+        ).get_output_in_json()
+        self.assertIsNotNone(show_result)
+        self.assertEqual(show_result['name'], self.kwargs['host_subscription_id'])
+
+        # List trusted host subscriptions and verify the added subscription is present
+        list_result = self.cmd(
+            'az computelimit trusted-host-subscription list --location {location}'
+        ).get_output_in_json()
+        self.assertIsInstance(list_result, list)
+        names = [item['name'] for item in list_result]
+        self.assertIn(self.kwargs['host_subscription_id'], names)
+
+        # Remove the trusted host subscription
+        self.cmd(
+            'az computelimit trusted-host-subscription remove --location {location} --host-subscription-id {host_subscription_id} --yes'
+        )
+
+    def test_computelimit_trusted_host_subscription_add_invalid_uuid(self):
+        """Test that an invalid host subscription ID (not a UUID) is rejected."""
+        self.kwargs.update({
+            'location': 'eastus',
+            'host_subscription_id': 'not-a-valid-uuid'
+        })
+        with self.assertRaises(InvalidArgumentValueError):
+            self.cmd(
+                'az computelimit trusted-host-subscription add --location {location} '
+                '--host-subscription-id {host_subscription_id}'
+            )
+
+    def test_computelimit_trusted_host_subscription_add_missing_location(self):
+        """Test that missing required --location parameter is rejected."""
+        with self.assertRaises(InvalidArgumentValueError):
+            self.cmd(
+                'az computelimit trusted-host-subscription add '
+                '--host-subscription-id 22222222-2222-2222-2222-222222222222'
+            )
+
+    # =============================================
+    # Feature Tests
+    # =============================================
+
+    @record_only()
+    def test_computelimit_feature_list(self):
+        """Test listing all compute limit features in a location."""
+        self.kwargs.update({
+            'location': 'eastus'
+        })
+        result = self.cmd(
+            'az computelimit feature list --location {location}'
+        ).get_output_in_json()
+        self.assertIsInstance(result, list)
+
+    @record_only()
+    def test_computelimit_feature_show(self):
+        """Test showing a specific compute limit feature."""
+        self.kwargs.update({
+            'location': 'eastus',
+            'feature_name': 'SharedComputeLimit'
+        })
+        result = self.cmd(
+            'az computelimit feature show --location {location} --feature-name {feature_name}',
+            checks=[
+                self.check('name', '{feature_name}')
+            ]
+        ).get_output_in_json()
+        self.assertIsNotNone(result)
+        self.assertIn('name', result)
+        self.assertIn('id', result)
+
+    @record_only()
+    def test_computelimit_feature_enable(self):
+        """Test enabling a compute limit feature."""
+        self.kwargs.update({
+            'location': 'eastus',
+            'feature_name': 'SharedComputeLimit'
+        })
+        result = self.cmd(
+            'az computelimit feature enable --location {location} --feature-name {feature_name}',
+            checks=[
+                self.check('name', '{feature_name}')
+            ]
+        ).get_output_in_json()
+        self.assertIsNotNone(result)
+
+    @record_only()
+    def test_computelimit_feature_disable(self):
+        """Test disabling a compute limit feature."""
+        self.kwargs.update({
+            'location': 'eastus',
+            'feature_name': 'SharedComputeLimit'
+        })
+        result = self.cmd(
+            'az computelimit feature disable --location {location} --feature-name {feature_name}',
+            checks=[
+                self.check('name', '{feature_name}')
+            ]
+        ).get_output_in_json()
+        self.assertIsNotNone(result)
+
+    def test_computelimit_feature_enable_missing_location(self):
+        """Test that missing required --location parameter is rejected."""
+        with self.assertRaises(InvalidArgumentValueError):
+            self.cmd('az computelimit feature enable --feature-name SharedComputeLimit')
+
+    # =============================================
+    # Shared Limit Cap Tests
+    # =============================================
+
+    @record_only()
+    def test_computelimit_shared_limit_cap_list(self):
+        """Test listing all shared limit cap configurations in a location."""
+        self.kwargs.update({
+            'location': 'eastus'
+        })
+        result = self.cmd(
+            'az computelimit shared-limit-cap list --location {location}'
+        ).get_output_in_json()
+        self.assertIsInstance(result, list)
+
+    @record_only()
+    def test_computelimit_shared_limit_cap_show(self):
+        """Test showing a specific shared limit cap configuration."""
+        self.kwargs.update({
+            'location': 'eastus',
+            'vm_family': 'standardDSv3Family'
+        })
+        result = self.cmd(
+            'az computelimit shared-limit-cap show --location {location} --vm-family-name {vm_family}',
+            checks=[
+                self.check('name', '{vm_family}')
+            ]
+        ).get_output_in_json()
+        self.assertIsNotNone(result)
+        self.assertIn('name', result)
+        self.assertIn('id', result)
+
+    @record_only()
+    def test_computelimit_shared_limit_cap_add(self):
+        """Test adding a shared limit cap configuration."""
+        self.kwargs.update({
+            'location': 'eastus',
+            'vm_family': 'standardDSv3Family'
+        })
+        result = self.cmd(
+            'az computelimit shared-limit-cap add --location {location} --vm-family-name {vm_family} '
+            '--default-member-cap 10 --is-bounded-cap true',
+            checks=[
+                self.check('name', '{vm_family}')
+            ]
+        ).get_output_in_json()
+        self.assertIsNotNone(result)
+
+    @record_only()
+    def test_computelimit_shared_limit_cap_remove(self):
+        """Test removing a shared limit cap configuration."""
+        self.kwargs.update({
+            'location': 'eastus',
+            'vm_family': 'standardDSv3Family'
+        })
+        self.cmd(
+            'az computelimit shared-limit-cap remove --location {location} --vm-family-name {vm_family} --yes'
+        )
+
+    @record_only()
+    def test_computelimit_shared_limit_cap_set_member_cap_override(self):
+        """Test replacing the full set of per-member cap overrides."""
+        self.kwargs.update({
+            'location': 'eastus',
+            'vm_family': 'standardDSv3Family',
+            'overrides': '[{subscription-id:33333333-3333-3333-3333-333333333333,cap:10}]'
+        })
+        self.cmd(
+            'az computelimit shared-limit-cap set-member-cap-override --location {location} '
+            '--vm-family-name {vm_family} --member-cap-overrides "{overrides}"'
+        )
+
+    def test_computelimit_shared_limit_cap_add_missing_location(self):
+        """Test that missing required --location parameter is rejected."""
+        with self.assertRaises(InvalidArgumentValueError):
+            self.cmd('az computelimit shared-limit-cap add --vm-family-name standardDSv3Family')
+
+    # =============================================
+    # Member Cap Override Tests
+    # =============================================
+
+    @record_only()
+    def test_computelimit_member_cap_override_list(self):
+        """Test listing all per-member cap overrides under a shared limit cap."""
+        self.kwargs.update({
+            'location': 'eastus',
+            'vm_family': 'standardDSv3Family'
+        })
+        result = self.cmd(
+            'az computelimit shared-limit-cap member-cap-override list '
+            '--location {location} --vm-family-name {vm_family}'
+        ).get_output_in_json()
+        self.assertIsInstance(result, list)
+
+    @record_only()
+    def test_computelimit_member_cap_override_show(self):
+        """Test showing a specific per-member cap override."""
+        self.kwargs.update({
+            'location': 'eastus',
+            'vm_family': 'standardDSv3Family',
+            'member_subscription_id': '33333333-3333-3333-3333-333333333333'
+        })
+        result = self.cmd(
+            'az computelimit shared-limit-cap member-cap-override show '
+            '--location {location} --vm-family-name {vm_family} '
+            '--member-subscription-id {member_subscription_id}',
+            checks=[
+                self.check('name', '{member_subscription_id}')
+            ]
+        ).get_output_in_json()
+        self.assertIsNotNone(result)
+        self.assertIn('name', result)
+        self.assertIn('id', result)
+
+    @record_only()
+    def test_computelimit_member_cap_override_add(self):
+        """Test adding a per-member cap override."""
+        self.kwargs.update({
+            'location': 'eastus',
+            'vm_family': 'standardDSv3Family',
+            'member_subscription_id': '33333333-3333-3333-3333-333333333333'
+        })
+        result = self.cmd(
+            'az computelimit shared-limit-cap member-cap-override add '
+            '--location {location} --vm-family-name {vm_family} '
+            '--member-subscription-id {member_subscription_id} --cap 5',
+            checks=[
+                self.check('name', '{member_subscription_id}')
+            ]
+        ).get_output_in_json()
+        self.assertIsNotNone(result)
+
+    @record_only()
+    def test_computelimit_member_cap_override_remove(self):
+        """Test removing a per-member cap override."""
+        self.kwargs.update({
+            'location': 'eastus',
+            'vm_family': 'standardDSv3Family',
+            'member_subscription_id': '33333333-3333-3333-3333-333333333333'
+        })
+        self.cmd(
+            'az computelimit shared-limit-cap member-cap-override remove '
+            '--location {location} --vm-family-name {vm_family} '
+            '--member-subscription-id {member_subscription_id} --yes'
+        )
