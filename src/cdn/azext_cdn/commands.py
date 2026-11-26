@@ -91,21 +91,21 @@ def load_command_table(self, _):
     from .custom.custom_cdn import CDNOriginUpdate
     self.command_table['cdn origin update'] = CDNOriginUpdate(loader=self)
 
-    with self.command_group('cdn endpoint rule', cdn_endpoints_sdk, is_preview=True) as g:
+    with self.command_group('cdn endpoint rule', cdn_endpoints_sdk) as g:
         g.show_command('show', 'get')
         g.custom_command('add', 'add_rule', client_factory=cf_cdn,
                          doc_string_source='azext_cdn.vendored_sdks.models#Endpoint')
         g.custom_command('remove', 'remove_rule', client_factory=cf_cdn,
                          doc_string_source='azext_cdn.vendored_sdks.models#Endpoint')
 
-    with self.command_group('cdn endpoint rule condition', cdn_endpoints_sdk, is_preview=True) as g:
+    with self.command_group('cdn endpoint rule condition', cdn_endpoints_sdk) as g:
         g.show_command('show', 'get')
         g.custom_command('add', 'add_condition', client_factory=cf_cdn,
                          doc_string_source='azext_cdn.vendored_sdks.models#Endpoint')
         g.custom_command('remove', 'remove_condition', client_factory=cf_cdn,
                          doc_string_source='azext_cdn.vendored_sdks.models#Endpoint')
 
-    with self.command_group('cdn endpoint rule action', cdn_endpoints_sdk, is_preview=True) as g:
+    with self.command_group('cdn endpoint rule action', cdn_endpoints_sdk) as g:
         g.show_command('show', 'get')
         g.custom_command('add', 'add_action', client_factory=cf_cdn,
                          doc_string_source='azext_cdn.vendored_sdks.models#Endpoint')

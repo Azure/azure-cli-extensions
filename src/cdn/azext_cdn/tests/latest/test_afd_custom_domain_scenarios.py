@@ -5,6 +5,7 @@
 from azure.cli.testsdk import ResourceGroupPreparer, JMESPathCheck
 from azure.cli.testsdk import ScenarioTest, record_only
 from .afdx_scenario_mixin import CdnAfdScenarioMixin
+from .config import fixture
 from azext_cdn.vendored_sdks.models import (AfdCertificateType, AfdMinimumTlsVersion)
 
 
@@ -22,7 +23,7 @@ class CdnAfdCustomDomainScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
 
             # Create a secret
             secret_name = self.create_random_name(prefix='secret', length=24)
-            secret_source = "/subscriptions/3c0124f9-e564-4c42-86f7-fa79457aedc3/resourceGroups/byoc/providers/Microsoft.KeyVault/vaults/Azure-CDN-BYOC/secrets/afde2e-root-azfdtest-xyz"
+            secret_source = fixture('byoc_vault_id') + '/secrets/' + fixture('afd_byoc_secret_name')
             use_latest_version = True
             secret_version = None
 
@@ -37,7 +38,7 @@ class CdnAfdCustomDomainScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
             secretId = secretData['id']
 
             custom_domain_name = self.create_random_name(prefix='customdomain', length=24)
-            host_name = f"{custom_domain_name}.afde2e-root.azfdtest.xyz"
+            host_name = custom_domain_name + '.' + fixture('afd_byoc_domain')
             certificate_type = AfdCertificateType.customer_certificate.value
             minimum_tls_version = AfdMinimumTlsVersion.tls12.value
             azure_dns_zone = None
@@ -78,21 +79,13 @@ class CdnAfdCustomDomainScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
     def test_afd_custom_domain_tls_groups_crud(self, resource_group):
         profile_name = self.create_random_name(prefix='profile', length=16)
         self.afd_profile_create_cmd(resource_group, profile_name)
-        # RTMain requires the BYOC vault and profile to use the same subscription.
-        vault_subscription = self.get_subscription_id()
-        with self.afd_byoc_identity(
-                resource_group, profile_name, vault_name='AfdxE2eTestKV04',
-                vault_resource_group='DoNotDeleteThisRG', vault_subscription=vault_subscription):
+        with self.afd_byoc_identity(resource_group, profile_name):
             secret_name = self.create_random_name(prefix='secret', length=24)
-            secret_source = (
-                f'/subscriptions/{vault_subscription}/resourceGroups/DoNotDeleteThisRG'
-                '/providers/Microsoft.KeyVault/vaults/AfdxE2eTestKV04/secrets/'
-                'test-wildcard-domain-rollingrp-01-azfdtest-xyz-cert'
-            )
+            secret_source = fixture('byoc_vault_id') + '/secrets/' + fixture('afd_byoc_secret_name')
             secret = self.afd_secret_create_cmd(
                 resource_group, profile_name, secret_name, secret_source, True, None).get_output_in_json()
             custom_domain_name = self.create_random_name(prefix='customdomain', length=24)
-            host_name = f'{custom_domain_name}.wildcard-domain.rprolling-01.azfdtest.xyz'
+            host_name = custom_domain_name + '.' + fixture('afd_byoc_domain')
             profile_args = f'-g {resource_group} --profile-name {profile_name}'
             domain_args = f'{profile_args} --custom-domain-name {custom_domain_name}'
 

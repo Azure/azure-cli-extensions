@@ -5,6 +5,7 @@
 from azure.cli.testsdk import ResourceGroupPreparer, JMESPathCheck
 from azure.cli.testsdk import ScenarioTest, record_only
 from .afdx_scenario_mixin import CdnAfdScenarioMixin
+from .config import fixture
 
 from azure.core.exceptions import (HttpResponseError)
 
@@ -79,7 +80,9 @@ class CdnAfdSecurityPolicyScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
         domain_ids.append(f'/subscriptions/{self.get_subscription_id()}/resourcegroups/{resource_group}/providers/Microsoft.Cdn/profiles/{profile_name}/afdEndpoints/{endpoint2_name}')
         
         # Create a security policy with non-exisit waf should fail
-        waf_policy_id = f'/subscriptions/{self.get_subscription_id()}/resourcegroups/CliDevReservedGroup/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/nonexist'
+        waf_policy_id = fixture(
+            'waf_policy_id', self.get_subscription_id() if self.is_playback_mode() else None)
+        waf_policy_id = waf_policy_id.rsplit('/', 1)[0] + '/nonexist'
         with self.assertRaisesRegex(HttpResponseError,
                                     "Web Application Firewall Policy being attached to AFDX profile does not exist|"
                                     "Waf policy not found in AFD Data store"):
@@ -90,7 +93,8 @@ class CdnAfdSecurityPolicyScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                                                 waf_policy_id)
         
         # Create a security policy
-        waf_policy_id = f'/subscriptions/{self.get_subscription_id()}/resourcegroups/CliDevReservedGroup/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/SampleStandard'
+        waf_policy_id = fixture(
+            'waf_policy_id', self.get_subscription_id() if self.is_playback_mode() else None)
         with self.assertRaisesRegex(HttpResponseError, "Route level association is not allowed"):
             self.afd_security_policy_create_cmd(resource_group,
                                                 profile_name,

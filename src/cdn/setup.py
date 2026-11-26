@@ -8,10 +8,10 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "1.0.0b4"
+VERSION = "1.0.0"
 
 CLASSIFIERS = [
-    'Development Status :: 4 - Beta',
+    'Development Status :: 5 - Production/Stable',
     'Intended Audience :: Developers',
     'Intended Audience :: System Administrators',
     'Programming Language :: Python',
@@ -41,7 +41,7 @@ setup(
     author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/main/src/cdn',
     classifiers=CLASSIFIERS,
-    package_data={'azext_cdn': ['azext_metadata.json']},
+    package_data={'azext_cdn': ['azext_metadata.json', 'tests/latest/config.json']},
     packages=find_packages(),
     install_requires=DEPENDENCIES,
 )

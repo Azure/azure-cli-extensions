@@ -5,6 +5,7 @@
 from azure.cli.testsdk import ResourceGroupPreparer, JMESPathCheck
 from azure.cli.testsdk import ScenarioTest, record_only
 from .afdx_scenario_mixin import CdnAfdScenarioMixin
+from .config import fixture
 
 from azure.core.exceptions import (HttpResponseError)
 
@@ -24,7 +25,7 @@ class CdnAfdSecretScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
 
             # Create a secret with expired certificate
             secret_name = self.create_random_name(prefix='secret', length=24)
-            secret_source = "/subscriptions/3c0124f9-e564-4c42-86f7-fa79457aedc3/resourceGroups/byoc/providers/Microsoft.KeyVault/vaults/Azure-CDN-BYOC/secrets/afde2e-root-azfdtest-xyz"
+            secret_source = fixture('byoc_vault_id') + '/secrets/' + fixture('afd_byoc_secret_name')
             secret_version = "31c11b17a98f464b875c322ccc58a9a4"
 
             with self.assertRaisesRegex(HttpResponseError, "The server \\(leaf\\) certificate isn't within the validity period"):
@@ -73,7 +74,7 @@ class CdnAfdSecretScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
 
             # Create a secret
             secret_name = self.create_random_name(prefix='secret', length=24)
-            secret_source = "/subscriptions/3c0124f9-e564-4c42-86f7-fa79457aedc3/resourceGroups/byoc/providers/Microsoft.KeyVault/vaults/Azure-CDN-BYOC/secrets/afde2e-root-azfdtest-xyz"
+            secret_source = fixture('byoc_vault_id') + '/secrets/' + fixture('afd_byoc_secret_name')
             latest_version = "6690ac8f3f5d4378a425271e226cc0cc"
             checks = [JMESPathCheck('provisioningState', 'Succeeded')]
             self.afd_secret_create_cmd(resource_group,

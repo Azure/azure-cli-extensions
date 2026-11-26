@@ -5,6 +5,12 @@
 
 
 import json
+import os
+import re
+
+from azure.core.exceptions import ResourceNotFoundError
+
+from .config import configure_test_environment, fixture
 
 
 def add_tags(command, tags):
@@ -134,9 +140,56 @@ def _response_error_detection_settings(error_types=None, failover_threshold=None
 
 # pylint: disable=too-many-public-methods
 class CdnScenarioMixin:
+    def setUp(self):
+        configure_test_environment(self)
+        super().setUp()
+
     def cmd(self, command, checks=None, expect_failure=False):
         return super().cmd(_escape_format_placeholders(command, getattr(self, 'kwargs', {})), checks,
                            expect_failure=expect_failure)
+
+    def classic_cdn_profile(self, resource_id=None):
+        subscription = self.get_subscription_id()
+        resource_id = resource_id or os.environ.get('AZURE_CDN_TEST_PROFILE_ID') or fixture(
+            'classic_profile_id', subscription if self.is_playback_mode() else None)
+        match = re.fullmatch(
+            r'/subscriptions/([^/]+)/resourceGroups/([^/]+)/providers/Microsoft\.Cdn/profiles/([^/]+)',
+            resource_id, re.IGNORECASE,
+        )
+        if not match or match[1].lower() != subscription.lower():
+            raise ValueError('AZURE_CDN_TEST_PROFILE_ID must identify a profile in the test subscription')
+        group, name = match[2], match[3]
+        profile = self.profile_show_cmd(group, name).get_output_in_json()
+        if profile['sku']['name'] != 'Standard_Microsoft':
+            raise ValueError('The existing Classic CDN test profile must use Standard_Microsoft')
+        self._classic_profile = (group, name)
+        return group, name
+
+    def classic_cdn_endpoint(self, fixture_name):
+        resource_id = fixture(fixture_name, self.get_subscription_id() if self.is_playback_mode() else None)
+        match = re.fullmatch(r'(.+)/endpoints/([^/]+)', resource_id, re.IGNORECASE)
+        if not match:
+            raise ValueError('The existing Classic CDN endpoint fixture must identify an endpoint')
+        group, profile = self.classic_cdn_profile(match[1])
+        endpoint = match[2]
+        self.endpoint_show_cmd(group, endpoint, profile)
+        return group, profile, endpoint
+
+    def _prepare_classic_endpoint(self, group, name, profile_name):
+        if getattr(self, '_classic_profile', None) != (group, profile_name):
+            return
+        try:
+            self.endpoint_show_cmd(group, name, profile_name)
+        except ResourceNotFoundError:
+            self.addCleanup(self._cleanup_classic_endpoint, group, name, profile_name)
+        else:
+            raise ValueError(f'Refusing to overwrite an existing endpoint: {name}')
+
+    def _cleanup_classic_endpoint(self, group, name, profile_name):
+        try:
+            self.endpoint_delete_cmd(group, name, profile_name)
+        except ResourceNotFoundError:
+            pass
 
     def profile_create_cmd(self, group, name, tags=None, checks=None, options=None, sku='STANDARD_MICROSOFT'):
         command = 'cdn profile create -g {} -n {}'.format(group, name)
@@ -150,8 +203,8 @@ class CdnScenarioMixin:
 
     def profile_update_cmd(self, group, name, tags=None, checks=None):
         command = 'cdn profile update -g {} -n {}'.format(group, name)
-        if tags:
-            command = command + ' --tags {}'.format(tags)
+        if tags is not None:
+            command = command + ' --tags {}'.format(_json_arg(tags) if isinstance(tags, dict) else tags)
         return self.cmd(command, checks)
 
     def profile_list_cmd(self, group, checks=None):
@@ -163,11 +216,14 @@ class CdnScenarioMixin:
         return self.cmd(command, checks)
 
     def profile_delete_cmd(self, group, name, checks=None):
+        if getattr(self, '_classic_profile', None) == (group, name):
+            raise ValueError('The shared Classic CDN test profile must not be deleted')
         command = 'cdn profile delete -g {} -n {}'.format(group, name)
         return self.cmd(command, checks)
 
     def endpoint_create_cmd(self, group, name, profile_name, origin, private_link_id=None, private_link_location=None,
                             private_link_message=None, tags=None, checks=None, options=None):
+        self._prepare_classic_endpoint(group, name, profile_name)
         cmd = f'cdn endpoint create -g {group} -n {name} --profile-name {profile_name} --origin {origin} 80 443 '
 
         if private_link_id:

@@ -33,7 +33,7 @@ def build_list_request(
     subscription_id: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2021-06-01"
+    api_version = "2026-10-01"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/providers/Microsoft.Cdn/profiles')
@@ -65,7 +65,7 @@ def build_list_by_resource_group_request(
     subscription_id: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2021-06-01"
+    api_version = "2026-10-01"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cdn/profiles')
@@ -99,7 +99,7 @@ def build_get_request(
     subscription_id: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2021-06-01"
+    api_version = "2026-10-01"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cdn/profiles/{profileName}')
@@ -139,7 +139,7 @@ def build_create_request_initial(
 ) -> HttpRequest:
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
-    api_version = "2021-06-01"
+    api_version = "2026-10-01"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cdn/profiles/{profileName}')
@@ -183,7 +183,7 @@ def build_update_request_initial(
 ) -> HttpRequest:
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
-    api_version = "2021-06-01"
+    api_version = "2026-10-01"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cdn/profiles/{profileName}')
@@ -222,7 +222,7 @@ def build_delete_request_initial(
     subscription_id: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2021-06-01"
+    api_version = "2026-10-01"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cdn/profiles/{profileName}')
@@ -257,7 +257,7 @@ def build_generate_sso_uri_request(
     subscription_id: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2021-06-01"
+    api_version = "2026-10-01"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cdn/profiles/{profileName}/generateSsoUri')
@@ -292,7 +292,7 @@ def build_list_supported_optimization_types_request(
     subscription_id: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2021-06-01"
+    api_version = "2026-10-01"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cdn/profiles/{profileName}/getSupportedOptimizationTypes')
@@ -327,7 +327,7 @@ def build_list_resource_usage_request(
     subscription_id: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2021-06-01"
+    api_version = "2026-10-01"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cdn/profiles/{profileName}/checkResourceUsage')

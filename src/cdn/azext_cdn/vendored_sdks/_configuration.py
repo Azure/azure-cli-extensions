@@ -45,7 +45,7 @@ class CdnManagementClientConfiguration(Configuration):
 
         self.credential = credential
         self.subscription_id = subscription_id
-        self.api_version = "2021-06-01"
+        self.api_version = "2026-10-01"
         self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
         kwargs.setdefault('sdk_moniker', 'mgmt-cdn/{}'.format(VERSION))
         self._configure(**kwargs)

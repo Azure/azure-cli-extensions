@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "cdn profile-migration migrate",
-    is_preview=True,
 )
 class Migrate(AAZCommand):
     """Migrate the CDN profile to Azure Frontdoor(Standard/Premium) profile. This step prepares the profile for migration and will be followed by Commit to finalize the migration.
@@ -23,9 +22,9 @@ class Migrate(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-04-01-preview",
+        "version": "2026-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/cdnmigratetoafd", "2026-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/cdnmigratetoafd", "2026-10-01"],
         ]
     }
 
@@ -175,7 +174,7 @@ class Migrate(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-01-preview",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }
