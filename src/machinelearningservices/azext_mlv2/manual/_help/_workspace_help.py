@@ -57,6 +57,9 @@ def get_workspace_help():
             Azure Container Registry, Azure Key Vault, Azure Application Insights) are not deleted.
             To delete those as well, include --all-resources.
             To permanently delete the workspace, include --permanently-delete.
+            If the workspace is already in a soft-deleted state and you want to purge it,
+            run this command again with --permanently-delete (-p). This will also unblock
+            creation of a new workspace with the same name.
     """
     helps[
         "ml workspace create"
