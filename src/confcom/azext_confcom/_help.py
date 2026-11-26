@@ -185,6 +185,14 @@ helps[
           type: boolean
           short-summary: 'When enabled, the generated policy will not contain the ID field. This will keep the policy from being tied to a specific image name and tag. This is helpful if the image being used will be present in multiple registries and used interchangeably'
 
+        - name: --env-rule-format
+          type: string
+          short-summary: >
+            Format of generated environment rules: pattern (default) combines the name and value;
+            name-value stores them separately, which is useful when creating parameterized fragments.
+            For example, PORT=8080 is one rule in pattern format.
+            In name-value format, the name is PORT and the value is 8080.
+
         - name: --generate-import -g
           type: boolean
           short-summary: 'Generate an import statement for a policy fragment'

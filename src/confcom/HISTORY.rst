@@ -3,10 +3,17 @@
 Release History
 ===============
 
+2.5.0
++++++
+* Add MacOS support for Linux-container policy generation
+* Support container-bound parameterized fragment imports
+* Add ``--env-rule-format`` to ``acifragmentgen`` to generate environment rules with separate name and value fields
+* Update bundled integrity-vhd to v2.5 and cosesign1go to v1.9.0
+* Prevent executing an ORAS binary from the current directory
+
 2.4.1
 +++++
 * Retain Windows exec argument arrays and additionally emit Windows-quoted command lines to work around hcsshim passing CommandLine as one argument, including probes and lifecycle hooks
-* Add MacOS support for Linux-container policy generation
 
 2.4.0
 +++++

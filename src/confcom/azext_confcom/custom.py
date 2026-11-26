@@ -334,6 +334,7 @@ def acifragmentgen_confcom(
     skip_win_ver_check: bool = False,
     platform: str = "linux/amd64",
     prerelease_policy_api: bool = False,
+    env_rule_format: str = "pattern",
 ):
     if container_definitions is None:
         container_definitions = []
@@ -341,6 +342,10 @@ def acifragmentgen_confcom(
     stdio_enabled = resolve_stdio(enable_stdio, disable_stdio)
 
     output_type = get_fragment_output_type(outraw)
+
+    if env_rule_format == "name-value" and generate_import:
+        eprint("--env-rule-format name-value cannot be used with --generate-import.")
+    security_policy.validate_env_rule_format(env_rule_format, platform, prerelease_policy_api)
 
     if generate_import:
         cose_client = CoseSignToolProxy()
@@ -399,6 +404,7 @@ def acifragmentgen_confcom(
             tar_mapping=tar_mapping,
             platform=platform,
             prerelease_policy_api=prerelease_policy_api,
+            env_rule_format=env_rule_format,
         )
     elif input_path:
         # this is using --input
@@ -409,6 +415,7 @@ def acifragmentgen_confcom(
             tar_mapping=tar_mapping,
             platform=platform,
             prerelease_policy_api=prerelease_policy_api,
+            env_rule_format=env_rule_format,
         )
     elif container_definitions:
         policy = AciPolicy(
@@ -424,6 +431,7 @@ def acifragmentgen_confcom(
             rego_fragments=copy.deepcopy(
                 get_default_rego_fragments(platform, prerelease_policy_api=prerelease_policy_api)
             ),
+            env_rule_format=env_rule_format,
         )
     else:
         eprint("Either --image-name, --input, or --container-definitions must be provided", exit_code=2)

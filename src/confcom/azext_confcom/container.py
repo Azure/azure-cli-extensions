@@ -71,7 +71,23 @@ def extract_container_image(container_json: Any) -> str:
     return containerImage
 
 
-def extract_env_rules(container_json: Any) -> List[Dict]:
+def create_environment_rule(name, value, strategy, required=False, env_rule_format="pattern") -> Dict:
+    if env_rule_format == "name-value":
+        return {
+            "name": name,
+            "name_strategy": strategy,
+            "value": value,
+            "value_strategy": strategy,
+            "required": required,
+        }
+    return {
+        config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE: f"{name}={value}",
+        config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_STRATEGY: strategy,
+        config.POLICY_FIELD_CONTAINERS_ELEMENTS_REQUIRED: required,
+    }
+
+
+def extract_env_rules(container_json: Any, env_rule_format: str = "pattern") -> List[Dict]:
     environmentRules = []
     env_rules = case_insensitive_dict_get(
         container_json, config.ACI_FIELD_CONTAINERS_ENVS
@@ -109,16 +125,11 @@ def extract_env_rules(container_json: Any) -> List[Dict]:
                 + f'["{config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY}"] is incorrect for env var {name}.'
             )
 
-        environmentRules.append(
-            {
-                config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE: f"{name}={value}",
-                config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_STRATEGY: strategy,
-                # default value for "required" is False
-                config.POLICY_FIELD_CONTAINERS_ELEMENTS_REQUIRED: required
-                if required is not None
-                else False,
-            }
-        )
+        environmentRules.append(create_environment_rule(
+            name, value, strategy,
+            required=required if required is not None else False,
+            env_rule_format=env_rule_format,
+        ))
     return environmentRules
 
 
@@ -574,13 +585,13 @@ class ContainerImage:
 
     @classmethod
     def from_json(
-        cls, container_json: Any, from_input: bool = False
+        cls, container_json: Any, from_input: bool = False, env_rule_format: str = "pattern"
     ) -> "ContainerImage":
 
         container_image = extract_container_image(container_json)
         id_val = extract_id(container_json)
         container_name = extract_container_name(container_json)
-        environment_rules = extract_env_rules(container_json=container_json)
+        environment_rules = extract_env_rules(container_json, env_rule_format=env_rule_format)
         entrypoint = extract_entrypoint(container_json)
         command = extract_command(container_json)
         working_dir = extract_working_dir(container_json)
@@ -619,6 +630,7 @@ class ContainerImage:
             allowPrivilegeEscalation=allow_privilege_escalation,
             id_val=id_val,
             registryChanges=registry_changes,
+            env_rule_format=env_rule_format,
         )
 
     def __init__(
@@ -642,6 +654,7 @@ class ContainerImage:
         signals: List = None,
         containerName: str = "",
         registryChanges: Any = None,
+        env_rule_format: str = "pattern",
     ) -> None:
         self.containerImage = containerImage
         self.containerName = containerName
@@ -650,6 +663,7 @@ class ContainerImage:
         else:
             self.base, self.tag = containerImage, "latest"
         self._environmentRules = environmentRules
+        self._env_rule_format = env_rule_format
         self._entrypoint = entrypoint
         self._command = command
         self._workingDir = workingDir
@@ -707,6 +721,12 @@ class ContainerImage:
     def get_environment_rules(self) -> Dict:
         return self._environmentRules
 
+    def get_environment_rule_names(self) -> List[str]:
+        return [
+            rule["name"] if "name" in rule else rule["pattern"].split("=", 1)[0]
+            for rule in self._environmentRules
+        ]
+
     def get_layers(self) -> List[str]:
         return self._layers
 
@@ -762,24 +782,17 @@ class ContainerImage:
 
     def _get_environment_rules(self) -> List[Dict[str, Any]]:
         out_rules = copy.deepcopy(self._environmentRules)
-        env_var_names = [
-            var[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE].split("=")[0]
-            for var in out_rules
-        ]
+        env_var_names = self.get_environment_rule_names()
         for rule in self._extraEnvironmentRules:
             if rule[config.ACI_FIELD_CONTAINERS_ENVS_NAME] not in env_var_names:
                 out_rules.append(
-                    {
-                        config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE:
-                        f"{rule[config.ACI_FIELD_CONTAINERS_ENVS_NAME]}="
-                        + f"{rule[config.ACI_FIELD_CONTAINERS_ENVS_VALUE]}",
-                        config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_STRATEGY: rule[
-                            config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY
-                        ],
-                        config.POLICY_FIELD_CONTAINERS_ELEMENTS_REQUIRED: rule[
-                            config.ACI_FIELD_CONTAINERS_ENVS_REQUIRED
-                        ],
-                    }
+                    create_environment_rule(
+                        rule[config.ACI_FIELD_CONTAINERS_ENVS_NAME],
+                        rule[config.ACI_FIELD_CONTAINERS_ENVS_VALUE],
+                        rule[config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY],
+                        required=rule[config.ACI_FIELD_CONTAINERS_ENVS_REQUIRED],
+                        env_rule_format=self._env_rule_format,
+                    )
                 )
 
         return out_rules
@@ -887,9 +900,9 @@ class UserContainerImage(ContainerImage):
     # pylint: disable=arguments-differ
     @classmethod
     def from_json(
-        cls, container_json: Any, is_vn2=False, from_input=False
+        cls, container_json: Any, is_vn2=False, from_input=False, env_rule_format: str = "pattern"
     ) -> "UserContainerImage":
-        image = super().from_json(container_json, from_input=from_input)
+        image = super().from_json(container_json, from_input=from_input, env_rule_format=env_rule_format)
         image.__class__ = UserContainerImage
         platform = container_json.get("platform", "linux/amd64")
         is_linux = platform.startswith("linux")

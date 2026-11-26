@@ -44,7 +44,7 @@ The default value is `aci`
 
 These objects define all the information necessary for importing and using a fragment.
 
-Each fragment object must include the following fields:
+Each fragment object must include the following import fields:
 
 | Field         | Type   | Required | Description                                                          |
 |---------------|--------|----------|----------------------------------------------------------------------|
@@ -63,6 +63,22 @@ Each fragment object must include the following fields:
   "includes": ["containers"]
 }
 ```
+
+##### Parameterized fragment bindings
+
+For `acipolicygen`, set `container_name` to use a parameterized fragment instead of inlining that container's policy.
+These fields apply to both embedded `--input` fragments and external `--fragments-json` (`-j`) entries.
+With `--input`, embed the entries in the configuration file rather than supplying `-j`.
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `container_name` | string | Yes for an explicit binding | Non-empty container name that must match exactly one container across the entire input, including all container groups/pods and init containers. Used only during generation, not emitted in the import. |
+| `parameters` | object | No; defaults to `{}` for a named binding | Manually supplied parameter names and JSON values. Preserved in the generated import without inference from, or comparison against, deployment settings. |
+
+Zero or multiple name matches cause an error.
+Separate entries can use the same fragment with different parameters for different containers.
+Entries without either field retain ordinary fragment processing.
+See the [usage example](./acipolicygen.md#example-14).
 
 #### `containers`
 

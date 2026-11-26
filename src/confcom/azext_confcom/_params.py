@@ -360,6 +360,18 @@ def load_arguments(self, _):
             help="Omit the id field in the policy. This is helpful if the image being used will be present in multiple registries and used interchangeably.",
         )
         c.argument(
+            "env_rule_format",
+            options_list=("--env-rule-format",),
+            choices=["pattern", "name-value"],
+            default="pattern",
+            help=(
+                "Format of generated environment rules: pattern (default) combines the name and value; "
+                "name-value stores them separately, which is useful when creating parameterized fragments. "
+                "For example, PORT=8080 is one rule in pattern format. "
+                "In name-value format, the name is PORT and the value is 8080."
+            ),
+        )
+        c.argument(
             "generate_import",
             options_list=("--generate-import", "-g"),
             required=False,
