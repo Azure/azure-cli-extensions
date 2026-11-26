@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks create`: Add `--disable-oidc-issuer` to create a cluster with OIDC issuer disabled, which is otherwise enabled by default for Kubernetes 1.34 and later.
 * `az aks nodepool update`: Remove the stale feature registration note from the `--node-vm-size` VMSS resize example. Resizing a VMSS node pool no longer requires the `Microsoft.ContainerService/AgentPoolVMSSResize` feature registration.
 
 22.0.0b18

@@ -538,6 +538,10 @@ helps['aks create'] = f"""
         - name: --enable-oidc-issuer
           type: bool
           short-summary: Enable OIDC issuer.
+        - name: --disable-oidc-issuer
+          type: bool
+          short-summary: Disable OIDC issuer.
+          long-summary: OIDC issuer is enabled by default for new clusters with Kubernetes version 1.34 or later. Use this flag to create the cluster with OIDC issuer disabled. Cannot be used together with --enable-oidc-issuer or --enable-workload-identity.
         - name: --crg-id
           type: string
           short-summary: The crg-id used to associate the new cluster with the existed Capacity Reservation Group resource.
