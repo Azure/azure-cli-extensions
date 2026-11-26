@@ -95,6 +95,14 @@ class ContainerappFunctionTests(ScenarioTest):
             recording_processors=[FunctionSecretsReplacer()],
             **kwargs)
 
+    def wait_for_healthy_revision(self, resource_group, app):
+        for _ in range(60):
+            revisions = self.cmd(f'az containerapp revision list -g {resource_group} -n {app}').get_output_in_json()
+            if any(r["properties"]["active"] and r["properties"]["healthState"] == "Healthy" for r in revisions):
+                return
+            time.sleep(10)
+        self.fail(f"Timed out waiting for a healthy revision of {app}")
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_function_list_show_basic(self, resource_group):
@@ -115,9 +123,7 @@ class ContainerappFunctionTests(ScenarioTest):
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("kind", "functionapp")
         ])
-        time.sleep(30)
-        rev_status = self.cmd(f'az containerapp revision list -g {resource_group} -n {ca_name}').get_output_in_json()
-        assert any(r["properties"]["active"] and r["properties"]["healthState"] == "Healthy" for r in rev_status)
+        self.wait_for_healthy_revision(resource_group, ca_name)
         
         time.sleep(30)
         result = self.cmd(f'containerapp function list -g {resource_group} -n {ca_name}').get_output_in_json()
@@ -163,11 +169,8 @@ class ContainerappFunctionTests(ScenarioTest):
         ])
         time.sleep(60)
 
-        rev_status = self.cmd(f'az containerapp revision list -g {resource_group} -n {ca_name}').get_output_in_json()
-        assert any(r["properties"]["active"] and r["properties"]["healthState"] == "Healthy" for r in rev_status)
-
-        rev_status = self.cmd(f'az containerapp revision list -g {resource_group} -n {ca_func_name}').get_output_in_json()
-        assert any(r["properties"]["active"] and r["properties"]["healthState"] == "Healthy" for r in rev_status)
+        self.wait_for_healthy_revision(resource_group, ca_name)
+        self.wait_for_healthy_revision(resource_group, ca_func_name)
 
         # Test: List functions from a regular app should fail
         with self.assertRaisesRegex(Exception, ".*"):
@@ -304,8 +307,11 @@ class ContainerappFunctionTests(ScenarioTest):
     @ResourceGroupPreparer(location="eastus2")
     @SubnetPreparer(
         location="eastus2",
+        vnet_name='test-vnet',
+        vnet_address_prefixes='10.221.0.0/22',
+        subnet_address_prefixes='10.221.0.0/23',
         delegations=None)
-    def test_containerapp_function_keys(self, resource_group, subnet_id):
+    def test_containerapp_function_keys(self, resource_group, subnet_id, vnet_name):
         """Test function keys show/list/set functionality"""
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
@@ -322,12 +328,27 @@ class ContainerappFunctionTests(ScenarioTest):
         custom_key_name = "mycustomkey"
 
         # Step 1: Create storage account
-        self.cmd(
+        storage_id = self.cmd(
             f'storage account create -n {storage_account_name} -g {resource_group} '
-            f'--location {location} --sku Standard_LRS '
+            f'--location {location} --sku Standard_LRS --public-network-access Disabled '
+            '--allow-blob-public-access false '
             '--tags "Az.Sec.DisableLocalAuth.Storage::Skip=true"',
             checks=[JMESPathCheck("provisioningState", "Succeeded")]
-        )
+        ).get_output_in_json()["id"]
+        self.cmd(f'network vnet subnet create -g {resource_group} --vnet-name {vnet_name} '
+                 '-n private-endpoints --address-prefixes 10.221.2.0/24')
+        for service in ('blob', 'queue', 'table'):
+            zone = f'privatelink.{service}.core.windows.net'
+            endpoint = f'storage-{service}'
+            self.cmd(f'network private-dns zone create -g {resource_group} -n {zone}')
+            self.cmd(f'network private-dns link vnet create -g {resource_group} -z {zone} '
+                     f'-n storage-link --virtual-network {vnet_name} --registration-enabled false')
+            self.cmd(f'network private-endpoint create -g {resource_group} -n {endpoint} '
+                     f'--location eastus2 --vnet-name {vnet_name} --subnet private-endpoints '
+                     f'--private-connection-resource-id {storage_id} --group-ids {service} '
+                     f'--connection-name storage-{service}')
+            self.cmd(f'network private-endpoint dns-zone-group create -g {resource_group} '
+                     f'--endpoint-name {endpoint} -n default --private-dns-zone {zone} --zone-name {service}')
         time.sleep(20)
 
         # Get storage connection string

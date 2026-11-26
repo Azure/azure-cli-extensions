@@ -19,14 +19,15 @@ from azure.mgmt.core.tools import parse_resource_id
 from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
 from .common import TEST_LOCATION, STAGE_LOCATION
 from .custom_preparers import SubnetPreparer
-from .utils import create_containerapp_env, prepare_containerapp_env_for_app_e2e_tests
+from .utils import (LogAnalyticsSharedKeyReplacer, create_containerapp_env, create_vnet_subnet,
+                    prepare_containerapp_env_for_app_e2e_tests)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ContainerappIdentityTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=True, recording_processors=[LogAnalyticsSharedKeyReplacer()], **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
@@ -87,11 +88,12 @@ class ContainerappIdentityTests(ScenarioTest):
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
+        subnet_id = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='vnet', length=24), location=location)
 
         logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
         logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
-        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --infrastructure-subnet-resource-id {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key, subnet_id))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -309,10 +311,10 @@ class ContainerappIngressTests(ScenarioTest):
         # wait for the first revision to come up and populate in traffic.
         ingress = self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
         for _ in range(100):
-            if ingress["traffic"] != None:
+            if ingress["traffic"]:
                 break
             time.sleep(5)
-            traffic = self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
+            ingress = self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
 
         self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('external', True),
@@ -636,7 +638,7 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('allowedMethods[0]', "GET"),
             JMESPathCheck('length(allowedHeaders)', 1),
             JMESPathCheck('allowedHeaders[0]', "header1"),
-            JMESPathCheck('exposeHeaders', None),
+            JMESPathCheck('exposeHeaders', []),
             JMESPathCheck('allowCredentials', False),
             JMESPathCheck('maxAge', 0),
         ])
@@ -648,7 +650,7 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('allowedMethods[0]', "GET"),
             JMESPathCheck('length(allowedHeaders)', 1),
             JMESPathCheck('allowedHeaders[0]', "header1"),
-            JMESPathCheck('exposeHeaders', None),
+            JMESPathCheck('exposeHeaders', []),
             JMESPathCheck('allowCredentials', False),
             JMESPathCheck('maxAge', 0),
         ])
@@ -1205,21 +1207,21 @@ class ContainerappServiceBindingTests(ScenarioTest):
         self.cmd('containerapp add-on qdrant create -g {} -n {} --environment {}'.format(
             resource_group, qdrant_ca_name, env_name))
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis'.format(
+        self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgresbinding redis'.format(
             resource_group, ca_name, env_name, image), checks=[
-            JMESPathCheck('properties.template.serviceBinds[0].name', "postgres_binding"),
+            JMESPathCheck('properties.template.serviceBinds[0].name', "postgresbinding"),
             JMESPathCheck('properties.template.serviceBinds[1].name', "redis")
         ])
 
-        self.cmd('containerapp update -g {} -n {} --unbind postgres_binding'.format(
+        self.cmd('containerapp update -g {} -n {} --unbind postgresbinding'.format(
             resource_group, ca_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
         ])
 
-        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb qdrant'.format(
+        self.cmd('containerapp update -g {} -n {} --bind postgres:postgresbinding kafka mariadb qdrant'.format(
             resource_group, ca_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
-            JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding"),
+            JMESPathCheck('properties.template.serviceBinds[1].name', "postgresbinding"),
             JMESPathCheck('properties.template.serviceBinds[2].name', "kafka"),
             JMESPathCheck('properties.template.serviceBinds[3].name', "mariadb"),
             JMESPathCheck('properties.template.serviceBinds[4].name', "qdrant")
@@ -1250,7 +1252,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
             JMESPathCheck('length(@)', 0),
         ])
 
-        self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes')
+        self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes --no-wait')
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
@@ -1272,9 +1274,9 @@ class ContainerappServiceBindingTests(ScenarioTest):
         milvus_ca_name = "milvus"
         ADDON_LIST = ["redis", "postgres", "kafka", "mariadb", "qdrant", "weaviate", "milvus"]
 
-        env_id = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
-        env_rg = parse_resource_id(env_id).get('resource_group')
-        env_name = parse_resource_id(env_id).get('name')
+        env_rg = resource_group
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        create_containerapp_env(self, env_name, env_rg, location=location)
 
         self.cmd('containerapp add-on redis create -g {} -n {} --environment {}'.format(
             env_rg, redis_ca_name, env_name))
@@ -1301,22 +1303,22 @@ class ContainerappServiceBindingTests(ScenarioTest):
             self.cmd(f'containerapp show -g {env_rg} -n {addon}', checks=[
                 JMESPathCheck("properties.provisioningState", "Succeeded")])
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis'.format(
+        self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgresbinding redis'.format(
             env_rg, ca_name, env_name, image), checks=[
-            JMESPathCheck('properties.template.serviceBinds[0].name', "postgres_binding"),
+            JMESPathCheck('properties.template.serviceBinds[0].name', "postgresbinding"),
             JMESPathCheck('properties.template.serviceBinds[1].name', "redis")
         ])
 
-        self.cmd('containerapp update -g {} -n {} --unbind postgres_binding'.format(
+        self.cmd('containerapp update -g {} -n {} --unbind postgresbinding'.format(
             env_rg, ca_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
         ])
 
-        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb qdrant weaviate milvus'.format(
+        self.cmd('containerapp update -g {} -n {} --bind postgres:postgresbinding kafka mariadb qdrant weaviate milvus'.format(
             env_rg, ca_name, image), checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
-            JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding"),
+            JMESPathCheck('properties.template.serviceBinds[1].name', "postgresbinding"),
             JMESPathCheck('properties.template.serviceBinds[2].name', "kafka"),
             JMESPathCheck('properties.template.serviceBinds[3].name', "mariadb"),
             JMESPathCheck('properties.template.serviceBinds[4].name', "qdrant"),
@@ -1971,13 +1973,14 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         acr = self.create_random_name(prefix='acr', length=24)
         image_source = "mcr.microsoft.com/k8se/quickstart:latest"
         image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
+        subnet_id = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='vnet', length=24), location=location)
 
         # prepare env
         user_identity_name = self.create_random_name(prefix='env-msi', length=24)
         identity_json = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
         user_identity_id = identity_json["id"]
 
-        self.cmd('containerapp env create -g {} -n {} --mi-system-assigned --mi-user-assigned {} --logs-destination none'.format(resource_group, env_name, user_identity_id))
+        self.cmd('containerapp env create -g {} -n {} --mi-system-assigned --mi-user-assigned {} --logs-destination none --infrastructure-subnet-resource-id {}'.format(resource_group, env_name, user_identity_id, subnet_id))
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
         while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
             time.sleep(5)
@@ -3312,7 +3315,7 @@ properties:
 
 class ContainerappOtherPropertyTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=True, recording_processors=[LogAnalyticsSharedKeyReplacer()], **kwargs)
 
     @live_only() # Pass lively, failed in playback mode because in the playback mode the cloud is AzureCloud, not AzureChinaCloud
     @AllowLargeResponse(8192)

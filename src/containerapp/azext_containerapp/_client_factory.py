@@ -45,7 +45,10 @@ def handle_raw_exception(e):
 
     if "{" in stringErr and "}" in stringErr:
         jsonError = stringErr[stringErr.index("{"):stringErr.rindex("}") + 1]
-        jsonError = json.loads(jsonError)
+        try:
+            jsonError = json.loads(jsonError)
+        except json.JSONDecodeError:
+            raise e from None
 
         if 'error' in jsonError:
             jsonError = jsonError['error']

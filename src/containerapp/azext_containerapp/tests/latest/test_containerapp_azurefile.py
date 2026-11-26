@@ -28,7 +28,9 @@ class ContainerAppMountAzureFileTest(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
-    @SubnetPreparer(location="centralus", delegations='Microsoft.App/environments', service_endpoints="Microsoft.Storage.Global")
+    @SubnetPreparer(location="centralus", vnet_name='test-vnet', vnet_address_prefixes='14.0.0.0/22',
+                    subnet_address_prefixes='14.0.0.0/23',
+                    delegations='Microsoft.App/environments', service_endpoints="Microsoft.Storage.Global")
     def test_container_app_mount_azurefile_e2e(self, resource_group, subnet_id, vnet_name, subnet_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
@@ -39,10 +41,23 @@ class ContainerAppMountAzureFileTest(ScenarioTest):
         storage_account_location = TEST_LOCATION
         if format_location(storage_account_location) == format_location(STAGE_LOCATION):
             storage_account_location = "eastus"
-        self.cmd(
+        storage_id = self.cmd(
             f'az storage account create --resource-group {resource_group} --name {storage} '
             f'--location {storage_account_location} --kind StorageV2 --sku Standard_LRS '
-            '--enable-large-file-share --tags "Az.Sec.DisableLocalAuth.Storage::Skip=true" --output none')
+            '--enable-large-file-share --public-network-access Disabled --allow-blob-public-access false '
+            '--tags "Az.Sec.DisableLocalAuth.Storage::Skip=true"').get_output_in_json()['id']
+        self.cmd(f'az network vnet subnet create -g {resource_group} --vnet-name {vnet_name} '
+                 '-n private-endpoints --address-prefixes 14.0.2.0/24')
+        self.cmd(f'az network private-dns zone create -g {resource_group} -n privatelink.file.core.windows.net')
+        self.cmd(f'az network private-dns link vnet create -g {resource_group} '
+                 f'-z privatelink.file.core.windows.net -n storage-link --virtual-network {vnet_name} '
+                 '--registration-enabled false')
+        self.cmd(f'az network private-endpoint create -g {resource_group} -n storage-endpoint '
+                 f'--location centralus --vnet-name {vnet_name} --subnet private-endpoints '
+                 f'--private-connection-resource-id {storage_id} --group-ids file --connection-name storage-connection')
+        self.cmd(f'az network private-endpoint dns-zone-group create -g {resource_group} '
+                 '--endpoint-name storage-endpoint -n default '
+                 '--private-dns-zone privatelink.file.core.windows.net --zone-name file')
         self.cmd(
             f'az storage share-rm create --resource-group {resource_group}  --storage-account {storage} --name {share} --quota 1024 --enabled-protocols SMB --output none')
 

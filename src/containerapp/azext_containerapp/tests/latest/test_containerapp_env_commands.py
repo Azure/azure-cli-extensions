@@ -10,56 +10,14 @@ import json
 import tempfile
 from azure.cli.command_modules.containerapp._utils import format_location
 
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse, RecordingProcessor
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckExists, live_only, StorageAccountPreparer, LogAnalyticsWorkspacePreparer)
 
 from .common import TEST_LOCATION, STAGE_LOCATION
 from .custom_preparers import SubnetPreparer
-from .utils import create_vnet_subnet
+from .utils import LogAnalyticsSharedKeyReplacer, create_vnet_subnet
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-
-
-class LogAnalyticsSharedKeyReplacer(RecordingProcessor):
-    _SHARED_KEY_FIELDS = {"sharedKey", "primarySharedKey", "secondarySharedKey"}
-
-    @classmethod
-    def _sanitize_body(cls, body):
-        if not body:
-            return body
-
-        try:
-            payload = json.loads(body)
-        except (TypeError, ValueError):
-            return body
-
-        changed = False
-
-        def sanitize(value):
-            nonlocal changed
-            if isinstance(value, dict):
-                for key, child in value.items():
-                    if key in cls._SHARED_KEY_FIELDS and isinstance(child, str):
-                        value[key] = "fake-log-analytics-key"
-                        changed = True
-                    else:
-                        sanitize(child)
-            elif isinstance(value, list):
-                for child in value:
-                    sanitize(child)
-
-        sanitize(payload)
-        return json.dumps(payload, separators=(",", ":")) if changed else body
-
-    def process_request(self, request):
-        request["body"] = self._sanitize_body(request.get("body"))
-        return request
-
-    def process_response(self, response):
-        body = response.get("body", {})
-        if isinstance(body, dict):
-            body["string"] = self._sanitize_body(body.get("string"))
-        return response
 
 
 class ContainerappEnvIdentityTests(ScenarioTest):
@@ -462,6 +420,9 @@ class ContainerappEnvIdentityTests(ScenarioTest):
 
 
 class ContainerappEnvScenarioTest(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, recording_processors=[LogAnalyticsSharedKeyReplacer()], **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     @LogAnalyticsWorkspacePreparer(location="eastus", get_shared_key=True)
@@ -1390,8 +1351,9 @@ class ContainerappEnvLocationNotInStageScenarioTest(ScenarioTest):
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        subnet_id = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='vnet', length=24), location=location)
 
-        self.cmd('containerapp env create -g {} -n {} --logs-destination none'.format(resource_group, env_name))
+        self.cmd('containerapp env create -g {} -n {} --logs-destination none --infrastructure-subnet-resource-id {}'.format(resource_group, env_name, subnet_id))
         self.cmd('containerapp env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
@@ -1458,4 +1420,4 @@ class ContainerappEnvLocationNotInStageScenarioTest(ScenarioTest):
         self.cmd('containerapp env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
-        self.cmd('containerapp env delete -g {} -n {} --yes'.format(resource_group, env_name), expect_failure=False)
+        self.cmd('containerapp env delete -g {} -n {} --yes --no-wait'.format(resource_group, env_name), expect_failure=False)

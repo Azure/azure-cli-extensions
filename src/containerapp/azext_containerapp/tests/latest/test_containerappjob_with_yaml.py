@@ -12,6 +12,7 @@ from azure.mgmt.core.tools import parse_resource_id
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 from .common import (write_test_file, clean_up_test_file, TEST_LOCATION, STAGE_LOCATION)
+from .custom_preparers import SubnetPreparer
 from .utils import create_containerapp_env, prepare_containerapp_env_for_app_e2e_tests
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -23,7 +24,11 @@ class ContainerAppJobsExecutionsLocationNotInStageTest(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
-    def test_containerappjob_create_with_yaml(self, resource_group):
+    @SubnetPreparer(location="eastus" if format_location(TEST_LOCATION) == format_location(STAGE_LOCATION) else TEST_LOCATION,
+                    vnet_name='test-vnet', vnet_address_prefixes='10.222.0.0/22',
+                    subnet_address_prefixes='10.222.0.0/23',
+                    delegations='Microsoft.App/environments')
+    def test_containerappjob_create_with_yaml(self, resource_group, subnet_id, vnet_name):
         # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
@@ -35,14 +40,27 @@ class ContainerAppJobsExecutionsLocationNotInStageTest(ScenarioTest):
         storage = self.create_random_name(prefix='storage', length=24)
         share = self.create_random_name(prefix='share', length=24)
 
-        self.cmd(
+        storage_id = self.cmd(
             f'az storage account create --resource-group {resource_group} --name {storage} '
             f'--location {location} --kind StorageV2 --sku Standard_LRS '
-            '--enable-large-file-share --tags "Az.Sec.DisableLocalAuth.Storage::Skip=true" --output none')
+            '--enable-large-file-share --public-network-access Disabled --allow-blob-public-access false '
+            '--tags "Az.Sec.DisableLocalAuth.Storage::Skip=true"').get_output_in_json()['id']
+        self.cmd(f'az network vnet subnet create -g {resource_group} --vnet-name {vnet_name} '
+                 '-n private-endpoints --address-prefixes 10.222.2.0/24')
+        self.cmd(f'az network private-dns zone create -g {resource_group} -n privatelink.file.core.windows.net')
+        self.cmd(f'az network private-dns link vnet create -g {resource_group} '
+                 f'-z privatelink.file.core.windows.net -n storage-link --virtual-network {vnet_name} '
+                 '--registration-enabled false')
+        self.cmd(f'az network private-endpoint create -g {resource_group} -n storage-endpoint '
+                 f'--location {location} --vnet-name {vnet_name} --subnet private-endpoints '
+                 f'--private-connection-resource-id {storage_id} --group-ids file --connection-name storage-connection')
+        self.cmd(f'az network private-endpoint dns-zone-group create -g {resource_group} '
+                 '--endpoint-name storage-endpoint -n default '
+                 '--private-dns-zone privatelink.file.core.windows.net --zone-name file')
         self.cmd(
             f'az storage share-rm create --resource-group {resource_group}  --storage-account {storage} --name {share} --quota 1024 --enabled-protocols SMB --output none')
 
-        create_containerapp_env(self, env, resource_group, location)
+        create_containerapp_env(self, env, resource_group, location, subnet_id)
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
         account_key = self.cmd(f'az storage account keys list -g {resource_group} -n {storage} --query "[0].value" '

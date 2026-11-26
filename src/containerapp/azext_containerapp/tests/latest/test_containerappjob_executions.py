@@ -10,7 +10,7 @@ from azure.mgmt.core.tools import parse_resource_id
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
-from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
+from azext_containerapp.tests.latest.common import (AuthTokenReplacer, write_test_file, clean_up_test_file)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -19,6 +19,9 @@ from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 
 class ContainerAppJobsExecutionsTest(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, recording_processors=[AuthTokenReplacer()], **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     def test_containerapp_job_executionstest_e2e(self, resource_group):

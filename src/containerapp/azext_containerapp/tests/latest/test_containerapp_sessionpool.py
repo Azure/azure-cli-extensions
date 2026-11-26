@@ -9,7 +9,7 @@ from azure.cli.command_modules.containerapp._utils import format_location
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckExists)
 
-from .common import (TEST_LOCATION, STAGE_LOCATION, write_test_file,
+from .common import (TEST_LOCATION, STAGE_LOCATION, RegistryPasswordReplacer, write_test_file,
                      clean_up_test_file,
                      )
 from .custom_preparers import SubnetPreparer
@@ -17,6 +17,9 @@ from .utils import create_containerapp_env
 
 
 class ContainerappSessionPoolTests(ScenarioTest):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, recording_processors=[RegistryPasswordReplacer()], **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
     @SubnetPreparer(location=TEST_LOCATION, delegations='Microsoft.App/environments',

@@ -202,8 +202,9 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
         app = self.create_random_name(prefix='yaml', length=24)
 
         location = "eastus"
+        subnet_id = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='name', length=24), location=location)
 
-        containerapp_env = self.cmd('containerapp env create -g {} -n {} --location {}  --logs-destination none --enable-workload-profiles'.format(resource_group, env, location)).get_output_in_json()
+        containerapp_env = self.cmd('containerapp env create -g {} -n {} --location {} --logs-destination none --enable-workload-profiles -s {}'.format(resource_group, env, location, subnet_id)).get_output_in_json()
         while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
@@ -216,9 +217,9 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
             JMESPathCheck('properties.workloadProfiles[0].workloadProfileType', "Consumption", case_sensitive=False),
         ]).get_output_in_json()
 
-        workload_profile_name = "my-e16"
+        workload_profile_name = "my-d16"
 
-        self.cmd("az containerapp env workload-profile add -g {} -n {} --workload-profile-name {} --workload-profile-type E16 --min-nodes 1 --max-nodes 3".format(resource_group, env, workload_profile_name))
+        self.cmd("az containerapp env workload-profile add -g {} -n {} --workload-profile-name {} --workload-profile-type D16 --min-nodes 1 --max-nodes 3".format(resource_group, env, workload_profile_name))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
@@ -234,11 +235,11 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
             JMESPathCheck('properties.workloadProfiles[0].workloadProfileType', "Consumption", case_sensitive=False),
         ]).get_output_in_json()
 
-        self.cmd("az containerapp env workload-profile show -g {} -n {} --workload-profile-name my-e16 ".format(resource_group, env), checks=[
+        self.cmd("az containerapp env workload-profile show -g {} -n {} --workload-profile-name {} ".format(resource_group, env, workload_profile_name), checks=[
             JMESPathCheck("properties.name", workload_profile_name),
             JMESPathCheck("properties.maximumCount", 3),
             JMESPathCheck("properties.minimumCount", 1),
-            JMESPathCheck("properties.workloadProfileType", "E16"),
+            JMESPathCheck("properties.workloadProfileType", "D16"),
         ])
 
         revision_01 = "revision01"
@@ -322,8 +323,9 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
         app2 = self.create_random_name(prefix='app2', length=24)
 
         location = "eastus"
+        subnet_id = create_vnet_subnet(self, resource_group, vnet, location=location)
 
-        self.cmd('containerapp env create -g {} -n {} --location {}  --logs-destination none --enable-workload-profiles'.format(resource_group, env, location))
+        self.cmd('containerapp env create -g {} -n {} --location {} --logs-destination none --enable-workload-profiles -s {}'.format(resource_group, env, location, subnet_id))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 

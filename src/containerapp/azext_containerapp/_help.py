@@ -335,10 +335,6 @@ helps['containerapp env create'] = """
       text: |
           az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
               --location eastus2 --environment-mode WorkloadProfiles
-    - name: Create an environment in consumption-only mode (no workload profiles).
-      text: |
-          az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
-              --location eastus2 --environment-mode ConsumptionOnly
     - name: Create an environment with system assigned and user assigned identity.
       text: |
           az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
