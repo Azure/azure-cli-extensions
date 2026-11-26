@@ -11,7 +11,14 @@ import os
 import tempfile
 import shutil
 import json
+from types import SimpleNamespace
+import unittest
 from unittest import mock
+
+from azext_workload_orchestration.aaz.latest.workload_orchestration import _init as init_module
+from azext_workload_orchestration.aaz.latest.workload_orchestration._init import Init
+from azext_workload_orchestration.aaz.latest.workload_orchestration.context import _create as context_create_module
+from azext_workload_orchestration.aaz.latest.workload_orchestration.context._create import Create as ContextCreate
 
 # --- Module-level constants ---
 DEFAULT_RG = "audapure-ob-fresh"
@@ -34,6 +41,113 @@ INIT_RG = "mchichili-rg"
 INIT_LOCATION = "eastus2euap"
 INIT_CONTEXT_NAME = "Mehoopany"
 INIT_CONTEXT_LOCATION = "eastus2euap"
+
+
+class ContextCreateCompatibilityTest(unittest.TestCase):
+
+    @staticmethod
+    def _create_case(capabilities_marker):
+        data = {
+            "context_name": "ctx",
+            "resource_group": "rg",
+            "location": "eastus",
+            "hierarchies": [{"name": "country", "description": "Country"}],
+        }
+        if capabilities_marker is not None:
+            data["capabilities"] = capabilities_marker
+
+        schema = ContextCreate._build_arguments_schema()
+        args = schema._ValueCls(schema, schema.process_data(data))
+        ctx = SimpleNamespace(args=args, get_http_client=mock.Mock())
+        command = object.__new__(ContextCreate)
+        command.callbacks = {}
+        command.ctx = ctx
+        operation = ContextCreate.ContextsCreateOrUpdate(ctx=ctx)
+        return command, operation
+
+    def test_omitted_capabilities_use_current_api_without_warning(self):
+        command, operation = self._create_case(None)
+
+        with mock.patch.object(context_create_module.logger, "warning") as warning:
+            command.pre_operations()
+
+        self.assertEqual(operation.query_parameters, {"api-version": "2026-06-01"})
+        self.assertEqual(operation.content["properties"]["capabilities"], [])
+        warning.assert_not_called()
+
+    def test_empty_capabilities_use_current_api_with_warning(self):
+        command, operation = self._create_case([])
+
+        with mock.patch.object(context_create_module.logger, "warning") as warning:
+            command.pre_operations()
+
+        self.assertEqual(operation.query_parameters, {"api-version": "2026-06-01"})
+        self.assertEqual(operation.content["properties"]["capabilities"], [])
+        warning.assert_called_once()
+
+    def test_non_empty_capabilities_use_legacy_api_with_warning(self):
+        capabilities = [{"name": "cap", "description": "Cap"}]
+        command, operation = self._create_case(capabilities)
+
+        with mock.patch.object(context_create_module.logger, "warning") as warning:
+            command.pre_operations()
+
+        self.assertEqual(operation.query_parameters, {"api-version": "2025-08-01"})
+        self.assertEqual(operation.content["properties"]["capabilities"], capabilities)
+        warning.assert_called_once()
+
+
+class InitCapabilitiesCompatibilityTest(unittest.TestCase):
+
+    @staticmethod
+    def _init_args(capabilities_marker):
+        data = {
+            "resource_group": "rg",
+            "context_name": "ctx",
+            "context_location": "eastus",
+            "hierarchies": [{"name": "country", "description": "Country"}],
+        }
+        if capabilities_marker is not None:
+            data["capabilities"] = capabilities_marker
+        schema = Init._build_arguments_schema()
+        return schema._ValueCls(schema, schema.process_data(data))
+
+    def _create_context_args(self, capabilities_marker):
+        command = object.__new__(Init)
+        command._set_current_context = mock.Mock()
+        args = self._init_args(capabilities_marker)
+
+        with mock.patch(
+            "azext_workload_orchestration.common.utils.invoke_cli_command",
+            return_value={"id": "context-id"},
+        ) as invoke, mock.patch(
+            "azext_workload_orchestration.common.utils._eprint"
+        ), mock.patch.object(init_module.logger, "warning") as warning:
+            command._create_context(args)
+
+        return invoke.call_args.args[1], warning
+
+    def test_omitted_capabilities_are_not_forwarded(self):
+        cli_args, warning = self._create_context_args(None)
+
+        self.assertNotIn("--capabilities", cli_args)
+        warning.assert_not_called()
+
+    def test_empty_capabilities_are_forwarded_with_warning(self):
+        cli_args, warning = self._create_context_args([])
+
+        self.assertEqual(cli_args[cli_args.index("--capabilities") + 1], "[]")
+        warning.assert_called_once()
+
+    def test_non_empty_capabilities_are_forwarded_with_warning(self):
+        cli_args, warning = self._create_context_args(
+            [{"name": "cap", "description": "Cap"}]
+        )
+
+        self.assertIn('"name": "cap"', cli_args[cli_args.index("--capabilities") + 1])
+        warning.assert_called_once()
+
+
 class WorkloadOrchestrationTest(ScenarioTest):
 
     @classmethod
@@ -132,7 +246,6 @@ class WorkloadOrchestrationTest(ScenarioTest):
                 f'az workload-orchestration init '
                 f'-c {cluster_name} -g {rg} -l {location} '
                 f'--context-name {context_name} --context-location {context_location} '
-                f'--capabilities [0].name=Quality [0].description=quality '
                 f'--hierarchies [0].name=country [0].description=Country '
                 f'[1].name=region [1].description=Region'
             ).get_output_in_json()
@@ -145,10 +258,7 @@ class WorkloadOrchestrationTest(ScenarioTest):
             # Clean tenant: a Context was freshly created by init.
             assert result["context"]["name"] == context_name
             assert result["context"]["properties"]["provisioningState"] == "Succeeded"
-            assert any(
-                c["name"] == "Quality"
-                for c in result["context"]["properties"]["capabilities"]
-            ), "Quality capability not found on the created context"
+            assert result["context"]["properties"]["capabilities"] == []
             # Clean up the Context created by init (cluster prep is idempotent
             # and intentionally left in place).
             self.cmd(
@@ -159,37 +269,22 @@ class WorkloadOrchestrationTest(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     def test_full_wom_workflow(self):
-        # Get existing context and update capabilities
-        context = self.cmd(
-            f'az workload-orchestration context show --resource-group {self.context_rg} --name {self.context_name}'
-        ).get_output_in_json()
-        # Add new capabilities and remove duplicates
-        capabilities = context["properties"]["capabilities"] + [
-            {"name": f"{self.resource_prefix}-Shampoo", "description": f"{self.resource_prefix}-Shampoo"},
-            {"name": f"{self.resource_prefix}-Soap", "description": f"{self.resource_prefix}-Soap"}
-        ]
-        unique_capabilities = { (c["name"], c["description"]): c for c in capabilities }.values()
-        # Write capabilities to a JSON file
-        capabilities_file = os.path.join(os.path.dirname(__file__), "context-capabilities.json")
-        with open(capabilities_file, "w") as f:
-            json.dump(list(unique_capabilities), f, separators=(',', ':'))
-        # Create context with updated capabilities and hierarchies
-        self.cmd(
-            f'az workload-orchestration context create '
-            f'--resource-group {self.context_rg} '
-            f'--location {self.context_location} '
-            f'--name {self.context_name} '
-            f'--capabilities "@{capabilities_file}" '
-            f'--hierarchies [0].name=country [0].description=Country [1].name=region [1].description=Region [2].name=factory [2].description=Factory [3].name=line [3].description=Line'
-        )
         # List contexts and check for created entry
-        result = self.cmd(
+        contexts = self.cmd(
             f'az workload-orchestration context list --resource-group {self.context_rg}'
         ).get_output_in_json()
-        assert any(item.get("name") == self.context_name for item in result), f"{self.context_name} not found in context list"
+        context_before = next(
+            (item for item in contexts if item.get("name") == self.context_name),
+            None,
+        )
+        assert context_before is not None, f"{self.context_name} not found in context list"
 
         rg = self.rg
         location = self.location
+        capability = f"{self.resource_prefix}-Shampoo"
+        assert capability not in {
+            item["name"] for item in context_before["properties"]["capabilities"]
+        }
         
         # Create schema first
         schema_name = f"{self.resource_prefix}-schema"
@@ -199,7 +294,6 @@ class WorkloadOrchestrationTest(ScenarioTest):
         )
         
         solution_template_name = f"{self.resource_prefix}-solution-cli"
-        capability = f"{self.resource_prefix}-Shampoo"
         description = "This is Holtmelt Solution"
         # Create solution-template
         create_result = self.cmd(
@@ -263,13 +357,7 @@ class WorkloadOrchestrationTest(ScenarioTest):
             json.dump(target_spec_content, f)
         with open(custom_location_file, "w") as f:
             json.dump(custom_location_content, f)
-        # Get context id for target creation
-        context_id = self.cmd(
-            f"az workload-orchestration context show "
-            f"--resource-group {self.context_rg} "
-            f"--name {self.context_name} "
-            f"--query id --output tsv"
-        ).output.strip()
+        context_id = context_before["id"]
 
         # Create target with context-id
         create_result = self.cmd(
@@ -293,6 +381,17 @@ class WorkloadOrchestrationTest(ScenarioTest):
         assert target_capability in create_result["properties"]["capabilities"]
         assert create_result["properties"]["description"] == description
         assert create_result["properties"]["solutionScope"] == solution_scope
+
+        # Target creation automatically reconciles its capability onto Context.
+        context_after = self.cmd(
+            f"az workload-orchestration context show "
+            f"--resource-group {self.context_rg} "
+            f"--name {self.context_name}"
+        ).get_output_in_json()
+        assert target_capability in {
+            item["name"] for item in context_after["properties"]["capabilities"]
+        }
+
         # Show target
         show_result = self.cmd(
             f"az workload-orchestration target show "
@@ -345,9 +444,6 @@ class WorkloadOrchestrationTest(ScenarioTest):
             f"--resource-group {rg} --yes",
             checks=None
         )
-        # Clean up the capabilities file
-        os.remove(capabilities_file)
-        
         # Remove schema version
         self.cmd(
             f'az workload-orchestration schema remove-version --schema-name {schema_name} --version {version} --resource-group {rg}'
@@ -422,5 +518,4 @@ class WorkloadOrchestrationTest(ScenarioTest):
             )
         finally:
             shutil.rmtree(temp_dir)
-
 

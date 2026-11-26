@@ -3,12 +3,13 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-"""Context capability management for Workload Orchestration.
+"""Legacy context capability management for Workload Orchestration.
 
 Pure-Python helpers that GET the current context state,
 normalize/dedup user input case-insensitively, compute the delta vs existing
 capabilities, skip the ARM call entirely if there is no change (idempotent),
-and otherwise issue ONE PATCH with only the capabilities array.
+and otherwise issue ONE PATCH with only the capabilities array through the
+legacy context capability API.
 
 Exports:
     capability_add(cli_ctx, ...)
@@ -33,7 +34,7 @@ from azure.cli.core.util import send_raw_request
 
 from azext_workload_orchestration.common.consts import (
     get_arm_endpoint,
-    CONTEXT_API_VERSION,
+    LEGACY_CONTEXT_CAPABILITY_API_VERSION,
 )
 from azext_workload_orchestration.common.utils import (
     CmdProxy,
@@ -230,7 +231,7 @@ def _patch_context_capabilities(cli_ctx, sub_id, resource_group,
     url = (
         f"{get_arm_endpoint(cli_ctx)}/subscriptions/{sub_id}"
         f"/resourceGroups/{resource_group}/providers/Microsoft.Edge"
-        f"/contexts/{context_name}?api-version={CONTEXT_API_VERSION}"
+        f"/contexts/{context_name}?api-version={LEGACY_CONTEXT_CAPABILITY_API_VERSION}"
     )
     resp = send_raw_request(
         cli_ctx,

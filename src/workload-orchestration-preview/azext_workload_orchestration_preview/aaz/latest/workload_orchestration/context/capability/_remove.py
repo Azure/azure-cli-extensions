@@ -9,6 +9,10 @@
 """AAZ command for `workload-orchestration-preview context remove-capability`."""
 
 from azure.cli.core.aaz import *
+from knack.log import get_logger
+
+
+logger = get_logger(__name__)
 
 
 @register_command(
@@ -70,6 +74,10 @@ class RemoveCapability(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
+        logger.warning(
+            "This command is deprecated and will be removed in a future release. "
+            "Context capabilities are now managed automatically through Targets."
+        )
 
         args = self.ctx.args
         capabilities_raw = args.capabilities.to_serialized_data() if args.capabilities._data is not None else None

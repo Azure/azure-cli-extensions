@@ -2,6 +2,12 @@
 
 Release History
 ===============
+0.1.0b3
++++++++
+* Updated Context and Solution Template operations to API version ``2026-06-01``.
+* Deprecated ``--capabilities`` for context creation. Existing values remain supported for backward compatibility while capabilities move to automatic Target management.
+* Deprecated ``context add-capability`` and ``context remove-capability`` while preserving their legacy ``2025-08-01`` capability PATCH behavior.
+
 0.1.0b2
 ++++++
 * Renamed the command group from ``workload-orchestration`` to ``workload-orchestration-preview``

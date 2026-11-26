@@ -2,6 +2,12 @@
 
 Release History
 ===============
+5.4.0
++++++
+* Updated Context, Target, and Solution Template operations to API version ``2026-06-01``.
+* Deprecated ``--capabilities`` for context creation and initialization. Existing values remain supported for backward compatibility while capabilities move to automatic Target management.
+* Deprecated ``context add-capability`` and ``context remove-capability`` while preserving their legacy ``2025-08-01`` capability PATCH behavior.
+
 5.3.1
 +++++
 * Added ``az workload-orchestration init`` command:
