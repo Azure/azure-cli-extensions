@@ -10,6 +10,7 @@ import time
 import re
 from ._constants import (
     RESOURCE_GROUP,
+    TASK_LOG_DOWNLOAD_WORKERS,
     CSSCTaskTypes,
     TaskRunStatus,
     WORKFLOW_STATUS_NOT_AVAILABLE,
@@ -243,7 +244,7 @@ class WorkflowTaskStatus:
                 logger.debug("An unexpected exception has occurred for taskrun: %s with exception: %s",
                              taskrun.run_id, e)
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=TASK_LOG_DOWNLOAD_WORKERS) as executor:
             futures = []
             for taskrun in taskruns:
                 if progress_indicator:
@@ -532,7 +533,7 @@ class WorkflowTaskStatus:
                                  runId_filter=None,
                                  date_filter=None,
                                  status_filter=None,
-                                 top=1000):
+                                 top=None):
         # filters based on OData, found in ACR.BuildRP.DataModels - RunFilter.cs
         filter_str = ""
         if taskname_filter:
@@ -555,6 +556,8 @@ class WorkflowTaskStatus:
             status_filter_str = "', '".join(status_filter)
             filter_str += f"Status in ('{status_filter_str}')"
 
+        # The service returns runs in pages and the pager follows nextLink; `top` caps the total, so leave it unset
+        # to return every run that matches the filter.
         taskruns = acr_task_run_client.list(resource_group_name, registry_name, filter=filter_str, top=top)
         return list(taskruns)
 
