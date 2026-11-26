@@ -24,7 +24,52 @@ CUSTOM_CONFIG_PATH = '/custom/path/to/config'
 class TestKubeloginConversion(unittest.TestCase):
     """Test cases for kubelogin automatic conversion functionality."""
 
-    @patch('azext_fleet.custom.shutil.which')
+    def test_ignores_working_directory_executable(self):
+        with tempfile.TemporaryDirectory() as directory:
+            working = os.path.join(directory, 'working')
+            tools = os.path.join(directory, 'installed tools')
+            binary = 'kubelogin.exe' if os.name == 'nt' else 'kubelogin'
+            for folder in (working, tools):
+                os.mkdir(folder)
+                executable = os.path.join(folder, binary)
+                with open(executable, 'w'):
+                    pass
+                os.chmod(executable, 0o700)
+
+            old_cwd = os.getcwd()
+            try:
+                os.chdir(working)
+                for prefix in (None, '', '.', working):
+                    for installed in (True, False):
+                        search_path = [] if prefix is None else [prefix]
+                        search_path.append(tools if installed else os.path.join(directory, 'missing'))
+                        with (
+                            self.subTest(prefix=prefix, installed=installed),
+                            patch.dict(os.environ, {
+                                'PATH': os.pathsep.join(search_path),
+                                'PATHEXT': '.exe',
+                                'SystemRoot': os.path.join(directory, 'system'),
+                            }),
+                            patch('azext_fleet.custom.subprocess.run') as run,
+                            patch('azext_fleet.custom.logger') as logger,
+                        ):
+                            os.environ.pop('NoDefaultCurrentDirectoryInExePath', None)
+                            config_path = os.path.join(directory, 'selected config')
+                            _convert_kubeconfig_to_azurecli(config_path)
+
+                            if installed:
+                                run.assert_called_once_with(
+                                    [os.path.join(tools, binary), 'convert-kubeconfig', '-l', 'azurecli',
+                                     '--kubeconfig', config_path],
+                                    check=True, capture_output=True, text=True, timeout=KUBELOGIN_TIMEOUT,
+                                )
+                            else:
+                                run.assert_not_called()
+                                self.assertIn('Please install kubelogin', logger.warning.call_args.args[0])
+            finally:
+                os.chdir(old_cwd)
+
+    @patch('azext_fleet.custom.get_safe_executable_path')
     @patch('azext_fleet.custom.subprocess.run')
     @patch('azext_fleet.custom.logger')
     def test_convert_with_kubelogin_available(self, mock_logger, mock_subprocess, mock_which):
@@ -52,7 +97,7 @@ class TestKubeloginConversion(unittest.TestCase):
             if os.path.exists(test_path):
                 os.remove(test_path)
 
-    @patch('azext_fleet.custom.shutil.which')
+    @patch('azext_fleet.custom.get_safe_executable_path')
     @patch('azext_fleet.custom.logger')
     def test_convert_with_kubelogin_unavailable(self, mock_logger, mock_which):
         """Test conversion when kubelogin is not available."""
@@ -73,7 +118,7 @@ class TestKubeloginConversion(unittest.TestCase):
             if os.path.exists(test_path):
                 os.remove(test_path)
 
-    @patch('azext_fleet.custom.shutil.which')
+    @patch('azext_fleet.custom.get_safe_executable_path')
     @patch('azext_fleet.custom.subprocess.run')
     @patch('azext_fleet.custom.logger')
     def test_convert_handles_subprocess_error(self, mock_logger, mock_subprocess, mock_which):
@@ -96,7 +141,7 @@ class TestKubeloginConversion(unittest.TestCase):
             if os.path.exists(test_path):
                 os.remove(test_path)
 
-    @patch('azext_fleet.custom.shutil.which')
+    @patch('azext_fleet.custom.get_safe_executable_path')
     @patch('azext_fleet.custom.subprocess.run')
     @patch('azext_fleet.custom.logger')
     def test_convert_handles_timeout(self, mock_logger, mock_subprocess, mock_which):
@@ -119,7 +164,7 @@ class TestKubeloginConversion(unittest.TestCase):
             if os.path.exists(test_path):
                 os.remove(test_path)
 
-    @patch('azext_fleet.custom.shutil.which')
+    @patch('azext_fleet.custom.get_safe_executable_path')
     @patch('azext_fleet.custom.subprocess.run')
     @patch('azext_fleet.custom.logger')
     def test_convert_handles_generic_exception(self, mock_logger, mock_subprocess, mock_which):
@@ -141,7 +186,7 @@ class TestKubeloginConversion(unittest.TestCase):
             if os.path.exists(test_path):
                 os.remove(test_path)
 
-    @patch('azext_fleet.custom.shutil.which')
+    @patch('azext_fleet.custom.get_safe_executable_path')
     @patch('azext_fleet.custom.subprocess.run')
     def test_convert_skips_stdout_path(self, mock_subprocess, mock_which):
         """Test that conversion is skipped when path is stdout."""
@@ -153,7 +198,7 @@ class TestKubeloginConversion(unittest.TestCase):
         mock_subprocess.assert_not_called()
         mock_which.assert_not_called()
 
-    @patch('azext_fleet.custom.shutil.which')
+    @patch('azext_fleet.custom.get_safe_executable_path')
     @patch('azext_fleet.custom.subprocess.run')
     def test_convert_with_custom_path(self, mock_subprocess, mock_which):
         """Test conversion with custom kubeconfig path."""
