@@ -2,6 +2,11 @@
 
 Release History
 ===============
+5.4.0
++++++
+* ``az workload-orchestration target create``: added ``--target-location`` to bind a Target to an Arc-connected server (``ArcMachine``) or Edge machine (``EdgeMachine``) instead of ``--extended-location``.
+* ``target create/show/update`` now use API version ``2026-09-01-preview`` and surface ``properties.targetLocation``.
+
 5.3.1
 +++++
 * Added ``az workload-orchestration init`` command:
