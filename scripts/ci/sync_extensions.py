@@ -5,10 +5,12 @@
 # pylint: disable=line-too-long
 # pylint: disable=broad-except
 
+import json
 import os
 import re
-import json
 import subprocess
+
+from util import run_az_cmd
 
 DEFAULT_TARGET_INDEX_URL = os.getenv('AZURE_EXTENSION_TARGET_INDEX_URL')
 STORAGE_ACCOUNT = os.getenv('AZURE_EXTENSION_TARGET_STORAGE_ACCOUNT')
@@ -48,7 +50,6 @@ def download_file(url, file_path):
             if chunk:  # ignore keep-alive new chunks
                 f.write(chunk)
 
-
 def _sync_wheel(ext, updated_indexes, failed_urls, overwrite, temp_dir):
     download_url = ext['downloadUrl']
     whl_file = download_url.split('/')[-1]
@@ -62,27 +63,24 @@ def _sync_wheel(ext, updated_indexes, failed_urls, overwrite, temp_dir):
     if not overwrite:
         cmd = ['az', 'storage', 'blob', 'exists', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
                f'{STORAGE_ACCOUNT}', '--name', f'{blob_name}', '--auth-mode', 'login']
-        result = subprocess.run(cmd, capture_output=True)
-        if result.stdout and json.loads(result.stdout)['exists']:
+        message = f"Checking if '{blob_name}' exists in the storage"
+        result = run_az_cmd(cmd, message=message, raise_error=True)
+        if json.loads(result.stdout)['exists']:
             print("Skipping '{}' as it already exists...".format(whl_file))
             return
 
     cmd = ['az', 'storage', 'blob', 'upload', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name', f'{blob_name}', '--file', f'{os.path.abspath(whl_path)}',
            '--auth-mode', 'login', '--overwrite']
-    result = subprocess.run(cmd, capture_output=True)
-    if result.returncode != 0:
-        print(f"Failed to upload '{whl_file}' to the storage account")
-        raise
+    message = f"uploading '{blob_name}' to the storage"
+    run_az_cmd(cmd, message=message, raise_error=True)
+
     cmd = ['az', 'storage', 'blob', 'url', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name',  f'{blob_name}', '--auth-mode', 'login']
-    result = subprocess.run(cmd, capture_output=True)
-    print(result)
-    if result.stdout and result.returncode == 0:
-        url = json.loads(result.stdout)
-    else:
-        print("Failed to get the URL for '{}'".format(whl_file))
-        raise
+    message = f"Getting the URL for '{blob_name}'"
+    result = run_az_cmd(cmd, message=message, raise_error=True)
+    url = json.loads(result.stdout)
+
     updated_index = ext
     updated_index['downloadUrl'] = url
     updated_indexes.append(updated_index)
@@ -157,10 +155,9 @@ def main():
         cmd = ['az', 'storage', 'blob', 'upload', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
                f'{STORAGE_ACCOUNT}', '--name', f'{backup_index_name}',
                '--file', f'{os.path.abspath(target_index_path)}', '--auth-mode', 'login', '--overwrite']
-        result = subprocess.run(cmd, capture_output=True)
-        if result.returncode != 0:
-            print(f"Failed to upload '{target_index_path}' to the storage account")
-            raise
+        message = f"Uploading '{backup_index_name}' to the storage"
+        run_az_cmd(cmd, message=message, raise_error=True)
+
         # start with an empty index.json to sync all extensions
         initial_index = {"extensions": {}, "formatVersion": "1"}
         open(target_index_path, 'w').write(json.dumps(initial_index, indent=4, sort_keys=True))
@@ -185,10 +182,9 @@ def main():
     cmd = ['az', 'storage', 'blob', 'upload', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name', f'{index_name}', '--file', f'{os.path.abspath(target_index_path)}',
            '--auth-mode', 'login', '--overwrite']
-    result = subprocess.run(cmd, capture_output=True)
-    if result.returncode != 0:
-        print(f"Failed to upload '{target_index_path}' to the storage account")
-        raise
+    message = f"Uploading '{index_name}' to the storage"
+    run_az_cmd(cmd, message=message, raise_error=True)
+
     print("\nSync finished.")
     if updated_indexes:
         print("New extensions available in:")
