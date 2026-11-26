@@ -4,9 +4,17 @@
 
 This extension is a modernized Azure CLI port of the PowerShell script
 [Azure-NVMe-Conversion.ps1](https://github.com/Azure/SAP-on-Azure-Scripts-and-Utilities/tree/main/Azure-NVMe-Utils)
-from the SAP-on-Azure-Scripts-and-Utilities repository. The original script (1,323 lines of PowerShell)
+from the SAP-on-Azure-Scripts-and-Utilities repository. The original script
 was converted to a Python-based Azure CLI extension following the
 [Azure CLI extension authoring guidelines](https://github.com/Azure/azure-cli/blob/dev/doc/extensions/authoring.md).
+
+The Windows readiness and persistence correction follows the guest preparation
+in [Azure-NVMe-Conversion.ps1](https://github.com/Azure/SAP-on-Azure-Scripts-and-Utilities/blob/main/Azure-NVMe-Utils/Azure-NVMe-Conversion.ps1)
+from **Azure/SAP-on-Azure-Scripts-and-Utilities**, including its public version
+2026082514. See [READINESS-CHANGE-RATIONALE.md](READINESS-CHANGE-RATIONALE.md)
+for the defect, required registry state, boot validation, safety invariants and
+release-scope justification. This is not a blanket port of unrelated PowerShell
+orchestration or an SDK/API replacement.
 
 ## Reference Documentation
 

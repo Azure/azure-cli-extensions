@@ -42,7 +42,8 @@ ADE gate, dependency, release version or supported-platform change is required.
 
 ### Validation
 
-The focused readiness/EFI suite passes **42 tests and 51 subtests**. It covers:
+The Linux correction was validated by the focused readiness/EFI suite:
+**42 tests and 51 subtests**. It covers:
 
 - The package-owned module-only directory in check/fix/dry-run modes.
 - Multiple genuine installed kernels.
@@ -67,3 +68,74 @@ The correction can be reviewed as bounded correctness work within the proposed
 January 2027 release. It does not itself authorize an earlier release or alter
 the release schedule. Historical live results must not be treated as acceptance
 of a newly changed CLI payload.
+
+## Windows: complete boot readiness and durable NVMe parameters
+
+The Windows correction follows guest preparation in
+[Azure-NVMe-Conversion.ps1](https://github.com/Azure/SAP-on-Azure-Scripts-and-Utilities/blob/main/Azure-NVMe-Utils/Azure-NVMe-Conversion.ps1)
+from **Azure/SAP-on-Azure-Scripts-and-Utilities**. Its public source describes
+Windows boot failures and NVMe parameters being reset by first-device
+installation.
+
+Checking only `stornvme`/`vpci` Start and override values can report readiness
+when the driver binary is absent, PCI is not boot-start, or required NVMe
+parameters are missing. Pre-shutdown registry readback alone also does not
+provide a synchronous persistence guarantee.
+
+### Required state and correction
+
+Every ControlSet is checked for:
+
+| Setting | Required state |
+| --- | --- |
+| Driver binary | `stornvme.sys` exists |
+| `stornvme`, `vpci`, `pci` Start | DWORD `0` |
+| `stornvme`/`vpci` StartOverride | Absent |
+| `pci` StartOverride | Allowed and preserved |
+| `stornvme\Parameters\IoTimeoutValue` | DWORD `240` |
+| `stornvme\Parameters\BusType` | DWORD `17` |
+| `stornvme\Parameters\StorageSupportedFeatures` | DWORD `3` |
+| `stornvme\Parameters\PnpInterface\5` | DWORD `1` |
+
+Fixes wait for and validate `sc.exe`, set the required DWORD values, remove only
+the blocking NVMe/virtual-PCI overrides, and flush registry state before reporting
+success. If the SYSTEM flush fails, all affected service keys must flush
+successfully. Readback and complete confirmations remain mandatory; failures
+cannot produce a readiness result.
+
+With a normal Windows NVMe start, the flow waits for running/guest-agent-ready
+and verifies that the OS disk is actually enumerated as NVMe. With `--fix-os`,
+it reapplies parameters after first boot, flushes them, performs a controlled
+restart, and verifies settings again after guest readiness.
+
+Without `--fix-os`, verification is read-only. Deferred and `--no-wait` starts
+report pending post-boot work and provide verification guidance rather than
+silently claiming guest readiness. Explicit `check --controller-type NVMe` on
+an already-converted Windows VM performs the same read-only runtime checks.
+Start/verification failures explicitly report that VM conversion may already
+have occurred; there is no automatic rollback or peer-VM shutdown.
+
+### Scope and validation
+
+The correction does not replace the SDK VM-update API, change supported Windows
+releases, add Windows dry-run, install dependencies or alter a release milestone.
+The PowerShell-specific read-only VM-model workaround is not required by the
+assessed SDK serializer, which omits the cited output-only disk fields.
+
+The combined suite passes **129 tests and 80 subtests**, with live scenarios
+excluded. Native PowerShell executes the actual guest scripts against virtual
+registry/disk handles, covering missing binaries, incorrect/missing parameters,
+type mismatches, permitted PCI overrides, successful fixes, flush fallback,
+flush/readback/SC failures and non-NVMe runtime state. Orchestration regressions
+cover restart persistence, read-only validation, bounded agent waits, deferred
+and no-wait starts, disabled checks and explicit partial-conversion failures.
+
+No real host registry writes or Azure VM operations are performed by these
+tests. They are not live Windows boot certification; real boot/reboot validation
+on supported Windows releases and Standard/Trusted Launch remains a release
+acceptance requirement.
+
+This is existing boot-safety and persistence correctness work, not a new
+conversion command or platform expansion. Its opt-in repair/restart behavior
+and explicit deferred state should be reviewed with the proposed January
+release scope. The release schedule is not changed by these commits.

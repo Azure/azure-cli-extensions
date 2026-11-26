@@ -58,13 +58,68 @@ populated by RHEL's `kmod-kvdo` are not additional kernels. Package-query failur
 and missing images for genuine installed/boot-referenced kernels remain blocking;
 check/fix/dry-run behavior is preserved.
 
-Windows preparation verifies `stornvme` and `vpci` in every installed ControlSet.
-Fixes wait for `sc.exe`, check its exit code and recheck registry values. Both
-platforms require explicit, complete RunCommand confirmations. Windows rejects
-`--dry-run` before guest preparation, even when `--fix-os` is supplied.
+Windows preparation requires the `stornvme.sys` binary, boot start for
+`stornvme`/`vpci`/`pci`, absence of the NVMe/virtual-PCI startup overrides, and
+the required NVMe parameters in every ControlSet. PCI `StartOverride` is allowed
+and is not removed. Fixes wait for `sc.exe`, check its exit code, write DWORD
+values, flush registry state synchronously and verify it again. Both platforms
+require explicit, complete RunCommand confirmations. Windows rejects `--dry-run`
+before guest preparation, even when `--fix-os` is supplied.
+
+Windows `--start-vm` without `--no-wait` verifies guest-agent readiness and actual
+NVMe boot-disk enumeration. With `--fix-os`, it reapplies settings after the first
+NVMe boot, performs a controlled restart and verifies persistence. Without
+`--fix-os`, post-boot checks are read-only. A failed start or post-boot check
+reports that conversion may already have changed the VM; no automatic rollback
+is performed.
+
+The Windows result includes `windowsPostBoot.status`: `verified`, `pending` for
+deferred/no-wait starts, or `skipped` when OS checks were explicitly disabled.
+`status: succeeded` describes the control-plane conversion, not verified guest
+readiness when `windowsPostBoot` is pending/skipped.
 
 Disk and controller updates require confirmed deallocation. A stopped,
 transitional or unknown power state is not treated as deallocated.
+
+## Deferred Windows post-boot verification
+
+When `windowsPostBoot.status` is `pending`, start Windows if necessary and wait
+for the VM Agent to report Ready. The following **guest PowerShell** repairs
+parameters that first-time NVMe device installation can reset. It assumes the
+required pre-conversion boot-driver preparation already completed.
+
+```powershell
+$ErrorActionPreference = 'Stop'
+$sets = @(Get-ChildItem HKLM:\SYSTEM |
+    Where-Object { $_.PSChildName -match '^ControlSet[0-9]+$' })
+if ($sets.Count -eq 0) { throw 'No Windows ControlSets found' }
+$values = @{ IoTimeoutValue = 240; BusType = 17; StorageSupportedFeatures = 3 }
+foreach ($set in $sets) {
+    $path = Join-Path $set.PSPath 'Services\stornvme\Parameters'
+    New-Item $path -Force | Out-Null
+    foreach ($value in $values.GetEnumerator()) {
+        Set-ItemProperty $path -Name $value.Key -Value $value.Value -Type DWord
+    }
+    $pnp = Join-Path $path 'PnpInterface'
+    New-Item $pnp -Force | Out-Null
+    Set-ItemProperty $pnp -Name '5' -Value 1 -Type DWord
+}
+$key = Get-Item HKLM:\SYSTEM
+try { $key.Flush() } finally { $key.Dispose() }
+```
+
+Restart Windows, wait for guest-agent readiness again, then verify without
+changing the controller:
+
+```bash
+az vm restart --resource-group myRG --name myVM
+az nvme-conversion check --resource-group myRG --vm-name myVM --controller-type NVMe
+```
+
+Require `overallStatus: passed`. Explicitly selecting the already-current NVMe
+controller now verifies Windows registry settings and the actual NVMe boot disk;
+it does not perform another conversion. If preparation was skipped or the check
+fails, do not treat the control-plane conversion result as boot-readiness proof.
 
 ## ADE exclusion
 

@@ -16,12 +16,7 @@ from unittest.mock import MagicMock, patch
 
 from azure.cli.core.azclierror import ValidationError
 from .test_linux_efi_timeout import copy_tool, prepare_base, write
-from .test_nvme_conversion import _make_compute_client, _make_vm
-
-
-WINDOWS_READY = (
-    'stornvme:Start:OK\nstornvme:StartOverride:OK\n'
-    'vpci:Start:OK\nvpci:StartOverride:OK\nNVME_WINDOWS_PREPARATION_RESULT:READY\n')
+from .test_nvme_conversion import _make_compute_client, _make_vm, _windows_success_message
 
 
 def command_client(message):
@@ -50,22 +45,23 @@ class CompletionTests(unittest.TestCase):
 
     def test_windows_requires_every_driver_confirmation_and_completion(self):
         from azext_nvme_conversion._windows_checks import prepare_windows
-        for message in ('', 'Start:OK\nStartOverride:OK', 'Access denied', *(
-                WINDOWS_READY.replace(line + '\n', '') for line in WINDOWS_READY.splitlines()),
-                WINDOWS_READY + 'NVME_WINDOWS_PREPARATION_RESULT:FAILED\n'):
-            for fix in (False, True):
+        for fix in (False, True):
+            ready = _windows_success_message(fix_os=fix)
+            for message in ('', 'Start:OK\nStartOverride:OK', 'Access denied', *(
+                    ready.replace(line + '\n', '') for line in ready.splitlines()),
+                    ready + 'NVME_WINDOWS_PREPARATION_RESULT:FAILED\n'):
                 with self.subTest(message=message, fix=fix), self.assertRaises(ValidationError):
                     prepare_windows(command_client(message), 'rg', 'vm', fix)
 
     def test_windows_fix_waits_checks_exit_and_all_controlsets(self):
         from azext_nvme_conversion._windows_checks import prepare_windows
-        client = command_client(WINDOWS_READY)
+        client = command_client(_windows_success_message(fix_os=True))
         prepare_windows(client, 'rg', 'vm', True)
         script = '\n'.join(client.virtual_machines.begin_run_command.call_args.args[2].script)
         for required in ('-Wait -PassThru', '$process.ExitCode -ne 0',
                          "'stornvme', 'vpci'", '^ControlSet[0-9]+$', '$controlSets.Count -eq 0'):
             self.assertIn(required, script)
-        client = command_client(WINDOWS_READY)
+        client = command_client(_windows_success_message())
         prepare_windows(client, 'rg', 'vm', False)
         script = '\n'.join(client.virtual_machines.begin_run_command.call_args.args[2].script)
         for mutation in ('Start-Process', 'Set-ItemProperty', 'Remove-Item'):

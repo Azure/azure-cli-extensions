@@ -5,6 +5,8 @@ Release History
 
 1.0.0b1
 ++++++
+* Verify and persist Windows NVMe parameters and PCI boot state, preserve allowed PCI overrides, and validate the NVMe boot disk after startup.
+* Reapply opt-in Windows settings after first NVMe boot, restart and verify persistence; report deferred verification and partial-conversion failures explicitly.
 * Identify Linux kernels from installed package and boot references; ignore module-only directories without skipping genuine missing boot images or changing check/fix/dry-run behavior.
 * Reject incomplete or failed guest preparation; verify NVMe/Hyper-V PCI modules per installed Linux kernel and stornvme/vpci across Windows ControlSets.
 * Await Windows driver fixes, reject Windows dry-run before mutation, and require confirmed VM deallocation before disk/controller writes.

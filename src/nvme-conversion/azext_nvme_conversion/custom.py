@@ -128,6 +128,21 @@ def nvme_conversion_convert(cmd, resource_group_name, vm_name, vm_size=None,
     _update_vm(compute_client, resource_group_name, vm, vm_size, new_controller_type)
 
     # Phase 5: Start VM
+    windows_post_boot = None
+    windows_nvme = os_type == 'Windows' and new_controller_type == 'NVMe'
+    if windows_nvme:
+        if ignore_os_check:
+            windows_post_boot = {'status': 'skipped', 'message': 'OS readiness checks were explicitly disabled.'}
+        elif not start_vm or no_wait:
+            verify_command = (
+                f'az nvme-conversion check --resource-group {resource_group_name} '
+                f'--vm-name {vm_name} --controller-type NVMe')
+            message = (
+                'Windows post-boot preparation is pending. After the first NVMe boot, wait for the VM Agent, '
+                'apply the documented guest NVMe parameter remediation if required, restart Windows, '
+                'and verify the settings and NVMe boot disk.')
+            logger.warning('%s Verify with: %s', message, verify_command)
+            windows_post_boot = {'status': 'pending', 'message': message, 'verifyCommand': verify_command}
     if start_vm:
         if no_wait:
             _status(f'[8/8] Starting VM {vm_name} (--no-wait)...')
@@ -136,7 +151,17 @@ def nvme_conversion_convert(cmd, resource_group_name, vm_name, vm_size=None,
             _status(f'[8/8] Waiting {sleep_seconds}s then starting VM {vm_name}...')
             import time
             time.sleep(sleep_seconds)
-            _start_vm(compute_client, resource_group_name, vm_name)
+            if windows_nvme and not ignore_os_check:
+                try:
+                    _start_vm(compute_client, resource_group_name, vm_name)
+                    _verify_windows_after_conversion(compute_client, resource_group_name, vm_name, fix_os)
+                    windows_post_boot = {'status': 'verified', 'rebooted': fix_os}
+                except (AzureError, ValidationError) as e:
+                    raise ValidationError(
+                        f'VM {vm_name} was updated to NVMe, but Windows start or post-boot verification failed: {e}. '
+                        'VM changes were not rolled back. Inspect boot diagnostics before retrying or reverting.') from e
+            else:
+                _start_vm(compute_client, resource_group_name, vm_name)
             _status(f'       VM {vm_name} started.')
     else:
         _status('[8/8] VM not started (use --start-vm to start automatically).')
@@ -150,6 +175,8 @@ def nvme_conversion_convert(cmd, resource_group_name, vm_name, vm_size=None,
         'controllerType': new_controller_type,
         'vmStarted': start_vm,
     }
+    if windows_post_boot is not None:
+        result['windowsPostBoot'] = windows_post_boot
 
     if new_controller_type == 'NVMe':
         revert_cmd = (
@@ -238,7 +265,20 @@ def nvme_conversion_check(cmd, resource_group_name, vm_name, vm_size=None,
             'status': 'info',
             'message': f'VM is already running {_get_current_controller(vm)}. No conversion needed.'
         }
-        results['overallStatus'] = 'passed'
+        if os_type == 'Windows' and _get_current_controller(vm) == 'NVMe' and not ignore_os_check:
+            try:
+                _check_vm_generation(compute_client, vm)
+                if not ignore_windows_version_check:
+                    _check_windows_version(vm)
+                if not _check_vm_power_state(compute_client, resource_group_name, vm_name, False):
+                    raise ValidationError('Windows NVMe runtime cannot be verified while the VM is not running.')
+                from azext_nvme_conversion._windows_checks import verify_windows_nvme_boot
+                verify_windows_nvme_boot(compute_client, resource_group_name, vm_name)
+                results['checks']['osReadiness'] = {'status': 'passed'}
+            except ValidationError as e:
+                results['checks']['osReadiness'] = {'status': 'failed', 'message': str(e)}
+        results['overallStatus'] = (
+            'failed' if any(value['status'] == 'failed' for value in results['checks'].values()) else 'passed')
         _status(f'       VM is already running {_get_current_controller(vm)}. No conversion needed.')
         return results
 
@@ -692,3 +732,18 @@ def _start_vm_no_wait(compute_client, resource_group_name, vm_name):
     """Start the VM without waiting for completion."""
     compute_client.virtual_machines.begin_start(resource_group_name, vm_name)
     logger.info('VM %s start initiated (not waiting for completion).', vm_name)
+
+
+def _verify_windows_after_conversion(compute_client, resource_group_name, vm_name, fix_os):
+    from azext_nvme_conversion._windows_checks import (
+        prepare_windows, verify_windows_nvme_boot, wait_windows_guest_ready)
+
+    wait_windows_guest_ready(compute_client, resource_group_name, vm_name)
+    if fix_os:
+        prepare_windows(compute_client, resource_group_name, vm_name, True)
+    verify_windows_nvme_boot(compute_client, resource_group_name, vm_name)
+    if fix_os:
+        logger.info('Restarting Windows to verify NVMe parameter persistence.')
+        compute_client.virtual_machines.begin_restart(resource_group_name, vm_name).result()
+        wait_windows_guest_ready(compute_client, resource_group_name, vm_name)
+        verify_windows_nvme_boot(compute_client, resource_group_name, vm_name)

@@ -171,9 +171,7 @@ class WindowsChecksUnitTests(unittest.TestCase):
         from azext_nvme_conversion._windows_checks import prepare_windows
         compute_client = MagicMock()
         output_value = MagicMock()
-        output_value.message = ('stornvme:Start:OK\nstornvme:StartOverride:OK\n'
-                                'vpci:Start:OK\nvpci:StartOverride:OK\n'
-                                'NVME_WINDOWS_PREPARATION_RESULT:READY\n')
+        output_value.message = _windows_success_message()
         result = MagicMock()
         result.value = [output_value]
         poller = MagicMock()
@@ -214,9 +212,7 @@ class WindowsChecksUnitTests(unittest.TestCase):
         from azext_nvme_conversion._windows_checks import prepare_windows
         compute_client = MagicMock()
         poller = MagicMock()
-        poller.result.return_value.value = [MagicMock(message=(
-            'stornvme:Start:OK\nstornvme:StartOverride:OK\n'
-            'vpci:Start:OK\nvpci:StartOverride:OK\nNVME_WINDOWS_PREPARATION_RESULT:READY\n'))]
+        poller.result.return_value.value = [MagicMock(message=_windows_success_message(fix_os=True))]
         compute_client.virtual_machines.begin_run_command.return_value = poller
         prepare_windows(compute_client, 'rg', 'vm', fix_os=True)
         compute_client.virtual_machines.begin_run_command.assert_called_once()
@@ -369,6 +365,22 @@ class ValidatorUnitTests(unittest.TestCase):
 # ---------------------------------------------------------------------------
 # Helpers for mocked end-to-end tests
 # ---------------------------------------------------------------------------
+
+def _windows_success_message(fix_os=False, runtime=False):
+    lines = [
+        'stornvme:DriverFile:OK',
+        'stornvme:Start:OK', 'stornvme:StartOverride:OK',
+        'vpci:Start:OK', 'vpci:StartOverride:OK', 'pci:Start:OK',
+        'stornvme:IoTimeoutValue:OK', 'stornvme:BusType:OK',
+        'stornvme:StorageSupportedFeatures:OK', 'stornvme:PnpInterface5:OK',
+    ]
+    if fix_os:
+        lines.append('SYSTEM:RegistryFlush:OK')
+    if runtime:
+        lines.append('OSDisk:BusType:NVMe')
+    lines.append('NVME_WINDOWS_PREPARATION_RESULT:READY')
+    return '\n'.join(lines) + '\n'
+
 
 def _make_vm(os_type='Linux', controller='SCSI', size='Standard_E4bds_v5',
              generation='V2', publisher=None, sku=None, zones=None):

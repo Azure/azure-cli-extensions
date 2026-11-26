@@ -1,5 +1,39 @@
 # NVMe Conversion Extension — Live Test Tracker
 
+## Windows readiness and persistence regressions
+
+The Windows guest script now verifies the driver binary, all required boot-driver
+and NVMe DWORD settings, registry flush/readback and the actual NVMe OS disk.
+PCI overrides remain allowed. Boot orchestration covers guest-agent readiness,
+opt-in post-first-boot remediation/restart, persistence after restart and
+explicit pending/partial-failure results.
+
+From `src/nvme-conversion`, run:
+
+```bash
+python3 -B -m pytest \
+  azext_nvme_conversion/tests/latest/test_nvme_conversion.py \
+  azext_nvme_conversion/tests/latest/test_readiness_failures.py \
+  azext_nvme_conversion/tests/latest/test_linux_efi_timeout.py \
+  azext_nvme_conversion/tests/latest/test_windows_readiness.py \
+  -k "not NvmeConversionCheckTest and not NvmeConversionConvertTest" \
+  -q -p no:cacheprovider
+```
+
+Result: **129 passed, 80 subtests passed, 2 live scenarios deselected**.
+Native guest-script tests use PowerShell when available; `NVME_TEST_PWSH` can
+select an existing executable. They mock registry/CIM/disk/SC operations and
+never modify the host registry. Without PowerShell those native cases explicitly
+skip rather than claiming acceptance.
+
+Covered cases include missing driver/parameter/PCI settings, incorrect value
+types, preserved PCI overrides, failed SC/flush/readback, root-flush fallback,
+non-NVMe boot disks, agent timeout, deferred/no-wait/skipped checks, post-reboot
+drift and already-current Windows NVMe checks without conversion.
+These are functional synthetic regressions, not live Windows boot validation.
+See [READINESS-CHANGE-RATIONALE.md](READINESS-CHANGE-RATIONALE.md) for the public
+source attribution, safety contract and release-scope explanation.
+
 ## Linux kernel-inventory regression coverage
 
 The prepared Linux script derives kernel releases from installed package files
