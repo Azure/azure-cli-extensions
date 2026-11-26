@@ -123,12 +123,13 @@ Customer-managed encryption uses a disposable Key Vault and RSA key, granting th
 Task Scheduler enterprise application crypto access scoped only to that vault. It exercises encryption
 configuration and automatic key rotation without installing or modifying a tenant-wide application.
 
-The failover scenario is explicitly `live_only`: attempts with a `northcentralus` primary and a
-`westus2` partner reported a failed failover configuration while the ARM operation remained accepted.
-`recordings/diagnostics/failover_westus2_failed.yaml` preserves a sanitized real failure trace, including
-the successfully provisioned schedulers and primary task hub. This is diagnostic evidence, not a
-passing playback fixture. The scenario remains available against a deployment with functioning
-failover support, with bounded waits. No successful failover recording is claimed or fabricated.
+The recorded failover scenario provisions an `eastasia` primary and a `southeastasia` partner, both
+using Dedicated capacity 1. It covers configuration creation, show and update, graceful failover on
+the secondary scheduler, forced failover back to the original primary, and deletion. It verifies the
+replication-role changes and uses the generated commands' normal long-running-operation polling.
+
+Earlier northcentralus-based failure traces remain under `recordings/diagnostics/` for investigation.
+They are historical diagnostic evidence, not passing playback fixtures.
 
 To re-record, sign in and select a subscription in your local CLI configuration, then run only the
 desired scenario with `--live`, for example:
@@ -143,17 +144,16 @@ azdev test --series --live test_durabletask_identity_lifecycle_recorded
 azdev test --series --live test_durabletask_taskqueue_lifecycle_recorded
 azdev test --series --live test_durabletask_attach_functionapp_recorded
 azdev test --series --live test_durabletask_encryption_lifecycle_recorded
+azdev test --series --live test_durabletask_failover_lifecycle_recorded
 ```
-
-The failover scenario can be retried separately with
-`azdev test --series --live test_durabletask_failover_lifecycle_live`.
 
 Recording provisions billable resources in temporary resource groups, primarily in `northcentralus`.
 The preparers request deletion of the groups after the test, including on failure; verify cleanup if
 a service operation fails or remains in progress. The Key Vault has purge
 protection and seven-day soft-delete retention, so its deleted name remains reserved until retention
-expires. Failover additionally provisions a partner scheduler in `westus2`. Do not configure
-the preparers to reuse a persistent resource group unless you intend to manage its cleanup yourself.
+expires. Failover provisions its primary and resource group in `eastasia`, with the partner scheduler
+in `southeastasia`. Do not configure the preparers to reuse a persistent resource group unless you
+intend to manage its cleanup yourself.
 
 Review recordings before committing them. The test SDK removes authentication headers, subscription
 IDs, and email addresses; the extension's recording processor additionally removes account/identity
