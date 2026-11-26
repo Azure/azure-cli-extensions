@@ -1802,62 +1802,6 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-hosted-system --system-node-subnet-id <systemNodeSubnetID> --node-subnet-id <nodeSubnetID> --apiserver-subnet-id <apiserverSubnetID>
 """
 
-helps['aks kollect'] = """
-    type: command
-    short-summary: Collecting diagnostic information for the Kubernetes cluster.
-    long-summary: |-
-        Collect diagnostic information for the Kubernetes cluster and store it in the specified storage account.
-        You can provide the storage account in three ways:
-          storage account name and a shared access signature with write permission.
-          resource Id to a storage account you own.
-          the storagea account in diagnostics settings for your managed cluster.
-    parameters:
-        - name: --storage-account
-          type: string
-          short-summary: Name or ID of the storage account to save the diagnostic information.
-        - name: --sas-token
-          type: string
-          short-summary: The SAS token with writable permission for the storage account.
-        - name: --container-logs
-          type: string
-          short-summary: The list of container logs to collect.
-          long-summary: |-
-            The list of container logs to collect. Its value can be either all containers
-            in a namespace, for example, kube-system, or a specific container in a
-            namespace, for example, kube-system/tunnelfront.
-        - name: --kube-objects
-          type: string
-          short-summary: The list of kubernetes objects to describe.
-          long-summary: |-
-            The list of kubernetes objects to describe. Its value can be either all objects of a type
-            in a namespace, for example, kube-system/pod, or a specific object of a type in a namespace,
-            for example, kube-system/deployment/tunnelfront.
-        - name: --node-logs
-          type: string
-          short-summary: The list of node logs to collect for Linux nodes. For example, /var/log/cloud-init.log
-        - name: --node-logs-windows
-          type: string
-          short-summary: The list of node logs to collect for Windows nodes. For example, C:\\AzureData\\CustomDataSetupScript.log
-    examples:
-      - name: using storage account name and a shared access signature token with write permission
-        text: az aks kollect -g MyResourceGroup -n MyManagedCluster --storage-account MyStorageAccount --sas-token "MySasToken"
-      - name: using the resource id of a storagea account resource you own.
-        text: az aks kollect -g MyResourceGroup -n MyManagedCluster --storage-account "MyStoreageAccountResourceId"
-      - name: using the storagea account in diagnostics settings for your managed cluster.
-        text: az aks kollect -g MyResourceGroup -n MyManagedCluster
-      - name: customize the container logs to collect.
-        text: az aks kollect -g MyResourceGroup -n MyManagedCluster --container-logs "mynamespace1/mypod1 myns2"
-      - name: customize the kubernetes objects to collect.
-        text: az aks kollect -g MyResourceGroup -n MyManagedCluster --kube-objects "mynamespace1/service myns2/deployment/deployment1"
-      - name: customize the node log files to collect.
-        text: az aks kollect -g MyResourceGroup -n MyManagedCluster --node-logs "/var/log/azure-vnet.log /var/log/azure-vnet-ipam.log"
-"""
-
-helps['aks kanalyze'] = """
-    type: command
-    short-summary: Display diagnostic results for the Kubernetes cluster after kollect is done.
-"""
-
 helps['aks maintenanceconfiguration'] = """
     type: group
     short-summary: Commands to manage maintenance configurations in managed Kubernetes cluster.

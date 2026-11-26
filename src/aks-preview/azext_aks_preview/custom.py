@@ -97,7 +97,6 @@ from azext_aks_preview.addonconfiguration import (
     warn_on_legacy_monitoring_auth,
 )
 
-from azext_aks_preview.aks_diagnostics import aks_kanalyze_cmd, aks_kollect_cmd
 from azext_aks_preview.aks_draft.commands import (
     aks_draft_cmd_create,
     aks_draft_cmd_generate_workflow,
@@ -4597,24 +4596,6 @@ def aks_draft_up(app=None,
 
 def aks_draft_update(host=None, certificate=None, destination=None, path=None):
     aks_draft_cmd_update(host, certificate, destination, path)
-
-
-def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
-                client,
-                resource_group_name,
-                name,
-                storage_account=None,
-                sas_token=None,
-                container_logs=None,
-                kube_objects=None,
-                node_logs=None,
-                node_logs_windows=None):
-    aks_kollect_cmd(cmd, client, resource_group_name, name, storage_account, sas_token,
-                    container_logs, kube_objects, node_logs, node_logs_windows)
-
-
-def aks_kanalyze(cmd, client, resource_group_name, name):
-    aks_kanalyze_cmd(cmd, client, resource_group_name, name)
 
 
 def aks_pod_identity_add(

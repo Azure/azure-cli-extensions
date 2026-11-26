@@ -51,7 +51,19 @@ from azure.cli.core.azclierror import (
 )
 from azure.core.exceptions import ResourceNotFoundError
 from azext_aks_preview.tests.latest.test_vm_skus import _make_sku, _make_restriction
+from knack.help_files import helps
 from knack.util import CLIError
+
+
+class TestCommandRegistration(unittest.TestCase):
+    def test_periscope_commands_are_not_registered(self):
+        loader = ContainerServiceCommandsLoader(MockCLI())
+        loader.load_command_table(["aks"])
+
+        self.assertEqual({"aks kollect", "aks kanalyze"} & loader.command_table.keys(), set())
+
+    def test_periscope_help_is_not_registered(self):
+        self.assertEqual({"aks kollect", "aks kanalyze"} & helps.keys(), set())
 
 
 class TestGetCredentialsExecutablePath(unittest.TestCase):
