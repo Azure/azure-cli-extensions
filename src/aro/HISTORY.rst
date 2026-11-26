@@ -14,6 +14,7 @@ Pending
 * Remove `--no-wait` from `az aro hcp cluster request-credential`.
 * Fix etcd encryption arguments for both `az aro hcp cluster create` and `az aro hcp cluster update`
 * Update `az aro hcp cluster create` example command in help text.
+* Fix bug causing public cloud ARM endpoints to be used when set to use government cloud
 
 1.0.14
 ++++++
