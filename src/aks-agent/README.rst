@@ -46,6 +46,7 @@ Key capabilities
 
 Prerequisites
 -------------
+- Azure CLI 2.93.0 or later
 - **For cluster mode**: Kubernetes cluster access with sufficient permissions to create namespaces, deployments, and RBAC resources
 - **For local mode**: Docker installed and running on your local machine
 

@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b25
+++++++++
+* Use trusted executable lookup for ``kubelogin`` during AKS credential conversion.
+* Require Azure CLI 2.93.0 or later.
+
 1.0.0b24
 ++++++++
 * Use the resolved kubelogin executable path when converting kubeconfig credentials.
