@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.9.6
++++++++++++++++++++
+* Migrate code from the Compute SDK to AAZ.
+
 1.9.5
 +++++++++++++++++++
 * Microsoft.ChaosStudio: intentionally retain release namespaces and their remaining Kubernetes resources on uninstall. Automatic namespace removal and its fenced/recoverable cleanup contract are deferred, not claimed as clean-namespace or GA cleanup acceptance.
