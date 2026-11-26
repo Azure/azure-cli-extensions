@@ -535,7 +535,11 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         if self.get_argument_from_revision():
             r = self.client.show_revision(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), container_app_name=name, name=self.get_argument_from_revision())
             _update_revision_env_secretrefs(r["properties"]["template"]["containers"], name)
+            # Preserve revisionSuffix from the YAML before overwriting the template
+            revision_suffix_from_yaml = safe_get(self.new_containerapp, "properties", "template", "revisionSuffix")
             self.new_containerapp["properties"]["template"] = r["properties"]["template"]
+            if revision_suffix_from_yaml is not None:
+                self.new_containerapp["properties"]["template"]["revisionSuffix"] = revision_suffix_from_yaml
 
         # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
         _remove_additional_attributes(self.new_containerapp)
@@ -554,6 +558,11 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             if "template" not in self.new_containerapp["properties"]:
                 self.new_containerapp["properties"]["template"] = {}
             self.new_containerapp["properties"]["template"]["revisionSuffix"] = None
+
+        # Apply --revision-suffix CLI arg if provided (overrides YAML value)
+        if self.get_argument_revision_suffix() is not None:
+            safe_set(self.new_containerapp, "properties", "template", "revisionSuffix",
+                     value=self.get_argument_revision_suffix())
 
         # Remove the environmentId in the PATCH payload if it has not been changed
         if safe_get(self.new_containerapp, "properties", "environmentId") and safe_get(self.new_containerapp, "properties", "environmentId").lower() == existed_environment_id.lower():
