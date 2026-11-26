@@ -5,6 +5,7 @@ Release History
 1.4.3
 ++++++
 * Replace deprecated pkg_resources with packaging for Python 3.13 compatibility
+* Fix `az network bastion ssh --auth-type password` and `--auth-type aad` to pass matching SSH authentication options on localhost tunnel
 
 1.4.2
 ++++++
