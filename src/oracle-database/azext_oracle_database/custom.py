@@ -10,5 +10,17 @@
 
 from knack.log import get_logger
 
+from azure.cli.core.aaz import has_value
+
+from .aaz.latest.oracle_database.autonomous_database import Update as _AutonomousDatabaseUpdate
+
 
 logger = get_logger(__name__)
+
+
+class AutonomousDatabaseUpdate(_AutonomousDatabaseUpdate):
+    def pre_instance_update(self, instance):
+        # The zone is an enable-time request, so do not replay a value read by GET.
+        # InstanceUpdateByJson applies an explicitly supplied argument afterwards.
+        if has_value(instance.properties):
+            del instance.properties.local_data_guard_zone
