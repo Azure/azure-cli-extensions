@@ -12,15 +12,22 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "planetarycomputer geocatalog identity wait",
+    "planetarycomputer geocatalog show",
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class Show(AAZCommand):
+    """Get a GeoCatalog
+
+    :example: GeoCatalogs_Get
+        az planetarycomputer geocatalog show --resource-group MyResourceGroup --catalog-name MyCatalog
+
+    :example: GeoCatalogs_GetStopped
+        az planetarycomputer geocatalog show --resource-group MyResourceGroup --catalog-name MyCatalog --resource-group MyResourceGroup --catalog-name MyCatalog
     """
 
     _aaz_info = {
+        "version": "2026-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.orbital/geocatalogs/{}", "2026-04-15", "identity"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.orbital/geocatalogs/{}", "2026-10-01"],
         ]
     }
 
@@ -68,7 +75,7 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
     class GeoCatalogsGet(AAZHttpOperation):
@@ -119,7 +126,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-15",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }
@@ -167,20 +174,13 @@ class Wait(AAZWaitCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
+            _ShowHelper._build_schema_system_data_read(_schema_on_200.system_data)
             _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             identity = cls._schema_on_200.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
             identity.type = AAZStrType(
                 flags={"required": True},
             )
@@ -211,31 +211,86 @@ class Wait(AAZWaitCommand):
                 serialized_name="catalogUri",
                 flags={"read_only": True},
             )
+            properties.managed_storage_resource_ids = AAZListType(
+                serialized_name="managedStorageResourceIds",
+                flags={"read_only": True},
+            )
+            properties.private_endpoint_connections = AAZListType(
+                serialized_name="privateEndpointConnections",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.public_network_access = AAZStrType(
+                serialized_name="publicNetworkAccess",
+            )
+            properties.state = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.stopped_since_utc = AAZStrType(
+                serialized_name="stoppedSinceUtc",
+                flags={"read_only": True},
+            )
             properties.tier = AAZStrType()
 
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
+            managed_storage_resource_ids = cls._schema_on_200.properties.managed_storage_resource_ids
+            managed_storage_resource_ids.Element = AAZStrType()
+
+            private_endpoint_connections = cls._schema_on_200.properties.private_endpoint_connections
+            private_endpoint_connections.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.private_endpoint_connections.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
             )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
+            _element.name = AAZStrType(
+                flags={"read_only": True},
             )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
             )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
             )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
+            _ShowHelper._build_schema_system_data_read(_element.system_data)
+            _element.type = AAZStrType(
+                flags={"read_only": True},
             )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
+
+            properties = cls._schema_on_200.properties.private_endpoint_connections.Element.properties
+            properties.group_ids = AAZListType(
+                serialized_name="groupIds",
+                flags={"read_only": True},
             )
+            properties.private_endpoint = AAZObjectType(
+                serialized_name="privateEndpoint",
+            )
+            properties.private_link_service_connection_state = AAZObjectType(
+                serialized_name="privateLinkServiceConnectionState",
+                flags={"required": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+
+            group_ids = cls._schema_on_200.properties.private_endpoint_connections.Element.properties.group_ids
+            group_ids.Element = AAZStrType()
+
+            private_endpoint = cls._schema_on_200.properties.private_endpoint_connections.Element.properties.private_endpoint
+            private_endpoint.id = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            private_link_service_connection_state = cls._schema_on_200.properties.private_endpoint_connections.Element.properties.private_link_service_connection_state
+            private_link_service_connection_state.actions_required = AAZStrType(
+                serialized_name="actionsRequired",
+            )
+            private_link_service_connection_state.description = AAZStrType()
+            private_link_service_connection_state.status = AAZStrType()
 
             tags = cls._schema_on_200.tags
             tags.Element = AAZStrType()
@@ -243,8 +298,52 @@ class Wait(AAZWaitCommand):
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
+class _ShowHelper:
+    """Helper class for Show"""
+
+    _schema_system_data_read = None
+
+    @classmethod
+    def _build_schema_system_data_read(cls, _schema):
+        if cls._schema_system_data_read is not None:
+            _schema.created_at = cls._schema_system_data_read.created_at
+            _schema.created_by = cls._schema_system_data_read.created_by
+            _schema.created_by_type = cls._schema_system_data_read.created_by_type
+            _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
+            _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
+            _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
+            return
+
+        cls._schema_system_data_read = _schema_system_data_read = AAZObjectType(
+            flags={"read_only": True}
+        )
+
+        system_data_read = _schema_system_data_read
+        system_data_read.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data_read.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data_read.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data_read.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data_read.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data_read.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        _schema.created_at = cls._schema_system_data_read.created_at
+        _schema.created_by = cls._schema_system_data_read.created_by
+        _schema.created_by_type = cls._schema_system_data_read.created_by_type
+        _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
+        _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
+        _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
 
 
-__all__ = ["Wait"]
+__all__ = ["Show"]
