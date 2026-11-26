@@ -12,6 +12,7 @@ import time
 import unittest
 import unittest.mock
 from datetime import datetime
+from types import SimpleNamespace
 from urllib.parse import urlparse, parse_qs
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
@@ -29,6 +30,7 @@ from ...operations.job import (
     _convert_numeric_params,
     _construct_filter_query,
     _construct_orderby_expression,
+    submit,
     ERROR_MSG_INVALID_PRIORITY_ARGUMENT,
     ERROR_MSG_INVALID_ORDER_ARGUMENT,
     ERROR_MSG_MISSING_ORDERBY_ARGUMENT)
@@ -37,6 +39,35 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 # Temporary V2 workspaces only run short simulator jobs in this test; cap the allocation request accordingly.
 TEST_V2_QUOTA_ALLOCATION_MINUTES = 2
+
+
+class QuantumJobsOperationsTest(unittest.TestCase):
+
+    def test_submit_creates_workspace_without_storage(self):
+        cmd = SimpleNamespace(cli_ctx=object())
+        info = SimpleNamespace(
+            subscription='sub', resource_group='test-rg', name='test-ws',
+        )
+        credential = object()
+
+        with tempfile.TemporaryDirectory() as test_dir:
+            input_path = os.path.join(test_dir, 'input.bc')
+            with open(input_path, 'wb') as input_file:
+                input_file.write(b'test-qir-bitcode')
+
+            with unittest.mock.patch('azext_quantum.operations.job.WorkspaceInfo', return_value=info), \
+                    unittest.mock.patch('azext_quantum.operations.job.get_provider', return_value='provider'), \
+                    unittest.mock.patch('azext_quantum.operations.job._get_data_credentials', return_value=credential), \
+                    unittest.mock.patch('azext_quantum.operations.job.Workspace') as workspace_factory:
+                # Stop at the SDK boundary; uploading and job creation are outside this test's scope.
+                workspace_factory.side_effect = RuntimeError('Stop after workspace construction')
+                with self.assertRaisesRegex(RuntimeError, 'Stop after workspace construction'):
+                    submit(cmd, 'test-rg', 'test-ws', 'provider.sim', input_path, 'qir.v1')
+
+                workspace_factory.assert_called_once_with(
+                    resource_id='/subscriptions/sub/resourceGroups/test-rg/providers/Microsoft.Quantum/Workspaces/test-ws',
+                    credential=credential,
+                )
 
 
 class QuantumJobsScenarioTest(ScenarioTest):
