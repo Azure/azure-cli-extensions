@@ -7,16 +7,23 @@
 # pylint: disable=too-many-locals
 
 import ipaddress
+from contextlib import contextmanager
 
+import yaml
+from kubernetes import client as kube_client, config
+from kubernetes.client.exceptions import ApiException
+from kubernetes.config.config_exception import ConfigException
+from urllib3.exceptions import HTTPError
 from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
-from azure.core.exceptions import HttpResponseError, ResourceNotFoundError as SdkResourceNotFoundError
+from azure.core.exceptions import AzureError, HttpResponseError, ResourceNotFoundError as SdkResourceNotFoundError
 from azure.mgmt.compute import ComputeManagementClient
 from azure.mgmt.containerservice import ContainerServiceClient
 from azure.mgmt.core.tools import parse_resource_id
 from azure.mgmt.network import NetworkManagementClient
 from azure.mgmt.network.models import Delegation, Subnet
 from knack.log import get_logger
+from knack.util import CLIError
 
 from ..vendored_sdks.models import Extension, PatchExtension, Scope, ScopeCluster
 from .DefaultExtension import DefaultExtension, user_confirmation_factory
@@ -128,6 +135,99 @@ class VirtualNodes(DefaultExtension):
 
     def Delete(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp, yes):
         user_confirmation_factory(cmd, yes)
+
+        # Reject targets that aren't AKS clusters
+        if cluster_type.lower() != "managedclusters":
+            raise InvalidArgumentValueError("VN2 deletion checks require an AKS managedClusters target.")
+
+        extension = client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
+        name = extension.name if extension.name else name
+        # Helm uses a lowercase release name even when the Azure extension name is mixed-case.
+        release_name = name.lower()
+        scope = extension.scope.cluster if extension.scope else None
+        namespace = scope.release_namespace if scope and scope.release_namespace else RELEASE_NAMESPACE
+        infra_name = (
+            release_name if "virtualnode" in release_name else release_name + "-virtualnode"
+        )[:63].rstrip("-")
+
+        with _kubernetes_client(cmd, resource_group_name, cluster_name) as (core, apps):
+            owned = [
+                sts for sts in apps.list_stateful_set_for_all_namespaces(
+                    label_selector=f"app.kubernetes.io/instance={release_name}", _request_timeout=30
+                ).items
+                if (sts.metadata.annotations or {}).get("meta.helm.sh/release-name") == release_name
+                and (sts.metadata.annotations or {}).get("meta.helm.sh/release-namespace") == namespace
+            ]
+            if len(owned) > 1:
+                raise CLIError("Multiple Helm-owned VN2 StatefulSets found; cannot establish Node ownership.")
+            statefulset = owned[0] if owned else None
+            if statefulset:
+                infra_name = statefulset.metadata.name
+            nodes = _owned_nodes(core, statefulset, infra_name)
+            _check_pods(core, nodes)
+
+
+def _owned_nodes(core, statefulset, infra_name):
+    nodes = []
+    prefix = infra_name + "-"
+    for node in core.list_node(_request_timeout=30).items:
+        labels = node.metadata.labels or {}
+        pod_name = labels.get("microsoft.containerinstance.virtualnode.podname")
+        if any(name and name.startswith(prefix) and name[len(prefix):].isdigit()
+               for name in (node.metadata.name, pod_name)):
+            if not (statefulset and labels.get("microsoft.containerinstance.virtualnode") == "true"
+                    and labels.get("virtualization") == "virtualnode2" and pod_name == node.metadata.name
+                    and labels.get("microsoft.containerinstance.virtualnode.podns") == statefulset.metadata.namespace):
+                raise CLIError(f"Cannot establish ownership of Node {node.metadata.name}; refusing removal.")
+            nodes.append(node.metadata.name)
+    return nodes
+
+
+def _check_pods(core, nodes):
+    blockers = []
+    for node in sorted(nodes):
+        pods = core.list_pod_for_all_namespaces(field_selector=f"spec.nodeName={node}", _request_timeout=30)
+        blockers.extend(f"{pod.metadata.namespace}/{pod.metadata.name} on Node {node}" for pod in pods.items)
+    if blockers:
+        raise CLIError(
+            "VN2 uninstall blocked by assigned Pod objects (including completed or terminating Pods):\n"
+            + "\n".join(sorted(blockers)) + "\nDelete the assigned Pod objects and retry."
+        )
+
+
+@contextmanager
+def _kubernetes_client(cmd, resource_group_name, cluster_name):
+    try:
+        aks = get_mgmt_service_client(cmd.cli_ctx, ContainerServiceClient)
+        credentials = aks.managed_clusters.list_cluster_user_credentials(
+            resource_group_name, cluster_name, format="exec"
+        )
+        if len(credentials.kubeconfigs or []) != 1:
+            raise CLIError("AKS did not return exactly one user kubeconfig.")
+        kubeconfig = yaml.safe_load(credentials.kubeconfigs[0].value.decode("utf-8"))
+        # AKS exec credentials can default to interactive device-code login.
+        for user in kubeconfig.get("users", []):
+            provider = user.get("user", {}).get("exec", {})
+            if provider.get("command", "").replace("\\", "/").rsplit("/", 1)[-1] in ("kubelogin", "kubelogin.exe"):
+                args = provider.setdefault("args", [])
+                for flag in ("-l", "--login"):
+                    if flag in args:
+                        args[args.index(flag) + 1] = "azurecli"
+                        break
+                else:
+                    args.extend(["--login", "azurecli"])
+        with config.new_client_from_config_dict(kubeconfig, persist_config=False) as api:
+            if not api.configuration.verify_ssl or not (
+                api.configuration.api_key.get("authorization")
+                or (api.configuration.cert_file and api.configuration.key_file)
+            ):
+                raise CLIError("Authenticated, TLS-verified AKS user credentials are required.")
+            yield kube_client.CoreV1Api(api), kube_client.AppsV1Api(api)
+    except (AzureError, ApiException, ConfigException, HTTPError, OSError, ValueError, yaml.YAMLError) as error:
+        raise CLIError(
+            "Cannot access the target Kubernetes API. Check AKS user credentials, kubelogin, connectivity, "
+            "and Kubernetes permissions. VN2 Pod checks were not completed."
+        ) from error
 
 
 def validate_allowed_keys(config_dict, extension_type):
