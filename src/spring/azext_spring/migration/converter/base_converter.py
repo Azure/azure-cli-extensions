@@ -7,9 +7,19 @@ import os
 
 from knack.log import get_logger
 from abc import ABC, abstractmethod
-from jinja2 import Template
+from jinja2 import Environment
 
 logger = get_logger(__name__)
+
+
+def _bicep_string(value):
+    # Escape input backslashes before adding escape sequences.
+    return (str(value).replace("\\", "\\\\").replace("'", "\\'").replace("${", "\\${")
+            .replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t"))
+
+
+_TEMPLATE_ENVIRONMENT = Environment(autoescape=False)
+_TEMPLATE_ENVIRONMENT.filters["bicep_string"] = _bicep_string
 
 
 # Abstract Base Class for Converter
@@ -55,7 +65,7 @@ class ConverterTemplate(ABC):
         script_dir = os.path.dirname(os.path.abspath(__file__))
         template_name = self.get_template_name().lower()
         with open(f"{script_dir}/templates/{template_name}.j2") as file:
-            template = Template(file.read())
+            template = _TEMPLATE_ENVIRONMENT.from_string(file.read())
         return template.render(data=data)
 
 

@@ -397,9 +397,12 @@ def _get_authorization_client(cli_ctx, subscription_id=None):
 def _get_graph_rbac_management_client(cli_ctx, subscription_id=None, **_):
     from azure.cli.core.commands.client_factory import configure_common_settings
     from azure.cli.core._profile import Profile
+    # Preserve the legacy Azure AD Graph helper for older CLI environments.
+    # pylint: disable-next=import-error,no-name-in-module
     from azure.graphrbac import GraphRbacManagementClient
 
     profile = Profile(cli_ctx=cli_ctx)
+    # pylint: disable-next=unexpected-keyword-arg
     cred, subscription_id, tenant_id = profile.get_login_credentials(
         resource=cli_ctx.cloud.endpoints.active_directory_graph_resource_id, subscription_id=subscription_id)
     client = GraphRbacManagementClient(

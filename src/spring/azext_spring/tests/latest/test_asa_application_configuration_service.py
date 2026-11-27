@@ -10,7 +10,11 @@ from azure.cli.core.azclierror import InvalidArgumentValueError, ArgumentUsageEr
 
 from .common.test_utils import get_test_cmd
 from ..._validators_enterprise import validate_refresh_interval
-from ...application_configuration_service import (application_configuration_service_create, _split_config_lines)
+from ...application_configuration_service import (
+    application_configuration_service_create,
+    _safe_append_git_revisions,
+    _split_config_lines,
+)
 
 try:
     import unittest.mock as mock
@@ -80,6 +84,17 @@ class TestApplicationConfigurationServiceValidator(unittest.TestCase):
 
 
 class TestAcsShowConfigurationFiles(unittest.TestCase):
+    def test_git_revision_read_failure_is_logged(self):
+        response = mock.Mock()
+        response.get.side_effect = ValueError("Invalid metadata")
+        configuration_files = {}
+
+        with self.assertLogs("cli.azext_spring.application_configuration_service", level="DEBUG") as logs:
+            _safe_append_git_revisions(configuration_files, response)
+
+        self.assertIn("Failed to append Git revisions: Invalid metadata", logs.output[0])
+        self.assertEqual({}, configuration_files)
+
     def test_show_configuration_files_for_acs_gen_1(self):
         response_str = r"""
         {
@@ -120,7 +135,7 @@ class TestAcsShowConfigurationFiles(unittest.TestCase):
                 "application.properties": "properties-name: sample-test\nspring.config.activate.on-profile: default"
             },
             "metadata": {
-                "gitRevisions": "[{\"url\": \"https://sample.url\", \"revision\": \"main@sha1:sample-commit-id\"}]"
+                "gitRevisions": "[{\"url\": \"https://example.test/config\", \"revision\": \"main@sha1:sample-commit-id\"}]"
             }
         }
         '''
@@ -134,7 +149,7 @@ class TestAcsShowConfigurationFiles(unittest.TestCase):
         self.assertTrue(r"spring.config.activate.on-profile: default" in file_content_arr)
         self.assertIsNotNone(result.get("metadata"))
         metadata = result.get("metadata")
-        expected_revisions = "[{\"url\": \"https://sample.url\", \"revision\": \"main@sha1:sample-commit-id\"}]"
+        expected_revisions = "[{\"url\": \"https://example.test/config\", \"revision\": \"main@sha1:sample-commit-id\"}]"
         self.assertEqual(metadata.get("gitRevisions"), expected_revisions)
 
     def test_show_configuration_files_for_acs_gen_2_with_null_metadata(self):

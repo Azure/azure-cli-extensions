@@ -16,7 +16,7 @@ param vnetSubnetId =
 param {{app.paramTargetPort}} = 8080
 {%- if app.isPrivateImage %}
 @secure()
-param {{app.paramContainerAppImagePassword}} = 'fill in password for container retistry "{{app.image}}"'
+param {{app.paramContainerAppImagePassword}} = 'fill in password for container retistry "{{ app.image | bicep_string }}"'
 {%- endif %}
 {%- else %}
 param {{app.paramContainerAppImageName}} = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
