@@ -1,5 +1,9 @@
 Release History
 ===============
+1.28.6
+---
+* Fix Bicep string escaping in `az spring export --target aca`.
+
 1.28.5
 ---
 * Update Application Insight SDK.
