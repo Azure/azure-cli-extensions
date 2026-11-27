@@ -390,7 +390,7 @@ def _safe_append_git_revisions(configuration_files_result, response_json):
                 GIT_REVISIONS: git_revisions
             }
     except Exception as e:
-        logger.debug("Failed to append Git revisions.", e)
+        logger.debug("Failed to append Git revisions: %s", e)
         pass
 
 

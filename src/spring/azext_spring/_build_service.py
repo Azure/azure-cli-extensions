@@ -6,6 +6,7 @@
 # pylint: disable=too-few-public-methods, unused-argument, redefined-builtin
 
 import json
+from azure.cli.core.azclierror import ClientRequestError
 from azure.cli.core.util import sdk_no_wait
 from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from ._buildservices_factory import BuildService
@@ -170,8 +171,10 @@ def _update_builder(builder_file, builder_json):
     if builder_file is not None:
         with open(builder_file, 'r') as json_file:
             builder = json.load(json_file)
+        if builder_json is None:
+            return builder
 
     if builder_json is not None:
-        builder = json.loads(builder_json)
+        return json.loads(builder_json)
 
-    return builder
+    raise ClientRequestError("--builder-json or --builder-file is required.")
