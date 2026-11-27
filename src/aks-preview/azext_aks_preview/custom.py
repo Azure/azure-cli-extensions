@@ -1448,6 +1448,7 @@ def aks_create(
     aad_tenant_id=None,
     aad_admin_group_object_ids=None,
     enable_oidc_issuer=False,
+    disable_oidc_issuer=False,
     windows_admin_username=None,
     windows_admin_password=None,
     enable_ahub=False,

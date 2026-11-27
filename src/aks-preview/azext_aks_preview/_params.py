@@ -872,6 +872,7 @@ def load_arguments(self, _):
         c.argument("aad_tenant_id")
         c.argument("aad_admin_group_object_ids")
         c.argument("enable_oidc_issuer", action="store_true")
+        c.argument("disable_oidc_issuer", action="store_true", is_preview=True)
         c.argument("windows_admin_username")
         c.argument("windows_admin_password")
         c.argument("enable_ahub")

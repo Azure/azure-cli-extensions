@@ -3,6 +3,21 @@
 Release History
 ===============
 
+1.0.0b12
+++++++++
+* Add ``az horizondb parameter-group default list`` and ``show`` to discover
+  regional default parameter groups and inspect their engine-defined parameters.
+
+1.0.0b11
+++++++++
+* Require both IPv4 bounds on ``cluster pool firewall-rule create``. Reject invalid
+  or reversed ranges on create and update, including single-bound updates.
+* Show the allowed range when configuring a firewall rule and warn explicitly
+  when both bounds are ``0.0.0.0`` and the rule allows all Azure resources.
+* Correct the pool firewall rule create and update help examples.
+* Add ``az horizondb cluster authentication list`` and ``authentication password``
+  commands to show, configure, update, and wait for cluster password authentication.
+
 1.0.0b10
 ++++++++
 * Add ``az horizondb cluster pool maintenance-event list`` to display the

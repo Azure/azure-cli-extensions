@@ -569,6 +569,29 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             self.__external_functions = SimpleNamespace(**external_functions)
         return self.__external_functions
 
+    def get_oidc_issuer_profile(self) -> ManagedClusterOIDCIssuerProfile:
+        """Obtain the value of oidc_issuer_profile based on the user input.
+
+        On create, --disable-oidc-issuer sends an explicitly disabled profile so that the server side does not
+        enable OIDC issuer by default (Kubernetes 1.34+).
+
+        :return: ManagedClusterOIDCIssuerProfile or None
+        """
+        enable_oidc_issuer = self.raw_param.get("enable_oidc_issuer")
+        disable_oidc_issuer = self.raw_param.get("disable_oidc_issuer")
+        if enable_oidc_issuer and disable_oidc_issuer:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-oidc-issuer and --disable-oidc-issuer at the same time."
+            )
+        if self.decorator_mode == DecoratorMode.CREATE and disable_oidc_issuer:
+            if self.raw_param.get("enable_workload_identity"):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-workload-identity and --disable-oidc-issuer at the same time, "
+                    "workload identity requires OIDC issuer."
+                )
+            return self.models.ManagedClusterOIDCIssuerProfile(enabled=False)
+        return super().get_oidc_issuer_profile()
+
     def get_safeguards_level(self) -> Union[str, None]:
         return self.raw_param.get("safeguards_level")
 
