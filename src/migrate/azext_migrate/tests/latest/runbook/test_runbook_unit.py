@@ -2041,6 +2041,24 @@ class SplitParameterSchemaTests(unittest.TestCase):
                 self.assertRaises(InvalidArgumentValueError):
             definition_cmds._load_definition(mock.Mock(), RG, PROJECT, RUNBOOK)
 
+    def test_definition_loaders_reject_null_split_schema(self):
+        spec = {'steps': [{'stepId': 'target-1', 'stepRef': 'target'}]}
+        with tempfile.TemporaryDirectory() as tmp:
+            source = files.write_text(os.path.join(tmp, 'parameters.json'), json.dumps(self.parameters))
+            files.write_text(os.path.join(tmp, 'parameters.schema.json'), 'null')
+            spec_path = files.write_text(os.path.join(tmp, 'spec.json'), json.dumps(spec))
+            with self.assertRaisesRegex(InvalidArgumentValueError, 'Draft-07'):
+                definition_cmds._load_definition_from_file(spec_path, source)
+        archive = _make_zip({
+            'parameters.json': json.dumps(self.parameters), 'parameters.schema.json': 'null',
+            'spec.json': json.dumps({'spec': spec})})
+        with mock.patch.object(definition_cmds, '_artifact_download_url', return_value='https://blob/a'), \
+                mock.patch.object(files, 'download_bytes', return_value=archive), \
+                self.assertRaisesRegex(InvalidArgumentValueError, 'Draft-07'):
+            definition_cmds._load_definition(mock.Mock(), RG, PROJECT, RUNBOOK)
+        with self.assertRaisesRegex(InvalidArgumentValueError, 'Draft-07'):
+            config_status_mod.annotate(copy.deepcopy(spec), self.parameters)
+
     def test_draft07_client_validation(self):
         import shutil
         import subprocess

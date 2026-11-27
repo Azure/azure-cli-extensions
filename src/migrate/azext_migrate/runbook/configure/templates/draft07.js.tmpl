@@ -69,6 +69,14 @@ function parameterSchemaEditor(schema, original, entitiesFor, exportExcluded) {
   } catch (e) {
     error = 'Invalid or unsupported parameters schema: ' + e.message;
   }
+  function controlShape(candidates) {
+    const rules = candidates.map(resolve);
+    return {
+      properties: Object.assign(Object.create(null), ...rules.map(rule => rule.properties)),
+      required: [...new Set(rules.flatMap(rule => rule.required || []))],
+      hints: rules.reduce((hints, rule) => choiceHints(rule, hints), Object.create(null))
+    };
+  }
   function layout(sid) {
     if (layouts.has(sid)) return layouts.get(sid);
     const inputs = resolve((schema.properties || {}).inputs);
@@ -77,11 +85,14 @@ function parameterSchemaEditor(schema, original, entitiesFor, exportExcluded) {
       ...(own(steps.properties, sid) ? [steps.properties[sid]] : []),
       ...Object.entries(steps.patternProperties || {}).filter(([pattern]) => new RegExp(pattern).test(sid)).map(([, s]) => s)
     ];
-    const step = resolve(candidates[0]);
-    const overrides = resolve((step.properties || {}).workloadOverrides);
-    const entity = resolve(overrides.additionalProperties);
-    const result = { step, entity, hasEntities: own(step.properties, 'workloadOverrides'),
-      hints: choiceHints(entity, choiceHints(step)) };
+    const step = controlShape(candidates);
+    const entity = controlShape(candidates.map(resolve)
+      .filter(rule => own(rule.properties, 'workloadOverrides'))
+      .map(rule => resolve(rule.properties.workloadOverrides).additionalProperties));
+    const hints = Object.assign(Object.create(null), step.hints);
+    Object.entries(entity.hints).forEach(([key, choices]) =>
+      hints[key] = [...new Set([...(hints[key] || []), ...choices])]);
+    const result = { step, entity, hasEntities: own(step.properties, 'workloadOverrides'), hints };
     layouts.set(sid, result);
     return result;
   }
@@ -92,7 +103,7 @@ function parameterSchemaEditor(schema, original, entitiesFor, exportExcluded) {
     const source = rule['x-ms-source'] || {};
     const result = {
       ...rule, type: Array.isArray(rule.type) ? rule.type.find(t => t !== 'null') || 'string' : rule.type || 'string',
-      required, scope: entityScope ? 'Entity' : source.scope,
+      required, scope: source.scope || (entityScope ? 'Entity' : undefined),
       isEditable: rule.readOnly !== true && source.editable !== false
     };
     const choices = scalarChoices(rule);
@@ -114,10 +125,10 @@ function parameterSchemaEditor(schema, original, entitiesFor, exportExcluded) {
       const required = new Set([...(shape.required || []),
         ...(eid === null ? info.entity.required || [] : [])]);
       info[cacheKey] = Object.fromEntries(Object.entries(properties).map(([key, value]) => {
-        const field = descriptor(value, required.has(key), info.hasEntities);
+        const field = descriptor(value, required.has(key), own(info.entity.properties, key));
         if (!field.allowedValues && (info.hints[key] || []).length) field.suggestedValues = info.hints[key];
         return [key, field];
-      }));
+      }).filter(([, field]) => eid === null || (info.hasEntities && field.scope === 'Entity')));
       return info[cacheKey];
     } catch (e) {
       error = 'Could not render parameters schema: ' + e.message;
@@ -131,13 +142,14 @@ function parameterSchemaEditor(schema, original, entitiesFor, exportExcluded) {
       const info = layout(sid), known = fields(sid);
       // Service null/empty placeholders are unset; workload values inherit step defaults.
       const values = data => Object.fromEntries(Object.entries(data || {})
-        .filter(([key, value]) => key !== 'workloadOverrides' && !(own(known, key) && empty(value))));
+        .filter(([key, value]) => !(own(known, key) && empty(value))));
       const defaults = values(step);
       if (info.hasEntities) {
+        delete defaults.workloadOverrides;
         const overrides = step.workloadOverrides || {};
         const ids = new Set([...entitiesFor(sid).map(e => e.id), ...Object.keys(overrides)]);
         defaults.workloadOverrides = Object.fromEntries([...ids].map(id =>
-          [id, { ...values(step), ...values(overrides[id]) }]));
+          [id, { ...defaults, ...values(overrides[id]) }]));
       }
       document.inputs.stepInputs[sid] = defaults;
     });

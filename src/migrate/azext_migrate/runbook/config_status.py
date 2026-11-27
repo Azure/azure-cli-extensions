@@ -38,6 +38,7 @@ other step whose schema declares no required inputs is likewise :data:`NA`.
 """
 
 from azext_migrate.runbook.constants import INPUTLESS_STEP_REFS
+from azext_migrate.shared.files import parameter_schema_name
 
 CONFIGURED = 'Configured'
 NOT_CONFIGURED = 'NotConfigured'
@@ -140,7 +141,7 @@ def annotate(definition, runbook_inputs, schema_doc=None):
     if not isinstance(definition, dict):
         return definition
     schema_status = None
-    if schema_doc is not None:
+    if schema_doc is not None or parameter_schema_name(runbook_inputs):
         from .schema_status import SchemaStatus
         schema_status = SchemaStatus(definition, runbook_inputs, schema_doc)
     elif isinstance(runbook_inputs, dict) and isinstance(runbook_inputs.get('inputs'), dict):

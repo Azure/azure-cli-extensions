@@ -537,11 +537,13 @@ function preparedSchema(sid) {
 }
 const rulesFor = sid => preparedSchema(sid).fields;
 const stepFields = sid => Object.keys(rulesFor(sid));
-// A step is entity-level if any input is entity-scoped; then EVERY input is
-// overridable per entity (no mixed steps). Otherwise all inputs are appliance-level.
-const stepIsEntity = sid => stepFields(sid).some(f => rulesFor(sid)[f].scope === 'Entity');
-const entityFields = sid => stepIsEntity(sid) ? stepFields(sid) : [];
-const applianceFields = sid => stepIsEntity(sid) ? [] : stepFields(sid);
+// Legacy steps are uniformly scoped; split schemas can mix shared and entity inputs.
+const stepIsEntity = sid => SCHEMA_EDITOR ? entityFields(sid).length > 0
+  : stepFields(sid).some(f => rulesFor(sid)[f].scope === 'Entity');
+const entityFields = sid => SCHEMA_EDITOR ? Object.keys(SCHEMA_EDITOR.fields(sid, ''))
+  : stepIsEntity(sid) ? stepFields(sid) : [];
+const applianceFields = sid => SCHEMA_EDITOR ? stepFields(sid).filter(f => !entityFields(sid).includes(f))
+  : stepIsEntity(sid) ? [] : stepFields(sid);
 const isEmpty = v => v === null || v === undefined || v === '';
 const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
   .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -1174,6 +1176,10 @@ function bindInputs(scope) {
 function coerce(raw, rule) {
   if (typeof raw === 'string') raw = raw.trim();
   if (raw === '' || raw === '__inh__') return null;
+  if (SCHEMA_EDITOR) {
+    const choice = (rule.allowedValues || rule.suggestedValues || []).find(value => String(value) === raw);
+    if (choice !== undefined) return choice;
+  }
   if (rule.type === 'boolean') return raw === 'true';
   if (SCHEMA_EDITOR && (rule.type === 'integer' || rule.type === 'number')) {
     const number = Number(raw); return Number.isFinite(number) ? number : raw;
@@ -1254,8 +1260,8 @@ function refreshValidation() {
   const warnings = SCHEMA_EDITOR ? SCHEMA_EDITOR.warnings(DOC.stepInputs).filter(i => i.sid === sid) : [];
   const ignored = 'Not used with the current inputs. This value will be saved as null, but kept here if you change the inputs.';
   const warningFor = (f, eid) => warnings.some(i => i.f === f && i.eid === eid) ? ignored : '';
-  const kind = stepIsEntity(sid) ? 'D' : 'A';
   Object.entries(contextRules(sid)).forEach(([f, rule]) => {
+    const kind = entityFields(sid).includes(f) ? 'D' : 'A';
     const shared = SCHEMA_EDITOR ? [...new Set(issues
       .filter(i => i.f === f && (i.eid === null || !hasOverride(sid, i.eid, f)))
       .map(i => i.detail || i.msg))].join('; ') : fieldError(rule, DOC.stepInputs[sid][f]);
@@ -1304,12 +1310,15 @@ function sync() {
   document.getElementById('copyBtn').disabled = blocked;
   const hintEl = document.getElementById('cmdHint');
   if (hintEl) hintEl.textContent = hint;
-  const pending = Object.keys(DOC.stepInputs).filter(s => stepErrors(s) > 0).length;
+  const issues = allIssues();
+  const pending = new Set(issues.filter(i => has(DOC.stepInputs, i.sid)).map(i => i.sid)).size;
+  const documentErrors = issues.filter(i => !has(DOC.stepInputs, i.sid)).length;
   const vs = document.getElementById('vsummary');
-  if (pending > 0) {
+  if (pending > 0 || documentErrors > 0) {
     vs.className = 'vsummary bad2';
-    vs.innerHTML = `\u26A0 ${pending} step${pending === 1 ? '' : 's'} still ` +
-      `need${pending === 1 ? 's' : ''} inputs <span class="vsummary__act">Review</span>`;
+    vs.innerHTML = '\u26A0 ' + (documentErrors ? `${documentErrors} document validation error(s)` :
+      `${pending} step${pending === 1 ? '' : 's'} still need${pending === 1 ? 's' : ''} inputs`) +
+      ' <span class="vsummary__act">Review</span>';
     vs.setAttribute('role', 'button');
     vs.tabIndex = 0;
     vs.title = 'Show every input that is still missing or invalid';
@@ -1326,7 +1335,7 @@ function renderAll() { renderTabs(); renderForm(); }
 
 // ---- outstanding inputs, across every step --------------------------------
 function allIssues() {
-  return Object.keys(DOC.stepInputs).flatMap(stepIssues);
+  return SCHEMA_EDITOR ? SCHEMA_EDITOR.issues(DOC.stepInputs) : Object.keys(DOC.stepInputs).flatMap(stepIssues);
 }
 function showIssues() {
   const list = allIssues();
@@ -1335,11 +1344,12 @@ function showIssues() {
     : 'Every input required by the schema is set.';
   document.getElementById('issueList').innerHTML = list.map((it, i) =>
     `<button type="button" class="issue" data-i="${i}">
-      <b>${esc(it.f || 'Step conditions')}</b> &mdash; ${esc(it.msg)}
-      <div class="where">${esc(stepLabel(it.sid))}${it.name ? ' \u203A ' + esc(it.name) : ''}</div>
+      <b>${esc(it.f || (it.sid == null ? 'Document validation' : 'Step conditions'))}</b> &mdash; ${esc(it.msg)}
+      <div class="where">${it.sid == null ? 'Parameters document' : esc(stepLabel(it.sid))}${it.name ? ' \u203A ' + esc(it.name) : ''}</div>
     </button>`).join('');
   document.querySelectorAll('#issueList .issue').forEach(b => b.addEventListener('click', () => {
     const it = list[+b.dataset.i];
+    if (!has(DOC.stepInputs, it.sid)) { closePop(); return; }
     fieldFilter = '';
     current = it.sid;
     if (it.eid) { selEntity = it.eid; }

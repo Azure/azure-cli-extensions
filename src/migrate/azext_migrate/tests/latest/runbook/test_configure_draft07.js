@@ -47,7 +47,7 @@ function schema() {
 }
 function editor(data = { action: 'Validate', resourceId: '/resource/id', name: null,
   workloadOverrides: { a: { source: 'one' }, b: { source: 'two' } } }, documentSchema = schema(), spec = {}) {
-  const root = { $schema: './parameters.schema.json', inputs: { stepInputs: { [sid]: data } } };
+  const root = { $schema: './parameters.schema.json', inputs: { stepInputs: data === null ? {} : { [sid]: data } } };
   const nodes = new Map();
   const element = id => {
     if (!nodes.has(id)) nodes.set(id, {
@@ -393,6 +393,128 @@ test('full-document root assertions are also evaluated by the SDK', () => {
   const e = editor(undefined, documentSchema);
   assert.equal(e.run('uploadBlocked()'), true);
   assert.match(e.nodes.get('stepConditions').textContent, /approval/);
+});
+
+test('empty parameter documents retain all SDK failures and document-level review feedback', () => {
+  for (const change of [
+    s => { s.required.push('approval'); },
+    s => { s.properties.inputs.properties.stepInputs.required = [sid]; },
+    s => { s.definitions.entity.allOf = 'invalid'; }
+  ]) {
+    const documentSchema = schema();
+    change(documentSchema);
+    for (const spec of [{}, { workstreams: [{ steps: [{ stepId: 'status-1' }] }] }]) {
+      const e = editor(null, documentSchema, spec);
+      assert.equal(e.run('uploadBlocked()'), true);
+      assert.ok(e.run('allIssues().length') > 0);
+      assert.equal(e.nodes.get('copyBtn').disabled, true);
+      assert.doesNotMatch(e.nodes.get('vsummary').textContent, /All required inputs set/);
+      assert.match(e.nodes.get('vsummary').innerHTML, /document/i);
+      e.run('showIssues()');
+      assert.match(e.nodes.get('issueList').innerHTML, /approval|target-1|schema/i);
+      assert.match(e.nodes.get('issueList').innerHTML, /Parameters document/);
+    }
+  }
+  const valid = editor(null);
+  assert.equal(valid.run('uploadBlocked()'), false);
+  assert.equal(valid.run('buildInputsJson()'), JSON.stringify(valid.root, null, 2));
+});
+
+test('all matching named and pattern schemas contribute controls and workload metadata', () => {
+  const documentSchema = schema();
+  const steps = documentSchema.properties.inputs.properties.stepInputs;
+  steps.properties = { [sid]: { type: 'object', properties: {
+    sharedLabel: { type: 'string', 'x-ms-source': { scope: 'Wave' } }
+  }, required: ['sharedLabel'] } };
+  delete documentSchema.definitions.step.additionalProperties;
+  delete documentSchema.definitions.entity.additionalProperties;
+  steps.patternProperties['^target-'] = { type: 'object', properties: {
+    workloadOverrides: { type: 'object', additionalProperties: {
+      type: 'object', properties: { extra: { type: 'integer', minimum: 2 } }, required: ['extra']
+    } }
+  } };
+  const before = JSON.stringify(documentSchema);
+  const e = editor(undefined, documentSchema);
+  assert.equal(e.run(`stepFields('${sid}').includes('sharedLabel')`), true);
+  assert.equal(e.run(`entityFields('${sid}').includes('extra')`), true);
+  assert.match(e.nodes.get('form').innerHTML, /data-path="A\|target-1\|sharedLabel"/);
+  assert.match(e.nodes.get('ovPane').innerHTML, /data-path="O\|target-1\|a\|extra"/);
+  assert.equal(e.run('uploadBlocked()'), true);
+  e.run(`setValue('A|${sid}|sharedLabel', 'shared'); setValue('D|${sid}|extra', '2')`);
+  assert.equal(e.run('uploadBlocked()'), false, e.run('JSON.stringify(allIssues())'));
+  e.run(`setValue('O|${sid}|a|extra', '1')`);
+  assert.equal(e.run('uploadBlocked()'), true);
+  assert.equal(JSON.stringify(documentSchema), before);
+});
+
+test('untyped scalar enum and const dropdowns preserve their JSON value types on edit and Save', () => {
+  const documentSchema = schema();
+  const properties = documentSchema.definitions.entity.properties;
+  properties.ratio = { const: 1.5 };
+  properties.enabled = { enum: [false, true] };
+  documentSchema.definitions.step.properties.enabled = { $ref: '#/definitions/entity/properties/enabled' };
+  const e = editor(undefined, documentSchema);
+  for (const [prefix, target] of [
+    [`D|${sid}`, e.data], [`O|${sid}|a`, e.data.workloadOverrides.a]
+  ]) {
+    e.run(`setValue('${prefix}|ratio', '1.5'); setValue('${prefix}|enabled', 'false')`);
+    assert.equal(target.ratio, 1.5);
+    assert.equal(target.enabled, false);
+    assert.equal(e.run('uploadBlocked()'), false, e.run('JSON.stringify(allIssues())'));
+  }
+  const output = JSON.parse(e.run('buildInputsJson()')).inputs.stepInputs[sid];
+  assert.equal(output.ratio, 1.5);
+  assert.equal(output.enabled, false);
+  assert.equal(output.workloadOverrides.a.ratio, 1.5);
+  assert.equal(output.workloadOverrides.a.enabled, false);
+  e.run(`setValue('O|${sid}|a|enabled', 'true')`);
+  assert.equal(e.data.workloadOverrides.a.enabled, true);
+  e.run(`setValue('D|${sid}|ratio', '2')`);
+  assert.equal(e.run('uploadBlocked()'), true);
+});
+
+test('undeclared and nested workloadOverrides survive projection and remain SDK errors', () => {
+  const documentSchema = schema();
+  delete documentSchema.definitions.step.properties.workloadOverrides;
+  const e = editor({ action: 'Validate', workloadOverrides: {} }, documentSchema);
+  assert.equal(e.run('uploadBlocked()'), true);
+  assert.match(e.run('JSON.stringify(allIssues())'), /workloadOverrides/);
+  assert.deepEqual(JSON.parse(e.run('buildInputsJson()')).inputs.stepInputs[sid].workloadOverrides, {});
+  const nested = editor();
+  nested.data.workloadOverrides.a.workloadOverrides = { hidden: 'invalid' };
+  assert.equal(nested.run('uploadBlocked()'), true);
+  assert.match(nested.run('JSON.stringify(allIssues())'), /workloadOverrides/);
+  assert.deepEqual(JSON.parse(nested.run('buildInputsJson()')).inputs.stepInputs[sid]
+    .workloadOverrides.a.workloadOverrides, { hidden: 'invalid' });
+});
+
+test('mixed-scope provider fields stay shared and inherited-only in workload validation and Save', () => {
+  const documentSchema = schema();
+  const shared = { type: 'string', minLength: 2, 'x-ms-source': { scope: 'Wave', editable: true } };
+  documentSchema.definitions.step.properties.entityName = shared;
+  documentSchema.definitions.step.required = ['entityName'];
+  documentSchema.definitions.entity.patternProperties = { '^entityName$': shared };
+  const e = editor(undefined, documentSchema);
+  assert.equal(e.run(`contextRules('${sid}').entityName.scope`), 'Wave');
+  assert.equal(e.run(`entityFields('${sid}').includes('entityName')`), false);
+  assert.equal(e.run(`applianceFields('${sid}').includes('entityName')`), true);
+  assert.match(e.nodes.get('form').innerHTML, /data-path="A\|target-1\|entityName"/);
+  assert.doesNotMatch(e.nodes.get('ovPane').innerHTML, /O\|target-1\|a\|entityName/);
+  e.run(`setValue('A|${sid}|entityName', 'x')`);
+  assert.equal(e.run('uploadBlocked()'), true);
+  assert.ok(e.nodes.get(`[data-err="A|${sid}|entityName"]`).textContent);
+  e.run(`setValue('A|${sid}|entityName', 'Shared wave'); setValue('O|${sid}|a|ratio', '1.5')`);
+  assert.equal(e.run('uploadBlocked()'), false, e.run('JSON.stringify(allIssues())'));
+  const output = JSON.parse(e.run('buildInputsJson()')).inputs.stepInputs[sid];
+  assert.equal(output.entityName, 'Shared wave');
+  assert.equal(output.workloadOverrides.a.ratio, 1.5);
+  for (const workload of Object.values(output.workloadOverrides))
+    assert.equal(Object.hasOwn(workload, 'entityName'), false);
+  // Explicit scope also wins if a compatible schema lists a shared property in both places.
+  documentSchema.definitions.entity.properties.entityName = shared;
+  const compatible = editor(undefined, documentSchema);
+  assert.equal(compatible.run(`contextRules('${sid}').entityName.scope`), 'Wave');
+  assert.equal(compatible.run(`entityFields('${sid}').includes('entityName')`), false);
 });
 
 test('live requiredness also honors full-document conditions on non-workload inputs', () => {
