@@ -14,6 +14,16 @@ monitor health-models discovery-rule update:
     add_resource_health_signal:
       rule_exclusions:
       - option_length_too_long
+monitor health-models entity create:
+  parameters:
+    signal_aggregation_groups:
+      rule_exclusions:
+      - option_length_too_long
+monitor health-models entity update:
+  parameters:
+    signal_aggregation_groups:
+      rule_exclusions:
+      - option_length_too_long
 monitor health-models signal-definition create:
   parameters:
     prometheus_metrics_query:

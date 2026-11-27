@@ -15,33 +15,31 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g -n --location
+      - -g -n -l
       User-Agent:
-      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002?api-version=2026-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002?api-version=2026-11-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","name":"clihm000002","type":"microsoft.cloudhealth/healthmodels","location":"centralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-15T20:59:30.2950259Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-15T20:59:30.2950259Z"},"properties":{"provisioningState":"Accepted"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","name":"clihm000002","type":"microsoft.cloudhealth/healthmodels","location":"centralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:19:49.252092Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:19:49.252092Z"},"properties":{"provisioningState":"Accepted"}}'
     headers:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/c766e1b9-bdcf-4880-916a-16ebed920d4d*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1?api-version=2026-05-01-preview&t=639171539736700710&c=MIIHlTCCBn2gAwIBAgIRANClaz6RLmreUbR9r6zb9WMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV1VTMiBDQSAwMTAeFw0yNjA0MTAwODE5MzhaFw0yNjEwMDUxNDE5MzhaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3E1D6z1LouZ_KTbiqwoLegZPXxfJtAxSDEzNd5eYoT9Z0mkVt2msmJzCj13_5ZeNe1Zc3emsD0Nva_lxqQqpnd8AFotdRR7SW2RoZL6e0AggjtVdUxBw3arEEVPONhRCC4X4NVXP3cSjKZjoedb5vjiI7gzkBBWu_gld6jaW4bNj5MMfx0_PNVx65CAOf2YmGYzF7zv4k3cn5-QHu9FINZ2XuhjINP6EvIDSw6H-2qVAnJw-mNb5e2KonH1tYO7nlEsUCon2rz_d7bnJURgwh_6MZ5tSOhlvvnEM1BnC_4jnVBCpBhgt-GLaYNMWZfQnMLxuc13rgCkS5b0JKPbMDQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUz6DzOu55HJGf5hqPqj6oUQtuHzkwHwYDVR0jBBgwFoAUrONy-gOyc549lcjvh1uu3Ruh7WgwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NybHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS83OS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZXdlc3R1czJwa2kud2VzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0dXMyaWNhMDEvNzkvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY2FjZXJ0cy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAnQMBcxghl--qhJL4CBD2951WWIqzswBZahCpYCb1uYtvUonEYArDTouihm73A1IMaA1hcof6i4mp4wlOCbJrwBz1o25Urh_E8AVOA1ylZkmsFxeAwRIXEH-HiAwvFsqrylOhL0jJvIDFa0jzjJTNlv5SkoW9fTaN0E16t8hjXVNvgecuZ56mGRaJku-UCWENmbdnq7Tn6ZMhxkpcUo1uXlbRbIWmSrnwBkZu9y949y3djVawgkZL3OzGb25vkxffx3kdRijKTXY3VNuHj9KRJ2mrrPHhFcw867D13Sc9-DVYBiHYW8bb-kvv1J7UCuJTE1jqyfCNTREat4NXicrPcg&s=wetansDSZE_evAfNeMiLaEnC5CKJjI-nbKd26vzCNlSv0dWyHOiUFzXZfCQhmtvFvnVzq38ru--OP-dWpULe0mhcMaQHhkyFWbGKWzsnLJ8B0kssWXH-Wuu-7ymRUB5AxFXi5lTyxIGm7EwSJAnGasWJQVOVfH7THfd38v8ZTmYa-rI5YQE1gB19q6MJbMoMbXasl_zzAr4FrVf4LZgrxNxx-u5HCYYeqnZ30g0b_WhUqDJfMpzMJmjMIVSvx-d_ebcHGBbZWFomoZx1_cKGiHeaSdfSoykR0wWuqncd-pChRmnYAj6eqA01iRXGWKCZtpZ5Gk_Qdk4ys7eMRXjHkA&h=PZljEX9YiRJLVeWGOIBcqrLrPq33EMk2hRgi-ALGuIc
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/7efb0924-70c5-4b95-a35c-cc6b1b0964c5*4A2EB1F341ADFD98A27109023527387CDE3CA3EC45DA74B333FD27294985F4AC?api-version=2026-11-01&t=redacted-t&c=redacted-c&s=redacted-s&h=redacted-h
       cache-control:
       - no-cache
       content-length:
-      - '532'
+      - '530'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 Jun 2026 20:59:32 GMT
+      - Mon, 23 Nov 2026 11:19:50 GMT
       etag:
-      - '"e100a5b6-0000-0300-0000-6a3067b50000"'
+      - '"a30989f1-0000-0300-0000-6b0421560000"'
       expires:
       - '-1'
-      mise-correlation-id:
-      - 85ff0ff0-2d69-4931-8966-c1554da9985c
       pragma:
       - no-cache
       strict-transport-security:
@@ -51,19 +49,17 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-async-operation-timeout:
-      - REDACTED
-      x-ms-operation-identifier:
-      - REDACTED
+      - P6D
       x-ms-providerhub-traffic:
-      - REDACTED
+      - 'True'
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '199'
       x-ms-resource-provider-hint:
-      - REDACTED
+      - noPolling
       x-msedge-ref:
-      - REDACTED
+      - 'Ref A: 4FAF71AF5F9E45F89EEE9603386085BE Ref B: FRA261071502034 Ref C: 2026-11-23T11:19:45Z'
     status:
       code: 201
       message: Created
@@ -79,25 +75,25 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --location
+      - -g -n -l
       User-Agent:
-      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/c766e1b9-bdcf-4880-916a-16ebed920d4d*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1?api-version=2026-05-01-preview&t=639171539736700710&c=MIIHlTCCBn2gAwIBAgIRANClaz6RLmreUbR9r6zb9WMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV1VTMiBDQSAwMTAeFw0yNjA0MTAwODE5MzhaFw0yNjEwMDUxNDE5MzhaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3E1D6z1LouZ_KTbiqwoLegZPXxfJtAxSDEzNd5eYoT9Z0mkVt2msmJzCj13_5ZeNe1Zc3emsD0Nva_lxqQqpnd8AFotdRR7SW2RoZL6e0AggjtVdUxBw3arEEVPONhRCC4X4NVXP3cSjKZjoedb5vjiI7gzkBBWu_gld6jaW4bNj5MMfx0_PNVx65CAOf2YmGYzF7zv4k3cn5-QHu9FINZ2XuhjINP6EvIDSw6H-2qVAnJw-mNb5e2KonH1tYO7nlEsUCon2rz_d7bnJURgwh_6MZ5tSOhlvvnEM1BnC_4jnVBCpBhgt-GLaYNMWZfQnMLxuc13rgCkS5b0JKPbMDQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUz6DzOu55HJGf5hqPqj6oUQtuHzkwHwYDVR0jBBgwFoAUrONy-gOyc549lcjvh1uu3Ruh7WgwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NybHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS83OS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZXdlc3R1czJwa2kud2VzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0dXMyaWNhMDEvNzkvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY2FjZXJ0cy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAnQMBcxghl--qhJL4CBD2951WWIqzswBZahCpYCb1uYtvUonEYArDTouihm73A1IMaA1hcof6i4mp4wlOCbJrwBz1o25Urh_E8AVOA1ylZkmsFxeAwRIXEH-HiAwvFsqrylOhL0jJvIDFa0jzjJTNlv5SkoW9fTaN0E16t8hjXVNvgecuZ56mGRaJku-UCWENmbdnq7Tn6ZMhxkpcUo1uXlbRbIWmSrnwBkZu9y949y3djVawgkZL3OzGb25vkxffx3kdRijKTXY3VNuHj9KRJ2mrrPHhFcw867D13Sc9-DVYBiHYW8bb-kvv1J7UCuJTE1jqyfCNTREat4NXicrPcg&s=wetansDSZE_evAfNeMiLaEnC5CKJjI-nbKd26vzCNlSv0dWyHOiUFzXZfCQhmtvFvnVzq38ru--OP-dWpULe0mhcMaQHhkyFWbGKWzsnLJ8B0kssWXH-Wuu-7ymRUB5AxFXi5lTyxIGm7EwSJAnGasWJQVOVfH7THfd38v8ZTmYa-rI5YQE1gB19q6MJbMoMbXasl_zzAr4FrVf4LZgrxNxx-u5HCYYeqnZ30g0b_WhUqDJfMpzMJmjMIVSvx-d_ebcHGBbZWFomoZx1_cKGiHeaSdfSoykR0wWuqncd-pChRmnYAj6eqA01iRXGWKCZtpZ5Gk_Qdk4ys7eMRXjHkA&h=PZljEX9YiRJLVeWGOIBcqrLrPq33EMk2hRgi-ALGuIc
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/7efb0924-70c5-4b95-a35c-cc6b1b0964c5*4A2EB1F341ADFD98A27109023527387CDE3CA3EC45DA74B333FD27294985F4AC?api-version=2026-11-01&t=redacted-t&c=redacted-c&s=redacted-s&h=redacted-h
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/00000000-0000-0000-0000-000000000001*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1","name":"00000000-0000-0000-0000-000000000001*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","status":"Succeeded","startTime":"2026-06-15T20:59:32.0225481Z","endTime":"2026-06-15T20:59:34.3200063Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/7efb0924-70c5-4b95-a35c-cc6b1b0964c5*4A2EB1F341ADFD98A27109023527387CDE3CA3EC45DA74B333FD27294985F4AC","name":"7efb0924-70c5-4b95-a35c-cc6b1b0964c5*4A2EB1F341ADFD98A27109023527387CDE3CA3EC45DA74B333FD27294985F4AC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","status":"Accepted","startTime":"2026-11-23T11:19:50.045827Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '637'
+      - '576'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 Jun 2026 20:59:34 GMT
+      - Mon, 23 Nov 2026 11:19:51 GMT
       etag:
-      - '"8000b333-0000-0300-0000-6a3067b60000"'
+      - '"090216f6-0000-0300-0000-6b0421560000"'
       expires:
       - '-1'
       pragma:
@@ -108,12 +104,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-operation-identifier:
-      - REDACTED
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - REDACTED
+      - 'Ref A: 624468E50B274209ACCD2E7329FF0133 Ref B: FRA261071502034 Ref C: 2026-11-23T11:19:51Z'
     status:
       code: 200
       message: OK
@@ -129,25 +123,73 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --location
+      - -g -n -l
       User-Agent:
-      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002?api-version=2026-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/7efb0924-70c5-4b95-a35c-cc6b1b0964c5*4A2EB1F341ADFD98A27109023527387CDE3CA3EC45DA74B333FD27294985F4AC?api-version=2026-11-01&t=redacted-t&c=redacted-c&s=redacted-s&h=redacted-h
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","name":"clihm000002","type":"microsoft.cloudhealth/healthmodels","location":"centralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-15T20:59:30.2950259Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-15T20:59:30.2950259Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/7efb0924-70c5-4b95-a35c-cc6b1b0964c5*4A2EB1F341ADFD98A27109023527387CDE3CA3EC45DA74B333FD27294985F4AC","name":"7efb0924-70c5-4b95-a35c-cc6b1b0964c5*4A2EB1F341ADFD98A27109023527387CDE3CA3EC45DA74B333FD27294985F4AC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","status":"Succeeded","startTime":"2026-11-23T11:19:50.045827Z","endTime":"2026-11-23T11:19:55.8898429Z","properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '533'
+      - '636'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 Jun 2026 20:59:34 GMT
+      - Mon, 23 Nov 2026 11:20:22 GMT
       etag:
-      - '"1501808e-0000-0200-0000-6a3067b60000"'
+      - '"09028df6-0000-0300-0000-6b04215c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 9181C5DC9F4541D7BDAEF43BC3625944 Ref B: FRA261071502034 Ref C: 2026-11-23T11:20:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","name":"clihm000002","type":"microsoft.cloudhealth/healthmodels","location":"centralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:19:49.252092Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:19:49.252092Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '531'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:23 GMT
+      etag:
+      - '"c901a536-0000-0200-0000-6b04215c0000"'
       expires:
       - '-1'
       pragma:
@@ -159,11 +201,61 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
-      - REDACTED
+      - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - REDACTED
+      - 'Ref A: B910D2E0A77C45D2A7BA5BEFEC5EAC1B Ref B: FRA261071502034 Ref C: 2026-11-23T11:20:23Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --created --interval --timeout
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","name":"clihm000002","type":"microsoft.cloudhealth/healthmodels","location":"centralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:19:49.252092Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:19:49.252092Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '531'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:25 GMT
+      etag:
+      - '"c901a536-0000-0200-0000-6b04215c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 16860ECCA69C4092BB36E6A1D1D9B722 Ref B: GVA201070811040 Ref C: 2026-11-23T11:20:24Z'
     status:
       code: 200
       message: OK
@@ -181,23 +273,23 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002?api-version=2026-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002?api-version=2026-11-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","name":"clihm000002","type":"microsoft.cloudhealth/healthmodels","location":"centralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-15T20:59:30.2950259Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-15T20:59:30.2950259Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","name":"clihm000002","type":"microsoft.cloudhealth/healthmodels","location":"centralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:19:49.252092Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:19:49.252092Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '533'
+      - '531'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 Jun 2026 20:59:36 GMT
+      - Mon, 23 Nov 2026 11:20:26 GMT
       etag:
-      - '"1501808e-0000-0200-0000-6a3067b60000"'
+      - '"c901a536-0000-0200-0000-6b04215c0000"'
       expires:
       - '-1'
       pragma:
@@ -209,11 +301,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
-      - REDACTED
+      - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - REDACTED
+      - 'Ref A: 1B493C66B1A84E73823C4B8E74A1840B Ref B: FRA261071514023 Ref C: 2026-11-23T11:20:25Z'
     status:
       code: 200
       message: OK
@@ -231,23 +323,23 @@ interactions:
       ParameterSetName:
       - -g -n --tags
       User-Agent:
-      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002?api-version=2026-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002?api-version=2026-11-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","name":"clihm000002","type":"microsoft.cloudhealth/healthmodels","location":"centralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-15T20:59:30.2950259Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-15T20:59:30.2950259Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","name":"clihm000002","type":"microsoft.cloudhealth/healthmodels","location":"centralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:19:49.252092Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:19:49.252092Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '533'
+      - '531'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 Jun 2026 20:59:36 GMT
+      - Mon, 23 Nov 2026 11:20:26 GMT
       etag:
-      - '"1501808e-0000-0200-0000-6a3067b60000"'
+      - '"c901a536-0000-0200-0000-6b04215c0000"'
       expires:
       - '-1'
       pragma:
@@ -259,17 +351,17 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
-      - REDACTED
+      - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - REDACTED
+      - 'Ref A: 4F43A1ED2C8B405A8EBEBF64C5494C8A Ref B: GVA201070812052 Ref C: 2026-11-23T11:20:26Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "centralus", "properties": {}, "tags": {"env": "test", "owner":
-      "cli"}}'
+    body: '{"location": "centralus", "properties": {}, "tags": {"scenario": "examples",
+      "environment": "demo"}}'
     headers:
       Accept:
       - application/json
@@ -280,33 +372,31 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '84'
+      - '100'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n --tags
       User-Agent:
-      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002?api-version=2026-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002?api-version=2026-11-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","name":"clihm000002","type":"microsoft.cloudhealth/healthmodels","location":"centralus","tags":{"env":"test","owner":"cli"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-15T20:59:30.2950259Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-15T20:59:37.4022779Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","name":"clihm000002","type":"microsoft.cloudhealth/healthmodels","location":"centralus","tags":{"scenario":"examples","environment":"demo"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:19:49.252092Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:27.5655467Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '559'
+      - '574'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 Jun 2026 20:59:38 GMT
+      - Mon, 23 Nov 2026 11:20:27 GMT
       etag:
-      - '"e1002eb8-0000-0300-0000-6a3067b90000"'
+      - '"a309d3fd-0000-0300-0000-6b04217b0000"'
       expires:
       - '-1'
-      mise-correlation-id:
-      - 6d331880-7931-4650-84f1-3419451fcb26
       pragma:
       - no-cache
       strict-transport-security:
@@ -315,16 +405,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-operation-identifier:
-      - REDACTED
       x-ms-providerhub-traffic:
-      - REDACTED
+      - 'True'
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '199'
       x-msedge-ref:
-      - REDACTED
+      - 'Ref A: F0DF149BD5C14B72876A875C7935B126 Ref B: GVA201070812052 Ref C: 2026-11-23T11:20:27Z'
     status:
       code: 200
       message: OK
@@ -342,21 +430,21 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels?api-version=2026-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels?api-version=2026-11-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","name":"clihm000002","type":"microsoft.cloudhealth/healthmodels","location":"centralus","tags":{"env":"test","owner":"cli"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-15T20:59:30.2950259Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-15T20:59:37.4022779Z"},"properties":{"provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","name":"clihm000002","type":"microsoft.cloudhealth/healthmodels","location":"centralus","tags":{"scenario":"examples","environment":"demo"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:19:49.252092Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:27.5655467Z"},"properties":{"provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '571'
+      - '586'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 Jun 2026 20:59:38 GMT
+      - Mon, 23 Nov 2026 11:20:28 GMT
       expires:
       - '-1'
       pragma:
@@ -368,72 +456,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - REDACTED
+      - c57f6eb3-e0e6-426d-be23-705881731011
       x-ms-providerhub-traffic:
-      - REDACTED
+      - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - REDACTED
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"displayName": "CLI Test Entity", "impact": "Standard"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate, zstd
-      CommandName:
-      - monitor health-models entity create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '72'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - -g --health-model-name -n --display-name --impact
-      User-Agent:
-      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003?api-version=2026-05-01-preview
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003","name":"client000003","type":"microsoft.cloudhealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-15T20:59:39.6385728Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-15T20:59:39.6385728Z"},"properties":{"provisioningState":"Succeeded","displayName":"CLI
-        Test Entity","impact":"Standard"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '584'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 15 Jun 2026 20:59:39 GMT
-      expires:
-      - '-1'
-      mise-correlation-id:
-      - 2520c84a-7a21-480e-9e91-e9af7078f2ed
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-operation-identifier:
-      - REDACTED
-      x-ms-providerhub-traffic:
-      - REDACTED
-      x-ms-ratelimit-remaining-subscription-global-writes:
-      - '2999'
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '199'
-      x-msedge-ref:
-      - REDACTED
+      - 'Ref A: 6FB3353D0DE349838E44DC649A0DCA64 Ref B: FRA261071501023 Ref C: 2026-11-23T11:20:28Z'
     status:
       code: 200
       message: OK
@@ -451,26 +480,23 @@ interactions:
       ParameterSetName:
       - -g --health-model-name -n
       User-Agent:
-      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003?api-version=2026-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/clihm000002?api-version=2026-11-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/client000003","name":"client000003","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-15T20:59:39.6385728Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-15T20:59:39.9571595Z"},"properties":{"provisioningState":"Succeeded","displayName":"CLI
-        Test Entity","impact":"Standard","healthState":"Unknown"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/clihm000002","name":"clihm000002","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"lastModifiedAt":"2026-11-23T11:19:55.345992Z"},"properties":{"displayName":"clihm000002","canvasPosition":{"x":0.0,"y":0.0},"impact":"Standard","healthState":"Unknown"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '608'
+      - '443'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 Jun 2026 20:59:41 GMT
+      - Mon, 23 Nov 2026 11:20:29 GMT
       expires:
       - '-1'
-      mise-correlation-id:
-      - 2b12e884-f295-480b-981d-4459ccefc73e
       pragma:
       - no-cache
       strict-transport-security:
@@ -479,14 +505,1627 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-operation-identifier:
-      - REDACTED
       x-ms-providerhub-traffic:
-      - REDACTED
+      - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - REDACTED
+      - 'Ref A: 341703F5F1E24294B1B259D769E36155 Ref B: GVA201070812060 Ref C: 2026-11-23T11:20:29Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name -n --canvas-position
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/clihm000002?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/clihm000002","name":"clihm000002","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"lastModifiedAt":"2026-11-23T11:19:55.345992Z"},"properties":{"displayName":"clihm000002","canvasPosition":{"x":0.0,"y":0.0},"impact":"Standard","healthState":"Unknown"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '443'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: F19061DD86C548E7945D015FED46675F Ref B: FRA261071509052 Ref C: 2026-11-23T11:20:29Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"canvasPosition": {"x": 0.0, "y": 0.0}, "displayName":
+      "clihm000002", "impact": "Standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '108'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name -n --canvas-position
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/clihm000002?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/clihm000002","name":"clihm000002","type":"microsoft.cloudhealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:30.8692722Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:30.8692722Z"},"properties":{"provisioningState":"Succeeded","displayName":"clihm000002","canvasPosition":{"x":0.0,"y":0.0},"impact":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '613'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: EF24CE5AC0C14DAE9CDA726F6B2416F9 Ref B: FRA261071509052 Ref C: 2026-11-23T11:20:30Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"canvasPosition": {"x": 0.0, "y": 200.0}, "displayName":
+      "Web frontend", "impact": "Standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '111'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name -n --display-name --canvas-position
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003","name":"client000003","type":"microsoft.cloudhealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:32.2527912Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:32.2527912Z"},"properties":{"provisioningState":"Succeeded","displayName":"Web
+        frontend","canvasPosition":{"x":0.0,"y":200.0},"impact":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '618'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: DBF1246E921B454FBC03228677495978 Ref B: GVA201070811036 Ref C: 2026-11-23T11:20:31Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"childEntityName": "client000003", "displayName": "Checkout
+      depends on frontend", "parentEntityName": "clihm000002"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models relationship create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '133'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name -n --parent-entity-name --child-entity-name --display-name
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000006?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000006","name":"clirel000006","type":"microsoft.cloudhealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:33.1001578Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:33.1001578Z"},"properties":{"provisioningState":"Succeeded","displayName":"Checkout
+        depends on frontend","parentEntityName":"clihm000002","childEntityName":"client000003"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '653'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: B64D500B980840FF81253C9424DA38AF Ref B: GVA201070811034 Ref C: 2026-11-23T11:20:32Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name -n --exists --interval --timeout
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/client000003","name":"client000003","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:32.2527912Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:32.4687205Z"},"properties":{"provisioningState":"Succeeded","displayName":"Web
+        frontend","canvasPosition":{"x":0.0,"y":200.0},"impact":"Standard","healthState":"Unknown"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '642'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 85388998D2CF42C7A898CD86FAF60674 Ref B: FRA231050413009 Ref C: 2026-11-23T11:20:34Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models relationship wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name -n --exists --interval --timeout
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000006?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/relationships/clirel000006","name":"clirel000006","type":"Microsoft.CloudHealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:33.1001578Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:33.4105204Z"},"properties":{"provisioningState":"Succeeded","displayName":"Checkout
+        depends on frontend","parentEntityName":"clihm000002","childEntityName":"client000003"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '653'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 0987D432A83A4A208B7EA75EA66C5862 Ref B: GVA201070811060 Ref C: 2026-11-23T11:20:34Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models relationship show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000006?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/relationships/clirel000006","name":"clirel000006","type":"Microsoft.CloudHealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:33.1001578Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:33.4105204Z"},"properties":{"provisioningState":"Succeeded","displayName":"Checkout
+        depends on frontend","parentEntityName":"clihm000002","childEntityName":"client000003"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '653'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: C26BC84CD31F4A708B3AC48AE81443E3 Ref B: GVA201070811023 Ref C: 2026-11-23T11:20:35Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models relationship update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name -n --display-name
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000006?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/relationships/clirel000006","name":"clirel000006","type":"Microsoft.CloudHealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:33.1001578Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:33.4105204Z"},"properties":{"provisioningState":"Succeeded","displayName":"Checkout
+        depends on frontend","parentEntityName":"clihm000002","childEntityName":"client000003"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '653'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 274F79E2B02841C5830714CECDA9F5CC Ref B: MIL221110120042 Ref C: 2026-11-23T11:20:35Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"childEntityName": "client000003", "displayName": "Frontend
+      dependency", "parentEntityName": "clihm000002"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models relationship update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '124'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name -n --display-name
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000006?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000006","name":"clirel000006","type":"microsoft.cloudhealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:37.2997752Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:37.2997752Z"},"properties":{"provisioningState":"Succeeded","displayName":"Frontend
+        dependency","parentEntityName":"clihm000002","childEntityName":"client000003"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '644'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 0A2992A2D1694D0C88D46F004CCC66B8 Ref B: MIL221110120042 Ref C: 2026-11-23T11:20:36Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/client000003","name":"client000003","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:32.2527912Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:32.4687205Z"},"properties":{"provisioningState":"Succeeded","displayName":"Web
+        frontend","canvasPosition":{"x":0.0,"y":200.0},"impact":"Standard","healthState":"Unknown"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '642'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: BC84D3F77C854F7D890BD945A6E57E48 Ref B: FRA261110502036 Ref C: 2026-11-23T11:20:38Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"canvasPosition": {"x": 250.0, "y": 200.0}, "displayName":
+      "Background worker", "impact": "Standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '118'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name -n --display-name --canvas-position
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000004?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000004","name":"client000004","type":"microsoft.cloudhealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:40.8282667Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:40.8282667Z"},"properties":{"provisioningState":"Succeeded","displayName":"Background
+        worker","canvasPosition":{"x":250.0,"y":200.0},"impact":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '625'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: DD9AB012D7CA45D6866D9CF06F4FE715 Ref B: FRA261071506040 Ref C: 2026-11-23T11:20:39Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"childEntityName": "client000004", "displayName": "Root
+      to child", "parentEntityName": "clihm000002"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models relationship create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '118'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name -n --parent-entity-name --child-entity-name --display-name
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000007?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000007","name":"clirel000007","type":"microsoft.cloudhealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:42.9968246Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:42.9968246Z"},"properties":{"provisioningState":"Succeeded","displayName":"Root
+        to child","parentEntityName":"clihm000002","childEntityName":"client000004"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '638'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 66845C71648243AE895AF80F1CAF9D5B Ref B: FRA261110508042 Ref C: 2026-11-23T11:20:41Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models relationship show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000007?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/relationships/clirel000007","name":"clirel000007","type":"Microsoft.CloudHealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:42.9968246Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:43.5111029Z"},"properties":{"provisioningState":"Succeeded","displayName":"Root
+        to child","parentEntityName":"clihm000002","childEntityName":"client000004"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '638'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: CC33CC3EA2674F2ABC10898488E01B60 Ref B: FRA261071504034 Ref C: 2026-11-23T11:20:44Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models relationship update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name -n --display-name
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000007?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/relationships/clirel000007","name":"clirel000007","type":"Microsoft.CloudHealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:42.9968246Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:43.5111029Z"},"properties":{"provisioningState":"Succeeded","displayName":"Root
+        to child","parentEntityName":"clihm000002","childEntityName":"client000004"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '638'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 95257E64A4914C15975F613CA1C4E46C Ref B: GVA201070811040 Ref C: 2026-11-23T11:20:44Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"childEntityName": "client000004", "displayName": "Connected
+      top-level entity", "parentEntityName": "clihm000002"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models relationship update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '131'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name -n --display-name
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000007?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000007","name":"clirel000007","type":"microsoft.cloudhealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:45.2374063Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:45.2374063Z"},"properties":{"provisioningState":"Succeeded","displayName":"Connected
+        top-level entity","parentEntityName":"clihm000002","childEntityName":"client000004"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '651'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 6E35CAD900074FFCB94C849D6333FC77 Ref B: GVA201070811040 Ref C: 2026-11-23T11:20:44Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000004?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/client000004","name":"client000004","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:40.8282667Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:41.3379616Z"},"properties":{"provisioningState":"Succeeded","displayName":"Background
+        worker","canvasPosition":{"x":250.0,"y":200.0},"impact":"Standard","healthState":"Unknown"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '649'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: FDB28DCFBCD34E13B94AFB3A64BF78DB Ref B: GVA201070812062 Ref C: 2026-11-23T11:20:46Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"canvasPosition": {"x": 500.0, "y": 200.0}, "displayName":
+      "Data storage", "impact": "Standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '113'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name -n --display-name --canvas-position
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000005?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000005","name":"client000005","type":"microsoft.cloudhealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:46.8878995Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:46.8878995Z"},"properties":{"provisioningState":"Succeeded","displayName":"Data
+        storage","canvasPosition":{"x":500.0,"y":200.0},"impact":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '620'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: E5177B1C5F934FE88C604D666112F403 Ref B: FRA261110502023 Ref C: 2026-11-23T11:20:46Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"childEntityName": "client000005", "displayName": "Root
+      to child", "parentEntityName": "clihm000002"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models relationship create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '118'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name -n --parent-entity-name --child-entity-name --display-name
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000008?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000008","name":"clirel000008","type":"microsoft.cloudhealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:48.7639061Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:48.7639061Z"},"properties":{"provisioningState":"Succeeded","displayName":"Root
+        to child","parentEntityName":"clihm000002","childEntityName":"client000005"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '638'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 1D4A3EBD3A57447DAF0D042DC4F0868C Ref B: MIL221110511042 Ref C: 2026-11-23T11:20:47Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models relationship show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000008?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/relationships/clirel000008","name":"clirel000008","type":"Microsoft.CloudHealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:48.7639061Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:49.2875465Z"},"properties":{"provisioningState":"Succeeded","displayName":"Root
+        to child","parentEntityName":"clihm000002","childEntityName":"client000005"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '638'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: AA380F737BE64229973D13B4AC1BED23 Ref B: GVA201070811029 Ref C: 2026-11-23T11:20:49Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models relationship update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name -n --display-name
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000008?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/relationships/clirel000008","name":"clirel000008","type":"Microsoft.CloudHealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:48.7639061Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:49.2875465Z"},"properties":{"provisioningState":"Succeeded","displayName":"Root
+        to child","parentEntityName":"clihm000002","childEntityName":"client000005"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '638'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 69575C3491CD409BA1B585A2A6455D19 Ref B: FRA261110505054 Ref C: 2026-11-23T11:20:50Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"childEntityName": "client000005", "displayName": "Connected
+      top-level entity", "parentEntityName": "clihm000002"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models relationship update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '131'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name -n --display-name
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000008?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000008","name":"clirel000008","type":"microsoft.cloudhealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:51.722163Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:51.722163Z"},"properties":{"provisioningState":"Succeeded","displayName":"Connected
+        top-level entity","parentEntityName":"clihm000002","childEntityName":"client000005"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '649'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 35D1B6E8A9ED4CA686D706976AF96D82 Ref B: FRA261110505054 Ref C: 2026-11-23T11:20:51Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000005?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/client000005","name":"client000005","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:46.8878995Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:47.1052862Z"},"properties":{"provisioningState":"Succeeded","displayName":"Data
+        storage","canvasPosition":{"x":500.0,"y":200.0},"impact":"Standard","healthState":"Unknown"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '644'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 424415E4057C4FF6A04F0D39C582BCBF Ref B: GVA201070812034 Ref C: 2026-11-23T11:20:52Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name -n --signal-groups
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/clihm000002?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/clihm000002","name":"clihm000002","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"lastModifiedAt":"2026-11-23T11:19:55.345992Z"},"properties":{"displayName":"clihm000002","canvasPosition":{"x":0.0,"y":0.0},"impact":"Standard","healthState":"Unknown"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '443'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 7F8D67E9F2D54092B2C4E03B11CA435F Ref B: FRA261071505054 Ref C: 2026-11-23T11:20:53Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"canvasPosition": {"x": 0.0, "y": 0.0}, "displayName":
+      "clihm000002", "impact": "Standard", "signalGroups": {"dependencies": {"aggregationType":
+      "WorstOf"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '174'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name -n --signal-groups
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/clihm000002?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/clihm000002","name":"clihm000002","type":"microsoft.cloudhealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:53.5850507Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:53.5850507Z"},"properties":{"provisioningState":"Succeeded","displayName":"clihm000002","canvasPosition":{"x":0.0,"y":0.0},"impact":"Standard","signalGroups":{"dependencies":{"aggregationType":"WorstOf","ignoreUnknown":true}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '696'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: E0C94DFA3F964ACBA701398445520159 Ref B: FRA261071505054 Ref C: 2026-11-23T11:20:53Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"canvasPosition": {"x": 0.0, "y": 400.0}, "displayName":
+      "Frontend API", "impact": "Standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '111'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name -n --display-name --canvas-position
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/cliapi000009?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/cliapi000009","name":"cliapi000009","type":"microsoft.cloudhealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:54.259441Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:54.259441Z"},"properties":{"provisioningState":"Succeeded","displayName":"Frontend
+        API","canvasPosition":{"x":0.0,"y":400.0},"impact":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '616'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: E7911EDD567245BDB42B0C7408DD63F2 Ref B: GVA201070811029 Ref C: 2026-11-23T11:20:54Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"childEntityName": "cliapi000009", "parentEntityName":
+      "client000003"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models relationship create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '87'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name -n --parent-entity-name --child-entity-name
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000010?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000010","name":"clirel000010","type":"microsoft.cloudhealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:55.9795964Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:55.9795964Z"},"properties":{"provisioningState":"Succeeded","parentEntityName":"client000003","childEntityName":"cliapi000009"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '609'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 9ADFBD1EB88047FDB4BB2036AEBDB6F0 Ref B: FRA231050415033 Ref C: 2026-11-23T11:20:55Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name -n --canvas-position
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/cliapi000009?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/cliapi000009","name":"cliapi000009","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:54.259441Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:54.4192296Z"},"properties":{"provisioningState":"Succeeded","displayName":"Frontend
+        API","canvasPosition":{"x":0.0,"y":400.0},"impact":"Standard","healthState":"Unknown"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '641'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 697F93C70A364387B936DF6A23ABFFB6 Ref B: GVA201070811023 Ref C: 2026-11-23T11:20:57Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"canvasPosition": {"x": 0.0, "y": 400.0}, "displayName":
+      "Frontend API", "impact": "Standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '111'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name -n --canvas-position
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/cliapi000009?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/cliapi000009","name":"cliapi000009","type":"microsoft.cloudhealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:58.1996289Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:58.1996289Z"},"properties":{"provisioningState":"Succeeded","displayName":"Frontend
+        API","canvasPosition":{"x":0.0,"y":400.0},"impact":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '618'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: A304FF54626940A2B3918DECFF89C094 Ref B: GVA201070811023 Ref C: 2026-11-23T11:20:57Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/cliapi000009?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/cliapi000009","name":"cliapi000009","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:54.259441Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:54.4192296Z"},"properties":{"provisioningState":"Succeeded","displayName":"Frontend
+        API","canvasPosition":{"x":0.0,"y":400.0},"impact":"Standard","healthState":"Unknown"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '641'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: BBD769A5F3A74B3DB551CDF94303FA13 Ref B: GVA201070811062 Ref C: 2026-11-23T11:20:58Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models relationship list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships?api-version=2026-11-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/relationships/clirel000010","name":"clirel000010","type":"Microsoft.CloudHealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:55.9795964Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:56.4887535Z"},"properties":{"provisioningState":"Succeeded","parentEntityName":"client000003","childEntityName":"cliapi000009"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/relationships/clirel000008","name":"clirel000008","type":"Microsoft.CloudHealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:48.7639061Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:51.9766251Z"},"properties":{"provisioningState":"Succeeded","displayName":"Connected
+        top-level entity","parentEntityName":"clihm000002","childEntityName":"client000005"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/relationships/clirel000006","name":"clirel000006","type":"Microsoft.CloudHealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:33.1001578Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:37.6255841Z"},"properties":{"provisioningState":"Succeeded","displayName":"Frontend
+        dependency","parentEntityName":"clihm000002","childEntityName":"client000003"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/relationships/clirel000007","name":"clirel000007","type":"Microsoft.CloudHealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:42.9968246Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:45.4331471Z"},"properties":{"provisioningState":"Succeeded","displayName":"Connected
+        top-level entity","parentEntityName":"clihm000002","childEntityName":"client000004"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2570'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 9E378A38F03B4A018EE8C277C4808734 Ref B: GVA201070811034 Ref C: 2026-11-23T11:20:59Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/client000003","name":"client000003","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:32.2527912Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:32.4687205Z"},"properties":{"provisioningState":"Succeeded","displayName":"Web
+        frontend","canvasPosition":{"x":0.0,"y":200.0},"impact":"Standard","healthState":"Unknown"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '642'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:20:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 37CEAAA986A84CF89CCE2AB4B6D66B5D Ref B: FRA261110507062 Ref C: 2026-11-23T11:20:59Z'
     status:
       code: 200
       message: OK
@@ -504,26 +2143,27 @@ interactions:
       ParameterSetName:
       - -g --health-model-name
       User-Agent:
-      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities?api-version=2026-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities?api-version=2026-11-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/client000003","name":"client000003","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-15T20:59:39.6385728Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-15T20:59:39.9571595Z"},"properties":{"provisioningState":"Succeeded","displayName":"CLI
-        Test Entity","impact":"Standard","healthState":"Unknown"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/clihm000002","name":"clihm000002","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"lastModifiedAt":"2026-06-15T20:59:32.9645412Z"},"properties":{"displayName":"clihm000002","canvasPosition":{"x":0.0,"y":0.0},"impact":"Standard","healthState":"Unknown"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/cliapi000009","name":"cliapi000009","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:54.259441Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:54.4192296Z"},"properties":{"provisioningState":"Succeeded","displayName":"Frontend
+        API","canvasPosition":{"x":0.0,"y":400.0},"impact":"Standard","healthState":"Unknown"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/client000003","name":"client000003","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:32.2527912Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:32.4687205Z"},"properties":{"provisioningState":"Succeeded","displayName":"Web
+        frontend","canvasPosition":{"x":0.0,"y":200.0},"impact":"Standard","healthState":"Unknown"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/client000005","name":"client000005","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:46.8878995Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:47.1052862Z"},"properties":{"provisioningState":"Succeeded","displayName":"Data
+        storage","canvasPosition":{"x":500.0,"y":200.0},"impact":"Standard","healthState":"Unknown"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/client000004","name":"client000004","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:40.8282667Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:41.3379616Z"},"properties":{"provisioningState":"Succeeded","displayName":"Background
+        worker","canvasPosition":{"x":250.0,"y":200.0},"impact":"Standard","healthState":"Unknown"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/clihm000002","name":"clihm000002","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:53.7549251Z"},"properties":{"provisioningState":"Succeeded","displayName":"clihm000002","canvasPosition":{"x":0.0,"y":0.0},"impact":"Standard","signalGroups":{"dependencies":{"aggregationType":"WorstOf","ignoreUnknown":true}},"healthState":"Unknown"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1065'
+      - '3215'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 Jun 2026 20:59:42 GMT
+      - Mon, 23 Nov 2026 11:21:00 GMT
       expires:
       - '-1'
-      mise-correlation-id:
-      - b3b11bac-4a95-4460-ba5c-bab397397840
       pragma:
       - no-cache
       strict-transport-security:
@@ -532,17 +2172,1056 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-operation-identifier:
-      - REDACTED
       x-ms-providerhub-traffic:
-      - REDACTED
+      - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - REDACTED
+      - 'Ref A: 43419F35E2C04B0AB8CDE0396752F262 Ref B: FRA231050416027 Ref C: 2026-11-23T11:21:00Z'
     status:
       code: 200
       message: OK
+- request:
+    body: '{"annotationDetails": {"environment": "demo", "deploymentId": "release-001"},
+      "description": "Frontend deployment"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity add-data-annotation
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '115'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name --entity-name --description --annotation-details
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003/addDataAnnotation?api-version=2026-11-01
+  response:
+    body:
+      string: '{"annotationId":"a7639508-fd5f-4d4b-ba58-68476e3d6790","createdAt":"2026-11-23T11:21:02.4267391+00:00","annotationDetails":{"environment":"demo","deploymentId":"release-001"},"description":"Frontend
+        deployment"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '211'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:21:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 539367AE211542EEB0259A7EBCF0914B Ref B: MIL221091016036 Ref C: 2026-11-23T11:21:01Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"additionalContext": "Synthetic availability check", "expiresInMinutes":
+      60, "healthState": "Healthy", "signalName": "availability", "value": 100.0}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity ingest-health-report
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '149'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name --entity-name --signal-name --health-state --value
+        --expires-in-minutes --additional-context
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003/ingestHealthReport?api-version=2026-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Mon, 23 Nov 2026 11:21:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 359252DF55C54AE29B25952923277626 Ref B: GVA201070811040 Ref C: 2026-11-23T11:21:02Z'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: '{"expiresInMinutes": 60, "healthState": "Healthy", "signalName": "primary",
+      "value": 100.0}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity ingest-health-report
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '91'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name --entity-name --signal-name --value --health-state
+        --expires-in-minutes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003/ingestHealthReport?api-version=2026-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Mon, 23 Nov 2026 11:21:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 4D63073C63184532B51A1B19FAC7C767 Ref B: FRA261110501054 Ref C: 2026-11-23T11:21:03Z'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: '{"expiresInMinutes": 60, "healthState": "Degraded", "signalName": "backup",
+      "value": 80.0}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity ingest-health-report
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '90'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name --entity-name --signal-name --value --health-state
+        --expires-in-minutes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003/ingestHealthReport?api-version=2026-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Mon, 23 Nov 2026 11:21:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: F4ED1928FFA14CC6AA6B1CD442D48192 Ref B: MIL221091016062 Ref C: 2026-11-23T11:21:04Z'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: '{"expiresInMinutes": 60, "healthState": "Healthy", "signalName": "canary",
+      "value": 100.0}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity ingest-health-report
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '90'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name --entity-name --signal-name --value --health-state
+        --expires-in-minutes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003/ingestHealthReport?api-version=2026-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Mon, 23 Nov 2026 11:21:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: DC8E4746D1194341BC7E7161CF27F79C Ref B: MIL221110118031 Ref C: 2026-11-23T11:21:04Z'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name -n --signal-aggregation-groups
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/client000003","name":"client000003","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:32.2527912Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:32.4687205Z"},"properties":{"provisioningState":"Succeeded","displayName":"Web
+        frontend","canvasPosition":{"x":0.0,"y":200.0},"impact":"Standard","signalGroups":{"external":{"signals":[{"signalKind":"External","name":"availability","status":{"healthState":"Healthy","value":100.0,"reportedAt":"2026-11-23T11:21:03.279617+00:00","additionalContext":"Synthetic
+        availability check"}},{"signalKind":"External","name":"primary","status":{"healthState":"Healthy","value":100.0,"reportedAt":"2026-11-23T11:21:03.8988275+00:00"}},{"signalKind":"External","name":"backup","status":{"healthState":"Degraded","value":80.0,"reportedAt":"2026-11-23T11:21:04.4367488+00:00"}},{"signalKind":"External","name":"canary","status":{"healthState":"Healthy","value":100.0,"reportedAt":"2026-11-23T11:21:05.2031975+00:00"}}]}},"healthState":"Degraded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1302'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:21:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 043EC02D4B98416C883B436D3144088D Ref B: FRA231050412051 Ref C: 2026-11-23T11:21:05Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"canvasPosition": {"x": 0.0, "y": 200.0}, "displayName":
+      "Web frontend", "impact": "Standard", "signalAggregationGroups": [{"aggregationType":
+      "BestOf", "members": ["primary", "backup"], "name": "redundancy"}], "signalGroups":
+      {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '247'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name -n --signal-aggregation-groups
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003","name":"client000003","type":"microsoft.cloudhealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:21:06.8628742Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:21:06.8628742Z"},"properties":{"provisioningState":"Succeeded","displayName":"Web
+        frontend","canvasPosition":{"x":0.0,"y":200.0},"impact":"Standard","signalGroups":{},"signalAggregationGroups":[{"name":"redundancy","aggregationType":"BestOf","members":["primary","backup"],"ignoreUnknown":true}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '765'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:21:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 29CE97F22365425CB417004EF54ACEA7 Ref B: FRA231050412051 Ref C: 2026-11-23T11:21:06Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name -n --signal-aggregation-groups
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/client000003","name":"client000003","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:32.2527912Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:21:07.1140475Z"},"properties":{"provisioningState":"Succeeded","displayName":"Web
+        frontend","canvasPosition":{"x":0.0,"y":200.0},"impact":"Standard","signalGroups":{"external":{"signals":[{"signalKind":"External","name":"availability","status":{"healthState":"Healthy","value":100.0,"reportedAt":"2026-11-23T11:21:03.279617+00:00","additionalContext":"Synthetic
+        availability check"}},{"signalKind":"External","name":"primary","status":{"healthState":"Healthy","value":100.0,"reportedAt":"2026-11-23T11:21:03.8988275+00:00"}},{"signalKind":"External","name":"backup","status":{"healthState":"Degraded","value":80.0,"reportedAt":"2026-11-23T11:21:04.4367488+00:00"}},{"signalKind":"External","name":"canary","status":{"healthState":"Healthy","value":100.0,"reportedAt":"2026-11-23T11:21:05.2031975+00:00"}}]}},"signalAggregationGroups":[{"name":"redundancy","aggregationType":"BestOf","members":["primary","backup"],"ignoreUnknown":true,"aggregatedHealthState":"Healthy","unresolvedMembers":[]}],"healthState":"Healthy"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1487'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:21:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: A5293406418141D995ED6641429E2BCE Ref B: FRA231050413053 Ref C: 2026-11-23T11:21:07Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"canvasPosition": {"x": 0.0, "y": 200.0}, "displayName":
+      "Web frontend", "impact": "Standard", "signalAggregationGroups": [{"aggregationType":
+      "MinHealthy", "degradedThreshold": 2.0, "ignoreUnknown": false, "members": ["primary",
+      "backup", "canary"], "name": "quorum", "unhealthyThreshold": 1.0, "unit": "Absolute"}],
+      "signalGroups": {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '354'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name -n --signal-aggregation-groups
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003","name":"client000003","type":"microsoft.cloudhealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:21:08.4386139Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:21:08.4386139Z"},"properties":{"provisioningState":"Succeeded","displayName":"Web
+        frontend","canvasPosition":{"x":0.0,"y":200.0},"impact":"Standard","signalGroups":{},"signalAggregationGroups":[{"name":"quorum","aggregationType":"MinHealthy","members":["primary","backup","canary"],"degradedThreshold":2.0,"unhealthyThreshold":1.0,"unit":"Absolute","ignoreUnknown":false}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '842'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:21:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: AA9387D69DB646F1820F11FA7B15CB36 Ref B: FRA231050413053 Ref C: 2026-11-23T11:21:08Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name -n --signal-aggregation-groups
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/client000003","name":"client000003","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:32.2527912Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:21:08.6149307Z"},"properties":{"provisioningState":"Succeeded","displayName":"Web
+        frontend","canvasPosition":{"x":0.0,"y":200.0},"impact":"Standard","signalGroups":{"external":{"signals":[{"signalKind":"External","name":"availability","status":{"healthState":"Healthy","value":100.0,"reportedAt":"2026-11-23T11:21:03.279617+00:00","additionalContext":"Synthetic
+        availability check"}},{"signalKind":"External","name":"primary","status":{"healthState":"Healthy","value":100.0,"reportedAt":"2026-11-23T11:21:03.8988275+00:00"}},{"signalKind":"External","name":"backup","status":{"healthState":"Degraded","value":80.0,"reportedAt":"2026-11-23T11:21:04.4367488+00:00"}},{"signalKind":"External","name":"canary","status":{"healthState":"Healthy","value":100.0,"reportedAt":"2026-11-23T11:21:05.2031975+00:00"}}]}},"signalAggregationGroups":[{"name":"quorum","aggregationType":"MinHealthy","members":["primary","backup","canary"],"degradedThreshold":2.0,"unhealthyThreshold":1.0,"unit":"Absolute","ignoreUnknown":false,"aggregatedHealthState":"Degraded","unresolvedMembers":[]}],"healthState":"Degraded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1566'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:21:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 0AE4F819C8404BA38E363DCE81ED0608 Ref B: FRA261110507029 Ref C: 2026-11-23T11:21:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"canvasPosition": {"x": 0.0, "y": 200.0}, "displayName":
+      "Web frontend", "impact": "Standard", "signalAggregationGroups": [{"aggregationType":
+      "MaxNotHealthy", "degradedThreshold": 30.0, "ignoreUnknown": false, "members":
+      ["primary", "backup", "canary"], "name": "failure-budget", "unhealthyThreshold":
+      60.0, "unit": "Percentage"}], "signalGroups": {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '369'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name -n --signal-aggregation-groups
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003","name":"client000003","type":"microsoft.cloudhealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:21:10.0902155Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:21:10.0902155Z"},"properties":{"provisioningState":"Succeeded","displayName":"Web
+        frontend","canvasPosition":{"x":0.0,"y":200.0},"impact":"Standard","signalGroups":{},"signalAggregationGroups":[{"name":"failure-budget","aggregationType":"MaxNotHealthy","members":["primary","backup","canary"],"degradedThreshold":30.0,"unhealthyThreshold":60.0,"unit":"Percentage","ignoreUnknown":false}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '857'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:21:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 96435FF71F504B6DB9A5BE39E5DD0597 Ref B: FRA261110507029 Ref C: 2026-11-23T11:21:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003?api-version=2026-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/client000003","name":"client000003","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:32.2527912Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:21:10.2847541Z"},"properties":{"provisioningState":"Succeeded","displayName":"Web
+        frontend","canvasPosition":{"x":0.0,"y":200.0},"impact":"Standard","signalGroups":{"external":{"signals":[{"signalKind":"External","name":"availability","status":{"healthState":"Healthy","value":100.0,"reportedAt":"2026-11-23T11:21:03.279617+00:00","additionalContext":"Synthetic
+        availability check"}},{"signalKind":"External","name":"primary","status":{"healthState":"Healthy","value":100.0,"reportedAt":"2026-11-23T11:21:03.8988275+00:00"}},{"signalKind":"External","name":"backup","status":{"healthState":"Degraded","value":80.0,"reportedAt":"2026-11-23T11:21:04.4367488+00:00"}},{"signalKind":"External","name":"canary","status":{"healthState":"Healthy","value":100.0,"reportedAt":"2026-11-23T11:21:05.2031975+00:00"}}]}},"signalAggregationGroups":[{"name":"failure-budget","aggregationType":"MaxNotHealthy","members":["primary","backup","canary"],"degradedThreshold":30.0,"unhealthyThreshold":60.0,"unit":"Percentage","ignoreUnknown":false,"aggregatedHealthState":"Degraded","unresolvedMembers":[]}],"healthState":"Degraded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1581'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:21:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 03BCC7F8CEB84421B5120ADD83840B27 Ref B: GVA201070812052 Ref C: 2026-11-23T11:21:11Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"top": 10}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity get-history
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '11'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name --entity-name --top
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003/getHistory?api-version=2026-11-01
+  response:
+    body:
+      string: '{"entityName":"client000003","history":[{"previousState":"Healthy","newState":"Degraded","occurredAt":"2026-11-23T11:21:08.6406009+00:00","reason":"SignalAggregationConfigChanged"},{"previousState":"Degraded","newState":"Healthy","occurredAt":"2026-11-23T11:21:07.1605688+00:00","reason":"SignalAggregationConfigChanged"},{"previousState":"Healthy","newState":"Degraded","occurredAt":"2026-11-23T11:21:04.6731827+00:00","reason":"SignalTransition"},{"previousState":"Unknown","newState":"Healthy","occurredAt":"2026-11-23T11:21:03.5048034+00:00","reason":"SignalTransition"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '576'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:21:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 7A56B692102348548674AB3E9CF65532 Ref B: MIL221091017029 Ref C: 2026-11-23T11:21:11Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"signalName": "availability", "top": 10}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity get-signal-history
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '41'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name --entity-name --signal-name --top
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003/getSignalHistory?api-version=2026-11-01
+  response:
+    body:
+      string: '{"entityName":"client000003","signalName":"availability","history":[{"occurredAt":"2026-11-23T11:21:03.279617+00:00","value":100.0,"healthState":"Healthy","additionalContext":"Synthetic
+        availability check"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '208'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:21:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 6355BDF612DB4B2DB97BD4EC574B51AE Ref B: MIL221110119036 Ref C: 2026-11-23T11:21:12Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"top": 100}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity get-data-annotations
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '12'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name --entity-name
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003/getDataAnnotations?api-version=2026-11-01
+  response:
+    body:
+      string: '{"entityName":"client000003","annotations":[{"annotationId":"a7639508-fd5f-4d4b-ba58-68476e3d6790","createdAt":"2026-11-23T11:21:02.4267391+00:00","annotationDetails":{"environment":"demo","deploymentId":"release-001"},"description":"Frontend
+        deployment"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '257'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:21:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 8CC77C24624142B8ABB26BFD7F82E3F1 Ref B: GVA201070812054 Ref C: 2026-11-23T11:21:12Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models relationship list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships?api-version=2026-11-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/relationships/clirel000010","name":"clirel000010","type":"Microsoft.CloudHealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:55.9795964Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:56.4887535Z"},"properties":{"provisioningState":"Succeeded","parentEntityName":"client000003","childEntityName":"cliapi000009"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/relationships/clirel000008","name":"clirel000008","type":"Microsoft.CloudHealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:48.7639061Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:51.9766251Z"},"properties":{"provisioningState":"Succeeded","displayName":"Connected
+        top-level entity","parentEntityName":"clihm000002","childEntityName":"client000005"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/relationships/clirel000006","name":"clirel000006","type":"Microsoft.CloudHealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:33.1001578Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:37.6255841Z"},"properties":{"provisioningState":"Succeeded","displayName":"Frontend
+        dependency","parentEntityName":"clihm000002","childEntityName":"client000003"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/relationships/clirel000007","name":"clirel000007","type":"Microsoft.CloudHealth/healthmodels/relationships","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-23T11:20:42.9968246Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-23T11:20:45.4331471Z"},"properties":{"provisioningState":"Succeeded","displayName":"Connected
+        top-level entity","parentEntityName":"clihm000002","childEntityName":"client000004"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2570'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:21:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 38A0A5D5E43A4D2C970201C4454811A4 Ref B: GVA201070812025 Ref C: 2026-11-23T11:21:13Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models relationship delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --health-model-name -n --yes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000010?api-version=2026-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Mon, 23 Nov 2026 11:21:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: 566615D8769248D1805ECEABE0C4AEB0 Ref B: GVA201070812023 Ref C: 2026-11-23T11:21:13Z'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models relationship delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --health-model-name -n --yes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000008?api-version=2026-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Mon, 23 Nov 2026 11:21:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: 39418C67EA0C487AA738A8CCB2DF8862 Ref B: GVA201070811062 Ref C: 2026-11-23T11:21:14Z'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models relationship delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --health-model-name -n --yes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000006?api-version=2026-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Mon, 23 Nov 2026 11:21:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: 874A24E5E9EE476398CE190266F70082 Ref B: GVA201070812023 Ref C: 2026-11-23T11:21:15Z'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models relationship delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --health-model-name -n --yes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/relationships/clirel000007?api-version=2026-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Mon, 23 Nov 2026 11:21:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: 9E9DA051C1DE4BDCA1D8246B747BC65A Ref B: GVA201070812036 Ref C: 2026-11-23T11:21:16Z'
+    status:
+      code: 204
+      message: No Content
 - request:
     body: null
     headers:
@@ -559,23 +3238,19 @@ interactions:
       ParameterSetName:
       - -g --health-model-name -n --yes
       User-Agent:
-      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003?api-version=2026-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003?api-version=2026-11-01
   response:
     body:
       string: ''
     headers:
       cache-control:
       - no-cache
-      content-type:
-      - application/json; charset=utf-8
       date:
-      - Mon, 15 Jun 2026 20:59:44 GMT
+      - Mon, 23 Nov 2026 11:21:17 GMT
       expires:
       - '-1'
-      mise-correlation-id:
-      - 7774de18-4f75-42ec-9487-ff2bf03caee4
       pragma:
       - no-cache
       strict-transport-security:
@@ -584,16 +3259,158 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-operation-identifier:
-      - REDACTED
       x-ms-providerhub-traffic:
-      - REDACTED
+      - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
       - '199'
       x-ms-ratelimit-remaining-subscription-global-deletes:
       - '2999'
       x-msedge-ref:
-      - REDACTED
+      - 'Ref A: D04931309A764E5E845E8CD536E71E13 Ref B: GVA201070811031 Ref C: 2026-11-23T11:21:17Z'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --health-model-name -n --yes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000004?api-version=2026-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Mon, 23 Nov 2026 11:21:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: D786EDED1EFE49DEAEA5671FEDFC02C2 Ref B: GVA201070812062 Ref C: 2026-11-23T11:21:18Z'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --health-model-name -n --yes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000005?api-version=2026-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Mon, 23 Nov 2026 11:21:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: 465A731CF51C4CC5BC757F3934A2D09F Ref B: MIL221091016040 Ref C: 2026-11-23T11:21:19Z'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models entity delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --health-model-name -n --yes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/cliapi000009?api-version=2026-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Mon, 23 Nov 2026 11:21:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: 4022DD25E64F410EAE303FAA5DB5E4AD Ref B: GVA201070811034 Ref C: 2026-11-23T11:21:20Z'
     status:
       code: 204
       message: No Content
@@ -613,9 +3430,9 @@ interactions:
       ParameterSetName:
       - -g -n --yes
       User-Agent:
-      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002?api-version=2026-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002?api-version=2026-11-01
   response:
     body:
       string: 'null'
@@ -623,7 +3440,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/735b7a95-4d18-4b85-9d90-658e5bd89319*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1?api-version=2026-05-01-preview&t=639171539868352076&c=MIIHxDCCBqygAwIBAgIRAMRpkKdRWhWugxycwJTrwE0wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MDQwNjIxMTYzOVoXDTI2MTAwMjAzMTYzOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC7Xc9AeQtjVzLBsmb02CAFQe0eb8_tS42dpPi7CRyNLajzokRblc2MXPl_-aAo65BzBZRSRFe29NOERHKda7m3Kdyjj9xeeKfMe4Stf-G8aGI83Q1QhKKOjYx1I1Gb7Ues4WldpcNNn9w42SV8nWE29bx_Lqq6w3oQTFQrf2mnGRegsVTNjOMIxsfPNA-t32pG4zsnkxTfs66UokpdlfI5K-V8rUw3FYytQGqD_7kidQ_4WQFXa1H7DIqv14ePhIpEloUr3uwcgwovYQylI2jnSpds866jxx8jDyWqKI_dQhtKzGePIPMcKiEZLWZSMBYf34Dxoh52SLiIKB__IpytAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBSr5bqFBCOJYj3_8ROJAAzOtTntDzAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvNzYvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzc2L2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvNzYvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS83Ni9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBqPSAHbf_opPyMLbk1VzVSfRHW5DA7ieRh55DJH1hCGV-WPAw145BaFgXxNjHdle_NsF4WFxq0n2nhJtERb4q9P9OEUxUuxpO9rRZcGpDQQHn3Fexp-Fj1917PYHXC-dqfTyYqcPdZqdxij1MQkl34_Bi9sONorQc9aavBvQtI8HYjUJTY3c-55pAUVkiqF2rpz3y1MLtVXgwyAiXZw7duzgDsj6_jPvM3jlnPYMRbAX0R6qQjhwQKNwpSWU4E6teiydGvoMIjtxre0xNg2FjtoaTkOGXSQswIBr00PbgBfTIWRvvGo6yG7nOl1U8izZBVxEaHIGI6CJy9wLRFxhfL&s=JS6V_Tkqk6TDf81Y4DtUveGCINSltwBMg1TrMWIVxsfHLqUZWl1WwMQeg3aLJNT8FjnzgYpzI_YYfaPJVlFXptpkahZmil9aBrMsElLHe3drk2H1WGdd0mlpJ0N_LWUj4MBbZCCcKHjS691gzBYYFB82xT3GiBduDDZ970k2yYw_aa6BMfxTW6MCGqxEsuDiDjPgX4Vhc7n5CRXMq_NocWulrJoOxto5GUjnkDpxS_-KDGNRTaoEGsU1gkPWbB0yj63zlbo4fO4iKMIiu-hHqhIVI9AwWN4VN9b516eccsNrjdyKI0z-Hm4BDYyyv95cSUOCYjuQhOOycEl9R5EKHQ&h=iO_kqBZ91kRxcLfZnFea4OPKi2cIfdH5gNCcZZBUgqw
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/94be7307-e9b4-4ab5-8813-d1b0f759624e*4A2EB1F341ADFD98A27109023527387CDE3CA3EC45DA74B333FD27294985F4AC?api-version=2026-11-01&t=redacted-t&c=redacted-c&s=redacted-s&h=redacted-h
       cache-control:
       - no-cache
       content-length:
@@ -631,15 +3448,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 Jun 2026 20:59:46 GMT
+      - Mon, 23 Nov 2026 11:21:22 GMT
       etag:
-      - '"e100acbb-0000-0300-0000-6a3067c20000"'
+      - '"a409b706-0000-0300-0000-6b0421b20000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/735b7a95-4d18-4b85-9d90-658e5bd89319*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1?api-version=2026-05-01-preview&t=639171539868352076&c=MIIHxDCCBqygAwIBAgIRAMRpkKdRWhWugxycwJTrwE0wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MDQwNjIxMTYzOVoXDTI2MTAwMjAzMTYzOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC7Xc9AeQtjVzLBsmb02CAFQe0eb8_tS42dpPi7CRyNLajzokRblc2MXPl_-aAo65BzBZRSRFe29NOERHKda7m3Kdyjj9xeeKfMe4Stf-G8aGI83Q1QhKKOjYx1I1Gb7Ues4WldpcNNn9w42SV8nWE29bx_Lqq6w3oQTFQrf2mnGRegsVTNjOMIxsfPNA-t32pG4zsnkxTfs66UokpdlfI5K-V8rUw3FYytQGqD_7kidQ_4WQFXa1H7DIqv14ePhIpEloUr3uwcgwovYQylI2jnSpds866jxx8jDyWqKI_dQhtKzGePIPMcKiEZLWZSMBYf34Dxoh52SLiIKB__IpytAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBSr5bqFBCOJYj3_8ROJAAzOtTntDzAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvNzYvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzc2L2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvNzYvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS83Ni9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBqPSAHbf_opPyMLbk1VzVSfRHW5DA7ieRh55DJH1hCGV-WPAw145BaFgXxNjHdle_NsF4WFxq0n2nhJtERb4q9P9OEUxUuxpO9rRZcGpDQQHn3Fexp-Fj1917PYHXC-dqfTyYqcPdZqdxij1MQkl34_Bi9sONorQc9aavBvQtI8HYjUJTY3c-55pAUVkiqF2rpz3y1MLtVXgwyAiXZw7duzgDsj6_jPvM3jlnPYMRbAX0R6qQjhwQKNwpSWU4E6teiydGvoMIjtxre0xNg2FjtoaTkOGXSQswIBr00PbgBfTIWRvvGo6yG7nOl1U8izZBVxEaHIGI6CJy9wLRFxhfL&s=JS6V_Tkqk6TDf81Y4DtUveGCINSltwBMg1TrMWIVxsfHLqUZWl1WwMQeg3aLJNT8FjnzgYpzI_YYfaPJVlFXptpkahZmil9aBrMsElLHe3drk2H1WGdd0mlpJ0N_LWUj4MBbZCCcKHjS691gzBYYFB82xT3GiBduDDZ970k2yYw_aa6BMfxTW6MCGqxEsuDiDjPgX4Vhc7n5CRXMq_NocWulrJoOxto5GUjnkDpxS_-KDGNRTaoEGsU1gkPWbB0yj63zlbo4fO4iKMIiu-hHqhIVI9AwWN4VN9b516eccsNrjdyKI0z-Hm4BDYyyv95cSUOCYjuQhOOycEl9R5EKHQ&h=iO_kqBZ91kRxcLfZnFea4OPKi2cIfdH5gNCcZZBUgqw
-      mise-correlation-id:
-      - 14f4a182-6e15-4212-bfe0-9d94f95ae29f
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/94be7307-e9b4-4ab5-8813-d1b0f759624e*4A2EB1F341ADFD98A27109023527387CDE3CA3EC45DA74B333FD27294985F4AC?api-version=2026-11-01&t=redacted-t&c=redacted-c&s=redacted-s&h=redacted-h
       pragma:
       - no-cache
       strict-transport-security:
@@ -648,18 +3463,16 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-operation-identifier:
-      - REDACTED
       x-ms-providerhub-traffic:
-      - REDACTED
+      - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '199'
+      - '198'
       x-ms-ratelimit-remaining-subscription-global-deletes:
-      - '2999'
+      - '2998'
       x-ms-resource-provider-hint:
-      - REDACTED
+      - noPolling
       x-msedge-ref:
-      - REDACTED
+      - 'Ref A: C4A6C09833D248EBAF3C610817B2727F Ref B: GVA201070811062 Ref C: 2026-11-23T11:21:21Z'
     status:
       code: 202
       message: Accepted
@@ -677,23 +3490,79 @@ interactions:
       ParameterSetName:
       - -g -n --yes
       User-Agent:
-      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/735b7a95-4d18-4b85-9d90-658e5bd89319*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1?api-version=2026-05-01-preview&t=639171539868352076&c=MIIHxDCCBqygAwIBAgIRAMRpkKdRWhWugxycwJTrwE0wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MDQwNjIxMTYzOVoXDTI2MTAwMjAzMTYzOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC7Xc9AeQtjVzLBsmb02CAFQe0eb8_tS42dpPi7CRyNLajzokRblc2MXPl_-aAo65BzBZRSRFe29NOERHKda7m3Kdyjj9xeeKfMe4Stf-G8aGI83Q1QhKKOjYx1I1Gb7Ues4WldpcNNn9w42SV8nWE29bx_Lqq6w3oQTFQrf2mnGRegsVTNjOMIxsfPNA-t32pG4zsnkxTfs66UokpdlfI5K-V8rUw3FYytQGqD_7kidQ_4WQFXa1H7DIqv14ePhIpEloUr3uwcgwovYQylI2jnSpds866jxx8jDyWqKI_dQhtKzGePIPMcKiEZLWZSMBYf34Dxoh52SLiIKB__IpytAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBSr5bqFBCOJYj3_8ROJAAzOtTntDzAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvNzYvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzc2L2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvNzYvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS83Ni9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBqPSAHbf_opPyMLbk1VzVSfRHW5DA7ieRh55DJH1hCGV-WPAw145BaFgXxNjHdle_NsF4WFxq0n2nhJtERb4q9P9OEUxUuxpO9rRZcGpDQQHn3Fexp-Fj1917PYHXC-dqfTyYqcPdZqdxij1MQkl34_Bi9sONorQc9aavBvQtI8HYjUJTY3c-55pAUVkiqF2rpz3y1MLtVXgwyAiXZw7duzgDsj6_jPvM3jlnPYMRbAX0R6qQjhwQKNwpSWU4E6teiydGvoMIjtxre0xNg2FjtoaTkOGXSQswIBr00PbgBfTIWRvvGo6yG7nOl1U8izZBVxEaHIGI6CJy9wLRFxhfL&s=JS6V_Tkqk6TDf81Y4DtUveGCINSltwBMg1TrMWIVxsfHLqUZWl1WwMQeg3aLJNT8FjnzgYpzI_YYfaPJVlFXptpkahZmil9aBrMsElLHe3drk2H1WGdd0mlpJ0N_LWUj4MBbZCCcKHjS691gzBYYFB82xT3GiBduDDZ970k2yYw_aa6BMfxTW6MCGqxEsuDiDjPgX4Vhc7n5CRXMq_NocWulrJoOxto5GUjnkDpxS_-KDGNRTaoEGsU1gkPWbB0yj63zlbo4fO4iKMIiu-hHqhIVI9AwWN4VN9b516eccsNrjdyKI0z-Hm4BDYyyv95cSUOCYjuQhOOycEl9R5EKHQ&h=iO_kqBZ91kRxcLfZnFea4OPKi2cIfdH5gNCcZZBUgqw
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/94be7307-e9b4-4ab5-8813-d1b0f759624e*4A2EB1F341ADFD98A27109023527387CDE3CA3EC45DA74B333FD27294985F4AC?api-version=2026-11-01&t=redacted-t&c=redacted-c&s=redacted-s&h=redacted-h
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/00000000-0000-0000-0000-000000000001*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1","name":"00000000-0000-0000-0000-000000000001*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","status":"Succeeded","startTime":"2026-06-15T20:59:46.2592915Z","endTime":"2026-06-15T20:59:48.5613435Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/94be7307-e9b4-4ab5-8813-d1b0f759624e*4A2EB1F341ADFD98A27109023527387CDE3CA3EC45DA74B333FD27294985F4AC","name":"94be7307-e9b4-4ab5-8813-d1b0f759624e*4A2EB1F341ADFD98A27109023527387CDE3CA3EC45DA74B333FD27294985F4AC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","status":"Deleting","startTime":"2026-11-23T11:21:21.9909307Z"}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/centralus/operationStatuses/94be7307-e9b4-4ab5-8813-d1b0f759624e*4A2EB1F341ADFD98A27109023527387CDE3CA3EC45DA74B333FD27294985F4AC?api-version=2026-11-01&t=redacted-t&c=redacted-c&s=redacted-s&h=redacted-h
+      cache-control:
+      - no-cache
+      content-length:
+      - '577'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:21:22 GMT
+      etag:
+      - '"0902d4fe-0000-0300-0000-6b0421b20000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/centralus/operationStatuses/94be7307-e9b4-4ab5-8813-d1b0f759624e*4A2EB1F341ADFD98A27109023527387CDE3CA3EC45DA74B333FD27294985F4AC?api-version=2026-11-01&t=redacted-t&c=redacted-c&s=redacted-s&h=redacted-h
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: 25F5F4F6CC0C4C0A97BF9C4CEF6DF812 Ref B: GVA201070811062 Ref C: 2026-11-23T11:21:22Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/94be7307-e9b4-4ab5-8813-d1b0f759624e*4A2EB1F341ADFD98A27109023527387CDE3CA3EC45DA74B333FD27294985F4AC?api-version=2026-11-01&t=redacted-t&c=redacted-c&s=redacted-s&h=redacted-h
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/94be7307-e9b4-4ab5-8813-d1b0f759624e*4A2EB1F341ADFD98A27109023527387CDE3CA3EC45DA74B333FD27294985F4AC","name":"94be7307-e9b4-4ab5-8813-d1b0f759624e*4A2EB1F341ADFD98A27109023527387CDE3CA3EC45DA74B333FD27294985F4AC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","status":"Succeeded","startTime":"2026-11-23T11:21:21.9909307Z","endTime":"2026-11-23T11:21:22.924084Z","properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '637'
+      - '636'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 Jun 2026 20:59:49 GMT
+      - Mon, 23 Nov 2026 11:21:53 GMT
       etag:
-      - '"8000b639-0000-0300-0000-6a3067c40000"'
+      - '"0902e2fe-0000-0300-0000-6b0421b30000"'
       expires:
       - '-1'
       pragma:
@@ -704,12 +3573,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-operation-identifier:
-      - REDACTED
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - REDACTED
+      - 'Ref A: DB56F3F92ED74FABAEB3B968F400008C Ref B: GVA201070811062 Ref C: 2026-11-23T11:21:53Z'
     status:
       code: 200
       message: OK
@@ -727,23 +3594,23 @@ interactions:
       ParameterSetName:
       - -g -n --yes
       User-Agent:
-      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/735b7a95-4d18-4b85-9d90-658e5bd89319*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1?api-version=2026-05-01-preview&t=639171539868352076&c=MIIHxDCCBqygAwIBAgIRAMRpkKdRWhWugxycwJTrwE0wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MDQwNjIxMTYzOVoXDTI2MTAwMjAzMTYzOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC7Xc9AeQtjVzLBsmb02CAFQe0eb8_tS42dpPi7CRyNLajzokRblc2MXPl_-aAo65BzBZRSRFe29NOERHKda7m3Kdyjj9xeeKfMe4Stf-G8aGI83Q1QhKKOjYx1I1Gb7Ues4WldpcNNn9w42SV8nWE29bx_Lqq6w3oQTFQrf2mnGRegsVTNjOMIxsfPNA-t32pG4zsnkxTfs66UokpdlfI5K-V8rUw3FYytQGqD_7kidQ_4WQFXa1H7DIqv14ePhIpEloUr3uwcgwovYQylI2jnSpds866jxx8jDyWqKI_dQhtKzGePIPMcKiEZLWZSMBYf34Dxoh52SLiIKB__IpytAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBSr5bqFBCOJYj3_8ROJAAzOtTntDzAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvNzYvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzc2L2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvNzYvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS83Ni9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBqPSAHbf_opPyMLbk1VzVSfRHW5DA7ieRh55DJH1hCGV-WPAw145BaFgXxNjHdle_NsF4WFxq0n2nhJtERb4q9P9OEUxUuxpO9rRZcGpDQQHn3Fexp-Fj1917PYHXC-dqfTyYqcPdZqdxij1MQkl34_Bi9sONorQc9aavBvQtI8HYjUJTY3c-55pAUVkiqF2rpz3y1MLtVXgwyAiXZw7duzgDsj6_jPvM3jlnPYMRbAX0R6qQjhwQKNwpSWU4E6teiydGvoMIjtxre0xNg2FjtoaTkOGXSQswIBr00PbgBfTIWRvvGo6yG7nOl1U8izZBVxEaHIGI6CJy9wLRFxhfL&s=JS6V_Tkqk6TDf81Y4DtUveGCINSltwBMg1TrMWIVxsfHLqUZWl1WwMQeg3aLJNT8FjnzgYpzI_YYfaPJVlFXptpkahZmil9aBrMsElLHe3drk2H1WGdd0mlpJ0N_LWUj4MBbZCCcKHjS691gzBYYFB82xT3GiBduDDZ970k2yYw_aa6BMfxTW6MCGqxEsuDiDjPgX4Vhc7n5CRXMq_NocWulrJoOxto5GUjnkDpxS_-KDGNRTaoEGsU1gkPWbB0yj63zlbo4fO4iKMIiu-hHqhIVI9AwWN4VN9b516eccsNrjdyKI0z-Hm4BDYyyv95cSUOCYjuQhOOycEl9R5EKHQ&h=iO_kqBZ91kRxcLfZnFea4OPKi2cIfdH5gNCcZZBUgqw
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/94be7307-e9b4-4ab5-8813-d1b0f759624e*4A2EB1F341ADFD98A27109023527387CDE3CA3EC45DA74B333FD27294985F4AC?api-version=2026-11-01&t=redacted-t&c=redacted-c&s=redacted-s&h=redacted-h
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/00000000-0000-0000-0000-000000000001*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1","name":"00000000-0000-0000-0000-000000000001*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","status":"Succeeded","startTime":"2026-06-15T20:59:46.2592915Z","endTime":"2026-06-15T20:59:48.5613435Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/94be7307-e9b4-4ab5-8813-d1b0f759624e*4A2EB1F341ADFD98A27109023527387CDE3CA3EC45DA74B333FD27294985F4AC","name":"94be7307-e9b4-4ab5-8813-d1b0f759624e*4A2EB1F341ADFD98A27109023527387CDE3CA3EC45DA74B333FD27294985F4AC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","status":"Succeeded","startTime":"2026-11-23T11:21:21.9909307Z","endTime":"2026-11-23T11:21:22.924084Z","properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '637'
+      - '636'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 Jun 2026 20:59:49 GMT
+      - Mon, 23 Nov 2026 11:21:54 GMT
       etag:
-      - '"8000b639-0000-0300-0000-6a3067c40000"'
+      - '"0902e2fe-0000-0300-0000-6b0421b30000"'
       expires:
       - '-1'
       pragma:
@@ -754,13 +3621,59 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-operation-identifier:
-      - REDACTED
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - REDACTED
+      - 'Ref A: A4D324F6F48E4B77827E2DC3EF67D763 Ref B: GVA201070811062 Ref C: 2026-11-23T11:21:54Z'
     status:
       code: 200
       message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - monitor health-models show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.14.10 (macOS-27.2.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002?api-version=2026-11-01
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.CloudHealth/healthmodels/clihm000002''
+        under resource group ''cli_test_healthmodel_crud000001'' was not found. For
+        more details please go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '249'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2026 11:21:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: B1DEBA1E9AB64615A7FADE6F6B4FF68B Ref B: MIL221110510052 Ref C: 2026-11-23T11:21:55Z'
+    status:
+      code: 404
+      message: Not Found
 version: 1
