@@ -6106,15 +6106,15 @@ class GatewayApiMetadataProperties(_serialization.Model):
     """API metadata property for Spring Cloud Gateway.
 
     :ivar title: Title describing the context of the APIs available on the Gateway instance
-     (default: ``Spring Cloud Gateway for K8S``\ ).
+     (default: ``Spring Cloud Gateway for K8S``\\ ).
     :vartype title: str
     :ivar description: Detailed description of the APIs available on the Gateway instance (default:
-     ``Generated OpenAPI 3 document that describes the API routes configured.``\ ).
+     ``Generated OpenAPI 3 document that describes the API routes configured.``\\ ).
     :vartype description: str
     :ivar documentation: Location of additional documentation for the APIs available on the Gateway
      instance.
     :vartype documentation: str
-    :ivar version: Version of APIs available on this Gateway instance (default: ``unspecified``\ ).
+    :ivar version: Version of APIs available on this Gateway instance (default: ``unspecified``\\ ).
     :vartype version: str
     :ivar server_url: Base URL that API consumers will use to access APIs on the Gateway instance.
     :vartype server_url: str
@@ -6140,10 +6140,10 @@ class GatewayApiMetadataProperties(_serialization.Model):
     ) -> None:
         """
         :keyword title: Title describing the context of the APIs available on the Gateway instance
-         (default: ``Spring Cloud Gateway for K8S``\ ).
+         (default: ``Spring Cloud Gateway for K8S``\\ ).
         :paramtype title: str
         :keyword description: Detailed description of the APIs available on the Gateway instance
-         (default: ``Generated OpenAPI 3 document that describes the API routes configured.``\ ).
+         (default: ``Generated OpenAPI 3 document that describes the API routes configured.``\\ ).
         :paramtype description: str
         :keyword documentation: Location of additional documentation for the APIs available on the
          Gateway instance.
@@ -6274,7 +6274,7 @@ class GatewayCorsProperties(_serialization.Model):
      clients.
     :vartype max_age: int
     :ivar allow_credentials: Whether user credentials are supported on cross-site requests. Valid
-     values: ``true``\ , ``false``.
+     values: ``true``\\ , ``false``.
     :vartype allow_credentials: bool
     :ivar exposed_headers: HTTP response headers to expose for cross-site requests.
     :vartype exposed_headers: list[str]
@@ -6318,7 +6318,7 @@ class GatewayCorsProperties(_serialization.Model):
          clients.
         :paramtype max_age: int
         :keyword allow_credentials: Whether user credentials are supported on cross-site requests.
-         Valid values: ``true``\ , ``false``.
+         Valid values: ``true``\\ , ``false``.
         :paramtype allow_credentials: bool
         :keyword exposed_headers: HTTP response headers to expose for cross-site requests.
         :paramtype exposed_headers: list[str]
@@ -6993,8 +6993,8 @@ class GatewayRouteConfigProperties(_serialization.Model):
      "HTTPS".
     :vartype protocol: str or
      ~azure.mgmt.appplatform.v2024_05_01_preview.models.GatewayRouteConfigProtocol
-    :ivar routes: Array of API routes, each route contains properties such as ``title``\ , ``uri``\
-     , ``ssoEnabled``\ , ``predicates``\ , ``filters``.
+    :ivar routes: Array of API routes, each route contains properties such as ``title``\\ , ``uri``\
+     , ``ssoEnabled``\\ , ``predicates``\\ , ``filters``.
     :vartype routes: list[~azure.mgmt.appplatform.v2024_05_01_preview.models.GatewayApiRoute]
     :ivar sso_enabled: Enable Single Sign-On in app level.
     :vartype sso_enabled: bool
@@ -7046,8 +7046,8 @@ class GatewayRouteConfigProperties(_serialization.Model):
          and "HTTPS".
         :paramtype protocol: str or
          ~azure.mgmt.appplatform.v2024_05_01_preview.models.GatewayRouteConfigProtocol
-        :keyword routes: Array of API routes, each route contains properties such as ``title``\ ,
-         ``uri``\ , ``ssoEnabled``\ , ``predicates``\ , ``filters``.
+        :keyword routes: Array of API routes, each route contains properties such as ``title``\\ ,
+         ``uri``\\ , ``ssoEnabled``\\ , ``predicates``\\ , ``filters``.
         :paramtype routes: list[~azure.mgmt.appplatform.v2024_05_01_preview.models.GatewayApiRoute]
         :keyword sso_enabled: Enable Single Sign-On in app level.
         :paramtype sso_enabled: bool
