@@ -192,8 +192,9 @@ def _load_definition(cmd, resource_group_name, project_name, runbook_name,
             'persists, the extension may be out of date for the service '
             'contract.' % files.describe_archive(zip_bytes))
     definition = _unwrap_spec(spec)
-    runbook_inputs = files.read_parameters_json(zip_bytes)
-    config_status.annotate(definition, runbook_inputs)
+    runbook_inputs = files.read_parameters_json(zip_bytes, preserve_envelope=True)
+    schema = files.read_schema_json(zip_bytes) if files.parameter_schema_name(runbook_inputs) else None
+    config_status.annotate(definition, runbook_inputs, schema)
     if not _definition_has_steps(definition):
         logger.warning(
             'The runbook definition has no steps yet (its workstreams are '
@@ -213,14 +214,11 @@ def _load_definition_from_file(spec_file, parameters_file=None):
     spec = files.read_json_file(spec_file) or {}
     definition = _unwrap_spec(spec)
     runbook_inputs = None
+    schema = None
     if parameters_file:
-        params = files.read_json_file(parameters_file)
-        if isinstance(params, dict) and isinstance(
-                params.get('inputs'), dict):
-            runbook_inputs = params['inputs']
-        else:
-            runbook_inputs = params
-    config_status.annotate(definition, runbook_inputs)
+        runbook_inputs = files.read_json_file(parameters_file)
+        schema = files.read_schema_file(parameters_file, runbook_inputs)
+    config_status.annotate(definition, runbook_inputs, schema)
     return definition
 
 

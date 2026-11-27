@@ -1891,6 +1891,188 @@ class ExecutionParameterCommandTests(unittest.TestCase):
             self.assertTrue(result['path'].endswith('.html'))
 
 
+class SplitParameterSchemaTests(unittest.TestCase):
+
+    def setUp(self):
+        self.parameters = {
+            '$schema': './parameters.schema.json',
+            'inputs': {'stepInputs': {'target-1': {'name': None}}}}
+        self.schema = {
+            '$schema': 'http://json-schema.org/draft-07/schema#',
+            'type': 'object', 'properties': {
+                '$schema': {'type': 'string'},
+                'inputs': {'type': 'object', 'properties': {
+                    'stepInputs': {'type': 'object', 'properties': {
+                        'target-1': {'type': 'object', 'properties': {
+                            'name': {'type': 'string'}}}}}}}}}
+
+    def archive(self, include_schema=True):
+        members = {
+            'system-derived-parameters.schema.json': json.dumps(self.schema),
+            'system-derived-parameters.json': '{"inputs":{"stepInputs":{"derived":{}}}}',
+            'parameters.json': json.dumps(self.parameters),
+            'spec.json': '{"spec":{"workstreams":[]}}'}
+        if include_schema:
+            members['parameters.schema.json'] = json.dumps(self.schema)
+        return _make_zip(members)
+
+    def test_extracts_user_parameters_and_schema_not_derived_files(self):
+        archive = self.archive()
+        self.assertEqual(files.read_schema_json(archive), self.schema)
+        self.assertEqual(files.read_parameters_json(archive), self.parameters['inputs'])
+        self.assertEqual(files.read_parameters_json(archive, preserve_envelope=True), self.parameters)
+        for extract in (files.extract_parameter_files, files.extract_definition_files):
+            with self.subTest(extract=extract.__name__), tempfile.TemporaryDirectory() as tmp:
+                written = extract(archive, tmp)
+                expected = {'parameters.json', 'parameters.schema.json'}
+                if extract is files.extract_definition_files:
+                    expected.add('spec.json')
+                self.assertEqual({os.path.basename(path) for path in written}, expected)
+                self.assertEqual(
+                    files.read_schema_file(os.path.join(tmp, 'parameters.json'), self.parameters),
+                    self.schema)
+
+    def test_missing_and_invalid_referenced_schema_do_not_fall_back_to_legacy(self):
+        with self.assertRaisesRegex(InvalidArgumentValueError, 'schema.*not found'):
+            files.read_schema_json(self.archive(include_schema=False))
+        archive = _make_zip({
+            'parameters.json': json.dumps(self.parameters),
+            'parameters.schema.json': 'invalid'})
+        with self.assertRaisesRegex(InvalidArgumentValueError, 'not valid JSON'):
+            files.read_schema_json(archive)
+        self.assertIsNone(files.read_schema_json(b'{}'))
+        self.assertIsNone(files.read_schema_json(_make_zip({'schema.json': 'invalid'})))
+        self.assertIsNone(files.read_schema_file('inputs.json', _CFG_INPUTS))
+        with self.assertRaisesRegex(InvalidArgumentValueError, 'missing or invalid'):
+            files.write_parameter_schema('parameters.json', self.parameters, None)
+
+    def test_legacy_parameters_are_still_classified_by_content(self):
+        archive = _make_zip({'custom.schema.json': json.dumps(_CFG_INPUTS)})
+        self.assertEqual(files.read_parameters_json(archive), _CFG_INPUTS['inputs'])
+        self.assertIsNone(files.read_schema_json(archive))
+
+    def test_schema_reference_stays_local(self):
+        for reference in (
+                '../parameters.schema.json', r'..\parameters.schema.json',
+                'https://example.invalid/parameters.schema.json',
+                'system-derived-parameters.schema.json'):
+            with self.subTest(reference=reference), self.assertRaises(InvalidArgumentValueError):
+                files.parameter_schema_name({'$schema': reference})
+
+    def test_configure_local_loads_and_copies_sibling_schema_for_both_commands(self):
+        for module in (parameter_cmds, execution_parameter_cmds):
+            with self.subTest(command=module.__name__), tempfile.TemporaryDirectory() as tmp:
+                source = os.path.join(tmp, 'parameters.json')
+                files.write_text(source, json.dumps(self.parameters))
+                files.write_parameter_schema(source, self.parameters, self.schema)
+                output = os.path.join(tmp, 'editor', 'parameters.html')
+                with mock.patch.object(module.files, 'download_bytes') as download, \
+                        mock.patch.object(module.files, 'open_in_browser'):
+                    result = module.configure(mock.Mock(), file=output, from_file=source)
+                download.assert_not_called()
+                self.assertEqual(files.read_json_file(result['inputsPath']), self.parameters)
+                self.assertEqual(files.read_json_file(result['schemaPath']), self.schema)
+                with open(result['path'], encoding='utf-8') as handle:
+                    html = handle.read()
+                self.assertIn('RunbookSchema', html)
+                self.assertIn('parameterSchema', html)
+                self.assertNotIn('__SCHEMA_VALIDATOR__', html)
+
+    def test_configure_download_uses_split_schema_for_both_commands(self):
+        for module in (parameter_cmds, execution_parameter_cmds):
+            with self.subTest(command=module.__name__), tempfile.TemporaryDirectory() as tmp:
+                with mock.patch.object(parameter_cmds, '_artifact_download_url', return_value='https://blob/a'), \
+                        mock.patch.object(execution_parameter_cmds, '_execution_resource_id', return_value='/execution'), \
+                        mock.patch.object(execution_parameter_cmds, '_download_url', return_value='https://blob/a'), \
+                        mock.patch.object(module.files, 'download_bytes', return_value=self.archive()), \
+                        mock.patch.object(module.files, 'open_in_browser'):
+                    result = module.configure(mock.Mock(), file=tmp)
+                self.assertEqual(files.read_json_file(result['schemaPath']), self.schema)
+                self.assertEqual(files.read_json_file(result['inputsPath']), self.parameters)
+
+    def test_local_split_document_uses_runbook_id_not_parameters_filename(self):
+        self.parameters['runbookId'] = (
+            '/subscriptions/s/resourceGroups/rg/providers/Microsoft.Migrate/'
+            'migrateProjects/project/runbooks/source-runbook')
+        with tempfile.TemporaryDirectory() as tmp:
+            source = files.write_text(os.path.join(tmp, 'parameters.json'), json.dumps(self.parameters))
+            files.write_parameter_schema(source, self.parameters, self.schema)
+            with mock.patch.object(parameter_cmds.files, 'open_in_browser'), \
+                    mock.patch.object(configure_renderer, 'render', wraps=configure_renderer.render) as render:
+                parameter_cmds.configure(mock.Mock(), from_file=source, file=tmp)
+            self.assertEqual(render.call_args.args[2]['runbook'], 'source-runbook')
+
+    def test_missing_local_schema_fails_before_writing_editor(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source = files.write_text(os.path.join(tmp, 'parameters.json'), json.dumps(self.parameters))
+            for module in (parameter_cmds, execution_parameter_cmds):
+                with self.subTest(command=module.__name__), self.assertRaises(InvalidArgumentValueError):
+                    module.configure(mock.Mock(), from_file=source, file=tmp)
+
+    def test_definition_loaders_use_paired_schema(self):
+        self.schema['properties']['inputs']['properties']['stepInputs']['properties']['target-1'][
+            'required'] = ['name']
+        spec = {'steps': [{'stepId': 'target-1', 'stepRef': 'target'}]}
+        for value, expected in ((None, 'NotConfigured'), ('configured', 'Configured')):
+            with self.subTest(value=value), tempfile.TemporaryDirectory() as tmp:
+                self.parameters['inputs']['stepInputs']['target-1']['name'] = value
+                source = files.write_text(os.path.join(tmp, 'parameters.json'), json.dumps(self.parameters))
+                files.write_parameter_schema(source, self.parameters, self.schema)
+                spec_path = files.write_text(os.path.join(tmp, 'spec.json'), json.dumps({'spec': spec}))
+                local = definition_cmds._load_definition_from_file(spec_path, source)
+                archive = _make_zip({
+                    'parameters.json': json.dumps(self.parameters),
+                    'parameters.schema.json': json.dumps(self.schema),
+                    'spec.json': json.dumps({'spec': spec})})
+                with mock.patch.object(definition_cmds, '_artifact_download_url', return_value='https://blob/a'), \
+                        mock.patch.object(files, 'download_bytes', return_value=archive):
+                    remote = definition_cmds._load_definition(mock.Mock(), RG, PROJECT, RUNBOOK)
+                for definition in (local, remote):
+                    self.assertEqual(definition['steps'][0]['configurationStatus'], expected)
+
+    def test_definition_loaders_reject_missing_split_schema(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source = files.write_text(os.path.join(tmp, 'parameters.json'), json.dumps(self.parameters))
+            spec_path = files.write_text(os.path.join(tmp, 'spec.json'), '{"steps":[]}')
+            with self.assertRaises(InvalidArgumentValueError):
+                definition_cmds._load_definition_from_file(spec_path, source)
+        with mock.patch.object(definition_cmds, '_artifact_download_url', return_value='https://blob/a'), \
+                mock.patch.object(files, 'download_bytes', return_value=self.archive(include_schema=False)), \
+                self.assertRaises(InvalidArgumentValueError):
+            definition_cmds._load_definition(mock.Mock(), RG, PROJECT, RUNBOOK)
+
+    def test_definition_loaders_reject_null_split_schema(self):
+        spec = {'steps': [{'stepId': 'target-1', 'stepRef': 'target'}]}
+        with tempfile.TemporaryDirectory() as tmp:
+            source = files.write_text(os.path.join(tmp, 'parameters.json'), json.dumps(self.parameters))
+            files.write_text(os.path.join(tmp, 'parameters.schema.json'), 'null')
+            spec_path = files.write_text(os.path.join(tmp, 'spec.json'), json.dumps(spec))
+            with self.assertRaisesRegex(InvalidArgumentValueError, 'Draft-07'):
+                definition_cmds._load_definition_from_file(spec_path, source)
+        archive = _make_zip({
+            'parameters.json': json.dumps(self.parameters), 'parameters.schema.json': 'null',
+            'spec.json': json.dumps({'spec': spec})})
+        with mock.patch.object(definition_cmds, '_artifact_download_url', return_value='https://blob/a'), \
+                mock.patch.object(files, 'download_bytes', return_value=archive), \
+                self.assertRaisesRegex(InvalidArgumentValueError, 'Draft-07'):
+            definition_cmds._load_definition(mock.Mock(), RG, PROJECT, RUNBOOK)
+        with self.assertRaisesRegex(InvalidArgumentValueError, 'Draft-07'):
+            config_status_mod.annotate(copy.deepcopy(spec), self.parameters)
+
+    def test_draft07_client_validation(self):
+        import shutil
+        import subprocess
+
+        node = shutil.which('node')
+        if not node:
+            self.skipTest('Node.js is required for client-side runtime tests')
+        html_text = configure_renderer.render(self.parameters, None, {}, self.schema)
+        result = subprocess.run(
+            [node, os.path.join(os.path.dirname(__file__), 'test_configure_draft07.js')],
+            input=html_text, text=True, capture_output=True, check=False, timeout=60)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+
 class ConfigureRendererTests(unittest.TestCase):
 
     def test_render_bulk_clear_preserves_non_editable_overrides(self):
@@ -3151,6 +3333,172 @@ class ConfigStatusTests(unittest.TestCase):
             statuses["vm.agentless.prepareEntity-1"], "Partial (1/2)")
         self.assertEqual(statuses["vm.agentless.migration-1"], "Configured")
         self.assertEqual(statuses["common.approval-1"], "NA")
+
+
+class SplitConfigStatusTests(unittest.TestCase):
+
+    def setUp(self):
+        self.step = {'stepId': 'target-1', 'stepRef': 'target', 'entities': ['a', 'b']}
+        self.definition = {'workstreams': [{'steps': [self.step]}]}
+        self.entity = {
+            'type': 'object',
+            'properties': {key: {'type': 'string'} for key in
+                           ('action', 'source', 'name', 'resourceId', 'secret', 'password')},
+            'required': ['action', 'source'],
+            'allOf': [
+                {'if': {'properties': {'action': {'const': 'Create'}}, 'required': ['action']},
+                 'then': {'required': ['name', 'size'], 'properties': {'resourceId': False}}},
+                {'if': {'properties': {'action': {'const': 'Validate'}}, 'required': ['action']},
+                 'then': {'required': ['resourceId'], 'properties': {'name': False, 'size': False}}}]}
+        self.entity['properties']['size'] = {'type': 'integer'}
+        self.step_schema = {
+            'type': 'object',
+            'properties': {**self.entity['properties'], 'workloadOverrides': {
+                'type': 'object', 'additionalProperties': {'$ref': '#/definitions/entity'}}}}
+        self.schemas = {'type': 'object', 'patternProperties': {'^target-1$': self.step_schema}}
+        self.schema = {
+            '$schema': 'http://json-schema.org/draft-07/schema#',
+            'type': 'object', 'definitions': {'entity': self.entity},
+            'properties': {'inputs': {'type': 'object', 'properties': {'stepInputs': self.schemas}}}}
+        self.values = {
+            'action': 'Validate', 'resourceId': '/resource/id', 'name': None, 'size': None,
+            'workloadOverrides': {'a': {'source': 'first'}, 'b': {'source': 'second'}}}
+        self.parameters = {
+            '$schema': './parameters.schema.json',
+            'inputs': {'stepInputs': {'target-1': self.values}}}
+
+    def status(self):
+        config_status_mod.annotate(self.definition, self.parameters, self.schema)
+        return self.step['configurationStatus']
+
+    def test_conditional_requirements_and_ignored_values(self):
+        self.assertEqual(self.status(), 'Configured')
+        self.values['resourceId'] = None
+        self.assertEqual(self.status(), 'Partial (2/3)')
+        self.values['action'] = 'Create'
+        self.values['resourceId'] = 'ignored, not a required input'
+        self.assertEqual(self.status(), 'Partial (2/4)')
+        self.values.update(name='instance', size=0)
+        self.assertEqual(self.status(), 'Configured')
+        self.values['size'] = ' '
+        self.assertEqual(self.status(), 'Partial (3/4)')
+
+    def test_empty_values_and_missing_steps_are_not_configured(self):
+        self.parameters['inputs']['stepInputs'] = {}
+        self.assertEqual(self.status(), 'NotConfigured')
+        self.parameters['inputs']['stepInputs']['target-1'] = {
+            'action': None, 'source': '', 'name': [], 'size': {},
+            'workloadOverrides': {'a': {'action': ''}, 'b': {'source': None}}}
+        self.assertEqual(self.status(), 'NotConfigured')
+
+    def test_mixed_workloads_require_only_applicable_fields(self):
+        self.values['workloadOverrides']['a'].update(action='Create', resourceId='ignored')
+        self.assertEqual(self.status(), 'Partial (3/5)')
+        self.values.update(name='inherited', size=8)
+        self.assertEqual(self.status(), 'Configured')
+        self.values['resourceId'] = None
+        self.assertEqual(self.status(), 'Partial (4/5)')
+        self.values['workloadOverrides']['b']['resourceId'] = '/override'
+        self.assertEqual(self.status(), 'Configured')
+
+    def test_all_spec_and_stored_workloads_must_be_complete(self):
+        self.values['source'] = 'shared source'
+        self.values['workloadOverrides']['b']['source'] = None
+        self.assertEqual(self.status(), 'Configured')
+        self.values['source'] = None
+        self.assertEqual(self.status(), 'Partial (2/3)')
+        self.values['source'] = 'shared source'
+        self.values['workloadOverrides']['extra'] = {'action': 'Create'}
+        self.assertEqual(self.status(), 'Partial (3/5)')
+
+    def test_sdk_anyof_oneof_and_dependencies(self):
+        for keyword in ('anyOf', 'oneOf'):
+            with self.subTest(keyword=keyword):
+                self.entity[keyword] = [{'required': ['secret']}, {'required': ['password']}]
+                self.assertEqual(self.status(), 'Partial (3/5)')
+                self.values['secret'] = 'one alternative'
+                self.assertEqual(self.status(), 'Configured')
+                self.values.pop('secret')
+                self.entity.pop(keyword)
+        self.entity['dependencies'] = {'secret': ['password']}
+        self.values['secret'] = 'username'
+        self.assertEqual(self.status(), 'Partial (3/4)')
+        self.values['password'] = 'password'
+        self.assertEqual(self.status(), 'Configured')
+
+    def test_numeric_allof_condition_can_require_shared_alternatives(self):
+        self.step_schema['allOf'] = [{
+            'if': {'properties': {'size': {'minimum': 8}}, 'required': ['size']},
+            'then': {'anyOf': [{'required': ['secret']}, {'required': ['password']}]}}]
+        self.values.update(action='Create', name='instance', size=4)
+        self.assertEqual(self.status(), 'Configured')
+        self.values['size'] = 8
+        self.assertEqual(self.status(), 'Partial (4/6)')
+        self.values['secret'] = 'shared credential'
+        self.assertEqual(self.status(), 'Configured')
+
+    def test_schemas_match_instance_ids_not_step_refs(self):
+        self.schemas['patternProperties']['^target-2$'] = {
+            'type': 'object', 'properties': {'label': {'type': 'string'}}, 'required': ['label']}
+        other = {'stepId': 'target-2', 'stepRef': 'target'}
+        self.definition['steps'] = [other]
+        self.parameters['inputs']['stepInputs']['target-2'] = {'label': None}
+        self.assertEqual(self.status(), 'Configured')
+        self.assertEqual(other['configurationStatus'], 'NotConfigured')
+        self.parameters['inputs']['stepInputs']['target-2']['label'] = 'filled'
+        self.status()
+        self.assertEqual(other['configurationStatus'], 'Configured')
+
+    def test_inputless_and_optional_steps_remain_na(self):
+        self.entity.pop('required')
+        self.entity.pop('allOf')
+        self.assertEqual(self.status(), 'NA')
+        for step_ref in ('common.manual', 'common.approval', 'status'):
+            self.step.update(stepId='no-inputs', stepRef=step_ref)
+            self.assertEqual(self.status(), 'NA')
+
+    def test_entity_step_without_entities_is_not_configured(self):
+        self.step['entities'] = []
+        self.values['workloadOverrides'] = {}
+        self.values['source'] = 'shared'
+        self.assertEqual(self.status(), 'NotConfigured')
+
+    def test_status_does_not_modify_parameters_or_schema(self):
+        parameters = copy.deepcopy(self.parameters)
+        schema = copy.deepcopy(self.schema)
+        self.assertEqual(self.status(), 'Configured')
+        self.assertEqual(self.parameters, parameters)
+        self.assertEqual(self.schema, schema)
+
+    def test_schema_errors_do_not_become_na_or_fetch_remote_references(self):
+        for reference in ('#/definitions/missing', 'https://example.invalid/schema.json'):
+            with self.subTest(reference=reference):
+                self.entity['allOf'].append({'$ref': reference})
+                with mock.patch('urllib.request.urlopen') as retrieve, \
+                        self.assertRaises(InvalidArgumentValueError):
+                    self.status()
+                retrieve.assert_not_called()
+                self.entity['allOf'].pop()
+        self.schema['$schema'] = 'https://json-schema.org/draft/2020-12/schema'
+        with self.assertRaisesRegex(InvalidArgumentValueError, 'Draft-07'):
+            self.status()
+        self.schema['$schema'] = 'http://json-schema.org/draft-07/schema#'
+        self.entity['type'] = 'invalid-type'
+        with self.assertRaisesRegex(InvalidArgumentValueError, 'Invalid parameters schema'):
+            self.status()
+
+    def test_invalid_inputs_and_editor_references_fail_clearly(self):
+        for parameters in ({}, {'inputs': {'stepInputs': []}}):
+            with self.subTest(parameters=parameters), self.assertRaises(InvalidArgumentValueError):
+                config_status_mod.annotate(self.definition, parameters, self.schema)
+        for overrides in ('not an object', {'a': 'not an object'}):
+            with self.subTest(overrides=overrides), self.assertRaises(InvalidArgumentValueError):
+                self.values['workloadOverrides'] = overrides
+                self.status()
+        for reference in ('#/definitions/missing', '#/properties/inputs'):
+            with self.subTest(reference=reference), self.assertRaises(InvalidArgumentValueError):
+                self.schema['properties']['inputs'] = {'$ref': reference}
+                self.status()
 
 
 class DefinitionGraphMergedDepsTests(unittest.TestCase):

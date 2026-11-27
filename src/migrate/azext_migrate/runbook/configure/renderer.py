@@ -21,11 +21,19 @@ import os
 import re
 import secrets
 
+from azext_migrate.shared.files import parameter_schema_name
+from azext_migrate.runbook.constants import INPUTLESS_STEP_REFS
+
 _TEMPLATE_PATH = os.path.join(
     os.path.dirname(__file__), 'templates', 'configure.html.tmpl')
+_VALIDATOR_PATH = os.path.join(
+    os.path.dirname(__file__), 'vendor', 'json-schema.js')
+_ADAPTER_PATH = os.path.join(
+    os.path.dirname(__file__), 'templates', 'draft07.js.tmpl')
 
 _DATA_TOKEN = '__RUNBOOK_DATA__'
 _NONCE_TOKEN = '__CSP_NONCE__'
+_VALIDATOR_TOKEN = '__SCHEMA_VALIDATOR__'
 
 # Escapes that neutralise a `</script>`/`<!--` breakout without altering the
 # parsed JSON value (JSON string parsing turns these back into </, > and &).
@@ -98,11 +106,13 @@ def _embed(payload):
 def render(inputs_root, spec_doc, meta, schema_doc=None):
     """Return a complete, self-contained parameters-editor HTML document.
 
-    ``schema_doc``, when the schema is shipped as its own ``schema.json``
-    (rather than embedded in ``inputs.json``), supplies the validation rules.
+    Referenced Draft-07 schemas use the offline SDK adapter. Embedded schemas
+    and legacy standalone ``schema.json`` retain the original editor flow.
     """
     doc = _normalize_doc(inputs_root)
-    if schema_doc:
+    split_schema = bool(parameter_schema_name(inputs_root)) or (
+        isinstance(schema_doc, dict) and '$schema' in schema_doc)
+    if schema_doc and not split_schema:
         doc['schema'] = schema_doc
     payload = {
         'doc': doc,
@@ -112,6 +122,14 @@ def render(inputs_root, spec_doc, meta, schema_doc=None):
         # (only stepInputs are edited in the browser).
         'inputsRoot': inputs_root if isinstance(inputs_root, dict) else {},
     }
+    validator = ''
+    if split_schema:
+        payload['parameterSchema'] = schema_doc
+        payload['inputlessStepRefs'] = sorted(INPUTLESS_STEP_REFS)
+        with open(_VALIDATOR_PATH, encoding='utf-8') as handle:
+            validator = handle.read()
+        with open(_ADAPTER_PATH, encoding='utf-8') as handle:
+            validator += '\n' + handle.read()
     with open(_TEMPLATE_PATH, encoding='utf-8') as handle:
         template = handle.read()
     # Per-file random nonce: the Content-Security-Policy allows only the inline
@@ -119,5 +137,6 @@ def render(inputs_root, spec_doc, meta, schema_doc=None):
     # service-supplied value (which cannot know the nonce) will not execute.
     nonce = secrets.token_urlsafe(16)
     return (template
+            .replace(_VALIDATOR_TOKEN, validator)
             .replace(_DATA_TOKEN, _embed(payload))
             .replace(_NONCE_TOKEN, nonce))

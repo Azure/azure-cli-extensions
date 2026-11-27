@@ -5,6 +5,9 @@ Release History
 
 3.0.0b7
 +++++++++++++++
+* Add support for Draft-07 conditional schema validation in the HTML editor
+  using a standard JSON Schema SDK and read separate schema files when
+  present, preserving backward compatibility.
 * Support inline conditional input rules in runbook and execution parameter
   editors: const-based conditions select required inputs and exclude fields
   marked false from controls, validation, and saved parameters.

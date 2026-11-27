@@ -23,7 +23,10 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = [
+    'jsonschema>=4.18.0,<5.0.0',
+    'referencing>=0.28.4,<1.0.0',
+]
 
 setup(
     name='migrate',
@@ -41,5 +44,7 @@ setup(
         'azext_metadata.json',
         'runbook/visualize/templates/*.tmpl',
         'runbook/configure/templates/*.tmpl',
+        'runbook/configure/vendor/*.js',
+        'runbook/configure/vendor/LICENSE',
     ]}
 )

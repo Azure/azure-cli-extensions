@@ -98,8 +98,8 @@ def configure(cmd, resource_group_name=None, project_name=None,
     """Generate an offline HTML editor for an execution's parameters file.
 
     Downloads the execution's ``inputs.json`` and renders a self-contained
-    page whose fields and validation are driven by the schema embedded in it.
-    ``--from-file`` renders a local ``inputs.json`` (with an optional
+    page driven by its embedded legacy schema or separate Draft-07 schema.
+    ``--from-file`` loads the parameters and any referenced sibling schema (with an optional
     ``--spec-file`` for the entity list) without any service calls. Editing
     writes ``./inputs.json`` locally; the page shows the ``parameter upload``
     command to run.
@@ -107,7 +107,7 @@ def configure(cmd, resource_group_name=None, project_name=None,
     if from_file:
         inputs_root = files.read_json_file(from_file)
         spec_doc = files.read_json_file(spec_file) if spec_file else None
-        schema_doc = None
+        schema_doc = files.read_schema_file(from_file, inputs_root)
     else:
         resource_id = _execution_resource_id(
             cmd, resource_group_name, project_name, runbook_name,
@@ -126,12 +126,22 @@ def configure(cmd, resource_group_name=None, project_name=None,
     # (inputs.json legacy / parameters.json renamed).
     meta['parametersFileName'] = os.path.basename(
         from_file if from_file else (found[0] if found else RUNBOOK_INPUT_FILE))
-    html_text = configure_renderer.render(
-        inputs_root, spec_doc, meta, schema_doc)
     target = files.resolve_output_path(
         file, 'runbook-%s-execution-%s-parameters.html' % (
             runbook_name or 'runbook', execution_id or 'latest'))
+    result = {}
+    if files.parameter_schema_name(inputs_root):
+        inputs_path = os.path.join(
+            os.path.dirname(os.path.abspath(target)), meta['parametersFileName'])
+        files.write_text(inputs_path, json.dumps(inputs_root, indent=2))
+        meta['inputsPath'] = inputs_path
+        result = {
+            'inputsPath': inputs_path,
+            'schemaPath': files.write_parameter_schema(inputs_path, inputs_root, schema_doc)}
+    html_text = configure_renderer.render(
+        inputs_root, spec_doc, meta, schema_doc)
     path = files.write_text(target, html_text)
     logger.warning('Execution parameters editor saved to %s', path)
     files.open_in_browser(path, required=True)
-    return {'path': path}
+    result['path'] = path
+    return result

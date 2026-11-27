@@ -177,6 +177,7 @@
   textarea { min-height: 64px; font-family: var(--mono); font-size: var(--fs-200); line-height: var(--lh-200); }
   .bad { background: #fdf4f4 !important; border-color: var(--err) !important; }
   .err { color: var(--err); font-size: var(--fs-200); line-height: var(--lh-200); margin-top: 4px; }
+  .err.warning { color: var(--warn); }
   .row-acts { display: flex; gap: 14px; margin-top: 7px; flex-wrap: wrap; }
   .lnk { font: inherit; font-size: var(--fs-200); line-height: var(--lh-200);
     background: none; border: 0; padding: 0; color: var(--brand); cursor: pointer;
@@ -422,6 +423,7 @@
 </div>
 
 <script nonce="__CSP_NONCE__">
+__SCHEMA_VALIDATOR__
 // ---- Data injected by `az migrate runbook parameter configure` -------------
 // The CLI substitutes the runbook's real inputs.json (schema + stepInputs +
 // envelope ids) and spec.json (entity list per step) at generation time.
@@ -438,9 +440,10 @@ const META = BOOT.meta || {
 // User-parameters file name (service renamed inputs.json -> parameters.json;
 // the CLI passes the actual name so the shown upload command matches).
 const PARAM_FILE = META.parametersFileName || 'inputs.json';
-const STEP_ENTITIES = {}, STEP_DISPLAY = {};
+const STEP_ENTITIES = {}, STEP_DISPLAY = {}, STEP_REFS = {};
 (SPEC.workstreams || []).forEach(w => (w.steps || []).forEach(s => {
   STEP_ENTITIES[s.stepId] = s.entities || [];
+  STEP_REFS[s.stepId] = s.stepRef;
   if (s.displayName) STEP_DISPLAY[s.stepId] = s.displayName;
 }));
 // Entities are keyed by their short name in workloadOverrides; the spec carries
@@ -476,6 +479,14 @@ function stepLabel(sid) {
 
 // Snapshot of what was downloaded, to flag changed (dirty) fields + reset.
 const ORIGINAL = JSON.parse(JSON.stringify(DOC.stepInputs));
+const SCHEMA_EDITOR = Object.prototype.hasOwnProperty.call(BOOT, 'parameterSchema')
+  ? parameterSchemaEditor(BOOT.parameterSchema, BOOT.inputsRoot, entitiesFor, exportWithExclusions) : null;
+const INPUTLESS_STEP_REFS = new Set(BOOT.inputlessStepRefs || []);
+function stepIds() {
+  const inputs = Object.keys(DOC.stepInputs);
+  return SCHEMA_EDITOR ? [...new Set([...Object.keys(STEP_ENTITIES), ...inputs])]
+    .filter(sid => !INPUTLESS_STEP_REFS.has(STEP_REFS[sid] || stepType(sid))) : inputs;
+}
 
 // ---- helpers --------------------------------------------------------------
 const stepType = sid => sid.replace(/-\d+$/, '');
@@ -483,8 +494,13 @@ const PREPARED_SCHEMAS = new Map(), ISSUE_CACHE = new Map();
 const isObject = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 const has = (o, k) => !!(o && Object.prototype.hasOwnProperty.call(o, k));
 function preparedSchema(sid) {
-  const type = stepType(sid);
+  const type = SCHEMA_EDITOR ? sid : stepType(sid);
   if (PREPARED_SCHEMAS.has(type)) return PREPARED_SCHEMAS.get(type);
+  if (SCHEMA_EDITOR) {
+    const result = { fields: SCHEMA_EDITOR.fields(sid), conditions: [], error: null };
+    PREPARED_SCHEMAS.set(type, result);
+    return result;
+  }
   const raw = DOC.schema[type] || {};
   const entries = Object.entries(raw);
   const fieldEntries = entries.filter(([k, v]) => k !== 'allOf' && isObject(v) &&
@@ -521,11 +537,13 @@ function preparedSchema(sid) {
 }
 const rulesFor = sid => preparedSchema(sid).fields;
 const stepFields = sid => Object.keys(rulesFor(sid));
-// A step is entity-level if any input is entity-scoped; then EVERY input is
-// overridable per entity (no mixed steps). Otherwise all inputs are appliance-level.
-const stepIsEntity = sid => stepFields(sid).some(f => rulesFor(sid)[f].scope === 'Entity');
-const entityFields = sid => stepIsEntity(sid) ? stepFields(sid) : [];
-const applianceFields = sid => stepIsEntity(sid) ? [] : stepFields(sid);
+// Legacy steps are uniformly scoped; split schemas can mix shared and entity inputs.
+const stepIsEntity = sid => SCHEMA_EDITOR ? entityFields(sid).length > 0
+  : stepFields(sid).some(f => rulesFor(sid)[f].scope === 'Entity');
+const entityFields = sid => SCHEMA_EDITOR ? Object.keys(SCHEMA_EDITOR.fields(sid, ''))
+  : stepIsEntity(sid) ? stepFields(sid) : [];
+const applianceFields = sid => SCHEMA_EDITOR ? stepFields(sid).filter(f => !entityFields(sid).includes(f))
+  : stepIsEntity(sid) ? [] : stepFields(sid);
 const isEmpty = v => v === null || v === undefined || v === '';
 const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
   .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -598,6 +616,7 @@ function effective(sid, eid, f) {
     (has(DOC.stepInputs[sid], f) ? DOC.stepInputs[sid][f] : undefined);
 }
 function inputState(sid, eid = null) {
+  if (SCHEMA_EDITOR) return { required: new Set(), excluded: SCHEMA_EDITOR.excluded(DOC.stepInputs, sid, eid) };
   const prepared = preparedSchema(sid), required = new Set(), excluded = new Set();
   const value = f => effective(sid, eid, f);
   prepared.conditions.forEach(rule => {
@@ -610,12 +629,15 @@ function inputState(sid, eid = null) {
   return { required, excluded };
 }
 function contextRules(sid, eid = null) {
+  if (SCHEMA_EDITOR) return SCHEMA_EDITOR.contextFields(sid, eid, DOC.stepInputs);
   const state = inputState(sid, eid);
   return Object.fromEntries(Object.entries(rulesFor(sid)).filter(([f]) => !state.excluded.has(f))
     .map(([f, r]) => [f, { ...r, required: !!r.required || state.required.has(f) }]));
 }
 function inputLayout(sid) {
-  return JSON.stringify([contextRules(sid), ...entitiesFor(sid).map(e => contextRules(sid, e.id))]
+  const entities = entitiesFor(sid);
+  const visible = SCHEMA_EDITOR ? [entities.find(e => e.id === selEntity) || entities[0]].filter(Boolean) : entities;
+  return JSON.stringify([contextRules(sid), ...visible.map(e => contextRules(sid, e.id))]
     .map(rules => Object.entries(rules).map(([f, r]) => [f, r.required])));
 }
 function overrideCount(sid, f) {
@@ -650,6 +672,7 @@ function summarise(v, rule) {
   return short(fmt(v), 90);
 }
 function stepIssues(sid) {
+  if (SCHEMA_EDITOR) return SCHEMA_EDITOR.issues(DOC.stepInputs).filter(issue => issue.sid === sid);
   const stamp = JSON.stringify(DOC.stepInputs[sid]);
   const cached = ISSUE_CACHE.get(sid);
   if (cached && cached.stamp === stamp) return cached.issues;
@@ -705,7 +728,7 @@ function accessor(path) {
 function ruleForPath(path) { const p = path.split('|'); return rulesFor(p[1])[p[0] === 'O' ? p[3] : p[2]] || {}; }
 
 // ---- state ----------------------------------------------------------------
-let current = Object.keys(DOC.stepInputs)[0];
+let current = stepIds()[0];
 let selEntity = null;
 let fieldFilter = '';
 let displayedLayout;
@@ -740,7 +763,7 @@ function renderTabs() {
   const nav = document.getElementById('steps');
   nav.setAttribute('role', 'tablist');
   nav.setAttribute('aria-orientation', 'vertical');
-  nav.innerHTML = Object.keys(DOC.stepInputs).map((sid, i) => {
+  nav.innerHTML = stepIds().map((sid, i) => {
     const n = stepErrors(sid), on = sid === current;
     const badge = n > 0
       ? `<span class="badge err" title="${n} input(s) still needed">${n}</span>` : '';
@@ -796,7 +819,7 @@ function bindSearch(id, set) {
 }
 function scalarCtrl(path, rule, value, dis) {
   const v = value == null ? '' : value;
-  if (rule.allowedValues) return selCtrl(path, rule, v, dis, '-- unset --', '');
+  if (rule.allowedValues || rule.suggestedValues) return selCtrl(path, rule, v, dis, '-- unset --', '');
   if (rule.type === 'boolean') return boolCtrl(path, v, dis, '-- unset --', '');
   return `<input type="text" data-path="${esc(path)}" value="${esc(v)}" ${dis} />`;
 }
@@ -804,15 +827,19 @@ function overrideCtrl(path, rule, value, defVal, hasOvr, dis) {
   // A dropdown option must read as a choice, so it stays labelled; a text
   // placeholder can just show the value it would fall back to.
   const opt = isEmpty(defVal) ? 'Inherit' : `Inherit (${short(fmt(defVal), 32)})`;
-  if (rule.allowedValues) return selCtrl(path, rule, hasOvr ? value : '__inh__', dis, opt, '__inh__');
+  if (rule.allowedValues || rule.suggestedValues)
+    return selCtrl(path, rule, hasOvr ? value : '__inh__', dis, opt, '__inh__');
   if (rule.type === 'boolean') return boolCtrl(path, hasOvr ? value : '__inh__', dis, opt, '__inh__');
   return `<input type="text" data-path="${esc(path)}" value="${hasOvr ? esc(value) : ''}" ${dis}
     placeholder="${esc(short(fmt(defVal), 48))}" />`;
 }
 function selCtrl(path, rule, v, dis, firstLabel, firstVal) {
+  const values = [...(rule.allowedValues || rule.suggestedValues)];
+  if (SCHEMA_EDITOR && !isEmpty(v) && String(v) !== String(firstVal) &&
+      !values.some(o => String(o) === String(v))) values.push(v);
   return `<select data-path="${esc(path)}" ${dis}>
     <option value="${esc(firstVal)}">${esc(firstLabel)}</option>` +
-    rule.allowedValues.map(o => `<option value="${esc(o)}" ${String(o) === String(v) ? 'selected' : ''}>${esc(o)}</option>`).join('') +
+    values.map(o => `<option value="${esc(o)}" ${String(o) === String(v) ? 'selected' : ''}>${esc(o)}</option>`).join('') +
     `</select>`;
 }
 function boolCtrl(path, v, dis, firstLabel, firstVal) {
@@ -928,9 +955,9 @@ function inputRow(sid, kind, f, r, data) {
     </div>
     ${isComplex(r) ? complexCtrl(path, r, data[f], !locked) : scalarCtrl(path, r, data[f], dis)}
     ${r.description ? `<div class="irow__desc" title="${esc(r.description)}">${esc(r.description)}</div>` : ''}
-    <div class="err" data-err="${esc(path)}"></div></div>`;
+    <div class="err" data-err="${esc(path)}" role="status"></div></div>`;
 }
-// Required and optional get the same section treatment; required stays open.
+// Legacy optional inputs start collapsed; split schemas keep all inputs visible.
 function renderGroup(title, sub, sid, kind, fields, rules, data) {
   if (!fields.length) return '';
   const req = fields.filter(f => rules[f].required), opt = fields.filter(f => !rules[f].required);
@@ -947,7 +974,7 @@ function renderGroup(title, sub, sid, kind, fields, rules, data) {
       ${req.length ? req.map(f => inputRow(sid, kind, f, rules[f], data)).join('')
                    : note(noneRequired, 'required')}
     </details>
-    <details class="adv" data-sec="opt" ${fieldFilter ? 'open' : ''}>
+    <details class="adv" data-sec="opt" ${fieldFilter || SCHEMA_EDITOR ? 'open' : ''}>
       <summary>Optional inputs <span class="adv-n">${opt.length}</span></summary>
       ${opt.length ? opt.map(f => inputRow(sid, kind, f, rules[f], data)).join('')
                    : note(noneOptional, 'optional')}
@@ -966,16 +993,20 @@ function renderForm() {
     sync();
     return;
   }
-  const sid = current, rules = contextRules(sid), data = DOC.stepInputs[sid];
+  const sid = current, hasInputs = has(DOC.stepInputs, sid);
+  // Spec-only steps are navigation, not synthetic editable parameter entries.
+  const rules = hasInputs ? contextRules(sid) : {}, data = DOC.stepInputs[sid];
   const es = entitiesFor(sid), all = Object.keys(rules);
-  displayedLayout = inputLayout(sid);
+  displayedLayout = hasInputs ? inputLayout(sid) : null;
   let html = `<h2 class="step-h">${esc(stepLabel(sid))}</h2>
     <p class="step-sub">Step id <code>${esc(sid)}</code> &middot; ${
       es.length ? `${es.length} ${es.length === 1 ? 'workload' : 'workloads'}` : 'no per-workload inputs'}</p>
     <div class="err" id="stepConditions" role="status"></div>`;
   if (!all.length) {
     host.innerHTML = html + `<p class="step-sub">This step has no configurable inputs.</p>`;
-    renderOverrides(); refreshValidation(); return;
+    renderOverrides();
+    if (hasInputs) refreshValidation(); else sync();
+    return;
   }
   const app = applianceFields(sid).filter(f => has(rules, f) && matchField(rules, f));
   const ent = entityFields(sid).filter(f => has(rules, f) && matchField(rules, f));
@@ -1015,16 +1046,16 @@ function overrideRow(sid, eid, f, r, data, sect) {
       <span class="tag" ${ov ? '' : 'hidden'}>override</span>
       <span class="mod-chip" hidden>modified</span></div>
     ${ctrl}
-    <div class="inh" data-inh="${esc(sid)}|${esc(eid)}|${esc(f)}"></div>
+    <div class="inh" data-inh="${esc(sid)}|${esc(eid)}|${esc(f)}" role="status"></div>
     <div class="row-acts" ${acts ? '' : 'hidden'}>${acts}</div>
-    <div class="err" data-err="${esc(path)}"></div>
+    <div class="err" data-err="${esc(path)}" role="status"></div>
   </div>`;
 }
 function renderOverrides() {
   const pane = document.getElementById('ovPane');
   const sid = current, data = DOC.stepInputs[sid];
   const head = '<h2 class="aside-h" id="asideH">Workload level overrides</h2>';
-  const fields = entityFields(sid);
+  const fields = has(DOC.stepInputs, sid) ? entityFields(sid) : [];
   if (!fields.length) { pane.innerHTML = head + `<section class="card"><div class="ov-empty">This step has no per-workload inputs.</div></section>`; return; }
   const es = entitiesFor(sid);
   if (!es.length) { pane.innerHTML = head + `<section class="card"><div class="ov-empty">This step has no workloads.</div></section>`; return; }
@@ -1145,7 +1176,14 @@ function bindInputs(scope) {
 function coerce(raw, rule) {
   if (typeof raw === 'string') raw = raw.trim();
   if (raw === '' || raw === '__inh__') return null;
+  if (SCHEMA_EDITOR) {
+    const choice = (rule.allowedValues || rule.suggestedValues || []).find(value => String(value) === raw);
+    if (choice !== undefined) return choice;
+  }
   if (rule.type === 'boolean') return raw === 'true';
+  if (SCHEMA_EDITOR && (rule.type === 'integer' || rule.type === 'number')) {
+    const number = Number(raw); return Number.isFinite(number) ? number : raw;
+  }
   if (rule.type === 'integer') { const n = parseInt(raw, 10); return Number.isNaN(n) ? raw : n; }
   if (isComplex(rule)) { try { return JSON.parse(raw); } catch (e) { return raw; } }
   return raw;
@@ -1208,25 +1246,41 @@ function updateRowState() {
   });
 }
 function ctrlEl(path) { return document.querySelector(`[data-path="${path}"]`); }
-function mark(path, err) {
+function mark(path, err, warning = '') {
   const el = ctrlEl(path); if (el) el.classList.toggle('bad', !!err);
-  const e = document.querySelector(`[data-err="${path}"]`); if (e) e.textContent = err || '';
+  const e = document.querySelector(`[data-err="${path}"]`);
+  if (e) {
+    e.textContent = err || warning;
+    e.classList.toggle('warning', !err && !!warning);
+  }
 }
 function refreshValidation() {
   const sid = current, issues = stepIssues(sid);
   const errorFor = (f, eid) => issues.filter(i => i.f === f && i.eid === eid).map(i => i.msg).join('; ');
-  const kind = stepIsEntity(sid) ? 'D' : 'A';
-  Object.entries(contextRules(sid)).forEach(([f, rule]) =>
-    mark(`${kind}|${sid}|${f}`, fieldError(rule, DOC.stepInputs[sid][f])));
+  const warnings = SCHEMA_EDITOR ? SCHEMA_EDITOR.warnings(DOC.stepInputs).filter(i => i.sid === sid) : [];
+  const ignored = 'Not used with the current inputs. This value will be saved as null, but kept here if you change the inputs.';
+  const warningFor = (f, eid) => warnings.some(i => i.f === f && i.eid === eid) ? ignored : '';
+  Object.entries(contextRules(sid)).forEach(([f, rule]) => {
+    const kind = entityFields(sid).includes(f) ? 'D' : 'A';
+    const shared = SCHEMA_EDITOR ? [...new Set(issues
+      .filter(i => i.f === f && (i.eid === null || !hasOverride(sid, i.eid, f)))
+      .map(i => i.detail || i.msg))].join('; ') : fieldError(rule, DOC.stepInputs[sid][f]);
+    const affected = warnings.filter(i => i.f === f);
+    const warning = !isEmpty(DOC.stepInputs[sid][f]) && affected.length
+      ? affected.some(i => i.eid === null) || entitiesFor(sid).every(e => affected.some(i => i.eid === e.id))
+        ? ignored : 'Not used by some workloads with their current inputs. The value is kept for workloads that still use it.'
+      : '';
+    mark(`${kind}|${sid}|${f}`, shared, warning);
+  });
   entityFields(sid).forEach(f => {
     // right pane shows the selected entity's inputs
-    const ov = hasOverride(sid, selEntity, f), err = errorFor(f, selEntity);
-    mark(`O|${sid}|${selEntity}|${f}`, ov ? err : null);
+    const ov = hasOverride(sid, selEntity, f), err = errorFor(f, selEntity), warning = warningFor(f, selEntity);
+    mark(`O|${sid}|${selEntity}|${f}`, ov ? err : null, ov ? warning : '');
     const inh = document.querySelector(`[data-inh="${sid}|${selEntity}|${f}"]`);
     if (inh) {
-      // The value itself is already on the control; this line is only for errors.
-      inh.textContent = ov ? '' : (err || '');
-      inh.style.color = 'var(--err)';
+      // The inherited value is already on the control; show its validation feedback here.
+      inh.textContent = ov ? '' : (err || warning);
+      inh.style.color = err ? 'var(--err)' : 'var(--warn)';
     }
   });
   const summary = document.getElementById('stepConditions');
@@ -1256,12 +1310,15 @@ function sync() {
   document.getElementById('copyBtn').disabled = blocked;
   const hintEl = document.getElementById('cmdHint');
   if (hintEl) hintEl.textContent = hint;
-  const pending = Object.keys(DOC.stepInputs).filter(s => stepErrors(s) > 0).length;
+  const issues = allIssues();
+  const pending = new Set(issues.filter(i => has(DOC.stepInputs, i.sid)).map(i => i.sid)).size;
+  const documentErrors = issues.filter(i => !has(DOC.stepInputs, i.sid)).length;
   const vs = document.getElementById('vsummary');
-  if (pending > 0) {
+  if (pending > 0 || documentErrors > 0) {
     vs.className = 'vsummary bad2';
-    vs.innerHTML = `\u26A0 ${pending} step${pending === 1 ? '' : 's'} still ` +
-      `need${pending === 1 ? 's' : ''} inputs <span class="vsummary__act">Review</span>`;
+    vs.innerHTML = '\u26A0 ' + (documentErrors ? `${documentErrors} document validation error(s)` :
+      `${pending} step${pending === 1 ? '' : 's'} still need${pending === 1 ? 's' : ''} inputs`) +
+      ' <span class="vsummary__act">Review</span>';
     vs.setAttribute('role', 'button');
     vs.tabIndex = 0;
     vs.title = 'Show every input that is still missing or invalid';
@@ -1278,7 +1335,7 @@ function renderAll() { renderTabs(); renderForm(); }
 
 // ---- outstanding inputs, across every step --------------------------------
 function allIssues() {
-  return Object.keys(DOC.stepInputs).flatMap(stepIssues);
+  return SCHEMA_EDITOR ? SCHEMA_EDITOR.issues(DOC.stepInputs) : Object.keys(DOC.stepInputs).flatMap(stepIssues);
 }
 function showIssues() {
   const list = allIssues();
@@ -1287,11 +1344,12 @@ function showIssues() {
     : 'Every input required by the schema is set.';
   document.getElementById('issueList').innerHTML = list.map((it, i) =>
     `<button type="button" class="issue" data-i="${i}">
-      <b>${esc(it.f || 'Step conditions')}</b> &mdash; ${esc(it.msg)}
-      <div class="where">${esc(stepLabel(it.sid))}${it.name ? ' \u203A ' + esc(it.name) : ''}</div>
+      <b>${esc(it.f || (it.sid == null ? 'Document validation' : 'Step conditions'))}</b> &mdash; ${esc(it.msg)}
+      <div class="where">${it.sid == null ? 'Parameters document' : esc(stepLabel(it.sid))}${it.name ? ' \u203A ' + esc(it.name) : ''}</div>
     </button>`).join('');
   document.querySelectorAll('#issueList .issue').forEach(b => b.addEventListener('click', () => {
     const it = list[+b.dataset.i];
+    if (!has(DOC.stepInputs, it.sid)) { closePop(); return; }
     fieldFilter = '';
     current = it.sid;
     if (it.eid) { selEntity = it.eid; }
@@ -1313,27 +1371,27 @@ function revealField(path, altPath) {
 
 // ---- toolbar / popover ----------------------------------------------------
 function firstFailingStep() { return Object.keys(DOC.stepInputs).find(s => stepErrors(s) > 0); }
-function exportedInputs() {
-  const result = JSON.parse(JSON.stringify(DOC.stepInputs));
+function exportWithExclusions(stepInputs, excludedFor) {
+  const result = JSON.parse(JSON.stringify(stepInputs));
   Object.keys(result).forEach(sid => {
-    if (!preparedSchema(sid).conditions.length) return;
-    const data = DOC.stepInputs[sid], output = result[sid];
+    const data = stepInputs[sid], output = result[sid];
     const ids = [...new Set([...entitiesFor(sid).map(e => e.id), ...Object.keys(data.workloadOverrides || {})])];
-    const base = inputState(sid);
+    const base = excludedFor(sid, null);
     const overrides = Object.assign(Object.create(null), output.workloadOverrides || {});
     const states = ids.map(eid => ({
-      eid, excluded: inputState(sid, eid).excluded,
+      eid, excluded: excludedFor(sid, eid),
       values: Object.assign(Object.create(null), overrides[eid] || {})
     }));
+    if (!base.size && !states.some(e => e.excluded.size)) return;
     Object.keys(rulesFor(sid)).forEach(f => {
       // Move shared values into allowed workloads to prevent excluded workloads
       // from inheriting them, retaining inactive property names as null.
-      if (!base.excluded.has(f) && !states.some(e => e.excluded.has(f))) return;
+      if (!base.has(f) && !states.some(e => e.excluded.has(f))) return;
       const value = output[f];
       output[f] = null;
       states.forEach(({ eid, excluded, values }) => {
         if (excluded.has(f)) values[f] = null;
-        else if (!hasOverride(sid, eid, f) && !isEmpty(data[f])) values[f] = value;
+        else if ((!has(values, f) || isEmpty(values[f])) && !isEmpty(data[f])) values[f] = value;
       });
     });
     states.forEach(({ eid, values }) => {
@@ -1342,6 +1400,10 @@ function exportedInputs() {
     if (has(output, 'workloadOverrides') || Object.keys(overrides).length) output.workloadOverrides = overrides;
   });
   return result;
+}
+function exportedInputs() {
+  return SCHEMA_EDITOR ? SCHEMA_EDITOR.exported(DOC.stepInputs)
+    : exportWithExclusions(DOC.stepInputs, (sid, eid) => inputState(sid, eid).excluded);
 }
 function buildInputsJson() {
   const root = JSON.parse(JSON.stringify(BOOT.inputsRoot || {}));

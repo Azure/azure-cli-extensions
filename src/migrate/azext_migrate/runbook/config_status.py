@@ -30,13 +30,15 @@ The status is one of:
 * ``Unknown``        — no parameters document is available, so the status of a
   step that *might* take inputs cannot be determined.
 
-A step's required inputs are defined solely by its ``schema[stepRef]`` entry.
+A legacy step's required inputs come from its ``schema[stepRef]`` entry.
+Split artifacts use the paired Draft-07 schema and SDK-evaluated requirements.
 Manual/Approval gates (``stepRef`` in :data:`INPUTLESS_STEP_REFS`) never take
 inputs, so they are :data:`NA` even when no parameters document is present. Any
 other step whose schema declares no required inputs is likewise :data:`NA`.
 """
 
 from azext_migrate.runbook.constants import INPUTLESS_STEP_REFS
+from azext_migrate.shared.files import parameter_schema_name
 
 CONFIGURED = 'Configured'
 NOT_CONFIGURED = 'NotConfigured'
@@ -116,6 +118,12 @@ def compute(step, runbook_inputs):
         1 for field, meta in required
         if _field_is_set(field, meta, step, step_inputs))
     total = len(required)
+    return _from_counts(set_count, total)
+
+
+def _from_counts(set_count, total):
+    if not total:
+        return NOT_APPLICABLE
     if set_count == 0:
         return NOT_CONFIGURED
     if set_count == total:
@@ -123,7 +131,7 @@ def compute(step, runbook_inputs):
     return 'Partial (%d/%d)' % (set_count, total)
 
 
-def annotate(definition, runbook_inputs):
+def annotate(definition, runbook_inputs, schema_doc=None):
     """Stamp ``configurationStatus`` onto every step of ``definition``.
 
     Mutates and returns ``definition`` in place so the table transformer and
@@ -132,18 +140,25 @@ def annotate(definition, runbook_inputs):
     """
     if not isinstance(definition, dict):
         return definition
+    schema_status = None
+    if schema_doc is not None or parameter_schema_name(runbook_inputs):
+        from .schema_status import SchemaStatus
+        schema_status = SchemaStatus(definition, runbook_inputs, schema_doc)
+    elif isinstance(runbook_inputs, dict) and isinstance(runbook_inputs.get('inputs'), dict):
+        runbook_inputs = runbook_inputs['inputs']
     workstreams = definition.get('workstreams')
     if isinstance(workstreams, list):
         for workstream in workstreams:
             if isinstance(workstream, dict):
-                _annotate_steps(workstream.get('steps'), runbook_inputs)
-    _annotate_steps(definition.get('steps'), runbook_inputs)
+                _annotate_steps(workstream.get('steps'), runbook_inputs, schema_status)
+    _annotate_steps(definition.get('steps'), runbook_inputs, schema_status)
     return definition
 
 
-def _annotate_steps(steps, runbook_inputs):
+def _annotate_steps(steps, runbook_inputs, schema_status=None):
     if not isinstance(steps, list):
         return
     for step in steps:
         if isinstance(step, dict):
-            step['configurationStatus'] = compute(step, runbook_inputs)
+            step['configurationStatus'] = (
+                schema_status.compute(step) if schema_status else compute(step, runbook_inputs))

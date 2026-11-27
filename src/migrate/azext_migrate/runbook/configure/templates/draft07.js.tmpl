@@ -1,0 +1,267 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See License.txt in the project root.
+function parameterSchemaEditor(schema, original, entitiesFor, exportExcluded) {
+  const own = (value, key) => value != null && Object.prototype.hasOwnProperty.call(value, key);
+  const empty = value => value === null || value === undefined || value === '';
+  const clone = value => JSON.parse(JSON.stringify(value));
+  const parts = pointer => pointer.slice(2).split('/').map(p => decodeURIComponent(p).replace(/~1/g, '/').replace(/~0/g, '~'));
+  const pointer = ref => parts(ref).reduce((value, key) => own(value, key) ? value[key] : undefined, schema);
+  const location = path => '#/' + path.map(key => key.replace(/~/g, '~0').replace(/\//g, '~1')).join('/');
+  let validator, error, cached;
+  const layouts = new Map();
+  function resolve(value) {
+    const seen = new Set();
+    while (value && typeof value.$ref === 'string') {
+      const ref = value.$ref;
+      if (!ref.startsWith('#/') || seen.has(ref)) throw new Error('Unresolved or recursive editor reference: ' + ref);
+      seen.add(ref);
+      value = pointer(ref);
+      if (value === undefined) throw new Error('Unresolved editor reference: ' + ref);
+    }
+    return value ?? {};
+  }
+  function excludedProperty(errors, index, field) {
+    if (!errors[index - 1] || !['properties', '$ref'].includes(errors[index - 1].keyword)) return false;
+    // SDK false errors use instance paths; the enclosing evaluation path identifies the actual schema.
+    const container = errors[index].instanceLocation.replace(/\/[^/]*$/, '');
+    for (let i = index - 1; i >= 0; i--) {
+      const parent = errors[i];
+      if (parent.keyword !== 'properties' || parent.instanceLocation !== container ||
+          parent.error !== `Property "${field}" does not match schema.`) continue;
+      let rule = schema;
+      for (const key of parts(parent.keywordLocation)) {
+        if (['anyOf', 'oneOf'].includes(key) && Array.isArray((rule || {})[key])) return false;
+        rule = key === '$ref' && typeof (rule || {}).$ref === 'string' ? pointer(rule.$ref)
+          : own(rule, key) ? rule[key] : undefined;
+      }
+      return own(rule, field) && resolve(rule[field]) === false;
+    }
+    return false;
+  }
+  const scalarChoices = rule => (rule.enum || (own(rule, 'const') ? [rule.const] : []))
+    .filter(value => value !== null && ['string', 'number', 'boolean'].includes(typeof value));
+  const missingField = (issue, keys) => ['required', 'dependencies'].includes(issue.keyword)
+    ? keys.find(key => issue.error.endsWith(`"${key}".`)) : undefined;
+  // Conditional selector values are UI hints, not an exhaustive enum assertion.
+  function choiceHints(value, hints = Object.create(null), seen = new Set(), predicate = false) {
+    const rule = resolve(value);
+    if (typeof rule !== 'object' || seen.has(rule)) return hints;
+    const next = new Set([...seen, rule]);
+    if (predicate) Object.entries(rule.properties || {}).forEach(([key, test]) => {
+      hints[key] = [...new Set([...(hints[key] || []), ...scalarChoices(resolve(test))])];
+    });
+    if (own(rule, 'if')) choiceHints(rule.if, hints, next, true);
+    ['allOf', 'anyOf', 'oneOf'].forEach(key =>
+      (rule[key] || []).forEach(child => choiceHints(child, hints, next, predicate)));
+    ['then', 'else'].forEach(key => { if (own(rule, key)) choiceHints(rule[key], hints, next); });
+    return hints;
+  }
+  try {
+    if (!schema || !/^https?:\/\/json-schema\.org\/draft-07\/schema#?$/.test(schema.$schema || ''))
+      throw new Error('The parameters schema must declare JSON Schema Draft-07.');
+    const meta = new RunbookSchema.Validator({
+      ...RunbookSchema.metaSchema, allOf: [{ not: { type: 'object', required: ['$ref', '$id'] } }]
+    }, '7', false);
+    const checked = meta.validate(schema);
+    if (!checked.valid) throw new Error(checked.errors.map(e => e.error).join('; '));
+    validator = new RunbookSchema.Validator(schema, '7', false);
+    validator.addSchema(RunbookSchema.metaSchema);
+  } catch (e) {
+    error = 'Invalid or unsupported parameters schema: ' + e.message;
+  }
+  function controlShape(candidates) {
+    const rules = candidates.map(resolve);
+    return {
+      properties: Object.assign(Object.create(null), ...rules.map(rule => rule.properties)),
+      required: [...new Set(rules.flatMap(rule => rule.required || []))],
+      hints: rules.reduce((hints, rule) => choiceHints(rule, hints), Object.create(null))
+    };
+  }
+  function layout(sid) {
+    if (layouts.has(sid)) return layouts.get(sid);
+    const inputs = resolve((schema.properties || {}).inputs);
+    const steps = resolve((inputs.properties || {}).stepInputs);
+    const candidates = [
+      ...(own(steps.properties, sid) ? [steps.properties[sid]] : []),
+      ...Object.entries(steps.patternProperties || {}).filter(([pattern]) => new RegExp(pattern).test(sid)).map(([, s]) => s)
+    ];
+    const step = controlShape(candidates);
+    const entity = controlShape(candidates.map(resolve)
+      .filter(rule => own(rule.properties, 'workloadOverrides'))
+      .map(rule => resolve(rule.properties.workloadOverrides).additionalProperties));
+    const hints = Object.assign(Object.create(null), step.hints);
+    Object.entries(entity.hints).forEach(([key, choices]) =>
+      hints[key] = [...new Set([...(hints[key] || []), ...choices])]);
+    const result = { step, entity, hasEntities: own(step.properties, 'workloadOverrides'), hints };
+    layouts.set(sid, result);
+    return result;
+  }
+  function descriptor(value, required, entityScope, seen = new Set()) {
+    const rule = resolve(value);
+    if (seen.has(rule)) return { type: rule.type || 'object', required };
+    const next = new Set([...seen, rule]);
+    const source = rule['x-ms-source'] || {};
+    const result = {
+      ...rule, type: Array.isArray(rule.type) ? rule.type.find(t => t !== 'null') || 'string' : rule.type || 'string',
+      required, scope: source.scope || (entityScope ? 'Entity' : undefined),
+      isEditable: rule.readOnly !== true && source.editable !== false
+    };
+    const choices = scalarChoices(rule);
+    if (choices.length) result.allowedValues = choices;
+    if (rule.properties) result.properties = Object.fromEntries(Object.entries(rule.properties)
+      .map(([key, child]) => [key, descriptor(child, (rule.required || []).includes(key), entityScope, next)]));
+    if (rule.items && !Array.isArray(rule.items)) result.items = descriptor(rule.items, false, entityScope, next);
+    return result;
+  }
+  function fields(sid, eid = null) {
+    try {
+      if (error) return {};
+      const info = layout(sid), shape = eid === null ? info.step : info.entity;
+      const cacheKey = eid === null ? 'stepFields' : 'entityFields';
+      if (info[cacheKey]) return info[cacheKey];
+      const properties = { ...info.entity.properties, ...info.step.properties };
+      delete properties.workloadOverrides;
+      // Shared controls also supply required effective workload values.
+      const required = new Set([...(shape.required || []),
+        ...(eid === null ? info.entity.required || [] : [])]);
+      info[cacheKey] = Object.fromEntries(Object.entries(properties).map(([key, value]) => {
+        const field = descriptor(value, required.has(key), own(info.entity.properties, key));
+        if (!field.allowedValues && (info.hints[key] || []).length) field.suggestedValues = info.hints[key];
+        return [key, field];
+      }).filter(([, field]) => eid === null || (info.hasEntities && field.scope === 'Entity')));
+      return info[cacheKey];
+    } catch (e) {
+      error = 'Could not render parameters schema: ' + e.message;
+      return {};
+    }
+  }
+  function effectiveDocument(stepInputs) {
+    const document = clone(original);
+    document.inputs = { ...document.inputs, stepInputs: clone(stepInputs) };
+    Object.entries(document.inputs.stepInputs).forEach(([sid, step]) => {
+      const info = layout(sid), known = fields(sid);
+      // Service null/empty placeholders are unset; workload values inherit step defaults.
+      const values = data => Object.fromEntries(Object.entries(data || {})
+        .filter(([key, value]) => !(own(known, key) && empty(value))));
+      const defaults = values(step);
+      if (info.hasEntities) {
+        delete defaults.workloadOverrides;
+        const overrides = step.workloadOverrides || {};
+        const ids = new Set([...entitiesFor(sid).map(e => e.id), ...Object.keys(overrides)]);
+        defaults.workloadOverrides = Object.fromEntries([...ids].map(id =>
+          [id, { ...defaults, ...values(overrides[id]) }]));
+      }
+      document.inputs.stepInputs[sid] = defaults;
+    });
+    // The SDK must see JSON own-properties, not Object.prototype members.
+    return JSON.parse(JSON.stringify(document), (_, value) =>
+      value && typeof value === 'object' && !Array.isArray(value) ? Object.assign(Object.create(null), value) : value);
+  }
+  function contextFields(sid, eid, stepInputs) {
+    const base = fields(sid, eid);
+    if (error || !Object.keys(base).length) return base;
+    try {
+      const info = layout(sid), stamp = JSON.stringify(stepInputs);
+      const contexts = info.contexts || (info.contexts = new Map());
+      if (contexts.has(eid) && contexts.get(eid).stamp === stamp) return contexts.get(eid).fields;
+      const document = effectiveDocument(report(stepInputs).output), step = document.inputs.stepInputs[sid];
+      let targets = [step], paths = [['inputs', 'stepInputs', sid]];
+      if (info.hasEntities) {
+        const overrides = step.workloadOverrides, id = eid === null ? Object.keys(overrides)[0] || '' : eid;
+        if (eid === null) {
+          // Project shared defaults through the same workload schema, without changing saved inputs.
+          overrides[id] = Object.assign(Object.create(null), step);
+          delete overrides[id].workloadOverrides;
+        } else { targets = []; paths = []; }
+        targets.push(overrides[id]);
+        paths.push(['inputs', 'stepInputs', sid, 'workloadOverrides', id]);
+      }
+      const locations = new Set(paths.map(location));
+      let unchanged;
+      const result = Object.fromEntries(Object.entries(base).map(([field, rule]) => {
+        if (rule.required) return [field, rule];
+        const saved = targets.map(value => [value, own(value, field), value[field]]);
+        targets.forEach(value => { delete value[field]; });
+        let required;
+        try {
+          // Ask the SDK whether absence is required; do not interpret conditional keywords.
+          const checked = saved.some(([, present]) => present) ? validator.validate(document)
+            : unchanged || (unchanged = validator.validate(document));
+          required = checked.errors.some(e =>
+            locations.has(e.instanceLocation) && missingField(e, [field]) === field);
+        } finally {
+          saved.forEach(([value, present, previous]) => { if (present) value[field] = previous; });
+        }
+        return [field, { ...rule, required }];
+      }));
+      contexts.set(eid, { stamp, fields: result });
+      return result;
+    } catch (e) {
+      error = 'Could not project parameters schema requirements: ' + e.message;
+      return base;
+    }
+  }
+  function report(stepInputs) {
+    const stamp = JSON.stringify(stepInputs);
+    if (cached && cached.stamp === stamp) return cached;
+    const first = Object.keys(stepInputs)[0];
+    const exclusions = new Map(), warnings = [];
+    const excluded = (sid, eid) => exclusions.get(JSON.stringify([sid, eid])) || new Set();
+    const describe = e => {
+      const path = parts(e.instanceLocation);
+      const sid = path[0] === 'inputs' && path[1] === 'stepInputs' && own(stepInputs, path[2]) ? path[2] : first;
+      const eid = path[3] === 'workloadOverrides' ? path[4] || null : null;
+      let field = path[eid === null ? 3 : 5];
+      if (!field) field = missingField(e, Object.keys(fields(sid)));
+      return {
+        sid, eid, f: own(fields(sid), field) ? field : null,
+        name: eid === null ? null : (entitiesFor(sid).find(entity => entity.id === eid) || {}).name || eid,
+        msg: `${e.instanceLocation}: ${e.error}`, detail: e.error, condition: true
+      };
+    };
+    let result, output = clone(stepInputs);
+    try {
+      if (error) throw new Error(error);
+      let checked;
+      for (;;) {
+        checked = validator.validate(effectiveDocument(output));
+        let changed = false;
+        checked.errors.forEach((e, index) => {
+          if (e.keyword !== 'false') return;
+          const issue = describe(e), { sid, eid, f } = issue;
+          if (f === null || !excludedProperty(checked.errors, index, f) || e.instanceLocation !== location(
+            ['inputs', 'stepInputs', sid, ...(eid === null ? [] : ['workloadOverrides', eid]), f])) return;
+          const key = JSON.stringify([sid, eid]), fields = excluded(sid, eid);
+          if (fields.has(f)) return;
+          fields.add(f);
+          exclusions.set(key, fields);
+          warnings.push({ ...issue, condition: false });
+          changed = true;
+        });
+        if (!changed) break;
+        // Revalidate the actual save projection; never just suppress SDK failures.
+        output = exportExcluded(stepInputs, excluded);
+      }
+      result = checked.errors.filter(e => {
+        const location = e.keyword === 'if' ? e.keywordLocation.slice(0, -3) : e.keywordLocation;
+        const aggregate = ['allOf', 'anyOf', 'oneOf', 'if', '$ref', 'properties',
+          'patternProperties', 'additionalProperties', 'false'].includes(e.keyword);
+        return !checked.errors.some(child => child !== e &&
+          (child.keywordLocation.startsWith(location + '/') ||
+            (aggregate && child.instanceLocation.startsWith(e.instanceLocation + '/'))));
+      }).map(describe);
+    } catch (e) {
+      output = clone(stepInputs);
+      exclusions.clear();
+      warnings.length = 0;
+      result = [{ sid: first, eid: null, f: null, name: null, msg: e.message, condition: true }];
+    }
+    cached = { stamp, issues: result, output, excluded, warnings };
+    return cached;
+  }
+  return { fields, contextFields,
+    issues: inputs => report(inputs).issues,
+    warnings: inputs => report(inputs).warnings,
+    excluded: (inputs, sid, eid) => report(inputs).excluded(sid, eid),
+    exported: inputs => clone(report(inputs).output) };
+}

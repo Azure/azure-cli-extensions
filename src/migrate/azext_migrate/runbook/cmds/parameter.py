@@ -92,16 +92,17 @@ def configure(cmd, resource_group_name=None, project_name=None,
 
     Downloads the runbook artifact (``inputs.json`` + ``spec.json``) and
     renders a self-contained page whose fields and validation are driven by
-    the schema embedded in ``inputs.json``. ``--from-file`` renders a local
-    ``inputs.json`` (with an optional ``--spec-file``) without any service
-    calls. A real, editable ``inputs.json`` is written next to the editor
+    its embedded legacy schema or separate Draft-07 parameters schema.
+    ``--from-file`` loads a referenced schema from the same directory as the
+    local parameters file (with an optional ``--spec-file``) without service
+    calls. A real, editable parameters file is written next to the editor
     (its full path is logged); the page exports edited values by download
     and shows the ``parameter upload`` command to run.
     """
     if from_file:
         inputs_root = files.read_json_file(from_file)
         spec_doc = files.read_json_file(spec_file) if spec_file else None
-        schema_doc = None
+        schema_doc = files.read_schema_file(from_file, inputs_root)
         name = runbook_name or os.path.splitext(
             os.path.basename(from_file))[0]
     else:
@@ -123,8 +124,11 @@ def configure(cmd, resource_group_name=None, project_name=None,
     # (edit -> upload) targets the same artifact blob whether the service
     # ships inputs.json (legacy) or parameters.json (renamed).
     param_file = os.path.basename(from_file if from_file else found[0])
+    split_schema = files.parameter_schema_name(inputs_root)
     meta = configure_renderer.build_meta(
-        resource_group_name, project_name, name, inputs_root)
+        resource_group_name, project_name, runbook_name if split_schema else name, inputs_root)
+    if split_schema:
+        name = meta['runbook'] or name
     meta['parametersFileName'] = param_file
     target = files.resolve_output_path(
         file, 'runbook-%s-parameters.html' % (name or 'runbook'))
@@ -134,6 +138,7 @@ def configure(cmd, resource_group_name=None, project_name=None,
     inputs_path = os.path.join(
         os.path.dirname(os.path.abspath(target)), param_file)
     files.write_text(inputs_path, json.dumps(inputs_root, indent=2))
+    schema_path = files.write_parameter_schema(inputs_path, inputs_root, schema_doc)
     meta['inputsPath'] = inputs_path
     html_text = configure_renderer.render(
         inputs_root, spec_doc, meta, schema_doc)
@@ -151,4 +156,7 @@ def configure(cmd, resource_group_name=None, project_name=None,
         project_name or '<project>', name or '<runbook>',
         '<path to the file you saved>', inputs_path)
     files.open_in_browser(path, required=True)
-    return {'path': path, 'inputsPath': inputs_path}
+    result = {'path': path, 'inputsPath': inputs_path}
+    if schema_path:
+        result['schemaPath'] = schema_path
+    return result
