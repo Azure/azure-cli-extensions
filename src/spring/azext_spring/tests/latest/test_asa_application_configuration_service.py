@@ -135,7 +135,7 @@ class TestAcsShowConfigurationFiles(unittest.TestCase):
                 "application.properties": "properties-name: sample-test\nspring.config.activate.on-profile: default"
             },
             "metadata": {
-                "gitRevisions": "[{\"url\": \"https://sample.url\", \"revision\": \"main@sha1:sample-commit-id\"}]"
+                "gitRevisions": "[{\"url\": \"https://example.test/config\", \"revision\": \"main@sha1:sample-commit-id\"}]"
             }
         }
         '''
@@ -149,7 +149,7 @@ class TestAcsShowConfigurationFiles(unittest.TestCase):
         self.assertTrue(r"spring.config.activate.on-profile: default" in file_content_arr)
         self.assertIsNotNone(result.get("metadata"))
         metadata = result.get("metadata")
-        expected_revisions = "[{\"url\": \"https://sample.url\", \"revision\": \"main@sha1:sample-commit-id\"}]"
+        expected_revisions = "[{\"url\": \"https://example.test/config\", \"revision\": \"main@sha1:sample-commit-id\"}]"
         self.assertEqual(metadata.get("gitRevisions"), expected_revisions)
 
     def test_show_configuration_files_for_acs_gen_2_with_null_metadata(self):
