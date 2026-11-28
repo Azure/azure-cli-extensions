@@ -10,12 +10,12 @@ from setuptools import setup, find_packages
 
 
 # HISTORY.rst entry.
-VERSION = '1.1.0b2'
+VERSION = '1.1.0'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
 CLASSIFIERS = [
-    'Development Status :: 4 - Beta',
+    'Development Status :: 5 - Production/Stable',
     'Intended Audience :: Developers',
     'Intended Audience :: System Administrators',
     'Programming Language :: Python',
@@ -45,7 +45,7 @@ setup(
     author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/main/src/documentdb',
     classifiers=CLASSIFIERS,
-    packages=find_packages(exclude=["tests"]),
+    packages=find_packages(exclude=["tests", "azext_documentdb.tests", "azext_documentdb.tests.*"]),
     package_data={'azext_documentdb': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )

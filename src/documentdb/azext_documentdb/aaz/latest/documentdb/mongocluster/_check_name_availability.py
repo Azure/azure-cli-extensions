@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster check-name-availability",
-    is_preview=True,
 )
 class CheckNameAvailability(AAZCommand):
     """Check if mongo cluster name is available for use.
@@ -23,9 +22,9 @@ class CheckNameAvailability(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-15-preview",
+        "version": "2026-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.documentdb/locations/{}/checkmongoclusternameavailability", "2026-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.documentdb/locations/{}/checkmongoclusternameavailability", "2026-09-01"],
         ]
     }
 
@@ -127,7 +126,7 @@ class CheckNameAvailability(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-15-preview",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }

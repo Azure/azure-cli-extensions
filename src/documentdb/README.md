@@ -4,9 +4,12 @@ This is an extension to Azure CLI to manage **Azure DocumentDB**
 clusters (the `Microsoft.DocumentDB/mongoClusters` resource) under the
 `az documentdb mongocluster` command group.
 
-Version `1.1.0b2` is a Beta release generated against the
-`2026-06-15-preview` management API. The Preview API adds planned replica
-promotion while retaining the existing command surface.
+This source targets the `2026-09-01` stable management API while retaining the existing
+command surface, including planned replica promotion. Source package version `1.1.0`
+is prepared for stable release with the `Production/Stable` package classification
+and the package-level Preview flag disabled. All command groups and commands use the
+Stable CLI classification. Features selected through `--preview-features`, including
+`GeoReplicas`, retain their service-defined Preview status.
 
 ## How to install ##
 
@@ -92,7 +95,7 @@ az documentdb mongocluster replica list --source-cluster MyCluster -g MyResource
 az documentdb mongocluster replica create -n MyReplica -g MyResourceGroup -l centralus \
     --source-cluster MyCluster
 
-# Planned promotion waits for the replica to catch up before switching roles (Preview).
+# Planned promotion waits for the replica to catch up before switching roles.
 az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup \
     --source-cluster MyCluster --mode Switchover --promote-option Planned
 
@@ -135,8 +138,8 @@ Core networking commands select their own API versions. When an explicit Documen
 API version is required, use `az rest`, for example:
 
 ```bash
-az rest --method get --url "${clusterId}/privateLinkResources?api-version=2026-06-15-preview"
-az rest --method get --url "${clusterId}/privateEndpointConnections?api-version=2026-06-15-preview"
+az rest --method get --url "${clusterId}/privateLinkResources?api-version=2026-09-01"
+az rest --method get --url "${clusterId}/privateEndpointConnections?api-version=2026-09-01"
 ```
 
 The restore option `--public-network-access Disabled` only disables public access; it

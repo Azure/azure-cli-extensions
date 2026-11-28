@@ -14,7 +14,6 @@ from azure.cli.core.aaz import *
 @register_command(
     "documentdb mongocluster microsoft-entra-user remove",
     confirmation="Are you sure you want to perform this operation?",
-    is_preview=True,
 )
 class Remove(AAZCommand):
     """Remove a Microsoft Entra ID principal's access from a mongo cluster.
@@ -24,9 +23,9 @@ class Remove(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-15-preview",
+        "version": "2026-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}/users/{}", "2026-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}/users/{}", "2026-09-01"],
         ]
     }
 
@@ -164,7 +163,7 @@ class Remove(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-15-preview",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }
